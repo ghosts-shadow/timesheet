@@ -1,0 +1,712 @@
+﻿@using PagedList
+@using PagedList.Mvc
+@model  onlygodknows.Models.timesheetViewModel
+
+@{
+    ViewBag.Title = "AIndex";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<h2>AIndex</h2>
+
+<script>
+    function total() {
+
+        var c1 = '';
+        var c2 = '';
+        var c3 = '';
+        var c4 = '';
+        var c5 = '';
+        var c6 = '';
+        var c7 = '';
+        var c8 = '';
+        var c9 = '';
+        var c10 = '';
+        var c11 = '';
+        var c12 = '';
+        var c13 = '';
+        var c14 = '';
+        var c15 = '';
+        var c16 = '';
+        var c17 = '';
+        var c18 = '';
+        var c19 = '';
+        var c20 = '';
+        var c21 = '';
+        var c22 = '';
+        var c23 = '';
+        var c24 = '';
+        var c25 = '';
+        var c26 = '';
+        var c27 = '';
+        var c28 = '';
+        var c29 = '';
+        var c30 = '';
+        var c31 = '';
+
+        c1 = $("#C1").val() == '' ? 0 : $("#C1").val();
+        c2 = $("#C2").val() == '' ? 0 : $("#C2").val();
+        c3 = $("#C3").val() == '' ? 0 : $("#C3").val();
+        c4 = $("#C4").val() == '' ? 0 : $("#C4").val();
+        c5 = $("#C5").val() == '' ? 0 : $("#C5").val();
+        c6 = $("#C6").val() == '' ? 0 : $("#C6").val();
+        c7 = $("#C7").val() == '' ? 0 : $("#C7").val();
+        c8 = $("#C8").val() == '' ? 0 : $("#C8").val();
+        c9 = $("#C9").val() == '' ? 0 : $("#C9").val();
+        c10 = $("#C20").val() == '' ? 0 : $("#C10").val();
+        c11 = $("#C11").val() == '' ? 0 : $("#C11").val();
+        c12 = $("#C12").val() == '' ? 0 : $("#C12").val();
+        c13 = $("#C13").val() == '' ? 0 : $("#C13").val();
+        c14 = $("#C14").val() == '' ? 0 : $("#C14").val();
+        c15 = $("#C15").val() == '' ? 0 : $("#C15").val();
+        c16 = $("#C16").val() == '' ? 0 : $("#C16").val();
+        c17 = $("#C17").val() == '' ? 0 : $("#C17").val();
+        c18 = $("#C18").val() == '' ? 0 : $("#C18").val();
+        c19 = $("#C19").val() == '' ? 0 : $("#C19").val();
+        c20 = $("#C20").val() == '' ? 0 : $("#C20").val();
+        c21 = $("#C21").val() == '' ? 0 : $("#C21").val();
+        c22 = $("#C22").val() == '' ? 0 : $("#C22").val();
+        c23 = $("#C23").val() == '' ? 0 : $("#C23").val();
+        c24 = $("#C24").val() == '' ? 0 : $("#C24").val();
+        c25 = $("#C25").val() == '' ? 0 : $("#C25").val();
+        c26 = $("#C26").val() == '' ? 0 : $("#C26").val();
+        c27 = $("#C27").val() == '' ? 0 : $("#C27").val();
+        c28 = $("#C28").val() == '' ? 0 : $("#C28").val();
+        c29 = $("#C29").val() == '' ? 0 : $("#C29").val();
+        c30 = $("#C30").val() == '' ? 0 : $("#C30").val();
+        c31 = $("#C31").val() == '' ? 0 : $("#C31").val();
+        var totalh = parseInt(c1) +
+            parseInt(c2) +
+            parseInt(c3) +
+            parseInt(c4) +
+            parseInt(c5) +
+            parseInt(c6) +
+            parseInt(c7) +
+            parseInt(c8) +
+            parseInt(c9) +
+            parseInt(c10) +
+            parseInt(c11) +
+            parseInt(c12) +
+            parseInt(c13) +
+            parseInt(c14) +
+            parseInt(c15) +
+            parseInt(c16) +
+            parseInt(c17) +
+            parseInt(c18) +
+            parseInt(c19) +
+            parseInt(c20) +
+            parseInt(c21) +
+            parseInt(c22) +
+            parseInt(c23) +
+            parseInt(c24) +
+            parseInt(c25) +
+            parseInt(c26) +
+            parseInt(c27) +
+            parseInt(c28) +
+            parseInt(c29) +
+            parseInt(c30) +
+            parseInt(c31);
+        $("#TotalHours").val(totalh);
+        $("#TotalHours2").val(totalh);
+
+    }
+</script>
+@using (Html.BeginForm("AIndex","Home"))
+{
+    
+    @Html.AntiForgeryToken()
+    <div class="col-md-5">
+        @Html.LabelFor(model => model.attendance.EmpID, new { @class = "control-label col-md-2" })
+        <div class="col-md-3" onclick="total()">
+            @*
+                        @Html.EditorFor(model => model.EmpID, new { htmlAttributes = new { @class = "form-control" } })*@
+            @Html.DropDownList("EmpID", null, new { @class = "form-control", id = "EmpID" })
+            @Html.ValidationMessageFor(model => model.attendance.EmpID, "", new { @class = "text-danger" })
+        </div>
+    </div>
+    <div id="create ">
+        <div class="row">
+            <input type="text" value="@ViewBag.mdate" disabled="disabled" />
+            <input type="text" value="@ViewBag.mps" disabled="disabled" />
+            <input type="text" value="@ViewBag.pid" disabled="disabled" />
+            
+            <div class="col-md-offset-2 ">
+                <input type="submit" value="Create" class="btn btn-default" />
+            </div>
+        </div>
+        <div class="form-horizontal" onclick="total()">
+            <div class="form-group">
+                <div class="row" onclick="total()">
+
+                    <div class="col-xs-1">
+                        @Html.LabelFor(model => model.attendance.C1, new { @class = "control-label col-md-2" })
+                    </div>
+                    <div class="col-xs-1">
+                        @Html.LabelFor(model => model.attendance.C2, new { @class = "control-label col-md-2" })
+                    </div>
+                    <div class="col-xs-1">
+                        @Html.LabelFor(model => model.attendance.C3, new { @class = "control-label col-md-2" })
+                    </div>
+                    <div class="col-xs-1">
+                        @Html.LabelFor(model => model.attendance.C4, new { @class = "control-label col-md-2" })
+                    </div>
+                    <div class="col-xs-1">
+                        @Html.LabelFor(model => model.attendance.C5, new { @class = "control-label col-md-2" })
+                    </div>
+                    <div class="col-xs-1">
+                        @Html.LabelFor(model => model.attendance.C6, new { @class = "control-label col-md-2" })
+                    </div>
+                    <div class="col-xs-1">
+                        @Html.LabelFor(model => model.attendance.C7, new { @class = "control-label col-md-2" })
+                    </div>
+                    <div class="col-xs-1">
+                        @Html.LabelFor(model => model.attendance.C8, new { @class = "control-label col-md-2" })
+                    </div>
+                    <div class="col-xs-1">
+                        @Html.LabelFor(model => model.attendance.C9, new { @class = "control-label col-md-2" })
+                    </div>
+                    <div class="col-xs-1">
+                        @Html.LabelFor(model => model.attendance.C10, new { @class = "control-label col-md-2" })
+                    </div>
+                    <div class="col-xs-1">
+                        @Html.LabelFor(model => model.attendance.C11, new { @class = "control-label col-md-2" })
+                    </div>
+                    <div class="col-xs-1">
+                        @Html.LabelFor(model => model.attendance.C12, new { @class = "control-label col-md-2" })
+                    </div>
+                    <div class="col-xs-1">
+                        @Html.LabelFor(model => model.attendance.C13, new { @class = "control-label col-md-2" })
+                    </div>
+                    <div class="col-xs-1">
+                        @Html.LabelFor(model => model.attendance.C14, new { @class = "control-label col-md-2" })
+                    </div>
+                    <div class="col-xs-1">
+                        @Html.LabelFor(model => model.attendance.C15, new { @class = "control-label col-md-2" })
+                    </div>
+                    <div class="col-xs-1">
+                        @Html.LabelFor(model => model.attendance.C16, new { @class = "control-label col-md-2" })
+                    </div>
+                    <div class="col-xs-1">
+                        @Html.LabelFor(model => model.attendance.C17, new { @class = "control-label col-md-2" })
+                    </div>
+                    <div class="col-xs-1">
+                        @Html.LabelFor(model => model.attendance.C18, new { @class = "control-label col-md-2" })
+                    </div>
+                    <div class="col-xs-1">
+                        @Html.LabelFor(model => model.attendance.C19, new { @class = "control-label col-md-2" })
+                    </div>
+                    <div class="col-xs-1">
+                        @Html.LabelFor(model => model.attendance.C20, new { @class = "control-label col-md-2" })
+                    </div>
+                    <div class="col-xs-1">
+                        @Html.LabelFor(model => model.attendance.C21, new { @class = "control-label col-md-2" })
+                    </div>
+                    <div class="col-xs-1">
+                        @Html.LabelFor(model => model.attendance.C22, new { @class = "control-label col-md-2" })
+                    </div>
+                    <div class="col-xs-1">
+                        @Html.LabelFor(model => model.attendance.C23, new { @class = "control-label col-md-2" })
+                    </div>
+                    <div class="col-xs-1">
+                        @Html.LabelFor(model => model.attendance.C24, new { @class = "control-label col-md-2" })
+                    </div>
+                    <div class="col-xs-1">
+                        @Html.LabelFor(model => model.attendance.C25, new { @class = "control-label col-md-2" })
+                    </div>
+                    <div class="col-xs-1">
+                        @Html.LabelFor(model => model.attendance.C26, new { @class = "control-label col-md-2" })
+                    </div>
+                    <div class="col-xs-1">
+                        @Html.LabelFor(model => model.attendance.C27, new { @class = "control-label col-md-2" })
+                    </div>
+                    <div class="col-xs-1">
+                        @Html.LabelFor(model => model.attendance.C28, new { @class = "control-label col-md-2" })
+                    </div>
+                    <div class="col-xs-1">
+                        @Html.LabelFor(model => model.attendance.C29, new { @class = "control-label col-md-2" })
+                    </div>
+                    <div class="col-xs-1">
+                        @Html.LabelFor(model => model.attendance.C30, new { @class = "control-label col-md-2" })
+                    </div>
+                    <div class="col-xs-1">
+                        @Html.LabelFor(model => model.attendance.C31, new { @class = "control-label col-md-2" })
+                    </div>
+                    <div class="col-xs-1">
+                        @Html.LabelFor(model => model.attendance.TotalHours, new { @class = "control-label col-md-2" })
+                    </div>
+                </div>
+                <div class="row">
+
+                    <div class="col-xs-1">
+                        @Html.DropDownList("C1", null, new { @class = "form-control", id = "C1", name = "C1" })
+                        @Html.ValidationMessageFor(model => model.attendance.C1, "", new { @class = "text-danger" })
+                    </div>
+                    <div class="col-xs-1">
+                        @Html.DropDownList("C2", null, new { @class = "form-control", id = "C2", name = "C2" })
+                        @Html.ValidationMessageFor(model => model.attendance.C2, "", new { @class = "text-danger" })
+                    </div>
+                    <div class="col-xs-1">
+                        @Html.DropDownList("C3", null, new { @class = "form-control", id = "C3", name = "C3" })
+                        @Html.ValidationMessageFor(model => model.attendance.C3, "", new { @class = "text-danger" })
+                    </div>
+                    <div class="col-xs-1">
+                        @Html.DropDownList("C4", null, new { @class = "form-control", id = "C4", name = "C4" })
+                        @Html.ValidationMessageFor(model => model.attendance.C4, "", new { @class = "text-danger" })
+                    </div>
+                    <div class="col-xs-1">
+                        @Html.DropDownList("C5", null, new { @class = "form-control", id = "C5", name = "C5" })
+                        @Html.ValidationMessageFor(model => model.attendance.C5, "", new { @class = "text-danger" })
+                    </div>
+                    <div class="col-xs-1">
+                        @Html.DropDownList("C6", null, new { @class = "form-control", id = "C6", name = "C6" })
+                        @Html.ValidationMessageFor(model => model.attendance.C6, "", new { @class = "text-danger" })
+                    </div>
+                    <div class="col-xs-1">
+                        @Html.DropDownList("C7", null, new { @class = "form-control", id = "C7", name = "C7" })
+                        @Html.ValidationMessageFor(model => model.attendance.C7, "", new { @class = "text-danger" })
+                    </div>
+                    <div class="col-xs-1">
+                        @Html.DropDownList("C8", null, new { @class = "form-control", id = "C8", name = "C8" })
+                        @Html.ValidationMessageFor(model => model.attendance.C8, "", new { @class = "text-danger" })
+                    </div>
+                    <div class="col-xs-1">
+                        @Html.DropDownList("C9", null, new { @class = "form-control", id = "C9", name = "C9" })
+                        @Html.ValidationMessageFor(model => model.attendance.C9, "", new { @class = "text-danger" })
+                    </div>
+                    <div class="col-xs-1">
+                        @Html.DropDownList("C10", null, new { @class = "form-control", id = "C10", name = "C10" })
+                        @Html.ValidationMessageFor(model => model.attendance.C10, "", new { @class = "text-danger" })
+                    </div>
+                    <div class="col-xs-1">
+                        @Html.DropDownList("C11", null, new { @class = "form-control", id = "C11", name = "C11" })
+                        @Html.ValidationMessageFor(model => model.attendance.C11, "", new { @class = "text-danger" })
+                    </div>
+                    <div class="col-xs-1">
+                        @Html.DropDownList("C12", null, new { @class = "form-control", id = "C12", name = "C12" })
+                        @Html.ValidationMessageFor(model => model.attendance.C12, "", new { @class = "text-danger" })
+                    </div>
+                    <div class="col-xs-1">
+                        @Html.DropDownList("C13", null, new { @class = "form-control", id = "C13", name = "C13" })
+                        @Html.ValidationMessageFor(model => model.attendance.C13, "", new { @class = "text-danger" })
+                    </div>
+                    <div class="col-xs-1">
+                        @Html.DropDownList("C14", null, new { @class = "form-control", id = "C14", name = "C14" })
+                        @Html.ValidationMessageFor(model => model.attendance.C14, "", new { @class = "text-danger" })
+                    </div>
+                    <div class="col-xs-1">
+                        @Html.DropDownList("C15", null, new { @class = "form-control", id = "C15", name = "C15" })
+                        @Html.ValidationMessageFor(model => model.attendance.C15, "", new { @class = "text-danger" })
+                    </div>
+                    <div class="col-xs-1">
+                        @Html.DropDownList("C16", null, new { @class = "form-control", id = "C16", name = "C16" })
+                        @Html.ValidationMessageFor(model => model.attendance.C16, "", new { @class = "text-danger" })
+                    </div>
+                    <div class="col-xs-1">
+                        @Html.DropDownList("C17", null, new { @class = "form-control", id = "C17" })
+                        @Html.ValidationMessageFor(model => model.attendance.C17, "", new { @class = "text-danger", name = "C17" })
+                    </div>
+                    <div class="col-xs-1">
+                        @Html.DropDownList("C18", null, new { @class = "form-control", id = "C18", name = "C18" })
+                        @Html.ValidationMessageFor(model => model.attendance.C18, "", new { @class = "text-danger" })
+                    </div>
+                    <div class="col-xs-1">
+                        @Html.DropDownList("C19", null, new { @class = "form-control", id = "C19", name = "C19" })
+                        @Html.ValidationMessageFor(model => model.attendance.C19, "", new { @class = "text-danger" })
+                    </div>
+                    <div class="col-xs-1">
+                        @Html.DropDownList("C20", null, new { @class = "form-control", id = "C20", name = "C20" })
+                        @Html.ValidationMessageFor(model => model.attendance.C20, "", new { @class = "text-danger" })
+                    </div>
+                    <div class="col-xs-1">
+                        @Html.DropDownList("C21", null, new { @class = "form-control", id = "C21", name = "C21" })
+                        @Html.ValidationMessageFor(model => model.attendance.C21, "", new { @class = "text-danger" })
+                    </div>
+                    <div class="col-xs-1">
+                        @Html.DropDownList("C22", null, new { @class = "form-control", id = "C22", name = "C22" })
+                        @Html.ValidationMessageFor(model => model.attendance.C22, "", new { @class = "text-danger" })
+                    </div>
+                    <div class="col-xs-1">
+                        @Html.DropDownList("C23", null, new { @class = "form-control", id = "C23", name = "C23" })
+                        @Html.ValidationMessageFor(model => model.attendance.C23, "", new { @class = "text-danger" })
+                    </div>
+                    <div class="col-xs-1">
+                        @Html.DropDownList("C24", null, new { @class = "form-control", id = "C24", name = "C24" })
+                        @Html.ValidationMessageFor(model => model.attendance.C24, "", new { @class = "text-danger" })
+                    </div>
+                    <div class="col-xs-1">
+                        @Html.DropDownList("C25", null, new { @class = "form-control", id = "C25", name = "C25" })
+                        @Html.ValidationMessageFor(model => model.attendance.C25, "", new { @class = "text-danger" })
+                    </div>
+                    <div class="col-xs-1">
+                        @Html.DropDownList("C26", null, new { @class = "form-control", id = "C26", name = "C26" })
+                        @Html.ValidationMessageFor(model => model.attendance.C26, "", new { @class = "text-danger" })
+                    </div>
+                    <div class="col-xs-1">
+                        @Html.DropDownList("C27", null, new { @class = "form-control", id = "C27", name = "C27" })
+                        @Html.ValidationMessageFor(model => model.attendance.C27, "", new { @class = "text-danger" })
+                    </div>
+                    <div class="col-xs-1">
+                        @Html.DropDownList("C28", null, new { @class = "form-control", id = "C28", name = "C28" })
+                        @Html.ValidationMessageFor(model => model.attendance.C28, "", new { @class = "text-danger" })
+                    </div>
+                    <div class="col-xs-1">
+                        @Html.DropDownList("C29", null, new { @class = "form-control", id = "C29", name = "C29" })
+                        @Html.ValidationMessageFor(model => model.attendance.C29, "", new { @class = "text-danger" })
+                    </div>
+                    <div class="col-xs-1">
+                        @Html.DropDownList("C30", null, new { @class = "form-control", id = "C30", name = "C30" })
+                        @Html.ValidationMessageFor(model => model.attendance.C30, "", new { @class = "text-danger" })
+                    </div>
+                    <div class="col-xs-1">
+                        @Html.DropDownList("C31", null, new { @class = "form-control", id = "C31", name = "C31" })
+                        @Html.ValidationMessageFor(model => model.attendance.C31, "", new { @class = "text-danger" })
+                    </div>
+                    <div class="col-xs-1">
+                        @*
+                            @Html.EditorFor(model => model.TotalHours, new { htmlAttributes = new { @class = "form-control" } })*@
+                        <input type="text" id="TotalHours" name="TotalHours1" disabled="true" />
+                        <input type="text" id="TotalHours2" name="TotalHours" style="display: none" />
+                        @Html.ValidationMessageFor(model => model.attendance.TotalHours, "", new { @class = "text-danger" })
+                    </div>@*
+
+                                                @*
+                        @Html.LabelFor(model => model.ManPowerSupply, htmlAttributes: new { @class = "control-label col-md-2" })
+                    *@
+                    <div class="col-xs-1" style="display: none">
+                        @*
+                            @Html.EditorFor(model => model.ManPowerSupply, new { htmlAttributes = new { @class = "form-control" } })*@
+                        <input type="text" id="ManPowerSupply" value="@ViewBag.mspID" style="display: none" name="ManPowerSupply" />
+                        @Html.ValidationMessageFor(model => model.attendance.ManPowerSupply, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            </div>
+            <div class="form-group" style="display: none">
+                @Html.LabelFor(model => model.attendance.SubMain, new { @class = "control-label col-md-2" })
+                <div class="col-xs-1" style="display: none">
+                    @*
+                        @Html.EditorFor(model => model.SubMain, new { htmlAttributes = new { @class = "form-control" } })
+                    *@
+                    <input type="text" id="SubMain" value="@ViewBag.mid" name="SubMain" />
+                    @Html.ValidationMessageFor(model => model.attendance.SubMain, "", new { @class = "text-danger" })
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="read">
+    <script>
+        function search() {
+            $("#my tr").filter(function() {
+                $(this).toggle($(this).text().toLowerCase().indexOf($("#search").val()) > -1);
+            });
+        }
+
+    </script>
+    <script>
+        $(document).ready(function(){
+            $("#search").on("keyup", function() {
+                var value = $(this).val().toLowerCase();
+                $("#mytable tr").filter(function() {
+                    $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1);
+                });
+            });
+        });
+    </script>
+    <table class="table">
+    <tr>
+        <th></th>
+        <th>
+            @Html.DisplayNameFor(model => model.attendance.LabourMaster.EMPNO)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.attendance.SubMain)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.attendance.C1)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.attendance.C2)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.attendance.C3)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.attendance.C4)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.attendance.C5)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.attendance.C6)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.attendance.C7)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.attendance.C8)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.attendance.C9)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.attendance.C10)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.attendance.C11)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.attendance.C12)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.attendance.C13)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.attendance.C14)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.attendance.C15)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.attendance.C16)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.attendance.C17)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.attendance.C18)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.attendance.C19)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.attendance.C20)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.attendance.C21)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.attendance.C22)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.attendance.C23)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.attendance.C24)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.attendance.C25)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.attendance.C26)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.attendance.C27)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.attendance.C28)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.attendance.C29)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.attendance.C30)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.attendance.C31)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.attendance.TotalHours)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.attendance.TotalOverTime)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.attendance.TotalAbsent)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.attendance.AccommodationDeduction)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.attendance.FoodDeduction)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.attendance.TotalWorkingDays)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.attendance.TotalVL)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.attendance.TotalTransefer)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.attendance.TotalSickLeave)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.attendance.FridayHours)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.attendance.Holidays)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.attendance.ManPowerSupply)
+        </th>
+        <th></th>
+    </tr>
+    <tbody id="mytable">
+        @foreach (var item in Model.Attendancecollection)
+        {
+            <tr>
+                <td>
+                    @Html.ActionLink("Edit", "AEdit", new { id = item.ID })
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.LabourMaster.EMPNO)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.SubMain)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.C1)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.C2)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.C3)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.C4)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.C5)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.C6)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.C7)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.C8)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.C9)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.C10)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.C11)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.C12)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.C13)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.C14)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.C15)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.C16)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.C17)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.C18)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.C19)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.C20)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.C21)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.C22)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.C23)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.C24)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.C25)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.C26)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.C27)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.C28)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.C29)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.C30)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.C31)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.TotalHours)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.TotalOverTime)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.TotalAbsent)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.AccommodationDeduction)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.FoodDeduction)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.TotalWorkingDays)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.TotalVL)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.TotalTransefer)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.TotalSickLeave)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.FridayHours)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Holidays)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ManPowerSupply)
+                </td>
+            </tr>
+
+        }</tbody>
+</table>
+    </div>@*
+    <script>
+        $("#edit").dialog({
+            autoOpen: false,
+            model: true,
+            width: 500,
+            title:"edit"
+        })
+    </script>
+    <div id="edit"></div>*@
+    
+}

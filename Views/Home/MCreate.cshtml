@@ -1,0 +1,61 @@
+﻿@model onlygodknows.Models.MainTimeSheet
+@{
+    ViewBag.Title = "MCreate";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@if (Request.IsAuthenticated)
+{
+using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+        <hr />
+
+        <div class="form-group">
+            <div class="row">
+                <div class="col-md-2">
+                    @*
+                        @Html.EditorFor(model => model.TMonth, new { htmlAttributes = new { @class = "form-control" } })
+                    *@
+                    <input type="date" id="TMonth" name="TMonth" />
+                    @Html.ValidationMessageFor(model => model.TMonth, "", new { @class = "text-danger" })
+                </div>
+                @Html.LabelFor(model => model.ManPowerSupplier, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-2">
+                    @Html.DropDownList("ManPowerSupplier", null, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.ManPowerSupplier, "", new { @class = "text-danger" })
+                </div>
+                @Html.LabelFor(model => model.Project, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-2">
+                    @Html.DropDownList("Project", null, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.Project, "", new { @class = "text-danger" })
+                </div>
+            </div>
+            <div class="row">
+                @Html.LabelFor(model => model.Ref, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-2">
+                    @Html.EditorFor(model => model.Ref, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.Ref, "", new { @class = "text-danger" })
+                </div>
+                @Html.LabelFor(model => model.RefNo, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-2">
+                    @Html.EditorFor(model => model.RefNo, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.RefNo, "", new { @class = "text-danger" })
+                </div>
+
+                @Html.LabelFor(model => model.Note, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-2">
+                    @Html.EditorFor(model => model.Note, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.Note, "", new { @class = "text-danger" })
+                </div>
+            </div>
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Create" class="btn btn-default" />
+            </div>
+        </div>
+    </div>
+}
+}
+

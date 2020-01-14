@@ -1,0 +1,81 @@
+﻿<!DOCTYPE html>
+<html oncontextmenu="return false;" style="text-transform: capitalize;">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title - My ASP.NET Application</title>
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/modernizr")
+    <script>
+        document.onkeydown = function(e) {
+            if(event.keyCode == 123) {
+                return false;
+            }
+            if(e.ctrlKey && e.shiftKey && e.keyCode == 'I'.charCodeAt(0)) {
+                return false;
+            }
+            if(e.ctrlKey && e.shiftKey && e.keyCode == 'C'.charCodeAt(0)) {
+                return false;
+            }
+            if(e.ctrlKey && e.shiftKey && e.keyCode == 'J'.charCodeAt(0)) {
+                return false;
+            }
+            if(e.ctrlKey && e.keyCode == 'U'.charCodeAt(0)) {
+                return false;
+            }
+            if (e.ctrlKey && e.keyCode == 'P'.charCodeAt(0)) {
+                return false;
+            }
+        }
+    </script>
+</head>
+<body>
+    <div class="navbar navbar-inverse navbar-fixed-top">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                @Html.ActionLink("Time Sheet", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
+            </div>
+        @if (Request.IsAuthenticated)
+        {
+
+            <div class="navbar-collapse collapse" style="font-size: 1vw;">
+                <ul class="nav navbar-nav">
+                    <li>@Html.ActionLink("Add new Time-sheet", "MCreate", "Home")</li>
+                    @if (User.Identity.IsAuthenticated)
+                    {
+                        if (User.IsInRole("Admin") || User.IsInRole("Manager"))
+                        {
+                            <li>@Html.ActionLink("search all", "Asearch", "Home")</li>
+                        }
+                    }
+                    <li>@Html.ActionLink("Print Timesheet", "download", "Home")</li>
+                    <li>@Html.ActionLink("add for same day", "tests", "Home")</li>
+                    <li>@Html.ActionLink("search by month", "csearch", "Home")</li>
+                </ul>
+                @Html.Partial("_LoginPartial")
+            </div>
+        }
+        </div>
+    </div>
+<div class="container body-content">
+
+
+    @RenderBody()
+
+    <hr/>
+    <footer>
+
+        <p>&copy; @DateTime.Now.Year - Citiscape L.L.C</p>
+    </footer>
+</div>
+
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/bootstrap")
+    @RenderSection("scripts", required: false)
+</body>
+</html>

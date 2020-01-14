@@ -1,0 +1,2428 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+      <Schema Namespace="LogisticsSoftModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="__MigrationHistory">
+          <Key>
+            <PropertyRef Name="MigrationId" />
+            <PropertyRef Name="ContextKey" />
+          </Key>
+          <Property Name="MigrationId" Type="nvarchar" MaxLength="150" Nullable="false" />
+          <Property Name="ContextKey" Type="nvarchar" MaxLength="300" Nullable="false" />
+          <Property Name="Model" Type="varbinary(max)" Nullable="false" />
+          <Property Name="ProductVersion" Type="nvarchar" MaxLength="32" Nullable="false" />
+        </EntityType>
+        <EntityType Name="AspNetRoles">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="nvarchar" MaxLength="128" Nullable="false" />
+          <Property Name="Name" Type="nvarchar" MaxLength="256" Nullable="false" />
+        </EntityType>
+        <EntityType Name="AspNetUserClaims">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="UserId" Type="nvarchar" MaxLength="128" Nullable="false" />
+          <Property Name="ClaimType" Type="nvarchar(max)" />
+          <Property Name="ClaimValue" Type="nvarchar(max)" />
+        </EntityType>
+        <EntityType Name="AspNetUserLogins">
+          <Key>
+            <PropertyRef Name="LoginProvider" />
+            <PropertyRef Name="ProviderKey" />
+            <PropertyRef Name="UserId" />
+          </Key>
+          <Property Name="LoginProvider" Type="nvarchar" MaxLength="128" Nullable="false" />
+          <Property Name="ProviderKey" Type="nvarchar" MaxLength="128" Nullable="false" />
+          <Property Name="UserId" Type="nvarchar" MaxLength="128" Nullable="false" />
+        </EntityType>
+        <EntityType Name="AspNetUserRoles">
+          <Key>
+            <PropertyRef Name="UserId" />
+            <PropertyRef Name="RoleId" />
+          </Key>
+          <Property Name="UserId" Type="nvarchar" MaxLength="128" Nullable="false" />
+          <Property Name="RoleId" Type="nvarchar" MaxLength="128" Nullable="false" />
+        </EntityType>
+        <EntityType Name="AspNetUsers">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="nvarchar" MaxLength="128" Nullable="false" />
+          <Property Name="csid" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Email" Type="nvarchar" MaxLength="256" />
+          <Property Name="EmailConfirmed" Type="bit" Nullable="false" />
+          <Property Name="PasswordHash" Type="nvarchar(max)" />
+          <Property Name="SecurityStamp" Type="nvarchar(max)" />
+          <Property Name="PhoneNumber" Type="nvarchar(max)" />
+          <Property Name="PhoneNumberConfirmed" Type="bit" Nullable="false" />
+          <Property Name="TwoFactorEnabled" Type="bit" Nullable="false" />
+          <Property Name="LockoutEndDateUtc" Type="datetime" />
+          <Property Name="LockoutEnabled" Type="bit" Nullable="false" />
+          <Property Name="AccessFailedCount" Type="int" Nullable="false" />
+          <Property Name="UserName" Type="nvarchar" MaxLength="256" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Attendance">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="EmpID" Type="bigint" Nullable="false" />
+          <Property Name="SubMain" Type="bigint" Nullable="false" />
+          <Property Name="1" Type="nvarchar" MaxLength="50" />
+          <Property Name="2" Type="nvarchar" MaxLength="50" />
+          <Property Name="3" Type="nvarchar" MaxLength="50" />
+          <Property Name="4" Type="nvarchar" MaxLength="50" />
+          <Property Name="5" Type="nvarchar" MaxLength="50" />
+          <Property Name="6" Type="nvarchar" MaxLength="50" />
+          <Property Name="7" Type="nvarchar" MaxLength="50" />
+          <Property Name="8" Type="nvarchar" MaxLength="50" />
+          <Property Name="9" Type="nvarchar" MaxLength="50" />
+          <Property Name="10" Type="nvarchar" MaxLength="50" />
+          <Property Name="11" Type="nvarchar" MaxLength="50" />
+          <Property Name="12" Type="nvarchar" MaxLength="50" />
+          <Property Name="13" Type="nvarchar" MaxLength="50" />
+          <Property Name="14" Type="nvarchar" MaxLength="50" />
+          <Property Name="15" Type="nvarchar" MaxLength="50" />
+          <Property Name="16" Type="nvarchar" MaxLength="50" />
+          <Property Name="17" Type="nvarchar" MaxLength="50" />
+          <Property Name="18" Type="nvarchar" MaxLength="50" />
+          <Property Name="19" Type="nvarchar" MaxLength="50" />
+          <Property Name="20" Type="nvarchar" MaxLength="50" />
+          <Property Name="21" Type="nvarchar" MaxLength="50" />
+          <Property Name="22" Type="nvarchar" MaxLength="50" />
+          <Property Name="23" Type="nvarchar" MaxLength="50" />
+          <Property Name="24" Type="nvarchar" MaxLength="50" />
+          <Property Name="25" Type="nvarchar" MaxLength="50" />
+          <Property Name="26" Type="nvarchar" MaxLength="50" />
+          <Property Name="27" Type="nvarchar" MaxLength="50" />
+          <Property Name="28" Type="nvarchar" MaxLength="50" />
+          <Property Name="29" Type="nvarchar" MaxLength="50" />
+          <Property Name="30" Type="nvarchar" MaxLength="50" />
+          <Property Name="31" Type="nvarchar" MaxLength="50" />
+          <Property Name="TotalHours" Type="bigint" />
+          <Property Name="TotalOverTime" Type="bigint" />
+          <Property Name="TotalAbsent" Type="bigint" />
+          <Property Name="AccommodationDeduction" Type="bigint" />
+          <Property Name="FoodDeduction" Type="bigint" />
+          <Property Name="TotalWorkingDays" Type="bigint" />
+          <Property Name="TotalVL" Type="bigint" />
+          <Property Name="TotalTransefer" Type="bigint" />
+          <Property Name="TotalSickLeave" Type="bigint" />
+          <Property Name="FridayHours" Type="bigint" />
+          <Property Name="Holidays" Type="bigint" />
+          <Property Name="ManPowerSupply" Type="nvarchar" MaxLength="255" />
+          <Property Name="CompID" Type="bigint" />
+          <Property Name="Encoded Absolute URL" Type="nvarchar" MaxLength="255" />
+          <Property Name="Item Type" Type="nvarchar" MaxLength="255" />
+          <Property Name="Path" Type="nvarchar" MaxLength="255" />
+          <Property Name="URL Path" Type="nvarchar" MaxLength="255" />
+          <Property Name="Workflow Instance ID" Type="nvarchar" MaxLength="255" />
+          <Property Name="File Type" Type="nvarchar" MaxLength="255" />
+          <Property Name="xABST" Type="bigint" />
+          <Property Name="nABST" Type="bigint" />
+          <Property Name="xOT" Type="bigint" />
+          <Property Name="nnOT" Type="bigint" />
+        </EntityType>
+        <EntityType Name="AttendanceFreq">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" Nullable="false" />
+          <Property Name="Description" Type="nvarchar" MaxLength="255" />
+          <Property Name="Dec" Type="nvarchar" MaxLength="255" />
+          <Property Name="Encoded Absolute URL" Type="nvarchar" MaxLength="255" />
+          <Property Name="Item Type" Type="nvarchar" MaxLength="255" />
+          <Property Name="Path" Type="nvarchar" MaxLength="255" />
+          <Property Name="URL Path" Type="nvarchar" MaxLength="255" />
+          <Property Name="Workflow Instance ID" Type="nvarchar" MaxLength="255" />
+          <Property Name="File Type" Type="nvarchar" MaxLength="255" />
+        </EntityType>
+        <EntityType Name="Camp_Details">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" Nullable="false" />
+          <Property Name="Camp_Name" Type="nvarchar" MaxLength="255" />
+          <Property Name="Camp_Location" Type="nvarchar" MaxLength="255" />
+          <Property Name="Start" Type="datetime" />
+          <Property Name="End" Type="datetime" />
+          <Property Name="Active" Type="bit" Nullable="false" />
+          <Property Name="Remark" Type="nvarchar(max)" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6013: The table/view 'LogisticsSoft.dbo.Citynames' does not have a primary key defined and no valid primary key could be inferred. This table/view has been excluded. To use the entity, you will need to review your schema, add the correct keys, and uncomment it.
+        <EntityType Name="Citynames">
+          <Property Name="English name" Type="nvarchar" MaxLength="255" />
+          <Property Name="Local name" Type="nvarchar" MaxLength="255" />
+          <Property Name="Past English or local names" Type="nvarchar" MaxLength="255" />
+          <Property Name="Country" Type="nvarchar" MaxLength="255" />
+        </EntityType>-->
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'LogisticsSoft.dbo.ControlRoom' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="ControlRoom">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" Nullable="false" />
+          <Property Name="xDate" Type="datetime" />
+          <Property Name="Room" Type="int" />
+          <Property Name="Remark" Type="nvarchar" MaxLength="255" />
+          <Property Name="EmpID" Type="int" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'LogisticsSoft.dbo.Copy of Attendance' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="Copy of Attendance">
+          <Key>
+            <PropertyRef Name="ID" />
+            <PropertyRef Name="EmpID" />
+            <PropertyRef Name="SubMain" />
+          </Key>
+          <Property Name="ID" Type="int" Nullable="false" />
+          <Property Name="EmpID" Type="int" Nullable="false" />
+          <Property Name="SubMain" Type="int" Nullable="false" />
+          <Property Name="1" Type="int" />
+          <Property Name="2" Type="float" />
+          <Property Name="3" Type="float" />
+          <Property Name="4" Type="float" />
+          <Property Name="5" Type="float" />
+          <Property Name="6" Type="float" />
+          <Property Name="7" Type="float" />
+          <Property Name="8" Type="float" />
+          <Property Name="9" Type="float" />
+          <Property Name="10" Type="float" />
+          <Property Name="11" Type="float" />
+          <Property Name="12" Type="float" />
+          <Property Name="13" Type="float" />
+          <Property Name="14" Type="float" />
+          <Property Name="15" Type="float" />
+          <Property Name="16" Type="float" />
+          <Property Name="17" Type="float" />
+          <Property Name="18" Type="float" />
+          <Property Name="19" Type="float" />
+          <Property Name="20" Type="float" />
+          <Property Name="21" Type="float" />
+          <Property Name="22" Type="float" />
+          <Property Name="23" Type="float" />
+          <Property Name="24" Type="float" />
+          <Property Name="25" Type="float" />
+          <Property Name="26" Type="float" />
+          <Property Name="27" Type="float" />
+          <Property Name="28" Type="float" />
+          <Property Name="29" Type="float" />
+          <Property Name="30" Type="float" />
+          <Property Name="31" Type="float" />
+          <Property Name="TotalHours" Type="float" />
+          <Property Name="TotalOverTime" Type="float" />
+          <Property Name="TotalAbsent" Type="float" />
+          <Property Name="AccommodationDeduction" Type="float" />
+          <Property Name="FoodDeduction" Type="float" />
+          <Property Name="TotalWorkingDays" Type="float" />
+          <Property Name="TotalVL" Type="float" />
+          <Property Name="TotalTransefer" Type="float" />
+          <Property Name="TotalSickLeave" Type="float" />
+          <Property Name="FridayHours" Type="float" />
+          <Property Name="Holidays" Type="float" />
+          <Property Name="ManPowerSupply" Type="nvarchar" MaxLength="255" />
+          <Property Name="CompID" Type="float" />
+          <Property Name="Encoded Absolute URL" Type="nvarchar" MaxLength="255" />
+          <Property Name="Item Type" Type="nvarchar" MaxLength="255" />
+          <Property Name="Path" Type="nvarchar" MaxLength="255" />
+          <Property Name="URL Path" Type="nvarchar" MaxLength="255" />
+          <Property Name="Workflow Instance ID" Type="nvarchar" MaxLength="255" />
+          <Property Name="File Type" Type="nvarchar" MaxLength="255" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'LogisticsSoft.dbo.CsPermission' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="CsPermission">
+          <Key>
+            <PropertyRef Name="ID" />
+            <PropertyRef Name="CsPermission" />
+          </Key>
+          <Property Name="ID" Type="int" Nullable="false" />
+          <Property Name="Project" Type="float" />
+          <Property Name="CsUser" Type="int" />
+          <Property Name="CsPermission" Type="bit" Nullable="false" />
+          <Property Name="Remark" Type="nvarchar" MaxLength="255" />
+          <Property Name="Encoded Absolute URL" Type="nvarchar" MaxLength="255" />
+          <Property Name="Item Type" Type="nvarchar" MaxLength="255" />
+          <Property Name="Path" Type="nvarchar" MaxLength="255" />
+          <Property Name="URL Path" Type="nvarchar" MaxLength="255" />
+          <Property Name="Workflow Instance ID" Type="nvarchar" MaxLength="255" />
+          <Property Name="File Type" Type="nvarchar" MaxLength="255" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'LogisticsSoft.dbo.EmpPromise' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="EmpPromise">
+          <Key>
+            <PropertyRef Name="ID" />
+            <PropertyRef Name="Active" />
+          </Key>
+          <Property Name="ID" Type="int" Nullable="false" />
+          <Property Name="EMpID" Type="int" />
+          <Property Name="MobileNo" Type="nvarchar" MaxLength="11" />
+          <Property Name="Email" Type="nvarchar(max)" />
+          <Property Name="Ext" Type="nvarchar" MaxLength="3" />
+          <Property Name="LandLine" Type="nvarchar" MaxLength="9" />
+          <Property Name="Active" Type="bit" Nullable="false" />
+          <Property Name="Remark" Type="nvarchar" MaxLength="255" />
+          <Property Name="PhoneAllowance" Type="float" />
+          <Property Name="RegDate" Type="datetime" />
+          <Property Name="RegPC" Type="nvarchar" MaxLength="255" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'LogisticsSoft.dbo.Holidays' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="Holidays">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" Nullable="false" />
+          <Property Name="year" Type="float" />
+          <Property Name="Comment" Type="nvarchar" MaxLength="255" />
+          <Property Name="Date" Type="datetime" />
+          <Property Name="Hejri" Type="nvarchar" MaxLength="255" />
+          <Property Name="Holiday" Type="nvarchar" MaxLength="255" />
+          <Property Name="Encoded Absolute URL" Type="nvarchar" MaxLength="255" />
+          <Property Name="Item Type" Type="nvarchar" MaxLength="255" />
+          <Property Name="Path" Type="nvarchar" MaxLength="255" />
+          <Property Name="URL Path" Type="nvarchar" MaxLength="255" />
+          <Property Name="Workflow Instance ID" Type="nvarchar" MaxLength="255" />
+          <Property Name="File Type" Type="nvarchar" MaxLength="255" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6013: The table/view 'LogisticsSoft.dbo.Info' does not have a primary key defined and no valid primary key could be inferred. This table/view has been excluded. To use the entity, you will need to review your schema, add the correct keys, and uncomment it.
+        <EntityType Name="Info">
+          <Property Name="Name" Type="nvarchar(max)" />
+          <Property Name="Adress" Type="nvarchar(max)" />
+          <Property Name="Logo" Type="image" />
+          <Property Name="Adress_OLE" Type="image" />
+          <Property Name="Namearab" Type="nvarchar(max)" />
+          <Property Name="EditDate" Type="datetime" />
+        </EntityType>-->
+        <EntityType Name="LabourMaster">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="bigint" Nullable="false" />
+          <Property Name="EMPNO" Type="bigint" Nullable="false" />
+          <Property Name="ManPowerSupply" Type="int" Nullable="false" />
+          <Property Name="VisaSponser" Type="nvarchar" MaxLength="255" />
+          <Property Name="Person Name" Type="nvarchar" MaxLength="255" />
+          <Property Name="Position" Type="nvarchar" MaxLength="255" />
+          <Property Name="Nationality" Type="nvarchar" MaxLength="255" />
+          <Property Name="UID No" Type="bigint" />
+          <Property Name="ResidenceVisaExpiry" Type="datetime" />
+          <Property Name="LaborCardNumber" Type="bigint" />
+          <Property Name="LaborCardExpiry" Type="datetime" />
+          <Property Name="PassportNo" Type="nvarchar" MaxLength="255" />
+          <Property Name="Passportexpiry" Type="datetime" />
+          <Property Name="EID" Type="nvarchar" MaxLength="255" />
+          <Property Name="EIDExpiry" Type="datetime" />
+          <Property Name="Status" Type="nvarchar" MaxLength="255" />
+          <Property Name="Photo" Type="nvarchar" MaxLength="255" />
+          <Property Name="Encoded Absolute URL" Type="nvarchar" MaxLength="255" />
+          <Property Name="Item Type" Type="float" />
+          <Property Name="Path" Type="nvarchar" MaxLength="255" />
+          <Property Name="URL Path" Type="nvarchar" MaxLength="255" />
+          <Property Name="Workflow Instance ID" Type="nvarchar" MaxLength="255" />
+          <Property Name="File Type" Type="nvarchar" MaxLength="255" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'LogisticsSoft.dbo.LogIn' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="LogIn">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" Nullable="false" />
+          <Property Name="UserID" Type="int" />
+          <Property Name="Bransh_Company" Type="int" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'LogisticsSoft.dbo.MainShifting' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="MainShifting">
+          <Key>
+            <PropertyRef Name="ID" />
+            <PropertyRef Name="Ssave" />
+          </Key>
+          <Property Name="ID" Type="int" Nullable="false" />
+          <Property Name="Date" Type="datetime" />
+          <Property Name="For" Type="nvarchar" MaxLength="255" />
+          <Property Name="UsirID" Type="nvarchar" MaxLength="50" />
+          <Property Name="Time" Type="datetime" />
+          <Property Name="Ref" Type="float" />
+          <Property Name="Subject" Type="nvarchar(max)" />
+          <Property Name="To" Type="nvarchar" MaxLength="255" />
+          <Property Name="Attn" Type="nvarchar" MaxLength="255" />
+          <Property Name="OldREf" Type="nvarchar" MaxLength="50" />
+          <Property Name="Attach" Type="nvarchar(max)" />
+          <Property Name="Ssave" Type="bit" Nullable="false" />
+          <Property Name="SDate" Type="datetime" />
+          <Property Name="BID" Type="float" />
+          <Property Name="Encoded Absolute URL" Type="nvarchar" MaxLength="255" />
+          <Property Name="Item Type" Type="nvarchar" MaxLength="255" />
+          <Property Name="Path" Type="nvarchar" MaxLength="255" />
+          <Property Name="URL Path" Type="nvarchar" MaxLength="255" />
+          <Property Name="Workflow Instance ID" Type="nvarchar" MaxLength="255" />
+          <Property Name="File Type" Type="nvarchar" MaxLength="255" />
+        </EntityType>
+        <EntityType Name="MainTimeSheet">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="TMonth" Type="date" Nullable="false" />
+          <Property Name="ManPowerSupplier" Type="bigint" Nullable="false" />
+          <Property Name="Project" Type="bigint" Nullable="false" />
+          <Property Name="Ref" Type="nvarchar" MaxLength="255" />
+          <Property Name="RefNo" Type="float" />
+          <Property Name="UserName" Type="nvarchar" MaxLength="255" />
+          <Property Name="PCName" Type="nvarchar" MaxLength="255" />
+          <Property Name="SAV" Type="bit" Nullable="false" />
+          <Property Name="Location" Type="nvarchar" MaxLength="255" />
+          <Property Name="Note" Type="nvarchar(max)" />
+          <Property Name="Startit" Type="bit" Nullable="false" />
+          <Property Name="Encoded Absolute URL" Type="nvarchar" MaxLength="255" />
+          <Property Name="Item Type" Type="nvarchar" MaxLength="255" />
+          <Property Name="Path" Type="nvarchar" MaxLength="255" />
+          <Property Name="URL Path" Type="nvarchar" MaxLength="255" />
+          <Property Name="Workflow Instance ID" Type="nvarchar" MaxLength="255" />
+          <Property Name="File Type" Type="nvarchar" MaxLength="255" />
+          <Property Name="TMnth" Type="int" />
+        </EntityType>
+        <EntityType Name="ManPowerSupplier">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="bigint" Nullable="false" />
+          <Property Name="ShortName" Type="nvarchar" MaxLength="255" />
+          <Property Name="Supplier" Type="nvarchar" MaxLength="255" />
+          <Property Name="SkilledRat" Type="float" />
+          <Property Name="NonSkilledRate" Type="float" />
+          <Property Name="NormalTimeUpto" Type="float" />
+          <Property Name="Crtl" Type="float" />
+          <Property Name="Encoded Absolute URL" Type="nvarchar" MaxLength="255" />
+          <Property Name="Item Type" Type="nvarchar" MaxLength="255" />
+          <Property Name="Path" Type="nvarchar" MaxLength="255" />
+          <Property Name="URL Path" Type="nvarchar" MaxLength="255" />
+          <Property Name="Workflow Instance ID" Type="nvarchar" MaxLength="255" />
+          <Property Name="File Type" Type="nvarchar" MaxLength="255" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'LogisticsSoft.dbo.Mnth' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="Mnth">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" Nullable="false" />
+          <Property Name="xDate" Type="datetime" />
+          <Property Name="TxtDate" Type="int" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'LogisticsSoft.dbo.MyCompanyInfo' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="MyCompanyInfo">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" Nullable="false" />
+          <Property Name="CompanyNameEng" Type="nvarchar" MaxLength="255" />
+          <Property Name="CompanyNameArab" Type="nvarchar" MaxLength="255" />
+          <Property Name="Tel" Type="nvarchar" MaxLength="255" />
+          <Property Name="Fax" Type="nvarchar" MaxLength="255" />
+          <Property Name="Emirates" Type="nvarchar" MaxLength="255" />
+          <Property Name="POBox" Type="nvarchar" MaxLength="255" />
+          <Property Name="Web" Type="nvarchar" MaxLength="255" />
+          <Property Name="Email" Type="nvarchar" MaxLength="255" />
+          <Property Name="Logo" Type="image" />
+          <Property Name="Data_Location" Type="nvarchar" MaxLength="255" />
+          <Property Name="Application_Title" Type="nvarchar" MaxLength="255" />
+          <Property Name="Application_Icon_Location" Type="nvarchar" MaxLength="255" />
+          <Property Name="FileName" Type="nvarchar" MaxLength="255" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'LogisticsSoft.dbo.PPP' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="PPP">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="XXX" Type="nvarchar" MaxLength="50" />
+          <Property Name="ID" Type="int" Nullable="false" />
+          <Property Name="ZZZ" Type="nvarchar" MaxLength="50" />
+          <Property Name="Field1" Type="nvarchar" MaxLength="255" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'LogisticsSoft.dbo.Pprint' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="Pprint">
+          <Key>
+            <PropertyRef Name="Printt" />
+          </Key>
+          <Property Name="Name" Type="nvarchar" MaxLength="50" />
+          <Property Name="MainName" Type="nvarchar" MaxLength="50" />
+          <Property Name="Code" Type="nvarchar" MaxLength="50" />
+          <Property Name="Printt" Type="bit" Nullable="false" />
+          <Property Name="Balance" Type="float" />
+          <Property Name="Index" Type="int" />
+        </EntityType>
+        <EntityType Name="ProjectList">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="bigint" Nullable="false" />
+          <Property Name="ProjectCode" Type="nvarchar" MaxLength="255" />
+          <Property Name="STAMP CODE" Type="nvarchar" MaxLength="255" />
+          <Property Name="INQUIRY" Type="nvarchar" MaxLength="255" />
+          <Property Name="PROJECT NAME" Type="nvarchar" MaxLength="255" />
+          <Property Name="CLIENT/MC" Type="nvarchar" MaxLength="255" />
+          <Property Name="Notice-01" Type="nvarchar" MaxLength="255" />
+          <Property Name="Notice-02" Type="nvarchar" MaxLength="255" />
+          <Property Name="SCOPE OF WORK" Type="nvarchar" MaxLength="255" />
+          <Property Name="START DATE" Type="datetime" />
+          <Property Name="END DATE" Type="datetime" />
+          <Property Name="STATUS" Type="nvarchar" MaxLength="255" />
+          <Property Name="INSURANCE STATUS" Type="datetime" />
+          <Property Name="LOCATION" Type="nvarchar" MaxLength="255" />
+          <Property Name="PM" Type="nvarchar" MaxLength="255" />
+          <Property Name="PM CONTACT" Type="nvarchar" MaxLength="255" />
+          <Property Name="Completion Certificate" Type="nvarchar" MaxLength="255" />
+          <Property Name="REMARKS" Type="nvarchar" MaxLength="255" />
+          <Property Name="Notice" Type="float" />
+          <Property Name="Source" Type="nvarchar" MaxLength="255" />
+          <Property Name="Closed" Type="bit" Nullable="false" />
+          <Property Name="Encoded Absolute URL" Type="nvarchar" MaxLength="255" />
+          <Property Name="Item Type" Type="nvarchar" MaxLength="255" />
+          <Property Name="Path" Type="nvarchar" MaxLength="255" />
+          <Property Name="URL Path" Type="nvarchar" MaxLength="255" />
+          <Property Name="Workflow Instance ID" Type="nvarchar" MaxLength="255" />
+          <Property Name="File Type" Type="nvarchar" MaxLength="255" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'LogisticsSoft.dbo.RefsList' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="RefsList">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" Nullable="false" />
+          <Property Name="Description" Type="nvarchar" MaxLength="255" />
+          <Property Name="FullPath" Type="nvarchar" MaxLength="255" />
+          <Property Name="FileName" Type="nvarchar" MaxLength="255" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'LogisticsSoft.dbo.Room_Details' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="Room_Details">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" Nullable="false" />
+          <Property Name="RoomNo" Type="nvarchar" MaxLength="255" />
+          <Property Name="Room_Capacity" Type="int" />
+          <Property Name="Remark" Type="nvarchar(max)" />
+          <Property Name="Camp" Type="int" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6013: The table/view 'LogisticsSoft.dbo.Segate_Users' does not have a primary key defined and no valid primary key could be inferred. This table/view has been excluded. To use the entity, you will need to review your schema, add the correct keys, and uncomment it.
+        <EntityType Name="Segate_Users">
+          <Property Name="Seagate Username" Type="nvarchar" MaxLength="255" />
+          <Property Name="Password" Type="nvarchar" MaxLength="255" />
+          <Property Name="Link Access 1" Type="nvarchar" MaxLength="255" />
+          <Property Name="Link Access 2" Type="nvarchar" MaxLength="255" />
+          <Property Name="Quote Size" Type="nvarchar" MaxLength="255" />
+        </EntityType>-->
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'LogisticsSoft.dbo.ShiftingFile' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="ShiftingFile">
+          <Key>
+            <PropertyRef Name="ID" />
+            <PropertyRef Name="LinkMainShift" />
+            <PropertyRef Name="Labor" />
+          </Key>
+          <Property Name="ID" Type="int" Nullable="false" />
+          <Property Name="LinkMainShift" Type="int" Nullable="false" />
+          <Property Name="Labor" Type="float" Nullable="false" />
+          <Property Name="EffectDate" Type="datetime" />
+          <Property Name="From" Type="nvarchar" MaxLength="50" />
+          <Property Name="To" Type="nvarchar" MaxLength="50" />
+          <Property Name="Profession" Type="nvarchar" MaxLength="255" />
+          <Property Name="Remarks" Type="nvarchar(max)" />
+          <Property Name="Encoded Absolute URL" Type="nvarchar" MaxLength="255" />
+          <Property Name="Item Type" Type="nvarchar" MaxLength="255" />
+          <Property Name="Path" Type="nvarchar" MaxLength="255" />
+          <Property Name="URL Path" Type="nvarchar" MaxLength="255" />
+          <Property Name="Workflow Instance ID" Type="nvarchar" MaxLength="255" />
+          <Property Name="File Type" Type="nvarchar" MaxLength="255" />
+          <Property Name="Room" Type="int" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'LogisticsSoft.dbo.Switchboard Items' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="Switchboard Items">
+          <Key>
+            <PropertyRef Name="SwitchboardID" />
+            <PropertyRef Name="ItemNumber" />
+          </Key>
+          <Property Name="SwitchboardID" Type="int" Nullable="false" />
+          <Property Name="ItemNumber" Type="smallint" Nullable="false" />
+          <Property Name="ItemText" Type="nvarchar" MaxLength="255" />
+          <Property Name="Command" Type="smallint" />
+          <Property Name="Argument" Type="nvarchar" MaxLength="255" />
+          <Property Name="ItemText_ara" Type="nvarchar" MaxLength="255" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'LogisticsSoft.dbo.tblUser' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="tblUser">
+          <Key>
+            <PropertyRef Name="ID" />
+            <PropertyRef Name="UserName" />
+          </Key>
+          <Property Name="ID" Type="int" Nullable="false" />
+          <Property Name="UserID" Type="nvarchar" MaxLength="255" />
+          <Property Name="UserName" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Password" Type="nvarchar" MaxLength="255" />
+          <Property Name="UserType" Type="nvarchar" MaxLength="255" />
+          <Property Name="Email" Type="nvarchar" MaxLength="255" />
+          <Property Name="ContactNo" Type="nvarchar" MaxLength="255" />
+          <Property Name="PCSerila" Type="nvarchar" MaxLength="255" />
+          <Property Name="PCModel" Type="nvarchar" MaxLength="255" />
+          <Property Name="Hint" Type="nvarchar" MaxLength="255" />
+          <Property Name="Bransh_Company" Type="float" />
+          <Property Name="Encoded Absolute URL" Type="nvarchar" MaxLength="255" />
+          <Property Name="Item Type" Type="nvarchar" MaxLength="255" />
+          <Property Name="Path" Type="nvarchar" MaxLength="255" />
+          <Property Name="URL Path" Type="nvarchar" MaxLength="255" />
+          <Property Name="Workflow Instance ID" Type="nvarchar" MaxLength="255" />
+          <Property Name="File Type" Type="nvarchar" MaxLength="255" />
+          <Property Name="AnyDesk_Address" Type="nvarchar" MaxLength="255" />
+          <Property Name="AnyDesk_Password" Type="nvarchar" MaxLength="255" />
+          <Property Name="ShareFolderUser" Type="nvarchar" MaxLength="255" />
+          <Property Name="ShareFolderPassword" Type="nvarchar" MaxLength="255" />
+          <Property Name="RemoteAccessUser" Type="nvarchar" MaxLength="255" />
+          <Property Name="RemoteAccessPassword" Type="nvarchar" MaxLength="255" />
+          <Property Name="ShareFolderPassword2" Type="nvarchar" MaxLength="255" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'LogisticsSoft.dbo.USER_ROLES' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="USER_ROLES">
+          <Key>
+            <PropertyRef Name="ROLE_ID" />
+            <PropertyRef Name="USER_ID" />
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ROLE_ID" Type="int" Nullable="false" />
+          <Property Name="USER_ID" Type="int" Nullable="false" />
+          <Property Name="ID" Type="int" Nullable="false" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'LogisticsSoft.dbo.UserInfo' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="UserInfo">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" Nullable="false" />
+          <Property Name="Name" Type="nvarchar" MaxLength="255" />
+          <Property Name="About me" Type="nvarchar(max)" />
+          <Property Name="Title" Type="nvarchar" MaxLength="255" />
+          <Property Name="Department" Type="nvarchar" MaxLength="255" />
+          <Property Name="Attachments" Type="nvarchar(max)" />
+          <Property Name="Encoded Absolute URL" Type="nvarchar" MaxLength="255" />
+          <Property Name="Item Type" Type="nvarchar" MaxLength="255" />
+          <Property Name="Path" Type="nvarchar" MaxLength="255" />
+          <Property Name="URL Path" Type="nvarchar" MaxLength="255" />
+          <Property Name="Workflow Instance ID" Type="nvarchar" MaxLength="255" />
+          <Property Name="File Type" Type="nvarchar" MaxLength="255" />
+        </EntityType>
+        <EntityType Name="usernames">
+          <Key>
+            <PropertyRef Name="aspnet_uid" />
+          </Key>
+          <Property Name="full_name" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="aspnet_uid" Type="nvarchar" MaxLength="128" Nullable="false" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6013: The table/view 'LogisticsSoft.dbo.Users_Email' does not have a primary key defined and no valid primary key could be inferred. This table/view has been excluded. To use the entity, you will need to review your schema, add the correct keys, and uncomment it.
+        <EntityType Name="Users_Email">
+          <Property Name="Display Name" Type="nvarchar" MaxLength="255" />
+          <Property Name="Database" Type="nvarchar" MaxLength="255" />
+          <Property Name="Alias" Type="nvarchar" MaxLength="255" />
+          <Property Name="Organizational Unit" Type="nvarchar" MaxLength="255" />
+          <Property Name="Recipient Type Details" Type="nvarchar" MaxLength="255" />
+          <Property Name="PrimarySMTP_Address" Type="nvarchar" MaxLength="255" />
+          <Property Name="EmpId" Type="float" />
+        </EntityType>-->
+        <Association Name="FK_Attendance_ToLabourMaster">
+          <End Role="LabourMaster" Type="Self.LabourMaster" Multiplicity="1" />
+          <End Role="Attendance" Type="Self.Attendance" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="LabourMaster">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="Attendance">
+              <PropertyRef Name="EmpID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Attendance_ToMainTimeSheet">
+          <End Role="MainTimeSheet" Type="Self.MainTimeSheet" Multiplicity="1" />
+          <End Role="Attendance" Type="Self.Attendance" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="MainTimeSheet">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="Attendance">
+              <PropertyRef Name="SubMain" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_dbo_AspNetUserClaims_dbo_AspNetUsers_UserId">
+          <End Role="AspNetUsers" Type="Self.AspNetUsers" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="AspNetUserClaims" Type="Self.AspNetUserClaims" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AspNetUsers">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="AspNetUserClaims">
+              <PropertyRef Name="UserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_dbo_AspNetUserLogins_dbo_AspNetUsers_UserId">
+          <End Role="AspNetUsers" Type="Self.AspNetUsers" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="AspNetUserLogins" Type="Self.AspNetUserLogins" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AspNetUsers">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="AspNetUserLogins">
+              <PropertyRef Name="UserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_dbo_AspNetUserRoles_dbo_AspNetRoles_RoleId">
+          <End Role="AspNetRoles" Type="Self.AspNetRoles" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="AspNetUserRoles" Type="Self.AspNetUserRoles" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AspNetRoles">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="AspNetUserRoles">
+              <PropertyRef Name="RoleId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_dbo_AspNetUserRoles_dbo_AspNetUsers_UserId">
+          <End Role="AspNetUsers" Type="Self.AspNetUsers" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="AspNetUserRoles" Type="Self.AspNetUserRoles" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AspNetUsers">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="AspNetUserRoles">
+              <PropertyRef Name="UserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_MainTimeSheet_ToTable">
+          <End Role="ManPowerSupplier" Type="Self.ManPowerSupplier" Multiplicity="1" />
+          <End Role="MainTimeSheet" Type="Self.MainTimeSheet" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ManPowerSupplier">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="MainTimeSheet">
+              <PropertyRef Name="ManPowerSupplier" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_MainTimeSheet_ToTable_1">
+          <End Role="ProjectList" Type="Self.ProjectList" Multiplicity="1" />
+          <End Role="MainTimeSheet" Type="Self.MainTimeSheet" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ProjectList">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="MainTimeSheet">
+              <PropertyRef Name="Project" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="LogisticsSoftModelStoreContainer">
+          <EntitySet Name="__MigrationHistory" EntityType="Self.__MigrationHistory" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="AspNetRoles" EntityType="Self.AspNetRoles" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="AspNetUserClaims" EntityType="Self.AspNetUserClaims" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="AspNetUserLogins" EntityType="Self.AspNetUserLogins" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="AspNetUserRoles" EntityType="Self.AspNetUserRoles" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="AspNetUsers" EntityType="Self.AspNetUsers" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Attendance" EntityType="Self.Attendance" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="AttendanceFreq" EntityType="Self.AttendanceFreq" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Camp_Details" EntityType="Self.Camp_Details" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="LabourMaster" EntityType="Self.LabourMaster" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="MainTimeSheet" EntityType="Self.MainTimeSheet" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ManPowerSupplier" EntityType="Self.ManPowerSupplier" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ProjectList" EntityType="Self.ProjectList" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="usernames" EntityType="Self.usernames" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ControlRoom" EntityType="Self.ControlRoom" store:Type="Tables" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [ControlRoom].[ID] AS [ID], 
+    [ControlRoom].[xDate] AS [xDate], 
+    [ControlRoom].[Room] AS [Room], 
+    [ControlRoom].[Remark] AS [Remark], 
+    [ControlRoom].[EmpID] AS [EmpID]
+    FROM [dbo].[ControlRoom] AS [ControlRoom]</DefiningQuery>
+          </EntitySet>
+          <EntitySet Name="Copy of Attendance" EntityType="Self.Copy of Attendance" store:Type="Tables" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [Copy of Attendance].[ID] AS [ID], 
+    [Copy of Attendance].[EmpID] AS [EmpID], 
+    [Copy of Attendance].[SubMain] AS [SubMain], 
+    [Copy of Attendance].[1] AS [1], 
+    [Copy of Attendance].[2] AS [2], 
+    [Copy of Attendance].[3] AS [3], 
+    [Copy of Attendance].[4] AS [4], 
+    [Copy of Attendance].[5] AS [5], 
+    [Copy of Attendance].[6] AS [6], 
+    [Copy of Attendance].[7] AS [7], 
+    [Copy of Attendance].[8] AS [8], 
+    [Copy of Attendance].[9] AS [9], 
+    [Copy of Attendance].[10] AS [10], 
+    [Copy of Attendance].[11] AS [11], 
+    [Copy of Attendance].[12] AS [12], 
+    [Copy of Attendance].[13] AS [13], 
+    [Copy of Attendance].[14] AS [14], 
+    [Copy of Attendance].[15] AS [15], 
+    [Copy of Attendance].[16] AS [16], 
+    [Copy of Attendance].[17] AS [17], 
+    [Copy of Attendance].[18] AS [18], 
+    [Copy of Attendance].[19] AS [19], 
+    [Copy of Attendance].[20] AS [20], 
+    [Copy of Attendance].[21] AS [21], 
+    [Copy of Attendance].[22] AS [22], 
+    [Copy of Attendance].[23] AS [23], 
+    [Copy of Attendance].[24] AS [24], 
+    [Copy of Attendance].[25] AS [25], 
+    [Copy of Attendance].[26] AS [26], 
+    [Copy of Attendance].[27] AS [27], 
+    [Copy of Attendance].[28] AS [28], 
+    [Copy of Attendance].[29] AS [29], 
+    [Copy of Attendance].[30] AS [30], 
+    [Copy of Attendance].[31] AS [31], 
+    [Copy of Attendance].[TotalHours] AS [TotalHours], 
+    [Copy of Attendance].[TotalOverTime] AS [TotalOverTime], 
+    [Copy of Attendance].[TotalAbsent] AS [TotalAbsent], 
+    [Copy of Attendance].[AccommodationDeduction] AS [AccommodationDeduction], 
+    [Copy of Attendance].[FoodDeduction] AS [FoodDeduction], 
+    [Copy of Attendance].[TotalWorkingDays] AS [TotalWorkingDays], 
+    [Copy of Attendance].[TotalVL] AS [TotalVL], 
+    [Copy of Attendance].[TotalTransefer] AS [TotalTransefer], 
+    [Copy of Attendance].[TotalSickLeave] AS [TotalSickLeave], 
+    [Copy of Attendance].[FridayHours] AS [FridayHours], 
+    [Copy of Attendance].[Holidays] AS [Holidays], 
+    [Copy of Attendance].[ManPowerSupply] AS [ManPowerSupply], 
+    [Copy of Attendance].[CompID] AS [CompID], 
+    [Copy of Attendance].[Encoded Absolute URL] AS [Encoded Absolute URL], 
+    [Copy of Attendance].[Item Type] AS [Item Type], 
+    [Copy of Attendance].[Path] AS [Path], 
+    [Copy of Attendance].[URL Path] AS [URL Path], 
+    [Copy of Attendance].[Workflow Instance ID] AS [Workflow Instance ID], 
+    [Copy of Attendance].[File Type] AS [File Type]
+    FROM [dbo].[Copy of Attendance] AS [Copy of Attendance]</DefiningQuery>
+          </EntitySet>
+          <EntitySet Name="CsPermission" EntityType="Self.CsPermission" store:Type="Tables" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [CsPermission].[ID] AS [ID], 
+    [CsPermission].[Project] AS [Project], 
+    [CsPermission].[CsUser] AS [CsUser], 
+    [CsPermission].[CsPermission] AS [CsPermission], 
+    [CsPermission].[Remark] AS [Remark], 
+    [CsPermission].[Encoded Absolute URL] AS [Encoded Absolute URL], 
+    [CsPermission].[Item Type] AS [Item Type], 
+    [CsPermission].[Path] AS [Path], 
+    [CsPermission].[URL Path] AS [URL Path], 
+    [CsPermission].[Workflow Instance ID] AS [Workflow Instance ID], 
+    [CsPermission].[File Type] AS [File Type]
+    FROM [dbo].[CsPermission] AS [CsPermission]</DefiningQuery>
+          </EntitySet>
+          <EntitySet Name="EmpPromise" EntityType="Self.EmpPromise" store:Type="Tables" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [EmpPromise].[ID] AS [ID], 
+    [EmpPromise].[EMpID] AS [EMpID], 
+    [EmpPromise].[MobileNo] AS [MobileNo], 
+    [EmpPromise].[Email] AS [Email], 
+    [EmpPromise].[Ext] AS [Ext], 
+    [EmpPromise].[LandLine] AS [LandLine], 
+    [EmpPromise].[Active] AS [Active], 
+    [EmpPromise].[Remark] AS [Remark], 
+    [EmpPromise].[PhoneAllowance] AS [PhoneAllowance], 
+    [EmpPromise].[RegDate] AS [RegDate], 
+    [EmpPromise].[RegPC] AS [RegPC]
+    FROM [dbo].[EmpPromise] AS [EmpPromise]</DefiningQuery>
+          </EntitySet>
+          <EntitySet Name="Holidays" EntityType="Self.Holidays" store:Type="Tables" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [Holidays].[ID] AS [ID], 
+    [Holidays].[year] AS [year], 
+    [Holidays].[Comment] AS [Comment], 
+    [Holidays].[Date] AS [Date], 
+    [Holidays].[Hejri] AS [Hejri], 
+    [Holidays].[Holiday] AS [Holiday], 
+    [Holidays].[Encoded Absolute URL] AS [Encoded Absolute URL], 
+    [Holidays].[Item Type] AS [Item Type], 
+    [Holidays].[Path] AS [Path], 
+    [Holidays].[URL Path] AS [URL Path], 
+    [Holidays].[Workflow Instance ID] AS [Workflow Instance ID], 
+    [Holidays].[File Type] AS [File Type]
+    FROM [dbo].[Holidays] AS [Holidays]</DefiningQuery>
+          </EntitySet>
+          <EntitySet Name="LogIn" EntityType="Self.LogIn" store:Type="Tables" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [LogIn].[ID] AS [ID], 
+    [LogIn].[UserID] AS [UserID], 
+    [LogIn].[Bransh_Company] AS [Bransh_Company]
+    FROM [dbo].[LogIn] AS [LogIn]</DefiningQuery>
+          </EntitySet>
+          <EntitySet Name="MainShifting" EntityType="Self.MainShifting" store:Type="Tables" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [MainShifting].[ID] AS [ID], 
+    [MainShifting].[Date] AS [Date], 
+    [MainShifting].[For] AS [For], 
+    [MainShifting].[UsirID] AS [UsirID], 
+    [MainShifting].[Time] AS [Time], 
+    [MainShifting].[Ref] AS [Ref], 
+    [MainShifting].[Subject] AS [Subject], 
+    [MainShifting].[To] AS [To], 
+    [MainShifting].[Attn] AS [Attn], 
+    [MainShifting].[OldREf] AS [OldREf], 
+    [MainShifting].[Attach] AS [Attach], 
+    [MainShifting].[Ssave] AS [Ssave], 
+    [MainShifting].[SDate] AS [SDate], 
+    [MainShifting].[BID] AS [BID], 
+    [MainShifting].[Encoded Absolute URL] AS [Encoded Absolute URL], 
+    [MainShifting].[Item Type] AS [Item Type], 
+    [MainShifting].[Path] AS [Path], 
+    [MainShifting].[URL Path] AS [URL Path], 
+    [MainShifting].[Workflow Instance ID] AS [Workflow Instance ID], 
+    [MainShifting].[File Type] AS [File Type]
+    FROM [dbo].[MainShifting] AS [MainShifting]</DefiningQuery>
+          </EntitySet>
+          <EntitySet Name="Mnth" EntityType="Self.Mnth" store:Type="Tables" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [Mnth].[ID] AS [ID], 
+    [Mnth].[xDate] AS [xDate], 
+    [Mnth].[TxtDate] AS [TxtDate]
+    FROM [dbo].[Mnth] AS [Mnth]</DefiningQuery>
+          </EntitySet>
+          <EntitySet Name="MyCompanyInfo" EntityType="Self.MyCompanyInfo" store:Type="Tables" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [MyCompanyInfo].[ID] AS [ID], 
+    [MyCompanyInfo].[CompanyNameEng] AS [CompanyNameEng], 
+    [MyCompanyInfo].[CompanyNameArab] AS [CompanyNameArab], 
+    [MyCompanyInfo].[Tel] AS [Tel], 
+    [MyCompanyInfo].[Fax] AS [Fax], 
+    [MyCompanyInfo].[Emirates] AS [Emirates], 
+    [MyCompanyInfo].[POBox] AS [POBox], 
+    [MyCompanyInfo].[Web] AS [Web], 
+    [MyCompanyInfo].[Email] AS [Email], 
+    [MyCompanyInfo].[Logo] AS [Logo], 
+    [MyCompanyInfo].[Data_Location] AS [Data_Location], 
+    [MyCompanyInfo].[Application_Title] AS [Application_Title], 
+    [MyCompanyInfo].[Application_Icon_Location] AS [Application_Icon_Location], 
+    [MyCompanyInfo].[FileName] AS [FileName]
+    FROM [dbo].[MyCompanyInfo] AS [MyCompanyInfo]</DefiningQuery>
+          </EntitySet>
+          <EntitySet Name="PPP" EntityType="Self.PPP" store:Type="Tables" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [PPP].[XXX] AS [XXX], 
+    [PPP].[ID] AS [ID], 
+    [PPP].[ZZZ] AS [ZZZ], 
+    [PPP].[Field1] AS [Field1]
+    FROM [dbo].[PPP] AS [PPP]</DefiningQuery>
+          </EntitySet>
+          <EntitySet Name="Pprint" EntityType="Self.Pprint" store:Type="Tables" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [Pprint].[Name] AS [Name], 
+    [Pprint].[MainName] AS [MainName], 
+    [Pprint].[Code] AS [Code], 
+    [Pprint].[Printt] AS [Printt], 
+    [Pprint].[Balance] AS [Balance], 
+    [Pprint].[Index] AS [Index]
+    FROM [dbo].[Pprint] AS [Pprint]</DefiningQuery>
+          </EntitySet>
+          <EntitySet Name="RefsList" EntityType="Self.RefsList" store:Type="Tables" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [RefsList].[ID] AS [ID], 
+    [RefsList].[Description] AS [Description], 
+    [RefsList].[FullPath] AS [FullPath], 
+    [RefsList].[FileName] AS [FileName]
+    FROM [dbo].[RefsList] AS [RefsList]</DefiningQuery>
+          </EntitySet>
+          <EntitySet Name="Room_Details" EntityType="Self.Room_Details" store:Type="Tables" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [Room_Details].[ID] AS [ID], 
+    [Room_Details].[RoomNo] AS [RoomNo], 
+    [Room_Details].[Room_Capacity] AS [Room_Capacity], 
+    [Room_Details].[Remark] AS [Remark], 
+    [Room_Details].[Camp] AS [Camp]
+    FROM [dbo].[Room_Details] AS [Room_Details]</DefiningQuery>
+          </EntitySet>
+          <EntitySet Name="ShiftingFile" EntityType="Self.ShiftingFile" store:Type="Tables" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [ShiftingFile].[ID] AS [ID], 
+    [ShiftingFile].[LinkMainShift] AS [LinkMainShift], 
+    [ShiftingFile].[Labor] AS [Labor], 
+    [ShiftingFile].[EffectDate] AS [EffectDate], 
+    [ShiftingFile].[From] AS [From], 
+    [ShiftingFile].[To] AS [To], 
+    [ShiftingFile].[Profession] AS [Profession], 
+    [ShiftingFile].[Remarks] AS [Remarks], 
+    [ShiftingFile].[Encoded Absolute URL] AS [Encoded Absolute URL], 
+    [ShiftingFile].[Item Type] AS [Item Type], 
+    [ShiftingFile].[Path] AS [Path], 
+    [ShiftingFile].[URL Path] AS [URL Path], 
+    [ShiftingFile].[Workflow Instance ID] AS [Workflow Instance ID], 
+    [ShiftingFile].[File Type] AS [File Type], 
+    [ShiftingFile].[Room] AS [Room]
+    FROM [dbo].[ShiftingFile] AS [ShiftingFile]</DefiningQuery>
+          </EntitySet>
+          <EntitySet Name="Switchboard Items" EntityType="Self.Switchboard Items" store:Type="Tables" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [Switchboard Items].[SwitchboardID] AS [SwitchboardID], 
+    [Switchboard Items].[ItemNumber] AS [ItemNumber], 
+    [Switchboard Items].[ItemText] AS [ItemText], 
+    [Switchboard Items].[Command] AS [Command], 
+    [Switchboard Items].[Argument] AS [Argument], 
+    [Switchboard Items].[ItemText_ara] AS [ItemText_ara]
+    FROM [dbo].[Switchboard Items] AS [Switchboard Items]</DefiningQuery>
+          </EntitySet>
+          <EntitySet Name="tblUser" EntityType="Self.tblUser" store:Type="Tables" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [tblUser].[ID] AS [ID], 
+    [tblUser].[UserID] AS [UserID], 
+    [tblUser].[UserName] AS [UserName], 
+    [tblUser].[Password] AS [Password], 
+    [tblUser].[UserType] AS [UserType], 
+    [tblUser].[Email] AS [Email], 
+    [tblUser].[ContactNo] AS [ContactNo], 
+    [tblUser].[PCSerila] AS [PCSerila], 
+    [tblUser].[PCModel] AS [PCModel], 
+    [tblUser].[Hint] AS [Hint], 
+    [tblUser].[Bransh_Company] AS [Bransh_Company], 
+    [tblUser].[Encoded Absolute URL] AS [Encoded Absolute URL], 
+    [tblUser].[Item Type] AS [Item Type], 
+    [tblUser].[Path] AS [Path], 
+    [tblUser].[URL Path] AS [URL Path], 
+    [tblUser].[Workflow Instance ID] AS [Workflow Instance ID], 
+    [tblUser].[File Type] AS [File Type], 
+    [tblUser].[AnyDesk_Address] AS [AnyDesk_Address], 
+    [tblUser].[AnyDesk_Password] AS [AnyDesk_Password], 
+    [tblUser].[ShareFolderUser] AS [ShareFolderUser], 
+    [tblUser].[ShareFolderPassword] AS [ShareFolderPassword], 
+    [tblUser].[RemoteAccessUser] AS [RemoteAccessUser], 
+    [tblUser].[RemoteAccessPassword] AS [RemoteAccessPassword], 
+    [tblUser].[ShareFolderPassword2] AS [ShareFolderPassword2]
+    FROM [dbo].[tblUser] AS [tblUser]</DefiningQuery>
+          </EntitySet>
+          <EntitySet Name="USER_ROLES" EntityType="Self.USER_ROLES" store:Type="Tables" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [USER_ROLES].[ROLE_ID] AS [ROLE_ID], 
+    [USER_ROLES].[USER_ID] AS [USER_ID], 
+    [USER_ROLES].[ID] AS [ID]
+    FROM [dbo].[USER_ROLES] AS [USER_ROLES]</DefiningQuery>
+          </EntitySet>
+          <EntitySet Name="UserInfo" EntityType="Self.UserInfo" store:Type="Tables" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [UserInfo].[ID] AS [ID], 
+    [UserInfo].[Name] AS [Name], 
+    [UserInfo].[About me] AS [About me], 
+    [UserInfo].[Title] AS [Title], 
+    [UserInfo].[Department] AS [Department], 
+    [UserInfo].[Attachments] AS [Attachments], 
+    [UserInfo].[Encoded Absolute URL] AS [Encoded Absolute URL], 
+    [UserInfo].[Item Type] AS [Item Type], 
+    [UserInfo].[Path] AS [Path], 
+    [UserInfo].[URL Path] AS [URL Path], 
+    [UserInfo].[Workflow Instance ID] AS [Workflow Instance ID], 
+    [UserInfo].[File Type] AS [File Type]
+    FROM [dbo].[UserInfo] AS [UserInfo]</DefiningQuery>
+          </EntitySet>
+          <AssociationSet Name="FK_Attendance_ToLabourMaster" Association="Self.FK_Attendance_ToLabourMaster">
+            <End Role="LabourMaster" EntitySet="LabourMaster" />
+            <End Role="Attendance" EntitySet="Attendance" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Attendance_ToMainTimeSheet" Association="Self.FK_Attendance_ToMainTimeSheet">
+            <End Role="MainTimeSheet" EntitySet="MainTimeSheet" />
+            <End Role="Attendance" EntitySet="Attendance" />
+          </AssociationSet>
+          <AssociationSet Name="FK_dbo_AspNetUserClaims_dbo_AspNetUsers_UserId" Association="Self.FK_dbo_AspNetUserClaims_dbo_AspNetUsers_UserId">
+            <End Role="AspNetUsers" EntitySet="AspNetUsers" />
+            <End Role="AspNetUserClaims" EntitySet="AspNetUserClaims" />
+          </AssociationSet>
+          <AssociationSet Name="FK_dbo_AspNetUserLogins_dbo_AspNetUsers_UserId" Association="Self.FK_dbo_AspNetUserLogins_dbo_AspNetUsers_UserId">
+            <End Role="AspNetUsers" EntitySet="AspNetUsers" />
+            <End Role="AspNetUserLogins" EntitySet="AspNetUserLogins" />
+          </AssociationSet>
+          <AssociationSet Name="FK_dbo_AspNetUserRoles_dbo_AspNetRoles_RoleId" Association="Self.FK_dbo_AspNetUserRoles_dbo_AspNetRoles_RoleId">
+            <End Role="AspNetRoles" EntitySet="AspNetRoles" />
+            <End Role="AspNetUserRoles" EntitySet="AspNetUserRoles" />
+          </AssociationSet>
+          <AssociationSet Name="FK_dbo_AspNetUserRoles_dbo_AspNetUsers_UserId" Association="Self.FK_dbo_AspNetUserRoles_dbo_AspNetUsers_UserId">
+            <End Role="AspNetUsers" EntitySet="AspNetUsers" />
+            <End Role="AspNetUserRoles" EntitySet="AspNetUserRoles" />
+          </AssociationSet>
+          <AssociationSet Name="FK_MainTimeSheet_ToTable" Association="Self.FK_MainTimeSheet_ToTable">
+            <End Role="ManPowerSupplier" EntitySet="ManPowerSupplier" />
+            <End Role="MainTimeSheet" EntitySet="MainTimeSheet" />
+          </AssociationSet>
+          <AssociationSet Name="FK_MainTimeSheet_ToTable_1" Association="Self.FK_MainTimeSheet_ToTable_1">
+            <End Role="ProjectList" EntitySet="ProjectList" />
+            <End Role="MainTimeSheet" EntitySet="MainTimeSheet" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="LogisticsSoftModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="C__MigrationHistory">
+          <Key>
+            <PropertyRef Name="MigrationId" />
+            <PropertyRef Name="ContextKey" />
+          </Key>
+          <Property Name="MigrationId" Type="String" MaxLength="150" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="ContextKey" Type="String" MaxLength="300" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Model" Type="Binary" MaxLength="Max" FixedLength="false" Nullable="false" />
+          <Property Name="ProductVersion" Type="String" MaxLength="32" FixedLength="false" Unicode="true" Nullable="false" />
+        </EntityType>
+        <EntityType Name="AspNetRole">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Name" Type="String" MaxLength="256" FixedLength="false" Unicode="true" Nullable="false" />
+          <NavigationProperty Name="AspNetUsers" Relationship="Self.AspNetUserRoles" FromRole="AspNetRoles" ToRole="AspNetUsers" />
+        </EntityType>
+        <EntityType Name="AspNetUserClaim">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="UserId" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="ClaimType" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="ClaimValue" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="AspNetUser" Relationship="Self.FK_dbo_AspNetUserClaims_dbo_AspNetUsers_UserId" FromRole="AspNetUserClaims" ToRole="AspNetUsers" />
+        </EntityType>
+        <EntityType Name="AspNetUserLogin">
+          <Key>
+            <PropertyRef Name="LoginProvider" />
+            <PropertyRef Name="ProviderKey" />
+            <PropertyRef Name="UserId" />
+          </Key>
+          <Property Name="LoginProvider" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="ProviderKey" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="UserId" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
+          <NavigationProperty Name="AspNetUser" Relationship="Self.FK_dbo_AspNetUserLogins_dbo_AspNetUsers_UserId" FromRole="AspNetUserLogins" ToRole="AspNetUsers" />
+        </EntityType>
+        <EntityType Name="AspNetUser">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="csid" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Email" Type="String" MaxLength="256" FixedLength="false" Unicode="true" />
+          <Property Name="EmailConfirmed" Type="Boolean" Nullable="false" />
+          <Property Name="PasswordHash" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="SecurityStamp" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="PhoneNumber" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="PhoneNumberConfirmed" Type="Boolean" Nullable="false" />
+          <Property Name="TwoFactorEnabled" Type="Boolean" Nullable="false" />
+          <Property Name="LockoutEndDateUtc" Type="DateTime" Precision="3" />
+          <Property Name="LockoutEnabled" Type="Boolean" Nullable="false" />
+          <Property Name="AccessFailedCount" Type="Int32" Nullable="false" />
+          <Property Name="UserName" Type="String" MaxLength="256" FixedLength="false" Unicode="true" Nullable="false" />
+          <NavigationProperty Name="AspNetUserClaims" Relationship="Self.FK_dbo_AspNetUserClaims_dbo_AspNetUsers_UserId" FromRole="AspNetUsers" ToRole="AspNetUserClaims" />
+          <NavigationProperty Name="AspNetUserLogins" Relationship="Self.FK_dbo_AspNetUserLogins_dbo_AspNetUsers_UserId" FromRole="AspNetUsers" ToRole="AspNetUserLogins" />
+          <NavigationProperty Name="AspNetRoles" Relationship="Self.AspNetUserRoles" FromRole="AspNetUsers" ToRole="AspNetRoles" />
+        </EntityType>
+        <EntityType Name="Attendance">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="EmpID" Type="Int64" Nullable="false" />
+          <Property Name="SubMain" Type="Int64" Nullable="false" />
+          <Property Name="C1" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="C2" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="C3" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="C4" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="C5" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="C6" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="C7" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="C8" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="C9" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="C10" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="C11" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="C12" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="C13" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="C14" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="C15" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="C16" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="C17" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="C18" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="C19" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="C20" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="C21" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="C22" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="C23" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="C24" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="C25" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="C26" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="C27" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="C28" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="C29" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="C30" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="C31" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="TotalHours" Type="Int64" />
+          <Property Name="TotalOverTime" Type="Int64" />
+          <Property Name="TotalAbsent" Type="Int64" />
+          <Property Name="AccommodationDeduction" Type="Int64" />
+          <Property Name="FoodDeduction" Type="Int64" />
+          <Property Name="TotalWorkingDays" Type="Int64" />
+          <Property Name="TotalVL" Type="Int64" />
+          <Property Name="TotalTransefer" Type="Int64" />
+          <Property Name="TotalSickLeave" Type="Int64" />
+          <Property Name="FridayHours" Type="Int64" />
+          <Property Name="Holidays" Type="Int64" />
+          <Property Name="ManPowerSupply" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="CompID" Type="Int64" />
+          <Property Name="Encoded_Absolute_URL" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Item_Type" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Path" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="URL_Path" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Workflow_Instance_ID" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="File_Type" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="xABST" Type="Int64" />
+          <Property Name="nABST" Type="Int64" />
+          <Property Name="xOT" Type="Int64" />
+          <Property Name="nnOT" Type="Int64" />
+          <NavigationProperty Name="LabourMaster" Relationship="Self.FK_Attendance_ToLabourMaster" FromRole="Attendance" ToRole="LabourMaster" />
+          <NavigationProperty Name="MainTimeSheet" Relationship="Self.FK_Attendance_ToMainTimeSheet" FromRole="Attendance" ToRole="MainTimeSheet" />
+        </EntityType>
+        <EntityType Name="AttendanceFreq">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" />
+          <Property Name="Description" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Dec" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Encoded_Absolute_URL" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Item_Type" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Path" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="URL_Path" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Workflow_Instance_ID" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="File_Type" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="Camp_Details">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" />
+          <Property Name="Camp_Name" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Camp_Location" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Start" Type="DateTime" Precision="3" />
+          <Property Name="End" Type="DateTime" Precision="3" />
+          <Property Name="Active" Type="Boolean" Nullable="false" />
+          <Property Name="Remark" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="LabourMaster">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int64" Nullable="false" />
+          <Property Name="EMPNO" Type="Int64" Nullable="false" />
+          <Property Name="ManPowerSupply" Type="Int32" Nullable="false" />
+          <Property Name="VisaSponser" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Person_Name" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Position" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Nationality" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="UID_No" Type="Int64" />
+          <Property Name="ResidenceVisaExpiry" Type="DateTime" Precision="3" />
+          <Property Name="LaborCardNumber" Type="Int64" />
+          <Property Name="LaborCardExpiry" Type="DateTime" Precision="3" />
+          <Property Name="PassportNo" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Passportexpiry" Type="DateTime" Precision="3" />
+          <Property Name="EID" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="EIDExpiry" Type="DateTime" Precision="3" />
+          <Property Name="Status" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Photo" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Encoded_Absolute_URL" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Item_Type" Type="Double" />
+          <Property Name="Path" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="URL_Path" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Workflow_Instance_ID" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="File_Type" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="Attendances" Relationship="Self.FK_Attendance_ToLabourMaster" FromRole="LabourMaster" ToRole="Attendance" />
+        </EntityType>
+        <EntityType Name="MainTimeSheet">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="TMonth" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="ManPowerSupplier" Type="Int64" Nullable="false" />
+          <Property Name="Project" Type="Int64" Nullable="false" />
+          <Property Name="Ref" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="RefNo" Type="Double" />
+          <Property Name="UserName" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="PCName" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="SAV" Type="Boolean" Nullable="false" />
+          <Property Name="Location" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Note" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Startit" Type="Boolean" Nullable="false" />
+          <Property Name="Encoded_Absolute_URL" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Item_Type" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Path" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="URL_Path" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Workflow_Instance_ID" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="File_Type" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="TMnth" Type="Int32" />
+          <NavigationProperty Name="Attendances" Relationship="Self.FK_Attendance_ToMainTimeSheet" FromRole="MainTimeSheet" ToRole="Attendance" />
+          <NavigationProperty Name="ManPowerSupplier1" Relationship="Self.FK_MainTimeSheet_ToTable" FromRole="MainTimeSheet" ToRole="ManPowerSupplier" />
+          <NavigationProperty Name="ProjectList" Relationship="Self.FK_MainTimeSheet_ToTable_1" FromRole="MainTimeSheet" ToRole="ProjectList" />
+        </EntityType>
+        <EntityType Name="ManPowerSupplier">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int64" Nullable="false" />
+          <Property Name="ShortName" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Supplier" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="SkilledRat" Type="Double" />
+          <Property Name="NonSkilledRate" Type="Double" />
+          <Property Name="NormalTimeUpto" Type="Double" />
+          <Property Name="Crtl" Type="Double" />
+          <Property Name="Encoded_Absolute_URL" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Item_Type" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Path" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="URL_Path" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Workflow_Instance_ID" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="File_Type" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="MainTimeSheets" Relationship="Self.FK_MainTimeSheet_ToTable" FromRole="ManPowerSupplier" ToRole="MainTimeSheet" />
+        </EntityType>
+        <EntityType Name="ProjectList">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int64" Nullable="false" />
+          <Property Name="ProjectCode" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="STAMP_CODE" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="INQUIRY" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="PROJECT_NAME" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="CLIENT_MC" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Notice_01" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Notice_02" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="SCOPE_OF_WORK" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="START_DATE" Type="DateTime" Precision="3" />
+          <Property Name="END_DATE" Type="DateTime" Precision="3" />
+          <Property Name="STATUS" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="INSURANCE_STATUS" Type="DateTime" Precision="3" />
+          <Property Name="LOCATION" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="PM" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="PM_CONTACT" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Completion_Certificate" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="REMARKS" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Notice" Type="Double" />
+          <Property Name="Source" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Closed" Type="Boolean" Nullable="false" />
+          <Property Name="Encoded_Absolute_URL" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Item_Type" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Path" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="URL_Path" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Workflow_Instance_ID" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="File_Type" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="MainTimeSheets" Relationship="Self.FK_MainTimeSheet_ToTable_1" FromRole="ProjectList" ToRole="MainTimeSheet" />
+        </EntityType>
+        <EntityType Name="username">
+          <Key>
+            <PropertyRef Name="aspnet_uid" />
+          </Key>
+          <Property Name="full_name" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="aspnet_uid" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
+        </EntityType>
+        <EntityType Name="ControlRoom">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" />
+          <Property Name="xDate" Type="DateTime" Precision="3" />
+          <Property Name="Room" Type="Int32" />
+          <Property Name="Remark" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="EmpID" Type="Int32" />
+        </EntityType>
+        <EntityType Name="Copy_of_Attendance">
+          <Key>
+            <PropertyRef Name="ID" />
+            <PropertyRef Name="EmpID" />
+            <PropertyRef Name="SubMain" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" />
+          <Property Name="EmpID" Type="Int32" Nullable="false" />
+          <Property Name="SubMain" Type="Int32" Nullable="false" />
+          <Property Name="C1" Type="Int32" />
+          <Property Name="C2" Type="Double" />
+          <Property Name="C3" Type="Double" />
+          <Property Name="C4" Type="Double" />
+          <Property Name="C5" Type="Double" />
+          <Property Name="C6" Type="Double" />
+          <Property Name="C7" Type="Double" />
+          <Property Name="C8" Type="Double" />
+          <Property Name="C9" Type="Double" />
+          <Property Name="C10" Type="Double" />
+          <Property Name="C11" Type="Double" />
+          <Property Name="C12" Type="Double" />
+          <Property Name="C13" Type="Double" />
+          <Property Name="C14" Type="Double" />
+          <Property Name="C15" Type="Double" />
+          <Property Name="C16" Type="Double" />
+          <Property Name="C17" Type="Double" />
+          <Property Name="C18" Type="Double" />
+          <Property Name="C19" Type="Double" />
+          <Property Name="C20" Type="Double" />
+          <Property Name="C21" Type="Double" />
+          <Property Name="C22" Type="Double" />
+          <Property Name="C23" Type="Double" />
+          <Property Name="C24" Type="Double" />
+          <Property Name="C25" Type="Double" />
+          <Property Name="C26" Type="Double" />
+          <Property Name="C27" Type="Double" />
+          <Property Name="C28" Type="Double" />
+          <Property Name="C29" Type="Double" />
+          <Property Name="C30" Type="Double" />
+          <Property Name="C31" Type="Double" />
+          <Property Name="TotalHours" Type="Double" />
+          <Property Name="TotalOverTime" Type="Double" />
+          <Property Name="TotalAbsent" Type="Double" />
+          <Property Name="AccommodationDeduction" Type="Double" />
+          <Property Name="FoodDeduction" Type="Double" />
+          <Property Name="TotalWorkingDays" Type="Double" />
+          <Property Name="TotalVL" Type="Double" />
+          <Property Name="TotalTransefer" Type="Double" />
+          <Property Name="TotalSickLeave" Type="Double" />
+          <Property Name="FridayHours" Type="Double" />
+          <Property Name="Holidays" Type="Double" />
+          <Property Name="ManPowerSupply" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="CompID" Type="Double" />
+          <Property Name="Encoded_Absolute_URL" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Item_Type" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Path" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="URL_Path" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Workflow_Instance_ID" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="File_Type" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="CsPermission">
+          <Key>
+            <PropertyRef Name="ID" />
+            <PropertyRef Name="CsPermission1" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" />
+          <Property Name="Project" Type="Double" />
+          <Property Name="CsUser" Type="Int32" />
+          <Property Name="CsPermission1" Type="Boolean" Nullable="false" />
+          <Property Name="Remark" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Encoded_Absolute_URL" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Item_Type" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Path" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="URL_Path" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Workflow_Instance_ID" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="File_Type" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="EmpPromise">
+          <Key>
+            <PropertyRef Name="ID" />
+            <PropertyRef Name="Active" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" />
+          <Property Name="EMpID" Type="Int32" />
+          <Property Name="MobileNo" Type="String" MaxLength="11" FixedLength="false" Unicode="true" />
+          <Property Name="Email" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Ext" Type="String" MaxLength="3" FixedLength="false" Unicode="true" />
+          <Property Name="LandLine" Type="String" MaxLength="9" FixedLength="false" Unicode="true" />
+          <Property Name="Active" Type="Boolean" Nullable="false" />
+          <Property Name="Remark" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="PhoneAllowance" Type="Double" />
+          <Property Name="RegDate" Type="DateTime" Precision="3" />
+          <Property Name="RegPC" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="Holiday">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" />
+          <Property Name="year" Type="Double" />
+          <Property Name="Comment" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Date" Type="DateTime" Precision="3" />
+          <Property Name="Hejri" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Holiday1" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Encoded_Absolute_URL" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Item_Type" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Path" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="URL_Path" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Workflow_Instance_ID" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="File_Type" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="LogIn">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" />
+          <Property Name="UserID" Type="Int32" />
+          <Property Name="Bransh_Company" Type="Int32" />
+        </EntityType>
+        <EntityType Name="MainShifting">
+          <Key>
+            <PropertyRef Name="ID" />
+            <PropertyRef Name="Ssave" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" />
+          <Property Name="Date" Type="DateTime" Precision="3" />
+          <Property Name="For" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="UsirID" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Time" Type="DateTime" Precision="3" />
+          <Property Name="Ref" Type="Double" />
+          <Property Name="Subject" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="To" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Attn" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="OldREf" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Attach" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Ssave" Type="Boolean" Nullable="false" />
+          <Property Name="SDate" Type="DateTime" Precision="3" />
+          <Property Name="BID" Type="Double" />
+          <Property Name="Encoded_Absolute_URL" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Item_Type" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Path" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="URL_Path" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Workflow_Instance_ID" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="File_Type" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="Mnth">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" />
+          <Property Name="xDate" Type="DateTime" Precision="3" />
+          <Property Name="TxtDate" Type="Int32" />
+        </EntityType>
+        <EntityType Name="MyCompanyInfo">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" />
+          <Property Name="CompanyNameEng" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="CompanyNameArab" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Tel" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Fax" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Emirates" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="POBox" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Web" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Email" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Logo" Type="Binary" MaxLength="Max" FixedLength="false" />
+          <Property Name="Data_Location" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Application_Title" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Application_Icon_Location" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="FileName" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="PPP">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="XXX" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="ID" Type="Int32" Nullable="false" />
+          <Property Name="ZZZ" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Field1" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="Pprint">
+          <Key>
+            <PropertyRef Name="Printt" />
+          </Key>
+          <Property Name="Name" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="MainName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Code" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Printt" Type="Boolean" Nullable="false" />
+          <Property Name="Balance" Type="Double" />
+          <Property Name="Index" Type="Int32" />
+        </EntityType>
+        <EntityType Name="RefsList">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" />
+          <Property Name="Description" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="FullPath" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="FileName" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="Room_Details">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" />
+          <Property Name="RoomNo" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Room_Capacity" Type="Int32" />
+          <Property Name="Remark" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Camp" Type="Int32" />
+        </EntityType>
+        <EntityType Name="ShiftingFile">
+          <Key>
+            <PropertyRef Name="ID" />
+            <PropertyRef Name="LinkMainShift" />
+            <PropertyRef Name="Labor" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" />
+          <Property Name="LinkMainShift" Type="Int32" Nullable="false" />
+          <Property Name="Labor" Type="Double" Nullable="false" />
+          <Property Name="EffectDate" Type="DateTime" Precision="3" />
+          <Property Name="From" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="To" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Profession" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Remarks" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Encoded_Absolute_URL" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Item_Type" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Path" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="URL_Path" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Workflow_Instance_ID" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="File_Type" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Room" Type="Int32" />
+        </EntityType>
+        <EntityType Name="Switchboard_Item">
+          <Key>
+            <PropertyRef Name="SwitchboardID" />
+            <PropertyRef Name="ItemNumber" />
+          </Key>
+          <Property Name="SwitchboardID" Type="Int32" Nullable="false" />
+          <Property Name="ItemNumber" Type="Int16" Nullable="false" />
+          <Property Name="ItemText" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Command" Type="Int16" />
+          <Property Name="Argument" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="ItemText_ara" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="tblUser">
+          <Key>
+            <PropertyRef Name="ID" />
+            <PropertyRef Name="UserName" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" />
+          <Property Name="UserID" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="UserName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Password" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="UserType" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Email" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="ContactNo" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="PCSerila" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="PCModel" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Hint" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Bransh_Company" Type="Double" />
+          <Property Name="Encoded_Absolute_URL" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Item_Type" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Path" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="URL_Path" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Workflow_Instance_ID" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="File_Type" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="AnyDesk_Address" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="AnyDesk_Password" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="ShareFolderUser" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="ShareFolderPassword" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="RemoteAccessUser" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="RemoteAccessPassword" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="ShareFolderPassword2" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="USER_ROLES">
+          <Key>
+            <PropertyRef Name="ROLE_ID" />
+            <PropertyRef Name="USER_ID" />
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ROLE_ID" Type="Int32" Nullable="false" />
+          <Property Name="USER_ID" Type="Int32" Nullable="false" />
+          <Property Name="ID" Type="Int32" Nullable="false" />
+        </EntityType>
+        <EntityType Name="UserInfo">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" />
+          <Property Name="Name" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="About_me" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Title" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Department" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Attachments" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Encoded_Absolute_URL" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Item_Type" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Path" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="URL_Path" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Workflow_Instance_ID" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="File_Type" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <Association Name="FK_dbo_AspNetUserClaims_dbo_AspNetUsers_UserId">
+          <End Role="AspNetUsers" Type="Self.AspNetUser" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="AspNetUserClaims" Type="Self.AspNetUserClaim" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AspNetUsers">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="AspNetUserClaims">
+              <PropertyRef Name="UserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_dbo_AspNetUserLogins_dbo_AspNetUsers_UserId">
+          <End Role="AspNetUsers" Type="Self.AspNetUser" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="AspNetUserLogins" Type="Self.AspNetUserLogin" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AspNetUsers">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="AspNetUserLogins">
+              <PropertyRef Name="UserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Attendance_ToLabourMaster">
+          <End Role="LabourMaster" Type="Self.LabourMaster" Multiplicity="1" />
+          <End Role="Attendance" Type="Self.Attendance" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="LabourMaster">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="Attendance">
+              <PropertyRef Name="EmpID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Attendance_ToMainTimeSheet">
+          <End Role="MainTimeSheet" Type="Self.MainTimeSheet" Multiplicity="1" />
+          <End Role="Attendance" Type="Self.Attendance" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="MainTimeSheet">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="Attendance">
+              <PropertyRef Name="SubMain" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_MainTimeSheet_ToTable">
+          <End Role="ManPowerSupplier" Type="Self.ManPowerSupplier" Multiplicity="1" />
+          <End Role="MainTimeSheet" Type="Self.MainTimeSheet" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ManPowerSupplier">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="MainTimeSheet">
+              <PropertyRef Name="ManPowerSupplier" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_MainTimeSheet_ToTable_1">
+          <End Role="ProjectList" Type="Self.ProjectList" Multiplicity="1" />
+          <End Role="MainTimeSheet" Type="Self.MainTimeSheet" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ProjectList">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="MainTimeSheet">
+              <PropertyRef Name="Project" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="AspNetUserRoles">
+          <End Role="AspNetRoles" Type="Self.AspNetRole" Multiplicity="*" />
+          <End Role="AspNetUsers" Type="Self.AspNetUser" Multiplicity="*" />
+        </Association>
+        <EntityContainer Name="LogisticsSoftEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="C__MigrationHistory" EntityType="Self.C__MigrationHistory" />
+          <EntitySet Name="AspNetRoles" EntityType="Self.AspNetRole" />
+          <EntitySet Name="AspNetUserClaims" EntityType="Self.AspNetUserClaim" />
+          <EntitySet Name="AspNetUserLogins" EntityType="Self.AspNetUserLogin" />
+          <EntitySet Name="AspNetUsers" EntityType="Self.AspNetUser" />
+          <EntitySet Name="Attendances" EntityType="Self.Attendance" />
+          <EntitySet Name="AttendanceFreqs" EntityType="Self.AttendanceFreq" />
+          <EntitySet Name="Camp_Details" EntityType="Self.Camp_Details" />
+          <EntitySet Name="LabourMasters" EntityType="Self.LabourMaster" />
+          <EntitySet Name="MainTimeSheets" EntityType="Self.MainTimeSheet" />
+          <EntitySet Name="ManPowerSuppliers" EntityType="Self.ManPowerSupplier" />
+          <EntitySet Name="ProjectLists" EntityType="Self.ProjectList" />
+          <EntitySet Name="usernames" EntityType="Self.username" />
+          <EntitySet Name="ControlRooms" EntityType="Self.ControlRoom" />
+          <EntitySet Name="Copy_of_Attendances" EntityType="Self.Copy_of_Attendance" />
+          <EntitySet Name="CsPermissions" EntityType="Self.CsPermission" />
+          <EntitySet Name="EmpPromises" EntityType="Self.EmpPromise" />
+          <EntitySet Name="Holidays" EntityType="Self.Holiday" />
+          <EntitySet Name="LogIns" EntityType="Self.LogIn" />
+          <EntitySet Name="MainShiftings" EntityType="Self.MainShifting" />
+          <EntitySet Name="Mnths" EntityType="Self.Mnth" />
+          <EntitySet Name="MyCompanyInfoes" EntityType="Self.MyCompanyInfo" />
+          <EntitySet Name="PPPs" EntityType="Self.PPP" />
+          <EntitySet Name="Pprints" EntityType="Self.Pprint" />
+          <EntitySet Name="RefsLists" EntityType="Self.RefsList" />
+          <EntitySet Name="Room_Details" EntityType="Self.Room_Details" />
+          <EntitySet Name="ShiftingFiles" EntityType="Self.ShiftingFile" />
+          <EntitySet Name="Switchboard_Items" EntityType="Self.Switchboard_Item" />
+          <EntitySet Name="tblUsers" EntityType="Self.tblUser" />
+          <EntitySet Name="USER_ROLES" EntityType="Self.USER_ROLES" />
+          <EntitySet Name="UserInfoes" EntityType="Self.UserInfo" />
+          <AssociationSet Name="FK_dbo_AspNetUserClaims_dbo_AspNetUsers_UserId" Association="Self.FK_dbo_AspNetUserClaims_dbo_AspNetUsers_UserId">
+            <End Role="AspNetUsers" EntitySet="AspNetUsers" />
+            <End Role="AspNetUserClaims" EntitySet="AspNetUserClaims" />
+          </AssociationSet>
+          <AssociationSet Name="FK_dbo_AspNetUserLogins_dbo_AspNetUsers_UserId" Association="Self.FK_dbo_AspNetUserLogins_dbo_AspNetUsers_UserId">
+            <End Role="AspNetUsers" EntitySet="AspNetUsers" />
+            <End Role="AspNetUserLogins" EntitySet="AspNetUserLogins" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Attendance_ToLabourMaster" Association="Self.FK_Attendance_ToLabourMaster">
+            <End Role="LabourMaster" EntitySet="LabourMasters" />
+            <End Role="Attendance" EntitySet="Attendances" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Attendance_ToMainTimeSheet" Association="Self.FK_Attendance_ToMainTimeSheet">
+            <End Role="MainTimeSheet" EntitySet="MainTimeSheets" />
+            <End Role="Attendance" EntitySet="Attendances" />
+          </AssociationSet>
+          <AssociationSet Name="FK_MainTimeSheet_ToTable" Association="Self.FK_MainTimeSheet_ToTable">
+            <End Role="ManPowerSupplier" EntitySet="ManPowerSuppliers" />
+            <End Role="MainTimeSheet" EntitySet="MainTimeSheets" />
+          </AssociationSet>
+          <AssociationSet Name="FK_MainTimeSheet_ToTable_1" Association="Self.FK_MainTimeSheet_ToTable_1">
+            <End Role="ProjectList" EntitySet="ProjectLists" />
+            <End Role="MainTimeSheet" EntitySet="MainTimeSheets" />
+          </AssociationSet>
+          <AssociationSet Name="AspNetUserRoles" Association="Self.AspNetUserRoles">
+            <End Role="AspNetRoles" EntitySet="AspNetRoles" />
+            <End Role="AspNetUsers" EntitySet="AspNetUsers" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="LogisticsSoftModelStoreContainer" CdmEntityContainer="LogisticsSoftEntities">
+          <EntitySetMapping Name="C__MigrationHistory">
+            <EntityTypeMapping TypeName="LogisticsSoftModel.C__MigrationHistory">
+              <MappingFragment StoreEntitySet="__MigrationHistory">
+                <ScalarProperty Name="MigrationId" ColumnName="MigrationId" />
+                <ScalarProperty Name="ContextKey" ColumnName="ContextKey" />
+                <ScalarProperty Name="Model" ColumnName="Model" />
+                <ScalarProperty Name="ProductVersion" ColumnName="ProductVersion" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="AspNetRoles">
+            <EntityTypeMapping TypeName="LogisticsSoftModel.AspNetRole">
+              <MappingFragment StoreEntitySet="AspNetRoles">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="AspNetUserClaims">
+            <EntityTypeMapping TypeName="LogisticsSoftModel.AspNetUserClaim">
+              <MappingFragment StoreEntitySet="AspNetUserClaims">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="UserId" ColumnName="UserId" />
+                <ScalarProperty Name="ClaimType" ColumnName="ClaimType" />
+                <ScalarProperty Name="ClaimValue" ColumnName="ClaimValue" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="AspNetUserLogins">
+            <EntityTypeMapping TypeName="LogisticsSoftModel.AspNetUserLogin">
+              <MappingFragment StoreEntitySet="AspNetUserLogins">
+                <ScalarProperty Name="LoginProvider" ColumnName="LoginProvider" />
+                <ScalarProperty Name="ProviderKey" ColumnName="ProviderKey" />
+                <ScalarProperty Name="UserId" ColumnName="UserId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="AspNetUsers">
+            <EntityTypeMapping TypeName="LogisticsSoftModel.AspNetUser">
+              <MappingFragment StoreEntitySet="AspNetUsers">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="csid" ColumnName="csid" />
+                <ScalarProperty Name="Email" ColumnName="Email" />
+                <ScalarProperty Name="EmailConfirmed" ColumnName="EmailConfirmed" />
+                <ScalarProperty Name="PasswordHash" ColumnName="PasswordHash" />
+                <ScalarProperty Name="SecurityStamp" ColumnName="SecurityStamp" />
+                <ScalarProperty Name="PhoneNumber" ColumnName="PhoneNumber" />
+                <ScalarProperty Name="PhoneNumberConfirmed" ColumnName="PhoneNumberConfirmed" />
+                <ScalarProperty Name="TwoFactorEnabled" ColumnName="TwoFactorEnabled" />
+                <ScalarProperty Name="LockoutEndDateUtc" ColumnName="LockoutEndDateUtc" />
+                <ScalarProperty Name="LockoutEnabled" ColumnName="LockoutEnabled" />
+                <ScalarProperty Name="AccessFailedCount" ColumnName="AccessFailedCount" />
+                <ScalarProperty Name="UserName" ColumnName="UserName" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Attendances">
+            <EntityTypeMapping TypeName="LogisticsSoftModel.Attendance">
+              <MappingFragment StoreEntitySet="Attendance">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="EmpID" ColumnName="EmpID" />
+                <ScalarProperty Name="SubMain" ColumnName="SubMain" />
+                <ScalarProperty Name="C1" ColumnName="1" />
+                <ScalarProperty Name="C2" ColumnName="2" />
+                <ScalarProperty Name="C3" ColumnName="3" />
+                <ScalarProperty Name="C4" ColumnName="4" />
+                <ScalarProperty Name="C5" ColumnName="5" />
+                <ScalarProperty Name="C6" ColumnName="6" />
+                <ScalarProperty Name="C7" ColumnName="7" />
+                <ScalarProperty Name="C8" ColumnName="8" />
+                <ScalarProperty Name="C9" ColumnName="9" />
+                <ScalarProperty Name="C10" ColumnName="10" />
+                <ScalarProperty Name="C11" ColumnName="11" />
+                <ScalarProperty Name="C12" ColumnName="12" />
+                <ScalarProperty Name="C13" ColumnName="13" />
+                <ScalarProperty Name="C14" ColumnName="14" />
+                <ScalarProperty Name="C15" ColumnName="15" />
+                <ScalarProperty Name="C16" ColumnName="16" />
+                <ScalarProperty Name="C17" ColumnName="17" />
+                <ScalarProperty Name="C18" ColumnName="18" />
+                <ScalarProperty Name="C19" ColumnName="19" />
+                <ScalarProperty Name="C20" ColumnName="20" />
+                <ScalarProperty Name="C21" ColumnName="21" />
+                <ScalarProperty Name="C22" ColumnName="22" />
+                <ScalarProperty Name="C23" ColumnName="23" />
+                <ScalarProperty Name="C24" ColumnName="24" />
+                <ScalarProperty Name="C25" ColumnName="25" />
+                <ScalarProperty Name="C26" ColumnName="26" />
+                <ScalarProperty Name="C27" ColumnName="27" />
+                <ScalarProperty Name="C28" ColumnName="28" />
+                <ScalarProperty Name="C29" ColumnName="29" />
+                <ScalarProperty Name="C30" ColumnName="30" />
+                <ScalarProperty Name="C31" ColumnName="31" />
+                <ScalarProperty Name="TotalHours" ColumnName="TotalHours" />
+                <ScalarProperty Name="TotalOverTime" ColumnName="TotalOverTime" />
+                <ScalarProperty Name="TotalAbsent" ColumnName="TotalAbsent" />
+                <ScalarProperty Name="AccommodationDeduction" ColumnName="AccommodationDeduction" />
+                <ScalarProperty Name="FoodDeduction" ColumnName="FoodDeduction" />
+                <ScalarProperty Name="TotalWorkingDays" ColumnName="TotalWorkingDays" />
+                <ScalarProperty Name="TotalVL" ColumnName="TotalVL" />
+                <ScalarProperty Name="TotalTransefer" ColumnName="TotalTransefer" />
+                <ScalarProperty Name="TotalSickLeave" ColumnName="TotalSickLeave" />
+                <ScalarProperty Name="FridayHours" ColumnName="FridayHours" />
+                <ScalarProperty Name="Holidays" ColumnName="Holidays" />
+                <ScalarProperty Name="ManPowerSupply" ColumnName="ManPowerSupply" />
+                <ScalarProperty Name="CompID" ColumnName="CompID" />
+                <ScalarProperty Name="Encoded_Absolute_URL" ColumnName="Encoded Absolute URL" />
+                <ScalarProperty Name="Item_Type" ColumnName="Item Type" />
+                <ScalarProperty Name="Path" ColumnName="Path" />
+                <ScalarProperty Name="URL_Path" ColumnName="URL Path" />
+                <ScalarProperty Name="Workflow_Instance_ID" ColumnName="Workflow Instance ID" />
+                <ScalarProperty Name="File_Type" ColumnName="File Type" />
+                <ScalarProperty Name="xABST" ColumnName="xABST" />
+                <ScalarProperty Name="nABST" ColumnName="nABST" />
+                <ScalarProperty Name="xOT" ColumnName="xOT" />
+                <ScalarProperty Name="nnOT" ColumnName="nnOT" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="AttendanceFreqs">
+            <EntityTypeMapping TypeName="LogisticsSoftModel.AttendanceFreq">
+              <MappingFragment StoreEntitySet="AttendanceFreq">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="Dec" ColumnName="Dec" />
+                <ScalarProperty Name="Encoded_Absolute_URL" ColumnName="Encoded Absolute URL" />
+                <ScalarProperty Name="Item_Type" ColumnName="Item Type" />
+                <ScalarProperty Name="Path" ColumnName="Path" />
+                <ScalarProperty Name="URL_Path" ColumnName="URL Path" />
+                <ScalarProperty Name="Workflow_Instance_ID" ColumnName="Workflow Instance ID" />
+                <ScalarProperty Name="File_Type" ColumnName="File Type" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Camp_Details">
+            <EntityTypeMapping TypeName="LogisticsSoftModel.Camp_Details">
+              <MappingFragment StoreEntitySet="Camp_Details">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="Camp_Name" ColumnName="Camp_Name" />
+                <ScalarProperty Name="Camp_Location" ColumnName="Camp_Location" />
+                <ScalarProperty Name="Start" ColumnName="Start" />
+                <ScalarProperty Name="End" ColumnName="End" />
+                <ScalarProperty Name="Active" ColumnName="Active" />
+                <ScalarProperty Name="Remark" ColumnName="Remark" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="LabourMasters">
+            <EntityTypeMapping TypeName="LogisticsSoftModel.LabourMaster">
+              <MappingFragment StoreEntitySet="LabourMaster">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="EMPNO" ColumnName="EMPNO" />
+                <ScalarProperty Name="ManPowerSupply" ColumnName="ManPowerSupply" />
+                <ScalarProperty Name="VisaSponser" ColumnName="VisaSponser" />
+                <ScalarProperty Name="Person_Name" ColumnName="Person Name" />
+                <ScalarProperty Name="Position" ColumnName="Position" />
+                <ScalarProperty Name="Nationality" ColumnName="Nationality" />
+                <ScalarProperty Name="UID_No" ColumnName="UID No" />
+                <ScalarProperty Name="ResidenceVisaExpiry" ColumnName="ResidenceVisaExpiry" />
+                <ScalarProperty Name="LaborCardNumber" ColumnName="LaborCardNumber" />
+                <ScalarProperty Name="LaborCardExpiry" ColumnName="LaborCardExpiry" />
+                <ScalarProperty Name="PassportNo" ColumnName="PassportNo" />
+                <ScalarProperty Name="Passportexpiry" ColumnName="Passportexpiry" />
+                <ScalarProperty Name="EID" ColumnName="EID" />
+                <ScalarProperty Name="EIDExpiry" ColumnName="EIDExpiry" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="Photo" ColumnName="Photo" />
+                <ScalarProperty Name="Encoded_Absolute_URL" ColumnName="Encoded Absolute URL" />
+                <ScalarProperty Name="Item_Type" ColumnName="Item Type" />
+                <ScalarProperty Name="Path" ColumnName="Path" />
+                <ScalarProperty Name="URL_Path" ColumnName="URL Path" />
+                <ScalarProperty Name="Workflow_Instance_ID" ColumnName="Workflow Instance ID" />
+                <ScalarProperty Name="File_Type" ColumnName="File Type" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="MainTimeSheets">
+            <EntityTypeMapping TypeName="LogisticsSoftModel.MainTimeSheet">
+              <MappingFragment StoreEntitySet="MainTimeSheet">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="TMonth" ColumnName="TMonth" />
+                <ScalarProperty Name="ManPowerSupplier" ColumnName="ManPowerSupplier" />
+                <ScalarProperty Name="Project" ColumnName="Project" />
+                <ScalarProperty Name="Ref" ColumnName="Ref" />
+                <ScalarProperty Name="RefNo" ColumnName="RefNo" />
+                <ScalarProperty Name="UserName" ColumnName="UserName" />
+                <ScalarProperty Name="PCName" ColumnName="PCName" />
+                <ScalarProperty Name="SAV" ColumnName="SAV" />
+                <ScalarProperty Name="Location" ColumnName="Location" />
+                <ScalarProperty Name="Note" ColumnName="Note" />
+                <ScalarProperty Name="Startit" ColumnName="Startit" />
+                <ScalarProperty Name="Encoded_Absolute_URL" ColumnName="Encoded Absolute URL" />
+                <ScalarProperty Name="Item_Type" ColumnName="Item Type" />
+                <ScalarProperty Name="Path" ColumnName="Path" />
+                <ScalarProperty Name="URL_Path" ColumnName="URL Path" />
+                <ScalarProperty Name="Workflow_Instance_ID" ColumnName="Workflow Instance ID" />
+                <ScalarProperty Name="File_Type" ColumnName="File Type" />
+                <ScalarProperty Name="TMnth" ColumnName="TMnth" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ManPowerSuppliers">
+            <EntityTypeMapping TypeName="LogisticsSoftModel.ManPowerSupplier">
+              <MappingFragment StoreEntitySet="ManPowerSupplier">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="ShortName" ColumnName="ShortName" />
+                <ScalarProperty Name="Supplier" ColumnName="Supplier" />
+                <ScalarProperty Name="SkilledRat" ColumnName="SkilledRat" />
+                <ScalarProperty Name="NonSkilledRate" ColumnName="NonSkilledRate" />
+                <ScalarProperty Name="NormalTimeUpto" ColumnName="NormalTimeUpto" />
+                <ScalarProperty Name="Crtl" ColumnName="Crtl" />
+                <ScalarProperty Name="Encoded_Absolute_URL" ColumnName="Encoded Absolute URL" />
+                <ScalarProperty Name="Item_Type" ColumnName="Item Type" />
+                <ScalarProperty Name="Path" ColumnName="Path" />
+                <ScalarProperty Name="URL_Path" ColumnName="URL Path" />
+                <ScalarProperty Name="Workflow_Instance_ID" ColumnName="Workflow Instance ID" />
+                <ScalarProperty Name="File_Type" ColumnName="File Type" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ProjectLists">
+            <EntityTypeMapping TypeName="LogisticsSoftModel.ProjectList">
+              <MappingFragment StoreEntitySet="ProjectList">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="ProjectCode" ColumnName="ProjectCode" />
+                <ScalarProperty Name="STAMP_CODE" ColumnName="STAMP CODE" />
+                <ScalarProperty Name="INQUIRY" ColumnName="INQUIRY" />
+                <ScalarProperty Name="PROJECT_NAME" ColumnName="PROJECT NAME" />
+                <ScalarProperty Name="CLIENT_MC" ColumnName="CLIENT/MC" />
+                <ScalarProperty Name="Notice_01" ColumnName="Notice-01" />
+                <ScalarProperty Name="Notice_02" ColumnName="Notice-02" />
+                <ScalarProperty Name="SCOPE_OF_WORK" ColumnName="SCOPE OF WORK" />
+                <ScalarProperty Name="START_DATE" ColumnName="START DATE" />
+                <ScalarProperty Name="END_DATE" ColumnName="END DATE" />
+                <ScalarProperty Name="STATUS" ColumnName="STATUS" />
+                <ScalarProperty Name="INSURANCE_STATUS" ColumnName="INSURANCE STATUS" />
+                <ScalarProperty Name="LOCATION" ColumnName="LOCATION" />
+                <ScalarProperty Name="PM" ColumnName="PM" />
+                <ScalarProperty Name="PM_CONTACT" ColumnName="PM CONTACT" />
+                <ScalarProperty Name="Completion_Certificate" ColumnName="Completion Certificate" />
+                <ScalarProperty Name="REMARKS" ColumnName="REMARKS" />
+                <ScalarProperty Name="Notice" ColumnName="Notice" />
+                <ScalarProperty Name="Source" ColumnName="Source" />
+                <ScalarProperty Name="Closed" ColumnName="Closed" />
+                <ScalarProperty Name="Encoded_Absolute_URL" ColumnName="Encoded Absolute URL" />
+                <ScalarProperty Name="Item_Type" ColumnName="Item Type" />
+                <ScalarProperty Name="Path" ColumnName="Path" />
+                <ScalarProperty Name="URL_Path" ColumnName="URL Path" />
+                <ScalarProperty Name="Workflow_Instance_ID" ColumnName="Workflow Instance ID" />
+                <ScalarProperty Name="File_Type" ColumnName="File Type" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="usernames">
+            <EntityTypeMapping TypeName="LogisticsSoftModel.username">
+              <MappingFragment StoreEntitySet="usernames">
+                <ScalarProperty Name="full_name" ColumnName="full_name" />
+                <ScalarProperty Name="aspnet_uid" ColumnName="aspnet_uid" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ControlRooms">
+            <EntityTypeMapping TypeName="LogisticsSoftModel.ControlRoom">
+              <MappingFragment StoreEntitySet="ControlRoom">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="xDate" ColumnName="xDate" />
+                <ScalarProperty Name="Room" ColumnName="Room" />
+                <ScalarProperty Name="Remark" ColumnName="Remark" />
+                <ScalarProperty Name="EmpID" ColumnName="EmpID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Copy_of_Attendances">
+            <EntityTypeMapping TypeName="LogisticsSoftModel.Copy_of_Attendance">
+              <MappingFragment StoreEntitySet="Copy of Attendance">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="EmpID" ColumnName="EmpID" />
+                <ScalarProperty Name="SubMain" ColumnName="SubMain" />
+                <ScalarProperty Name="C1" ColumnName="1" />
+                <ScalarProperty Name="C2" ColumnName="2" />
+                <ScalarProperty Name="C3" ColumnName="3" />
+                <ScalarProperty Name="C4" ColumnName="4" />
+                <ScalarProperty Name="C5" ColumnName="5" />
+                <ScalarProperty Name="C6" ColumnName="6" />
+                <ScalarProperty Name="C7" ColumnName="7" />
+                <ScalarProperty Name="C8" ColumnName="8" />
+                <ScalarProperty Name="C9" ColumnName="9" />
+                <ScalarProperty Name="C10" ColumnName="10" />
+                <ScalarProperty Name="C11" ColumnName="11" />
+                <ScalarProperty Name="C12" ColumnName="12" />
+                <ScalarProperty Name="C13" ColumnName="13" />
+                <ScalarProperty Name="C14" ColumnName="14" />
+                <ScalarProperty Name="C15" ColumnName="15" />
+                <ScalarProperty Name="C16" ColumnName="16" />
+                <ScalarProperty Name="C17" ColumnName="17" />
+                <ScalarProperty Name="C18" ColumnName="18" />
+                <ScalarProperty Name="C19" ColumnName="19" />
+                <ScalarProperty Name="C20" ColumnName="20" />
+                <ScalarProperty Name="C21" ColumnName="21" />
+                <ScalarProperty Name="C22" ColumnName="22" />
+                <ScalarProperty Name="C23" ColumnName="23" />
+                <ScalarProperty Name="C24" ColumnName="24" />
+                <ScalarProperty Name="C25" ColumnName="25" />
+                <ScalarProperty Name="C26" ColumnName="26" />
+                <ScalarProperty Name="C27" ColumnName="27" />
+                <ScalarProperty Name="C28" ColumnName="28" />
+                <ScalarProperty Name="C29" ColumnName="29" />
+                <ScalarProperty Name="C30" ColumnName="30" />
+                <ScalarProperty Name="C31" ColumnName="31" />
+                <ScalarProperty Name="TotalHours" ColumnName="TotalHours" />
+                <ScalarProperty Name="TotalOverTime" ColumnName="TotalOverTime" />
+                <ScalarProperty Name="TotalAbsent" ColumnName="TotalAbsent" />
+                <ScalarProperty Name="AccommodationDeduction" ColumnName="AccommodationDeduction" />
+                <ScalarProperty Name="FoodDeduction" ColumnName="FoodDeduction" />
+                <ScalarProperty Name="TotalWorkingDays" ColumnName="TotalWorkingDays" />
+                <ScalarProperty Name="TotalVL" ColumnName="TotalVL" />
+                <ScalarProperty Name="TotalTransefer" ColumnName="TotalTransefer" />
+                <ScalarProperty Name="TotalSickLeave" ColumnName="TotalSickLeave" />
+                <ScalarProperty Name="FridayHours" ColumnName="FridayHours" />
+                <ScalarProperty Name="Holidays" ColumnName="Holidays" />
+                <ScalarProperty Name="ManPowerSupply" ColumnName="ManPowerSupply" />
+                <ScalarProperty Name="CompID" ColumnName="CompID" />
+                <ScalarProperty Name="Encoded_Absolute_URL" ColumnName="Encoded Absolute URL" />
+                <ScalarProperty Name="Item_Type" ColumnName="Item Type" />
+                <ScalarProperty Name="Path" ColumnName="Path" />
+                <ScalarProperty Name="URL_Path" ColumnName="URL Path" />
+                <ScalarProperty Name="Workflow_Instance_ID" ColumnName="Workflow Instance ID" />
+                <ScalarProperty Name="File_Type" ColumnName="File Type" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="CsPermissions">
+            <EntityTypeMapping TypeName="LogisticsSoftModel.CsPermission">
+              <MappingFragment StoreEntitySet="CsPermission">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="Project" ColumnName="Project" />
+                <ScalarProperty Name="CsUser" ColumnName="CsUser" />
+                <ScalarProperty Name="CsPermission1" ColumnName="CsPermission" />
+                <ScalarProperty Name="Remark" ColumnName="Remark" />
+                <ScalarProperty Name="Encoded_Absolute_URL" ColumnName="Encoded Absolute URL" />
+                <ScalarProperty Name="Item_Type" ColumnName="Item Type" />
+                <ScalarProperty Name="Path" ColumnName="Path" />
+                <ScalarProperty Name="URL_Path" ColumnName="URL Path" />
+                <ScalarProperty Name="Workflow_Instance_ID" ColumnName="Workflow Instance ID" />
+                <ScalarProperty Name="File_Type" ColumnName="File Type" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="EmpPromises">
+            <EntityTypeMapping TypeName="LogisticsSoftModel.EmpPromise">
+              <MappingFragment StoreEntitySet="EmpPromise">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="EMpID" ColumnName="EMpID" />
+                <ScalarProperty Name="MobileNo" ColumnName="MobileNo" />
+                <ScalarProperty Name="Email" ColumnName="Email" />
+                <ScalarProperty Name="Ext" ColumnName="Ext" />
+                <ScalarProperty Name="LandLine" ColumnName="LandLine" />
+                <ScalarProperty Name="Active" ColumnName="Active" />
+                <ScalarProperty Name="Remark" ColumnName="Remark" />
+                <ScalarProperty Name="PhoneAllowance" ColumnName="PhoneAllowance" />
+                <ScalarProperty Name="RegDate" ColumnName="RegDate" />
+                <ScalarProperty Name="RegPC" ColumnName="RegPC" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Holidays">
+            <EntityTypeMapping TypeName="LogisticsSoftModel.Holiday">
+              <MappingFragment StoreEntitySet="Holidays">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="year" ColumnName="year" />
+                <ScalarProperty Name="Comment" ColumnName="Comment" />
+                <ScalarProperty Name="Date" ColumnName="Date" />
+                <ScalarProperty Name="Hejri" ColumnName="Hejri" />
+                <ScalarProperty Name="Holiday1" ColumnName="Holiday" />
+                <ScalarProperty Name="Encoded_Absolute_URL" ColumnName="Encoded Absolute URL" />
+                <ScalarProperty Name="Item_Type" ColumnName="Item Type" />
+                <ScalarProperty Name="Path" ColumnName="Path" />
+                <ScalarProperty Name="URL_Path" ColumnName="URL Path" />
+                <ScalarProperty Name="Workflow_Instance_ID" ColumnName="Workflow Instance ID" />
+                <ScalarProperty Name="File_Type" ColumnName="File Type" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="LogIns">
+            <EntityTypeMapping TypeName="LogisticsSoftModel.LogIn">
+              <MappingFragment StoreEntitySet="LogIn">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="UserID" ColumnName="UserID" />
+                <ScalarProperty Name="Bransh_Company" ColumnName="Bransh_Company" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="MainShiftings">
+            <EntityTypeMapping TypeName="LogisticsSoftModel.MainShifting">
+              <MappingFragment StoreEntitySet="MainShifting">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="Date" ColumnName="Date" />
+                <ScalarProperty Name="For" ColumnName="For" />
+                <ScalarProperty Name="UsirID" ColumnName="UsirID" />
+                <ScalarProperty Name="Time" ColumnName="Time" />
+                <ScalarProperty Name="Ref" ColumnName="Ref" />
+                <ScalarProperty Name="Subject" ColumnName="Subject" />
+                <ScalarProperty Name="To" ColumnName="To" />
+                <ScalarProperty Name="Attn" ColumnName="Attn" />
+                <ScalarProperty Name="OldREf" ColumnName="OldREf" />
+                <ScalarProperty Name="Attach" ColumnName="Attach" />
+                <ScalarProperty Name="Ssave" ColumnName="Ssave" />
+                <ScalarProperty Name="SDate" ColumnName="SDate" />
+                <ScalarProperty Name="BID" ColumnName="BID" />
+                <ScalarProperty Name="Encoded_Absolute_URL" ColumnName="Encoded Absolute URL" />
+                <ScalarProperty Name="Item_Type" ColumnName="Item Type" />
+                <ScalarProperty Name="Path" ColumnName="Path" />
+                <ScalarProperty Name="URL_Path" ColumnName="URL Path" />
+                <ScalarProperty Name="Workflow_Instance_ID" ColumnName="Workflow Instance ID" />
+                <ScalarProperty Name="File_Type" ColumnName="File Type" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Mnths">
+            <EntityTypeMapping TypeName="LogisticsSoftModel.Mnth">
+              <MappingFragment StoreEntitySet="Mnth">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="xDate" ColumnName="xDate" />
+                <ScalarProperty Name="TxtDate" ColumnName="TxtDate" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="MyCompanyInfoes">
+            <EntityTypeMapping TypeName="LogisticsSoftModel.MyCompanyInfo">
+              <MappingFragment StoreEntitySet="MyCompanyInfo">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="CompanyNameEng" ColumnName="CompanyNameEng" />
+                <ScalarProperty Name="CompanyNameArab" ColumnName="CompanyNameArab" />
+                <ScalarProperty Name="Tel" ColumnName="Tel" />
+                <ScalarProperty Name="Fax" ColumnName="Fax" />
+                <ScalarProperty Name="Emirates" ColumnName="Emirates" />
+                <ScalarProperty Name="POBox" ColumnName="POBox" />
+                <ScalarProperty Name="Web" ColumnName="Web" />
+                <ScalarProperty Name="Email" ColumnName="Email" />
+                <ScalarProperty Name="Logo" ColumnName="Logo" />
+                <ScalarProperty Name="Data_Location" ColumnName="Data_Location" />
+                <ScalarProperty Name="Application_Title" ColumnName="Application_Title" />
+                <ScalarProperty Name="Application_Icon_Location" ColumnName="Application_Icon_Location" />
+                <ScalarProperty Name="FileName" ColumnName="FileName" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="PPPs">
+            <EntityTypeMapping TypeName="LogisticsSoftModel.PPP">
+              <MappingFragment StoreEntitySet="PPP">
+                <ScalarProperty Name="XXX" ColumnName="XXX" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="ZZZ" ColumnName="ZZZ" />
+                <ScalarProperty Name="Field1" ColumnName="Field1" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Pprints">
+            <EntityTypeMapping TypeName="LogisticsSoftModel.Pprint">
+              <MappingFragment StoreEntitySet="Pprint">
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="MainName" ColumnName="MainName" />
+                <ScalarProperty Name="Code" ColumnName="Code" />
+                <ScalarProperty Name="Printt" ColumnName="Printt" />
+                <ScalarProperty Name="Balance" ColumnName="Balance" />
+                <ScalarProperty Name="Index" ColumnName="Index" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="RefsLists">
+            <EntityTypeMapping TypeName="LogisticsSoftModel.RefsList">
+              <MappingFragment StoreEntitySet="RefsList">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="FullPath" ColumnName="FullPath" />
+                <ScalarProperty Name="FileName" ColumnName="FileName" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Room_Details">
+            <EntityTypeMapping TypeName="LogisticsSoftModel.Room_Details">
+              <MappingFragment StoreEntitySet="Room_Details">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="RoomNo" ColumnName="RoomNo" />
+                <ScalarProperty Name="Room_Capacity" ColumnName="Room_Capacity" />
+                <ScalarProperty Name="Remark" ColumnName="Remark" />
+                <ScalarProperty Name="Camp" ColumnName="Camp" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ShiftingFiles">
+            <EntityTypeMapping TypeName="LogisticsSoftModel.ShiftingFile">
+              <MappingFragment StoreEntitySet="ShiftingFile">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="LinkMainShift" ColumnName="LinkMainShift" />
+                <ScalarProperty Name="Labor" ColumnName="Labor" />
+                <ScalarProperty Name="EffectDate" ColumnName="EffectDate" />
+                <ScalarProperty Name="From" ColumnName="From" />
+                <ScalarProperty Name="To" ColumnName="To" />
+                <ScalarProperty Name="Profession" ColumnName="Profession" />
+                <ScalarProperty Name="Remarks" ColumnName="Remarks" />
+                <ScalarProperty Name="Encoded_Absolute_URL" ColumnName="Encoded Absolute URL" />
+                <ScalarProperty Name="Item_Type" ColumnName="Item Type" />
+                <ScalarProperty Name="Path" ColumnName="Path" />
+                <ScalarProperty Name="URL_Path" ColumnName="URL Path" />
+                <ScalarProperty Name="Workflow_Instance_ID" ColumnName="Workflow Instance ID" />
+                <ScalarProperty Name="File_Type" ColumnName="File Type" />
+                <ScalarProperty Name="Room" ColumnName="Room" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Switchboard_Items">
+            <EntityTypeMapping TypeName="LogisticsSoftModel.Switchboard_Item">
+              <MappingFragment StoreEntitySet="Switchboard Items">
+                <ScalarProperty Name="SwitchboardID" ColumnName="SwitchboardID" />
+                <ScalarProperty Name="ItemNumber" ColumnName="ItemNumber" />
+                <ScalarProperty Name="ItemText" ColumnName="ItemText" />
+                <ScalarProperty Name="Command" ColumnName="Command" />
+                <ScalarProperty Name="Argument" ColumnName="Argument" />
+                <ScalarProperty Name="ItemText_ara" ColumnName="ItemText_ara" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tblUsers">
+            <EntityTypeMapping TypeName="LogisticsSoftModel.tblUser">
+              <MappingFragment StoreEntitySet="tblUser">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="UserID" ColumnName="UserID" />
+                <ScalarProperty Name="UserName" ColumnName="UserName" />
+                <ScalarProperty Name="Password" ColumnName="Password" />
+                <ScalarProperty Name="UserType" ColumnName="UserType" />
+                <ScalarProperty Name="Email" ColumnName="Email" />
+                <ScalarProperty Name="ContactNo" ColumnName="ContactNo" />
+                <ScalarProperty Name="PCSerila" ColumnName="PCSerila" />
+                <ScalarProperty Name="PCModel" ColumnName="PCModel" />
+                <ScalarProperty Name="Hint" ColumnName="Hint" />
+                <ScalarProperty Name="Bransh_Company" ColumnName="Bransh_Company" />
+                <ScalarProperty Name="Encoded_Absolute_URL" ColumnName="Encoded Absolute URL" />
+                <ScalarProperty Name="Item_Type" ColumnName="Item Type" />
+                <ScalarProperty Name="Path" ColumnName="Path" />
+                <ScalarProperty Name="URL_Path" ColumnName="URL Path" />
+                <ScalarProperty Name="Workflow_Instance_ID" ColumnName="Workflow Instance ID" />
+                <ScalarProperty Name="File_Type" ColumnName="File Type" />
+                <ScalarProperty Name="AnyDesk_Address" ColumnName="AnyDesk_Address" />
+                <ScalarProperty Name="AnyDesk_Password" ColumnName="AnyDesk_Password" />
+                <ScalarProperty Name="ShareFolderUser" ColumnName="ShareFolderUser" />
+                <ScalarProperty Name="ShareFolderPassword" ColumnName="ShareFolderPassword" />
+                <ScalarProperty Name="RemoteAccessUser" ColumnName="RemoteAccessUser" />
+                <ScalarProperty Name="RemoteAccessPassword" ColumnName="RemoteAccessPassword" />
+                <ScalarProperty Name="ShareFolderPassword2" ColumnName="ShareFolderPassword2" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="USER_ROLES">
+            <EntityTypeMapping TypeName="LogisticsSoftModel.USER_ROLES">
+              <MappingFragment StoreEntitySet="USER_ROLES">
+                <ScalarProperty Name="ROLE_ID" ColumnName="ROLE_ID" />
+                <ScalarProperty Name="USER_ID" ColumnName="USER_ID" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="UserInfoes">
+            <EntityTypeMapping TypeName="LogisticsSoftModel.UserInfo">
+              <MappingFragment StoreEntitySet="UserInfo">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="About_me" ColumnName="About me" />
+                <ScalarProperty Name="Title" ColumnName="Title" />
+                <ScalarProperty Name="Department" ColumnName="Department" />
+                <ScalarProperty Name="Attachments" ColumnName="Attachments" />
+                <ScalarProperty Name="Encoded_Absolute_URL" ColumnName="Encoded Absolute URL" />
+                <ScalarProperty Name="Item_Type" ColumnName="Item Type" />
+                <ScalarProperty Name="Path" ColumnName="Path" />
+                <ScalarProperty Name="URL_Path" ColumnName="URL Path" />
+                <ScalarProperty Name="Workflow_Instance_ID" ColumnName="Workflow Instance ID" />
+                <ScalarProperty Name="File_Type" ColumnName="File Type" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <AssociationSetMapping Name="AspNetUserRoles" TypeName="LogisticsSoftModel.AspNetUserRoles" StoreEntitySet="AspNetUserRoles">
+            <EndProperty Name="AspNetRoles">
+              <ScalarProperty Name="Id" ColumnName="RoleId" />
+            </EndProperty>
+            <EndProperty Name="AspNetUsers">
+              <ScalarProperty Name="Id" ColumnName="UserId" />
+            </EndProperty>
+          </AssociationSetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="true" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>
