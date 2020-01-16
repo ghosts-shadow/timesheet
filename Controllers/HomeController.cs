@@ -252,7 +252,7 @@
             return this.View(model1);
         }
 
-        [Authorize(Roles = "Admin,Manager")]
+        [Authorize(Roles = "Admin,Manager,")]
         public ActionResult Asearch(int? page, int? pagesize, string search)
         {
             var a = this.db.MainTimeSheets.OrderByDescending(m => m.ID);
@@ -304,6 +304,7 @@
         [Authorize(Roles = "Admin,Manager,Employee")]
         public ActionResult csearch(DateTime? mtsmonth, long? csp, long? csmps ,string MM)
         {
+            var ll=new List<Attendance>();
             DateTime date;
             if (mtsmonth.HasValue)
             {
@@ -316,12 +317,31 @@
                 ViewBag.dateee = date;
             }
 
+            var uid = User.Identity.GetUserId();
+            var uid1 = this.db.AspNetUsers.Find(uid);
+            var t = new List<ProjectList>();
+            if (uid1.csid != 0 && !User.IsInRole("Admin"))
+            {
+                var scid = this.db.CsPermissions.Where(x => x.CsUser == uid1.csid).ToList();
+                foreach (var i in scid)
+                {
+                    t.Add(this.db.ProjectLists.Find(i.Project));
+                }
+
+                this.ViewBag.csp = new SelectList(t, "ID", "PROJECT_NAME");
+
+            }
+            else
+            {
+                this.ViewBag.csp = new SelectList(this.db.ProjectLists, "ID", "PROJECT_NAME");
+
+
+            }
             this.ViewBag.csp1 = csp;
             this.ViewBag.csmps1 = csmps;
             this.ViewBag.mtsmonth1 = date;
             this.db.Database.CommandTimeout = 300;
             ViewBag.MM = MM;
-            this.ViewBag.csp = new SelectList(this.db.ProjectLists, "ID", "PROJECT_NAME");
             this.ViewBag.csmps = new SelectList(this.db.ManPowerSuppliers, "ID", "Supplier");
             var list = this.db.Attendances.Include(x => x.LabourMaster).ToList();
             var abis = new MainTimeSheet();
@@ -347,12 +367,12 @@
                 {
                    
                     ModelState.AddModelError(string.Empty, "the combination does not exist");
-                    return this.View(list.OrderByDescending(x => x.ID).ToPagedList(1, 100));
+                    return this.View(ll.OrderByDescending(x => x.ID).ToPagedList(1, 100));
                 }
             }
 
                 
-            return this.View(list.OrderByDescending(x => x.ID).ToPagedList(1, 100));
+            return this.View(ll.OrderByDescending(x => x.ID).ToPagedList(1, 100));
         }
 
         public ActionResult Index()
@@ -381,7 +401,7 @@
         {
             var uid = User.Identity.GetUserId();
             var uid1 = this.db.AspNetUsers.Find(uid);
-            if (uid1.csid != 0)
+            if (uid1.csid != 0 && !User.IsInRole("Admin"))
             {
                  var scid = this.db.CsPermissions.Where(x => x.CsUser==uid1.csid).ToList();
             var t = new List<ProjectList>();
@@ -414,7 +434,26 @@
                     "ID,TMonth,ManPowerSupplier,Project,Ref,RefNo,UserName,PCName,SAV,Location,Note,Startit,Encoded_Absolute_URL,Item_Type,Path,URL_Path,Workflow_Instance_ID,File_Type,TMnth")]
             MainTimeSheet mainTimeSheet)
         {
-            this.ViewBag.Project = new SelectList(this.db.ProjectLists, "ID", "PROJECT_NAME");
+            var uid = User.Identity.GetUserId();
+            var uid1 = this.db.AspNetUsers.Find(uid);
+            if (uid1.csid != 0 && !User.IsInRole("Admin"))
+            {
+                var scid = this.db.CsPermissions.Where(x => x.CsUser == uid1.csid).ToList();
+                var t = new List<ProjectList>();
+                foreach (var i in scid)
+                {
+                    t.Add(this.db.ProjectLists.Find(i.Project));
+                }
+
+                this.ViewBag.Project = new SelectList(t, "ID", "PROJECT_NAME");
+
+            }
+            else
+            {
+                this.ViewBag.Project = new SelectList(this.db.ProjectLists, "ID", "PROJECT_NAME");
+
+
+            }
             this.ViewBag.ManPowerSupplier = new SelectList(this.db.ManPowerSuppliers, "ID", "Supplier");
             this.Tmonth = mainTimeSheet.TMonth.Date;
             this.ID = mainTimeSheet.ID;
@@ -1879,7 +1918,7 @@
                         this.db.SaveChanges();
                     }
                 }
-                return this.RedirectToAction("Asearch");
+                return this.RedirectToAction("MCreate");
             }
 
             return this.View(test);
@@ -1905,7 +1944,26 @@
             this.ViewBag.csmps1 = csmps2;
             this.ViewBag.mtsmonth1 = date;
             this.db.Database.CommandTimeout = 300;
-            this.ViewBag.csp = new SelectList(this.db.ProjectLists, "ID", "PROJECT_NAME");
+            var uid = User.Identity.GetUserId();
+            var uid1 = this.db.AspNetUsers.Find(uid);
+            var t = new List<ProjectList>();
+            if (uid1.csid != 0 && !User.IsInRole("Admin"))
+            {
+                var scid = this.db.CsPermissions.Where(x => x.CsUser == uid1.csid).ToList();
+                foreach (var i in scid)
+                {
+                    t.Add(this.db.ProjectLists.Find(i.Project));
+                }
+
+                this.ViewBag.csp = new SelectList(t, "ID", "PROJECT_NAME");
+
+            }
+            else
+            {
+                this.ViewBag.csp = new SelectList(this.db.ProjectLists, "ID", "PROJECT_NAME");
+
+
+            }
             this.ViewBag.csmps = new SelectList(this.db.ManPowerSuppliers, "ID", "Supplier");
             var list = this.db.Attendances.Include(x => x.LabourMaster).ToList();
             if (csmps2.HasValue && csp2.HasValue && mtsmonth2.HasValue)

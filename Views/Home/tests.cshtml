@@ -1,170 +1,156 @@
 ﻿@model onlygodknows.Models.testlist
-
-@functions {
-    public int counter1 = 1;
-}
-
 @{
     ViewBag.Title = "attendance";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 <h2>attendance</h2>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-@if (Request.IsAuthenticated)
-{
+ <script>
 
+        var counter = 1;
+        var number = 0;
 
-<script>
+        $(function() {
+            $('#add').click(() => {
+                number = counter++;
+                if (number < $('#empno0').children('option').length - 1) {
 
-    var counter = 1;
-    var number = 0;
+                    container = $('#tablerow1');
+                    template = $('#tablerow0');
+                    // Add clones
 
-    $(function () {
-        $('#add').click(() => {
-            number = counter++;
-            if (number< $('#empno0').children('option').length-1)
-            {
-                
-                container = $('#tablerow1');
-                template = $('#tablerow0');
-                // Add clones
-
-                var no = number - 1;
-                var clone = template.clone(true);
-                clone.attr('id', number);
-                clone.find('#hours'+0).attr('name', 'Tests[' + number + '].hours');
-                clone.find('#hours'+0).attr('id', 'hours' + number);
-                clone.find('select:first').attr('name', 'Tests[' + number + '].empno');
-                clone.find('select:first').attr('id', 'empno' + number);
-                clone.find('#dd'+0).attr('id', 'dd' + number);
-                clone.find('#name'+0).attr('id', 'name' + number);
-                clone.find('#position'+0).attr('id', 'position' + number);
-                clone.find('#name'+0).attr('name', 'name' + number);
-                clone.find('#position'+0).attr('name', 'position' + number);
-                //.attr('id', 'Tests[' + number + '].empno');
-                container.append(clone).before(clone);
-            }
-        });/*
-        $('#add').click(function () {
-            if (counter != 50) {
-                $('<tr id="tablerow' +
-                    counter +
-                    '"><td>' +
-                    '<input type="text" class="text-box single-line" name="Tests[' + counter + '].empno" value="" required="required" />'+ '</td>' +
-                    '<td>' +
-                    '<input type="text" class="text-box single-line" name="Tests[' +
-                    counter +
-                    '].hours" value="" required="required" />' +
-                    '</td>' +
-                    '</tr>').appendTo('#submissionTable');
-                counter++;
-            }
-            return false;
-            /*'<td>' +
-            '<button type="button" class="btn btn-primary" onclick="removeTr(' + counter + ');">Delete</button>' +
-            '</td>' +
-            function removeTr(index) {
-            if (counter > 1) {
-            $('#tablerow' + index).remove();
-            counter--;
-            }
-            return false;
-            }
-    $(document).ready(function(){
-        $("select").change(function(){
-            var selectedCountry = $(this).children("option:selected").val();
-            alert("You have selected the country - " + selectedCountry);
-
+                    var no = number - 1;
+                    var clone = template.clone(true);
+                    clone.attr('id', "tr" + number);
+                    clone.find('#hours' + 0).attr('name', 'Tests[' + number + '].hours');
+                    clone.find('#hours' + 0).attr('id', 'hours' + number);
+                    clone.find('select:first').attr('name', 'Tests[' + number + '].empno');
+                    clone.find('select:first').attr('id', 'empno' + number);
+                    clone.find('#dd' + 0).attr('id', 'dd' + number);
+                    clone.find('#name' + 0).attr('id', 'name' + number);
+                    clone.find('#position' + 0).attr('id', 'position' + number);
+                    clone.find('#name' + 0).attr('name', 'name' + number);
+                    clone.find('#position' + 0).attr('name', 'position' + number);
+                    clone.find('#re')
+                        .append(" <input type = \"button\" value = \"Remove\" onclick = \"remove(this.id)\"  id=\"" +
+                            number +
+                            "\"/> ");
+                    container.append(clone).before(clone);
+                }
+            });
         });
-    });*/
-    });
-//    $(document).ready(function () {
-//        $('select').change(function(){
-//            var selectedCountry = $(this).children("option:selected").val();
-//            alert(selectedCountry);
-//        });  
-//    });
-    function hi(id) {
-        for (var i = 0; i < number + 1; i++)
-        {
-            for (var j = 0; j < i; j++)
-            {
-                if ($('#empno' + i + ' option:selected').text() === $('#empno' + j + ' option:selected').text()) {
-                    $('#save').attr("disabled", true);
-                    $('#add').attr("disabled", true);
-                    var text = $('#empno' + j + ' option:selected').text() + " is duplicated";
-                    $('#dd' + j).show();
-                    alert(text);
-                    break;
-                } else {
-                    $('#save').attr("disabled", false);
-                    $('#add').attr("disabled", false);
-                    $('#dd' + j).hide();
 
+        function remove(id) {
+            $("#tr" + id).remove();
+            check();
+        }
+
+        function hi(id) {
+            name(id);
+            for (var i = 0; i < number + 1; i++) {
+                for (var j = 0; j < i; j++) {
+                        if ($('#empno' + i + ' option:selected').text() ===
+                            $('#empno' + j + ' option:selected').text()) {
+                            $('#save').attr("disabled", true);
+                            $('#add').attr("disabled", true);
+                            dishr();
+                            var text = $('#empno' + j + ' option:selected').text() + " is duplicated";
+                            $('#dd' + j).show();
+                            alert(text);
+                            break;
+                        } else {
+                            enhr();
+                            check();
+                            $('#dd' + j).hide();
+                        }
                 }
             }
         }
-        name(id);
-    }
-</script>
-<script>
-    function name(id) {
-        var x = document.getElementById(id);
-        var id1 = x.id.toString();
-        id1 = id1.replace('empno','');
-        var y = document.getElementById("name"+id1);
-        var z = document.getElementById("position"+id1);
-        y.value = x.value;
-        z.value = x.value;
-        var w = document.getElementById("hours" + id1);
-        var q = document.getElementById("add");
-        if (w.value() === 0) {
-            q.disable = true;
-        } else {
-            q.disable = false;
-        }
-    }
-</script>
-using (Html.BeginForm("tests", "Home"))
-{
-    @Html.AntiForgeryToken()
-    <div class="row" onclick="validator.resetForm();">
-        <input type="text" value="@ViewBag.mdate" disabled="disabled:true" style="font-size:1vw;" />
-        <input type="text" value="@ViewBag.mps" disabled="disabled:true" />
-        <input type="text" value="@ViewBag.pid" disabled="disabled:true" />
 
-        <input type="submit" value="save" class="btn btn-default" id="save" />
-    </div>
-    <div class="form-horizontal">
+        function dishr() {
+            for (var i = 0; i < counter; i++) {
+                    $('#hours' + i).attr("disabled", true);
+            }
+        }
+
+        function enhr() {
+            for (var i = 0; i < counter; i++) {
+                $('#hours' + i).attr("disabled", false);
+            }
+        }
+
+        function check() {
+            for (var i = 0; i < counter; i++) {
+                if ($('#hours' + i + ' option:selected').text() == '0') {
+                    $('#add').attr('disabled', true);
+                    $('#save').attr('disabled', true);
+                    break;
+                }
+                if ($('#empno' + i + ' option:selected').val() == "") {
+                    $('#add').attr('disabled', true);
+                    $('#save').attr('disabled', true);
+                    break;
+                }
+                $('#add').attr('disabled', false);
+                $('#save').attr('disabled', false);
+
+            }
+        }
+    </script>
+    <script>
+        function name(id) {
+            var x = document.getElementById(id);
+            var id1 = x.id.toString();
+            id1 = id1.replace('empno', '');
+            var y = document.getElementById("name" + id1);
+            var z = document.getElementById("position" + id1);
+            y.value = x.value;
+            z.value = x.value;
+        }
+    </script>
+@if (Request.IsAuthenticated)
+{
+    using (Html.BeginForm("tests", "Home"))
+    {
+        @Html.AntiForgeryToken()
+        <div class="row" onclick="validator.resetForm();">
+        <input type="text" value="@ViewBag.mdate" disabled="disabled:true" style="font-size: 1vw;"/>
+        <input type="text" value="@ViewBag.mps" disabled="disabled:true"/>
+        <input type="text" value="@ViewBag.pid" disabled="disabled:true" style="font-size: 1vw;"/>
+        <input type="submit" value="save" class="btn btn-default" id="save" disabled="disabled:true/>
+        </div>
+        <div class="form-horizontal">
         <div class="form-group">
             <div class="row">
-                @Html.ValidationSummary(false, "", new { @class = "text-danger", @style="font-size: 20px;" })
+                @Html.ValidationSummary(false, string.Empty, new { @class = "text-danger", style = "font-size: 20px;" })
                 <table id="submissionTable" class="table table-bordered">
                     <thead style="text-transform: capitalize">
                     <th>employee no</th>
                     <th>hours</th>
                     </thead>
                     <tbody>
-                        <tr id="tablerow0">
-                            <td style="font-size:1vw;">
-                                    @Html.DropDownList("Tests[" + 0 + "].empno", new List<SelectListItem>(ViewBag.empno), "Select EMP No", new { @id = "empno0", onchange = "hi(this.id)",@style="font-size:1.5vw;" })
-                                    @Html.DropDownList("name0", new List<SelectListItem>(ViewBag.name),"  ", new {  @id = "name0",@disabled="disabled:true" ,@style="font-size:1.5vw;"  })
-                                    @Html.DropDownList("position0", new List<SelectListItem>(ViewBag.position),"  ", new { @id = "position0",@disabled="disabled:true",@style="font-size:1.5vw;"  })
-                               
-                            </td>
-                            <td>
-                                    @Html.DropDownList("Tests[" + 0 + "].hours", new List<SelectListItem>(ViewBag.hours), new { @class = "form-control", @id = "hours0" })
-                                
-                            </td>
-                            <td style="display: none; color: red" id="dd0">dublicate</td> 
-                        </tr>
-                        <tr id="tablerow1"></tr>
+                    <tr id="tablerow0">
+                        <td>
+                            @Html.DropDownList("Tests[" + 0 + "].empno", new List<SelectListItem>(ViewBag.empno), "Select EMP No", new { id = "empno0", onchange = "hi(this.id)" })
+                            @Html.DropDownList("name0", new List<SelectListItem>(ViewBag.name), "  ", new { id = "name0", disabled = "disabled:true" })
+                            @Html.DropDownList("position0", new List<SelectListItem>(ViewBag.position), "  ", new { id = "position0", disabled = "disabled:true" })
+
+                        </td>
+                        <td>
+                            @Html.DropDownList("Tests[" + 0 + "].hours", new List<SelectListItem>(ViewBag.hours), new { @class = "form-control", id = "hours0", onchange = "check()" })
+
+                        </td>
+                        <td id="re"></td>
+                        <td style="color: red; display: none;" id="dd0">dublicate</td>
+                    </tr>
+                    <tr id="tablerow1"></tr>
                     </tbody>
                 </table>
                 <div class="col-sm-2">
-                    <input type="button" value="add" id="add" />
+                    <input type="button" value="add" id="add" name="add" onclick="$('#add').attr('disabled', true);$('#save').attr('disabled', true);" disabled="disabled:true"/>
                 </div>
             </div>
         </div>
-    </div>
-}}
+        </div>
+    }
+}

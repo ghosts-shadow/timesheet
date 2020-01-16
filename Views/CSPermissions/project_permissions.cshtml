@@ -1,0 +1,66 @@
+﻿
+@{
+    ViewBag.Title = "project_permissions";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>project permissions</h2>
+
+@if (Request.IsAuthenticated)
+{
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script>
+
+        var counter = 1;
+        var number = 0;
+
+        $(function () {
+            $('#add').click(() => {
+                number = counter++;
+                    container = $('#tablerow1');
+                    template = $('#tablerow0');
+                    // Add clones
+
+                    var no = number - 1;
+                    var clone = template.clone(true);
+                    clone.attr('id', number);
+//                    clone.find('#hours' + 0).attr('name', 'Tests[' + number + '].hours');
+//                    clone.find('#hours' + 0).attr('id', 'hours' + number);
+//                    clone.find('select:first').attr('name', 'Tests[' + number + '].empno');
+//                    clone.find('select:first').attr('id', 'empno' + number);
+//                    clone.find('#dd' + 0).attr('id', 'dd' + number);
+//                    clone.find('#name' + 0).attr('id', 'name' + number);
+//                    clone.find('#position' + 0).attr('id', 'position' + number);
+//                    clone.find('#name' + 0).attr('name', 'name' + number);
+//                    clone.find('#position' + 0).attr('name', 'position' + number);
+                    //.attr('id', 'Tests[' + number + '].empno');
+                    container.append(clone).before(clone);
+            });
+        });
+    </script>
+    using (Html.BeginForm("project_permissions", "CSPermissions"))
+    {
+        <input type="submit" value="save" class="btn btn-default" id="save" />
+        <table id="submissionTable" class="table table-bordered">
+            <thead style="text-transform: capitalize">
+            <th>user name</th>
+            <th>project permissions</th>
+            </thead>
+            <tbody>
+            <tr id="tablerow0">
+
+                <td>
+                    @Html.DropDownList("user_name", new List<SelectListItem>(ViewBag.permi), " ", new { @id = "un" })
+                </td>
+                <td>
+                    @Html.DropDownList("project", new List<SelectListItem>(ViewBag.csp), " ", new { @id = "cp" })
+                </td>
+            </tr>
+            <tr id="tablerow1"></tr>
+            </tbody>
+        </table>
+        <div class="col-sm-2">
+            <input type="button" value="add" id="add" name="add" />
+        </div>
+    }
+}

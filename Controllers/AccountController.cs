@@ -141,7 +141,6 @@ namespace onlygodknows.Controllers
         // GET: /Account/Register
          [Authorize(Roles = "Admin")]
 
-        [AllowAnonymous]
         public ActionResult Register()
             {
                 return View();

@@ -1,4 +1,5 @@
-﻿@media print /*--This is for Print--*/ {
+﻿@media print /*--This is for Print--*/
+{
     table {
         width: 100%;
         background-color: #eeeeee;
@@ -6,23 +7,27 @@
         -webkit-print-color-adjust: exact;
         border-collapse: collapse;
     }
+    tr:nth-child(even) {
+        background-color: #eee;
+    }
 
-    tr:nth-child(even) { background-color: #eee; }
-
-    tr:nth-child(odd) { background-color: #fff; }
+    tr:nth-child(odd) {
+        background-color: #fff;
+    }
 
     th {
         background-color: black;
         color: white;
     }
-
-    .btn1 { display: none; }
+    .btn1
+    {
+        display: none;
+    }
 
     table {
         border-collapse: collapse;
         border-spacing: 01px;
     }
-
     td,
     th {
         padding: 010px;
