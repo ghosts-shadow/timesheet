@@ -247,6 +247,7 @@
     <Compile Include="Models\ProjectList.cs">
       <DependentUpon>timesheet.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\prop.cs" />
     <Compile Include="Models\RefsList.cs">
       <DependentUpon>timesheet.tt</DependentUpon>
     </Compile>

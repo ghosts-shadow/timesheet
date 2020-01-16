@@ -1,4 +1,5 @@
-﻿
+﻿@using System.Data.Entity.Core.Objects
+
 @{
     ViewBag.Title = "project_permissions";
     Layout = "~/Views/Shared/_Layout.cshtml";
@@ -10,57 +11,86 @@
 {
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script>
-
         var counter = 1;
         var number = 0;
-
         $(function () {
             $('#add').click(() => {
                 number = counter++;
-                    container = $('#tablerow1');
-                    template = $('#tablerow0');
-                    // Add clones
-
-                    var no = number - 1;
-                    var clone = template.clone(true);
-                    clone.attr('id', number);
-//                    clone.find('#hours' + 0).attr('name', 'Tests[' + number + '].hours');
-//                    clone.find('#hours' + 0).attr('id', 'hours' + number);
-//                    clone.find('select:first').attr('name', 'Tests[' + number + '].empno');
-//                    clone.find('select:first').attr('id', 'empno' + number);
-//                    clone.find('#dd' + 0).attr('id', 'dd' + number);
-//                    clone.find('#name' + 0).attr('id', 'name' + number);
-//                    clone.find('#position' + 0).attr('id', 'position' + number);
-//                    clone.find('#name' + 0).attr('name', 'name' + number);
-//                    clone.find('#position' + 0).attr('name', 'position' + number);
-                    //.attr('id', 'Tests[' + number + '].empno');
-                    container.append(clone).before(clone);
+                container = $('#tablerow1');
+                template = $('#tablerow0');
+                var clone = template.clone(true);
+                clone.attr('id', number);
+                clone.find('#un' + 0).attr('name', 'props[' + number + '].empno');
+                clone.find('#cp' + 0).attr('name', 'props[' + number + '].projectid');
+                clone.find('#un' + 0).attr('id', 'un' + number);
+                clone.find('#cp' + 0).attr('id', 'cp' + number);
+                container.append(clone).before(clone);
             });
         });
+        function hi() {
+            for (var i = 0; i < number + 1; i++) {
+                for (var j = 0; j < i; j++) {
+                    if ($('#un' + i + ' option:selected').text() === $('#un' + j + ' option:selected').text() && $('#cp' + i + ' option:selected').text() === $('#cp' + j + ' option:selected').text()) {
+                        $('#save').attr("disabled", true);
+                        $('#add').attr("disabled", true);
+                        $('#dd' + j).show();
+                        break;
+                    } else {
+                        $('#dd' + j).hide();
+                        check();
+                    }
+                }
+            }
+        }
+        function check() {
+            for (var i = 0; i < counter; i++) {
+                if ($('#un' + i + ' option:selected').val() == '') {
+                    $('#add').attr('disabled', true);
+                    $('#save').attr('disabled', true);
+                    break;
+                }
+                if ($('#cp' + i + ' option:selected').val() == "") {
+                    $('#add').attr('disabled', true);
+                    $('#save').attr('disabled', true);
+                    break;
+                }
+                $('#add').attr('disabled', false);
+                $('#save').attr('disabled', false);
+
+            }
+        }
+    </script>
+    <script>
+        document.onclick = hi;
     </script>
     using (Html.BeginForm("project_permissions", "CSPermissions"))
     {
-        <input type="submit" value="save" class="btn btn-default" id="save" />
+        @Html.AntiForgeryToken()
+        <p> save permission <input type="submit" value="save" class="btn btn-default" id="save" disabled="disabled:true" /></p>
+
         <table id="submissionTable" class="table table-bordered">
             <thead style="text-transform: capitalize">
             <th>user name</th>
             <th>project permissions</th>
             </thead>
             <tbody>
-            <tr id="tablerow0">
-
-                <td>
-                    @Html.DropDownList("user_name", new List<SelectListItem>(ViewBag.permi), " ", new { @id = "un" })
-                </td>
-                <td>
-                    @Html.DropDownList("project", new List<SelectListItem>(ViewBag.csp), " ", new { @id = "cp" })
-                </td>
-            </tr>
-            <tr id="tablerow1"></tr>
+                <tr id="tablerow0">
+                    <td>
+                        @Html.DropDownList("props[0].empno", new List<SelectListItem>(ViewBag.permi), " ", new { @id = "un0" })
+                    </td>
+                    <td>
+                        @Html.DropDownList("props[0].projectid", new List<SelectListItem>(ViewBag.csp), " ", new { @id = "cp0", onchange = "check()" })
+                    </td>
+                    <td style="color: red; display: none;" id="dd0">dublicate</td>
+                </tr>
+                <tr id="tablerow1"></tr>
             </tbody>
         </table>
         <div class="col-sm-2">
-            <input type="button" value="add" id="add" name="add" />
+            <input type="button" value="add" id="add" name="add" onclick="$('#add').attr('disabled', true);$('#save').attr('disabled', true);" disabled="disabled:true" />
         </div>
+        <br />
+        <br />
+        <br />
     }
 }

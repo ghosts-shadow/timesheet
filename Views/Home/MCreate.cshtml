@@ -6,6 +6,17 @@
 
 @if (Request.IsAuthenticated)
 {
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <script>
+        $(function() {
+            $("#datepicker").datepicker({
+                minDate: -1,
+                maxDate: 0
+            });
+        });
+    </script>
 using (Html.BeginForm())
 {
     @Html.AntiForgeryToken()
@@ -19,7 +30,7 @@ using (Html.BeginForm())
                     @*
                         @Html.EditorFor(model => model.TMonth, new { htmlAttributes = new { @class = "form-control" } })
                     *@
-                    <input type="date" id="TMonth" name="TMonth" />
+                    <input type="text" id="datepicker" name="TMonth"  readonly="readonly"/>
                     @Html.ValidationMessageFor(model => model.TMonth, "", new { @class = "text-danger" })
                 </div>
                 @Html.LabelFor(model => model.ManPowerSupplier, htmlAttributes: new { @class = "control-label col-md-2" })

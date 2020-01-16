@@ -237,14 +237,11 @@ warning 6002: The table/view 'LogisticsSoft.dbo.Copy of Attendance' does not hav
           <Property Name="Workflow Instance ID" Type="nvarchar" MaxLength="255" />
           <Property Name="File Type" Type="nvarchar" MaxLength="255" />
         </EntityType>
-        <!--Errors Found During Generation:
-warning 6002: The table/view 'LogisticsSoft.dbo.CsPermission' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
         <EntityType Name="CsPermission">
           <Key>
             <PropertyRef Name="ID" />
-            <PropertyRef Name="CsPermission" />
           </Key>
-          <Property Name="ID" Type="int" Nullable="false" />
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="Project" Type="float" />
           <Property Name="CsUser" Type="int" />
           <Property Name="CsPermission" Type="bit" Nullable="false" />
@@ -764,6 +761,7 @@ warning 6013: The table/view 'LogisticsSoft.dbo.Users_Email' does not have a pri
           <EntitySet Name="Attendance" EntityType="Self.Attendance" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="AttendanceFreq" EntityType="Self.AttendanceFreq" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Camp_Details" EntityType="Self.Camp_Details" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="CsPermission" EntityType="Self.CsPermission" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="LabourMaster" EntityType="Self.LabourMaster" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="MainTimeSheet" EntityType="Self.MainTimeSheet" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ManPowerSupplier" EntityType="Self.ManPowerSupplier" Schema="dbo" store:Type="Tables" />
@@ -834,21 +832,6 @@ warning 6013: The table/view 'LogisticsSoft.dbo.Users_Email' does not have a pri
     [Copy of Attendance].[Workflow Instance ID] AS [Workflow Instance ID], 
     [Copy of Attendance].[File Type] AS [File Type]
     FROM [dbo].[Copy of Attendance] AS [Copy of Attendance]</DefiningQuery>
-          </EntitySet>
-          <EntitySet Name="CsPermission" EntityType="Self.CsPermission" store:Type="Tables" store:Schema="dbo">
-            <DefiningQuery>SELECT 
-    [CsPermission].[ID] AS [ID], 
-    [CsPermission].[Project] AS [Project], 
-    [CsPermission].[CsUser] AS [CsUser], 
-    [CsPermission].[CsPermission] AS [CsPermission], 
-    [CsPermission].[Remark] AS [Remark], 
-    [CsPermission].[Encoded Absolute URL] AS [Encoded Absolute URL], 
-    [CsPermission].[Item Type] AS [Item Type], 
-    [CsPermission].[Path] AS [Path], 
-    [CsPermission].[URL Path] AS [URL Path], 
-    [CsPermission].[Workflow Instance ID] AS [Workflow Instance ID], 
-    [CsPermission].[File Type] AS [File Type]
-    FROM [dbo].[CsPermission] AS [CsPermission]</DefiningQuery>
           </EntitySet>
           <EntitySet Name="EmpPromise" EntityType="Self.EmpPromise" store:Type="Tables" store:Schema="dbo">
             <DefiningQuery>SELECT 
@@ -1240,6 +1223,22 @@ warning 6013: The table/view 'LogisticsSoft.dbo.Users_Email' does not have a pri
           <Property Name="Active" Type="Boolean" Nullable="false" />
           <Property Name="Remark" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
         </EntityType>
+        <EntityType Name="CsPermission">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Project" Type="Double" />
+          <Property Name="CsUser" Type="Int32" />
+          <Property Name="CsPermission1" Type="Boolean" Nullable="false" />
+          <Property Name="Remark" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Encoded_Absolute_URL" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Item_Type" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Path" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="URL_Path" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Workflow_Instance_ID" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="File_Type" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+        </EntityType>
         <EntityType Name="LabourMaster">
           <Key>
             <PropertyRef Name="ID" />
@@ -1418,23 +1417,6 @@ warning 6013: The table/view 'LogisticsSoft.dbo.Users_Email' does not have a pri
           <Property Name="Holidays" Type="Double" />
           <Property Name="ManPowerSupply" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="CompID" Type="Double" />
-          <Property Name="Encoded_Absolute_URL" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="Item_Type" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="Path" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="URL_Path" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="Workflow_Instance_ID" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="File_Type" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-        </EntityType>
-        <EntityType Name="CsPermission">
-          <Key>
-            <PropertyRef Name="ID" />
-            <PropertyRef Name="CsPermission1" />
-          </Key>
-          <Property Name="ID" Type="Int32" Nullable="false" />
-          <Property Name="Project" Type="Double" />
-          <Property Name="CsUser" Type="Int32" />
-          <Property Name="CsPermission1" Type="Boolean" Nullable="false" />
-          <Property Name="Remark" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="Encoded_Absolute_URL" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="Item_Type" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="Path" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
@@ -1756,6 +1738,7 @@ warning 6013: The table/view 'LogisticsSoft.dbo.Users_Email' does not have a pri
           <EntitySet Name="Attendances" EntityType="Self.Attendance" />
           <EntitySet Name="AttendanceFreqs" EntityType="Self.AttendanceFreq" />
           <EntitySet Name="Camp_Details" EntityType="Self.Camp_Details" />
+          <EntitySet Name="CsPermissions" EntityType="Self.CsPermission" />
           <EntitySet Name="LabourMasters" EntityType="Self.LabourMaster" />
           <EntitySet Name="MainTimeSheets" EntityType="Self.MainTimeSheet" />
           <EntitySet Name="ManPowerSuppliers" EntityType="Self.ManPowerSupplier" />
@@ -1763,7 +1746,6 @@ warning 6013: The table/view 'LogisticsSoft.dbo.Users_Email' does not have a pri
           <EntitySet Name="usernames" EntityType="Self.username" />
           <EntitySet Name="ControlRooms" EntityType="Self.ControlRoom" />
           <EntitySet Name="Copy_of_Attendances" EntityType="Self.Copy_of_Attendance" />
-          <EntitySet Name="CsPermissions" EntityType="Self.CsPermission" />
           <EntitySet Name="EmpPromises" EntityType="Self.EmpPromise" />
           <EntitySet Name="Holidays" EntityType="Self.Holiday" />
           <EntitySet Name="LogIns" EntityType="Self.LogIn" />
@@ -1961,6 +1943,23 @@ warning 6013: The table/view 'LogisticsSoft.dbo.Users_Email' does not have a pri
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
+          <EntitySetMapping Name="CsPermissions">
+            <EntityTypeMapping TypeName="LogisticsSoftModel.CsPermission">
+              <MappingFragment StoreEntitySet="CsPermission">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="Project" ColumnName="Project" />
+                <ScalarProperty Name="CsUser" ColumnName="CsUser" />
+                <ScalarProperty Name="CsPermission1" ColumnName="CsPermission" />
+                <ScalarProperty Name="Remark" ColumnName="Remark" />
+                <ScalarProperty Name="Encoded_Absolute_URL" ColumnName="Encoded Absolute URL" />
+                <ScalarProperty Name="Item_Type" ColumnName="Item Type" />
+                <ScalarProperty Name="Path" ColumnName="Path" />
+                <ScalarProperty Name="URL_Path" ColumnName="URL Path" />
+                <ScalarProperty Name="Workflow_Instance_ID" ColumnName="Workflow Instance ID" />
+                <ScalarProperty Name="File_Type" ColumnName="File Type" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
           <EntitySetMapping Name="LabourMasters">
             <EntityTypeMapping TypeName="LogisticsSoftModel.LabourMaster">
               <MappingFragment StoreEntitySet="LabourMaster">
@@ -2136,23 +2135,6 @@ warning 6013: The table/view 'LogisticsSoft.dbo.Users_Email' does not have a pri
                 <ScalarProperty Name="Holidays" ColumnName="Holidays" />
                 <ScalarProperty Name="ManPowerSupply" ColumnName="ManPowerSupply" />
                 <ScalarProperty Name="CompID" ColumnName="CompID" />
-                <ScalarProperty Name="Encoded_Absolute_URL" ColumnName="Encoded Absolute URL" />
-                <ScalarProperty Name="Item_Type" ColumnName="Item Type" />
-                <ScalarProperty Name="Path" ColumnName="Path" />
-                <ScalarProperty Name="URL_Path" ColumnName="URL Path" />
-                <ScalarProperty Name="Workflow_Instance_ID" ColumnName="Workflow Instance ID" />
-                <ScalarProperty Name="File_Type" ColumnName="File Type" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="CsPermissions">
-            <EntityTypeMapping TypeName="LogisticsSoftModel.CsPermission">
-              <MappingFragment StoreEntitySet="CsPermission">
-                <ScalarProperty Name="ID" ColumnName="ID" />
-                <ScalarProperty Name="Project" ColumnName="Project" />
-                <ScalarProperty Name="CsUser" ColumnName="CsUser" />
-                <ScalarProperty Name="CsPermission1" ColumnName="CsPermission" />
-                <ScalarProperty Name="Remark" ColumnName="Remark" />
                 <ScalarProperty Name="Encoded_Absolute_URL" ColumnName="Encoded Absolute URL" />
                 <ScalarProperty Name="Item_Type" ColumnName="Item Type" />
                 <ScalarProperty Name="Path" ColumnName="Path" />

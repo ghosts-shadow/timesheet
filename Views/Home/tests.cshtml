@@ -117,7 +117,7 @@
         <input type="text" value="@ViewBag.mdate" disabled="disabled:true" style="font-size: 1vw;"/>
         <input type="text" value="@ViewBag.mps" disabled="disabled:true"/>
         <input type="text" value="@ViewBag.pid" disabled="disabled:true" style="font-size: 1vw;"/>
-        <input type="submit" value="save" class="btn btn-default" id="save" disabled="disabled:true/>
+        <input type="submit" value="save" class="btn btn-default" id="save" disabled="disabled:true"/>
         </div>
         <div class="form-horizontal">
         <div class="form-group">
@@ -131,9 +131,9 @@
                     <tbody>
                     <tr id="tablerow0">
                         <td>
-                            @Html.DropDownList("Tests[" + 0 + "].empno", new List<SelectListItem>(ViewBag.empno), "Select EMP No", new { id = "empno0", onchange = "hi(this.id)" })
-                            @Html.DropDownList("name0", new List<SelectListItem>(ViewBag.name), "  ", new { id = "name0", disabled = "disabled:true" })
-                            @Html.DropDownList("position0", new List<SelectListItem>(ViewBag.position), "  ", new { id = "position0", disabled = "disabled:true" })
+                            @Html.DropDownList("Tests[" + 0 + "].empno", new List<SelectListItem>(ViewBag.empno), "Select EMP No", new { @id = "empno0", @onchange = "hi(this.id)" })
+                            @Html.DropDownList("name0", new List<SelectListItem>(ViewBag.name), "  ", new { @id = "name0", @disabled = "disabled:true" })
+                            @Html.DropDownList("position0", new List<SelectListItem>(ViewBag.position), "  ", new { @id = "position0", @disabled = "disabled:true" })
 
                         </td>
                         <td>

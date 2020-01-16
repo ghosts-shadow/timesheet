@@ -33,6 +33,7 @@ namespace onlygodknows.Models
         public virtual DbSet<Attendance> Attendances { get; set; }
         public virtual DbSet<AttendanceFreq> AttendanceFreqs { get; set; }
         public virtual DbSet<Camp_Details> Camp_Details { get; set; }
+        public virtual DbSet<CsPermission> CsPermissions { get; set; }
         public virtual DbSet<LabourMaster> LabourMasters { get; set; }
         public virtual DbSet<MainTimeSheet> MainTimeSheets { get; set; }
         public virtual DbSet<ManPowerSupplier> ManPowerSuppliers { get; set; }
@@ -40,7 +41,6 @@ namespace onlygodknows.Models
         public virtual DbSet<username> usernames { get; set; }
         public virtual DbSet<ControlRoom> ControlRooms { get; set; }
         public virtual DbSet<Copy_of_Attendance> Copy_of_Attendances { get; set; }
-        public virtual DbSet<CsPermission> CsPermissions { get; set; }
         public virtual DbSet<EmpPromise> EmpPromises { get; set; }
         public virtual DbSet<Holiday> Holidays { get; set; }
         public virtual DbSet<LogIn> LogIns { get; set; }
