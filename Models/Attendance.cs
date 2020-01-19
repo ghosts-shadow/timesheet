@@ -104,7 +104,8 @@ namespace onlygodknows.Models
         public Nullable<long> nABST { get; set; }
         public Nullable<long> xOT { get; set; }
         public Nullable<long> nnOT { get; set; }
-    
+
+        public string status { get; set; }
         public virtual LabourMaster LabourMaster { get; set; }
         public virtual MainTimeSheet MainTimeSheet { get; set; }
     }

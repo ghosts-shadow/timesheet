@@ -16,6 +16,19 @@
                 maxDate: 0
             });
         });
+    </script><script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js">
+             </script>
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $('input#btnSubmit').on('click',
+                function() {
+                    var myForm = $("form#form1");
+                    if (myForm) {
+                        $(this).prop('disabled', true);
+                        $(myForm).submit();
+                    }
+                });
+        });
     </script>
 using (Html.BeginForm())
 {

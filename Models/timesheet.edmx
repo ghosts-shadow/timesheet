@@ -128,6 +128,7 @@
           <Property Name="nABST" Type="bigint" />
           <Property Name="xOT" Type="bigint" />
           <Property Name="nnOT" Type="bigint" />
+          <Property Name="status" Type="nvarchar(max)" />
         </EntityType>
         <EntityType Name="AttendanceFreq">
           <Key>
@@ -1194,6 +1195,7 @@ warning 6013: The table/view 'LogisticsSoft.dbo.Users_Email' does not have a pri
           <Property Name="nABST" Type="Int64" />
           <Property Name="xOT" Type="Int64" />
           <Property Name="nnOT" Type="Int64" />
+          <Property Name="status" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="LabourMaster" Relationship="Self.FK_Attendance_ToLabourMaster" FromRole="Attendance" ToRole="LabourMaster" />
           <NavigationProperty Name="MainTimeSheet" Relationship="Self.FK_Attendance_ToMainTimeSheet" FromRole="Attendance" ToRole="MainTimeSheet" />
         </EntityType>
@@ -1912,6 +1914,7 @@ warning 6013: The table/view 'LogisticsSoft.dbo.Users_Email' does not have a pri
                 <ScalarProperty Name="nABST" ColumnName="nABST" />
                 <ScalarProperty Name="xOT" ColumnName="xOT" />
                 <ScalarProperty Name="nnOT" ColumnName="nnOT" />
+                <ScalarProperty Name="status" ColumnName="status" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

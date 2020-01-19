@@ -148,10 +148,10 @@
             this.ViewBag.C30 = data;
             this.ViewBag.C31 = data;
             var model1 = new timesheetViewModel
-                             {
-                                 Attendancecollection = this.db.Attendances.Where(x => x.SubMain.Equals(aa.ID))
+            {
+                Attendancecollection = this.db.Attendances.Where(x => x.SubMain.Equals(aa.ID))
                                      .Include(x => x.LabourMaster).OrderByDescending(m => m.ID)
-                             };
+            };
             return this.View(model1);
         }
 
@@ -302,13 +302,13 @@
             return this.View();
         }
         [Authorize(Roles = "Admin,Manager,Employee")]
-        public ActionResult csearch(DateTime? mtsmonth, long? csp, long? csmps ,string MM)
+        public ActionResult csearch(DateTime? mtsmonth, long? csp, long? csmps, string MM)
         {
-            var ll=new List<Attendance>();
+            var ll = new List<Attendance>();
             DateTime date;
             if (mtsmonth.HasValue)
             {
-                DateTime.TryParse( mtsmonth.ToString(),out date);
+                DateTime.TryParse(mtsmonth.ToString(), out date);
                 ViewBag.dateee = date.ToShortDateString();
             }
             else
@@ -365,13 +365,13 @@
                 }
                 else
                 {
-                   
+
                     ModelState.AddModelError(string.Empty, "the combination does not exist");
                     return this.View(ll.OrderByDescending(x => x.ID).ToPagedList(1, 100));
                 }
             }
 
-                
+
             return this.View(ll.OrderByDescending(x => x.ID).ToPagedList(1, 100));
         }
 
@@ -381,36 +381,20 @@
         }
 
         [Authorize(Roles = "Admin,Manager,Employee")]
-        public JsonResult listofemp()
-        {
-            var at = new Attendance();
-            var a = this.db.MainTimeSheets.OrderByDescending(m => m.ID);
-            var aa = a.First();
-            this.ViewBag.mid = aa.ID;
-            var b = this.db.ManPowerSuppliers.Find(aa.ManPowerSupplier);
-            var c = this.db.ProjectLists.Find(aa.Project);
-            var d = from LabourMaster in this.db.LabourMasters
-                    where LabourMaster.ManPowerSupply == b.ID
-                    select LabourMaster;
-            var listofemps = this.db.LabourMasters.OrderBy(x => x.ID).ToList();
-            return this.Json(listofemps, JsonRequestBehavior.AllowGet);
-        }
-
-        [Authorize(Roles = "Admin,Manager,Employee")]
         public ActionResult MCreate()
         {
             var uid = User.Identity.GetUserId();
             var uid1 = this.db.AspNetUsers.Find(uid);
             if (uid1.csid != 0 && !User.IsInRole("Admin"))
             {
-                 var scid = this.db.CsPermissions.Where(x => x.CsUser==uid1.csid).ToList();
-            var t = new List<ProjectList>();
-            foreach (var i in scid)
-            {
-                t.Add(this.db.ProjectLists.Find(i.Project));
-            }
-            this.ViewBag.Project = new SelectList(t, "ID", "PROJECT_NAME");
-           
+                var scid = this.db.CsPermissions.Where(x => x.CsUser == uid1.csid).ToList();
+                var t = new List<ProjectList>();
+                foreach (var i in scid)
+                {
+                    t.Add(this.db.ProjectLists.Find(i.Project));
+                }
+                this.ViewBag.Project = new SelectList(t, "ID", "PROJECT_NAME");
+
             }
             else
             {
@@ -485,7 +469,7 @@
             var d = from LabourMaster in this.db.LabourMasters
                     where LabourMaster.ManPowerSupply == b.ID
                     select LabourMaster;
-            this.ViewBag.empno = new SelectList(d.Where(x=>x.EMPNO >=4).OrderBy(m => m.EMPNO), "ID", "EMPNO");
+            this.ViewBag.empno = new SelectList(d.Where(x => x.EMPNO >= 4).OrderBy(m => m.EMPNO), "ID", "EMPNO");
             this.ViewBag.name = new SelectList(d.Where(x => x.EMPNO >= 4).OrderBy(m => m.EMPNO), "ID", "Person_Name");
             this.ViewBag.position = new SelectList(d.Where(x => x.EMPNO >= 4).OrderBy(m => m.EMPNO), "ID", "Position");
             var data = new[]
@@ -592,7 +576,7 @@
                     oldmts = this.db.MainTimeSheets.Where(x => x.TMonth.Month.Equals(list.date.Month) && x.TMonth.Year.Equals(list.date.Year)
                                                                         && x.ManPowerSupplier.Equals(aa.ManPowerSupplier)
                                                                         && x.Project.Equals(aa.Project)).OrderByDescending(x => x.ID).ToList();
-                    
+
                     if (oldmts.Count != 0)
                     {
                         oldmts1 = oldmts.Last();
@@ -605,25 +589,25 @@
                         check = this.db.Attendances.Where(z => z.EmpID.Equals(list.empno) && z.SubMain.Equals(aa.ID))
                             .ToList();
                     }
-{
+                    {
                         var tb = this.db;
-                        var lo = this.db.MainTimeSheets.Where(e => e.ManPowerSupplier.Equals(aa.ManPowerSupplier) && e.TMonth.Year.Equals(list.date.Year) && e.TMonth.Month.Equals(list.date.Month) ).ToList();
+                        var lo = this.db.MainTimeSheets.Where(e => e.ManPowerSupplier.Equals(aa.ManPowerSupplier) && e.TMonth.Year.Equals(list.date.Year) && e.TMonth.Month.Equals(list.date.Month)).ToList();
                         List<Attendance> lo1 = new List<Attendance>();
                         foreach (var same in lo)
                         {
                             var at1 = this.db.Attendances.Where(e => e.SubMain.Equals(same.ID)).ToList();
-                            if (at1!=null)
-                            {                                          
+                            if (at1 != null)
+                            {
                                 foreach (var at2 in at1)
                                 {
                                     lo1.Add(at2);
                                 }
-                            }   
+                            }
                         }
                         List<Attendance> lo3 = new List<Attendance>();
                         foreach (var lo2 in lo1)
                         {
-                            if (list.empno==lo2.EmpID)
+                            if (list.empno == lo2.EmpID)
                             {
                                 lo3.Add(lo2);
                             }
@@ -1166,7 +1150,7 @@
                                 }
                             }
                         }
-}
+                    }
                     if (check.Count != 0) at = check.First();
                     else at.SubMain = oldmts1.ID;
                     at.EmpID = list.empno;
@@ -1612,7 +1596,7 @@
                     }
                     {
                         at.TotalVL = 0;
-                        long tv =0;
+                        long tv = 0;
                         if (!at.C1.IsNullOrWhiteSpace())
                             if (at.C1.Equals("V"))
                                 tv = tv + 1;
@@ -1907,6 +1891,7 @@
 
                         at.TotalTransefer = tv;
                     }
+                    at.status = "panding";
                     if (check.Count != 0)
                     {
                         this.db.Entry(at).State = EntityState.Modified;
@@ -1974,93 +1959,123 @@
                 var ab = this.db.MainTimeSheets
                     .Where(x => x.TMonth.Month.Equals(dm.Month) && x.TMonth.Year.Equals(dm.Year) && x.ManPowerSupplier.Equals(lcsmps) && x.Project.Equals(lcsp))
                     .OrderBy(x => x.ID).ToList();
-                
-                
-                    foreach (var abis in ab)
+
+
+                foreach (var abis in ab)
+                {
+                    var ass = this.db.Attendances.Where(x => x.SubMain.Equals(abis.ID)).Include(x => x.LabourMaster).ToList();
+                    /**/
+                    foreach (var attendance in ass)
                     {
-                        var ass = this.db.Attendances.Where(x => x.SubMain.Equals(abis.ID)).Include(x => x.LabourMaster).ToList();
-                            /**/
-                        foreach (var attendance in ass)
+                        var et = new test();
+                        var epno = this.db.LabourMasters.Find(attendance.EmpID);
+                        et.empno = epno.EMPNO;
+                        if (date.Day == 1) et.hours = attendance.C1;
+
+                        if (date.Day == 2) et.hours = attendance.C2;
+
+                        if (date.Day == 3) et.hours = attendance.C3;
+
+                        if (date.Day == 4) et.hours = attendance.C4;
+
+                        if (date.Day == 5) et.hours = attendance.C5;
+
+                        if (date.Day == 6) et.hours = attendance.C6;
+
+                        if (date.Day == 7) et.hours = attendance.C7;
+
+                        if (date.Day == 8) et.hours = attendance.C8;
+
+                        if (date.Day == 9) et.hours = attendance.C9;
+
+                        if (date.Day == 10) et.hours = attendance.C10;
+
+                        if (date.Day == 11) et.hours = attendance.C11;
+
+                        if (date.Day == 12) et.hours = attendance.C12;
+
+                        if (date.Day == 13) et.hours = attendance.C13;
+
+                        if (date.Day == 14) et.hours = attendance.C14;
+
+                        if (date.Day == 15) et.hours = attendance.C15;
+
+                        if (date.Day == 16) et.hours = attendance.C16;
+
+                        if (date.Day == 17) et.hours = attendance.C17;
+
+                        if (date.Day == 18) et.hours = attendance.C18;
+
+                        if (date.Day == 19) et.hours = attendance.C19;
+
+                        if (date.Day == 20) et.hours = attendance.C20;
+
+                        if (date.Day == 21) et.hours = attendance.C21;
+
+                        if (date.Day == 22) et.hours = attendance.C22;
+
+                        if (date.Day == 23) et.hours = attendance.C23;
+
+                        if (date.Day == 24) et.hours = attendance.C24;
+
+                        if (date.Day == 25) et.hours = attendance.C25;
+
+                        if (date.Day == 26) et.hours = attendance.C26;
+
+                        if (date.Day == 27) et.hours = attendance.C27;
+
+                        if (date.Day == 28) et.hours = attendance.C28;
+
+                        if (date.Day == 29) et.hours = attendance.C29;
+
+                        if (date.Day == 30) et.hours = attendance.C30;
+
+                        if (date.Day == 31) et.hours = attendance.C31;
+
+                        if (!final1.Exists(x => x.empno.Equals(et.empno)))
                         {
-                            var et=new test();
-                            var epno = this.db.LabourMasters.Find(attendance.EmpID);
-                            et.empno = epno.EMPNO;
-                            if (date.Day == 1)et.hours = attendance.C1;
-
-                            if (date.Day == 2) et.hours = attendance.C2;
-
-                            if (date.Day == 3) et.hours = attendance.C3;
-
-                            if (date.Day == 4) et.hours = attendance.C4;
-
-                            if (date.Day == 5) et.hours = attendance.C5;
-
-                            if (date.Day == 6) et.hours = attendance.C6;
-
-                            if (date.Day == 7) et.hours = attendance.C7;
-
-                            if (date.Day == 8) et.hours = attendance.C8;
-
-                            if (date.Day == 9) et.hours = attendance.C9;
-
-                            if (date.Day == 10) et.hours = attendance.C10;
-
-                            if (date.Day == 11) et.hours = attendance.C11;
-
-                            if (date.Day == 12) et.hours = attendance.C12;
-
-                            if (date.Day == 13) et.hours = attendance.C13;
-
-                            if (date.Day == 14) et.hours = attendance.C14;
-
-                            if (date.Day == 15) et.hours = attendance.C15;
-
-                            if (date.Day == 16) et.hours = attendance.C16;
-
-                            if (date.Day == 17) et.hours = attendance.C17;
-
-                            if (date.Day == 18) et.hours = attendance.C18;
-
-                            if (date.Day == 19) et.hours = attendance.C19;
-
-                            if (date.Day == 20) et.hours = attendance.C20;
-
-                            if (date.Day == 21) et.hours = attendance.C21;
-
-                            if (date.Day == 22) et.hours = attendance.C22;
-
-                            if (date.Day == 23) et.hours = attendance.C23;
-
-                            if (date.Day == 24) et.hours = attendance.C24;
-
-                            if (date.Day == 25) et.hours = attendance.C25;
-
-                            if (date.Day == 26) et.hours = attendance.C26;
-
-                            if (date.Day == 27) et.hours = attendance.C27;
-
-                            if (date.Day == 28) et.hours = attendance.C28;
-
-                            if (date.Day == 29) et.hours = attendance.C29;
-
-                            if (date.Day == 30) et.hours = attendance.C30;
-
-                            if (date.Day == 31) et.hours = attendance.C31;
-
-                            if (!final1.Exists(x=>x.empno.Equals(et.empno)))
-                            {
-                                final1.Add(et);
-                            }
-                            
+                            final1.Add(et);
                         }
+
                     }
-                    return this.View(final1.OrderBy(x => x.empno).ToPagedList(1, 100));
-                
+                }
+                return this.View(final1.OrderBy(x => x.empno).ToPagedList(1, 100));
+
             }
 
+            
 
             return this.View(final1.OrderBy(x => x.empno).ToPagedList(1, 100));
 
+        }
+
+        public void approval(DateTime? mtsmonth2, long? csp2, long? csmps2)
+        {
+
+            var final1 = new List<test>();
+            if (csmps2.HasValue && csp2.HasValue && mtsmonth2.HasValue)
+            {
+                DateTime.TryParse(mtsmonth2.Value.ToString(), out var dm);
+                long.TryParse(csp2.ToString(), out var lcsp);
+                long.TryParse(csmps2.ToString(), out var lcsmps);
+                var ab = this.db.MainTimeSheets
+                    .Where(x => x.TMonth.Month.Equals(dm.Month) && x.TMonth.Year.Equals(dm.Year) && x.ManPowerSupplier.Equals(lcsmps) && x.Project.Equals(lcsp))
+                    .OrderBy(x => x.ID).ToList();
+
+
+                foreach (var abis in ab)
+                {
+                    var ass = this.db.Attendances.Where(x => x.SubMain.Equals(abis.ID)).Include(x => x.LabourMaster).ToList();
+                    /**/
+                    foreach (var attendance in ass)
+                    {
+                        attendance.status = "submitted for "+dm.Day;
+                        this.db.Entry(attendance).State = EntityState.Modified;
+                        this.db.SaveChanges();
+                    }
+                }
+
+            }
         }
 
         [Authorize(Roles = "Admin")]
