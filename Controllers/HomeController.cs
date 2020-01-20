@@ -2049,9 +2049,8 @@
 
         }
 
-        public void approval(DateTime? mtsmonth2, long? csp2, long? csmps2)
+        public ActionResult approval(DateTime? mtsmonth2, long? csp2, long? csmps2)
         {
-
             var final1 = new List<test>();
             if (csmps2.HasValue && csp2.HasValue && mtsmonth2.HasValue)
             {
@@ -2059,32 +2058,46 @@
                 long.TryParse(csp2.ToString(), out var lcsp);
                 long.TryParse(csmps2.ToString(), out var lcsmps);
                 var ab = this.db.MainTimeSheets
-                    .Where(x => x.TMonth.Month.Equals(dm.Month) && x.TMonth.Year.Equals(dm.Year) && x.ManPowerSupplier.Equals(lcsmps) && x.Project.Equals(lcsp))
-                    .OrderBy(x => x.ID).ToList();
-
+                    .Where(
+                        x => x.TMonth.Month.Equals(dm.Month) && x.TMonth.Year.Equals(dm.Year)
+                                                             && x.ManPowerSupplier.Equals(lcsmps)
+                                                             && x.Project.Equals(lcsp)).OrderBy(x => x.ID).ToList();
 
                 foreach (var abis in ab)
                 {
-                    var ass = this.db.Attendances.Where(x => x.SubMain.Equals(abis.ID)).Include(x => x.LabourMaster).ToList();
+                    var ass = this.db.Attendances.Where(x => x.SubMain.Equals(abis.ID)).Include(x => x.LabourMaster)
+                        .ToList();
                     /**/
                     foreach (var attendance in ass)
                     {
-                        attendance.status = "submitted for "+dm.Day;
-                        this.db.Entry(attendance).State = EntityState.Modified;
-                        this.db.SaveChanges();
+                        if (User.IsInRole("Employee"))
+                        {
+                            attendance.status = "submitted for " + dm.Day;
+                            this.db.Entry(attendance).State = EntityState.Modified;
+                            this.db.SaveChanges();
+                            var ap = new approval();
+                            ap.MPS_id = csmps2;
+                            ap.P_id = csp2;
+                            ap.adate = dm;
+                            ap.status = "submitted";
+                            ap.A_id = attendance.ID;
+                            this.db.approvals.Add(ap);
+                            this.db.SaveChanges();
+                        }
                     }
                 }
-
             }
+
+            return this.RedirectToAction("download");
         }
 
         [Authorize(Roles = "Admin")]
         public void DownloadExcel(DateTime? mtsmonth1, long? csp1, long? csmps1)
         {
             List<Attendance> passexel;
-            ExcelPackage Ep = new ExcelPackage();
-            ExcelWorksheet Sheet = Ep.Workbook.Worksheets.Add("Attendances");
-            int row = 4;
+            var Ep = new ExcelPackage();
+            var Sheet = Ep.Workbook.Worksheets.Add("Attendances");
+            var row = 4;
             var pcount = 5;
             DateTime.TryParse(mtsmonth1.ToString(), out var date);
             var p = this.db.ProjectLists.Find(csp1);
@@ -2105,7 +2118,7 @@
             Sheet.Cells["J3"].Value = "Hrs";
             long.TryParse(csmps1.ToString(), out var mcs);
             long.TryParse(csp1.ToString(), out var pcs);
-            var Msum = db.MainTimeSheets.Where(
+            var Msum = this.db.MainTimeSheets.Where(
                 y => y.Project == pcs && y.ManPowerSupplier == mcs && y.TMonth.Month == date.Month
                      && y.TMonth.Year == date.Year).ToList();
             foreach (var sum in Msum)
@@ -2132,7 +2145,8 @@
                                     Sheet.Cells[string.Format("H{0}", row)].Value = passexel[i + 3].C1;
                                     if (passexel.Count > 4)
                                     {
-                                        Sheet.Cells[string.Format("I{0}", row)].Value = passexel[i + 4].LabourMaster.EMPNO;
+                                        Sheet.Cells[string.Format("I{0}", row)].Value =
+                                            passexel[i + 4].LabourMaster.EMPNO;
                                         Sheet.Cells[string.Format("J{0}", row)].Value = passexel[i + 4].C1;
                                     }
                                 }
@@ -2158,7 +2172,8 @@
                                     Sheet.Cells[string.Format("H{0}", row)].Value = passexel[i + 3].C2;
                                     if (passexel.Count > 4)
                                     {
-                                        Sheet.Cells[string.Format("I{0}", row)].Value = passexel[i + 4].LabourMaster.EMPNO;
+                                        Sheet.Cells[string.Format("I{0}", row)].Value =
+                                            passexel[i + 4].LabourMaster.EMPNO;
                                         Sheet.Cells[string.Format("J{0}", row)].Value = passexel[i + 4].C2;
                                     }
                                 }
@@ -2184,7 +2199,8 @@
                                     Sheet.Cells[string.Format("H{0}", row)].Value = passexel[i + 3].C3;
                                     if (passexel.Count > 4)
                                     {
-                                        Sheet.Cells[string.Format("I{0}", row)].Value = passexel[i + 4].LabourMaster.EMPNO;
+                                        Sheet.Cells[string.Format("I{0}", row)].Value =
+                                            passexel[i + 4].LabourMaster.EMPNO;
                                         Sheet.Cells[string.Format("J{0}", row)].Value = passexel[i + 4].C3;
                                     }
                                 }
@@ -2210,7 +2226,8 @@
                                     Sheet.Cells[string.Format("H{0}", row)].Value = passexel[i + 3].C4;
                                     if (passexel.Count > 4)
                                     {
-                                        Sheet.Cells[string.Format("I{0}", row)].Value = passexel[i + 4].LabourMaster.EMPNO;
+                                        Sheet.Cells[string.Format("I{0}", row)].Value =
+                                            passexel[i + 4].LabourMaster.EMPNO;
                                         Sheet.Cells[string.Format("J{0}", row)].Value = passexel[i + 4].C4;
                                     }
                                 }
@@ -2236,7 +2253,8 @@
                                     Sheet.Cells[string.Format("H{0}", row)].Value = passexel[i + 3].C5;
                                     if (passexel.Count > 4)
                                     {
-                                        Sheet.Cells[string.Format("I{0}", row)].Value = passexel[i + 4].LabourMaster.EMPNO;
+                                        Sheet.Cells[string.Format("I{0}", row)].Value =
+                                            passexel[i + 4].LabourMaster.EMPNO;
                                         Sheet.Cells[string.Format("J{0}", row)].Value = passexel[i + 4].C5;
                                     }
                                 }
@@ -2262,7 +2280,8 @@
                                     Sheet.Cells[string.Format("H{0}", row)].Value = passexel[i + 3].C6;
                                     if (passexel.Count > 4)
                                     {
-                                        Sheet.Cells[string.Format("I{0}", row)].Value = passexel[i + 4].LabourMaster.EMPNO;
+                                        Sheet.Cells[string.Format("I{0}", row)].Value =
+                                            passexel[i + 4].LabourMaster.EMPNO;
                                         Sheet.Cells[string.Format("J{0}", row)].Value = passexel[i + 4].C6;
                                     }
                                 }
@@ -2288,7 +2307,8 @@
                                     Sheet.Cells[string.Format("H{0}", row)].Value = passexel[i + 3].C7;
                                     if (passexel.Count > 4)
                                     {
-                                        Sheet.Cells[string.Format("I{0}", row)].Value = passexel[i + 4].LabourMaster.EMPNO;
+                                        Sheet.Cells[string.Format("I{0}", row)].Value =
+                                            passexel[i + 4].LabourMaster.EMPNO;
                                         Sheet.Cells[string.Format("J{0}", row)].Value = passexel[i + 4].C7;
                                     }
                                 }
@@ -2314,7 +2334,8 @@
                                     Sheet.Cells[string.Format("H{0}", row)].Value = passexel[i + 3].C8;
                                     if (passexel.Count > 4)
                                     {
-                                        Sheet.Cells[string.Format("I{0}", row)].Value = passexel[i + 4].LabourMaster.EMPNO;
+                                        Sheet.Cells[string.Format("I{0}", row)].Value =
+                                            passexel[i + 4].LabourMaster.EMPNO;
                                         Sheet.Cells[string.Format("J{0}", row)].Value = passexel[i + 4].C8;
                                     }
                                 }
@@ -2340,7 +2361,8 @@
                                     Sheet.Cells[string.Format("H{0}", row)].Value = passexel[i + 3].C9;
                                     if (passexel.Count > 4)
                                     {
-                                        Sheet.Cells[string.Format("I{0}", row)].Value = passexel[i + 4].LabourMaster.EMPNO;
+                                        Sheet.Cells[string.Format("I{0}", row)].Value =
+                                            passexel[i + 4].LabourMaster.EMPNO;
                                         Sheet.Cells[string.Format("J{0}", row)].Value = passexel[i + 4].C9;
                                     }
                                 }
@@ -2366,7 +2388,8 @@
                                     Sheet.Cells[string.Format("H{0}", row)].Value = passexel[i + 3].C10;
                                     if (passexel.Count > 4)
                                     {
-                                        Sheet.Cells[string.Format("I{0}", row)].Value = passexel[i + 4].LabourMaster.EMPNO;
+                                        Sheet.Cells[string.Format("I{0}", row)].Value =
+                                            passexel[i + 4].LabourMaster.EMPNO;
                                         Sheet.Cells[string.Format("J{0}", row)].Value = passexel[i + 4].C10;
                                     }
                                 }
@@ -2392,7 +2415,8 @@
                                     Sheet.Cells[string.Format("H{0}", row)].Value = passexel[i + 3].C11;
                                     if (passexel.Count > 4)
                                     {
-                                        Sheet.Cells[string.Format("I{0}", row)].Value = passexel[i + 4].LabourMaster.EMPNO;
+                                        Sheet.Cells[string.Format("I{0}", row)].Value =
+                                            passexel[i + 4].LabourMaster.EMPNO;
                                         Sheet.Cells[string.Format("J{0}", row)].Value = passexel[i + 4].C11;
                                     }
                                 }
@@ -2418,7 +2442,8 @@
                                     Sheet.Cells[string.Format("H{0}", row)].Value = passexel[i + 3].C12;
                                     if (passexel.Count > 4)
                                     {
-                                        Sheet.Cells[string.Format("I{0}", row)].Value = passexel[i + 4].LabourMaster.EMPNO;
+                                        Sheet.Cells[string.Format("I{0}", row)].Value =
+                                            passexel[i + 4].LabourMaster.EMPNO;
                                         Sheet.Cells[string.Format("J{0}", row)].Value = passexel[i + 4].C12;
                                     }
                                 }
@@ -2444,7 +2469,8 @@
                                     Sheet.Cells[string.Format("H{0}", row)].Value = passexel[i + 3].C13;
                                     if (passexel.Count > 4)
                                     {
-                                        Sheet.Cells[string.Format("I{0}", row)].Value = passexel[i + 4].LabourMaster.EMPNO;
+                                        Sheet.Cells[string.Format("I{0}", row)].Value =
+                                            passexel[i + 4].LabourMaster.EMPNO;
                                         Sheet.Cells[string.Format("J{0}", row)].Value = passexel[i + 4].C13;
                                     }
                                 }
@@ -2470,7 +2496,8 @@
                                     Sheet.Cells[string.Format("H{0}", row)].Value = passexel[i + 3].C14;
                                     if (passexel.Count > 4)
                                     {
-                                        Sheet.Cells[string.Format("I{0}", row)].Value = passexel[i + 4].LabourMaster.EMPNO;
+                                        Sheet.Cells[string.Format("I{0}", row)].Value =
+                                            passexel[i + 4].LabourMaster.EMPNO;
                                         Sheet.Cells[string.Format("J{0}", row)].Value = passexel[i + 4].C14;
                                     }
                                 }
@@ -2496,7 +2523,8 @@
                                     Sheet.Cells[string.Format("H{0}", row)].Value = passexel[i + 3].C15;
                                     if (passexel.Count > 4)
                                     {
-                                        Sheet.Cells[string.Format("I{0}", row)].Value = passexel[i + 4].LabourMaster.EMPNO;
+                                        Sheet.Cells[string.Format("I{0}", row)].Value =
+                                            passexel[i + 4].LabourMaster.EMPNO;
                                         Sheet.Cells[string.Format("J{0}", row)].Value = passexel[i + 4].C15;
                                     }
                                 }
@@ -2522,7 +2550,8 @@
                                     Sheet.Cells[string.Format("H{0}", row)].Value = passexel[i + 3].C16;
                                     if (passexel.Count > 4)
                                     {
-                                        Sheet.Cells[string.Format("I{0}", row)].Value = passexel[i + 4].LabourMaster.EMPNO;
+                                        Sheet.Cells[string.Format("I{0}", row)].Value =
+                                            passexel[i + 4].LabourMaster.EMPNO;
                                         Sheet.Cells[string.Format("J{0}", row)].Value = passexel[i + 4].C16;
                                     }
                                 }
@@ -2548,7 +2577,8 @@
                                     Sheet.Cells[string.Format("H{0}", row)].Value = passexel[i + 3].C17;
                                     if (passexel.Count > 4)
                                     {
-                                        Sheet.Cells[string.Format("I{0}", row)].Value = passexel[i + 4].LabourMaster.EMPNO;
+                                        Sheet.Cells[string.Format("I{0}", row)].Value =
+                                            passexel[i + 4].LabourMaster.EMPNO;
                                         Sheet.Cells[string.Format("J{0}", row)].Value = passexel[i + 4].C17;
                                     }
                                 }
@@ -2574,7 +2604,8 @@
                                     Sheet.Cells[string.Format("H{0}", row)].Value = passexel[i + 3].C18;
                                     if (passexel.Count > 4)
                                     {
-                                        Sheet.Cells[string.Format("I{0}", row)].Value = passexel[i + 4].LabourMaster.EMPNO;
+                                        Sheet.Cells[string.Format("I{0}", row)].Value =
+                                            passexel[i + 4].LabourMaster.EMPNO;
                                         Sheet.Cells[string.Format("J{0}", row)].Value = passexel[i + 4].C18;
                                     }
                                 }
@@ -2600,7 +2631,8 @@
                                     Sheet.Cells[string.Format("H{0}", row)].Value = passexel[i + 3].C19;
                                     if (passexel.Count > 4)
                                     {
-                                        Sheet.Cells[string.Format("I{0}", row)].Value = passexel[i + 4].LabourMaster.EMPNO;
+                                        Sheet.Cells[string.Format("I{0}", row)].Value =
+                                            passexel[i + 4].LabourMaster.EMPNO;
                                         Sheet.Cells[string.Format("J{0}", row)].Value = passexel[i + 4].C19;
                                     }
                                 }
@@ -2626,7 +2658,8 @@
                                     Sheet.Cells[string.Format("H{0}", row)].Value = passexel[i + 3].C20;
                                     if (passexel.Count > 4)
                                     {
-                                        Sheet.Cells[string.Format("I{0}", row)].Value = passexel[i + 4].LabourMaster.EMPNO;
+                                        Sheet.Cells[string.Format("I{0}", row)].Value =
+                                            passexel[i + 4].LabourMaster.EMPNO;
                                         Sheet.Cells[string.Format("J{0}", row)].Value = passexel[i + 4].C20;
                                     }
                                 }
@@ -2652,7 +2685,8 @@
                                     Sheet.Cells[string.Format("H{0}", row)].Value = passexel[i + 3].C21;
                                     if (passexel.Count > 4)
                                     {
-                                        Sheet.Cells[string.Format("I{0}", row)].Value = passexel[i + 4].LabourMaster.EMPNO;
+                                        Sheet.Cells[string.Format("I{0}", row)].Value =
+                                            passexel[i + 4].LabourMaster.EMPNO;
                                         Sheet.Cells[string.Format("J{0}", row)].Value = passexel[i + 4].C21;
                                     }
                                 }
@@ -2678,7 +2712,8 @@
                                     Sheet.Cells[string.Format("H{0}", row)].Value = passexel[i + 3].C22;
                                     if (passexel.Count > 4)
                                     {
-                                        Sheet.Cells[string.Format("I{0}", row)].Value = passexel[i + 4].LabourMaster.EMPNO;
+                                        Sheet.Cells[string.Format("I{0}", row)].Value =
+                                            passexel[i + 4].LabourMaster.EMPNO;
                                         Sheet.Cells[string.Format("J{0}", row)].Value = passexel[i + 4].C22;
                                     }
                                 }
@@ -2704,7 +2739,8 @@
                                     Sheet.Cells[string.Format("H{0}", row)].Value = passexel[i + 3].C23;
                                     if (passexel.Count > 4)
                                     {
-                                        Sheet.Cells[string.Format("I{0}", row)].Value = passexel[i + 4].LabourMaster.EMPNO;
+                                        Sheet.Cells[string.Format("I{0}", row)].Value =
+                                            passexel[i + 4].LabourMaster.EMPNO;
                                         Sheet.Cells[string.Format("J{0}", row)].Value = passexel[i + 4].C23;
                                     }
                                 }
@@ -2730,7 +2766,8 @@
                                     Sheet.Cells[string.Format("H{0}", row)].Value = passexel[i + 3].C24;
                                     if (passexel.Count > 4)
                                     {
-                                        Sheet.Cells[string.Format("I{0}", row)].Value = passexel[i + 4].LabourMaster.EMPNO;
+                                        Sheet.Cells[string.Format("I{0}", row)].Value =
+                                            passexel[i + 4].LabourMaster.EMPNO;
                                         Sheet.Cells[string.Format("J{0}", row)].Value = passexel[i + 4].C24;
                                     }
                                 }
@@ -2756,7 +2793,8 @@
                                     Sheet.Cells[string.Format("H{0}", row)].Value = passexel[i + 3].C25;
                                     if (passexel.Count > 4)
                                     {
-                                        Sheet.Cells[string.Format("I{0}", row)].Value = passexel[i + 4].LabourMaster.EMPNO;
+                                        Sheet.Cells[string.Format("I{0}", row)].Value =
+                                            passexel[i + 4].LabourMaster.EMPNO;
                                         Sheet.Cells[string.Format("J{0}", row)].Value = passexel[i + 4].C25;
                                     }
                                 }
@@ -2782,7 +2820,8 @@
                                     Sheet.Cells[string.Format("H{0}", row)].Value = passexel[i + 3].C26;
                                     if (passexel.Count > 4)
                                     {
-                                        Sheet.Cells[string.Format("I{0}", row)].Value = passexel[i + 4].LabourMaster.EMPNO;
+                                        Sheet.Cells[string.Format("I{0}", row)].Value =
+                                            passexel[i + 4].LabourMaster.EMPNO;
                                         Sheet.Cells[string.Format("J{0}", row)].Value = passexel[i + 4].C26;
                                     }
                                 }
@@ -2808,7 +2847,8 @@
                                     Sheet.Cells[string.Format("H{0}", row)].Value = passexel[i + 3].C27;
                                     if (passexel.Count > 4)
                                     {
-                                        Sheet.Cells[string.Format("I{0}", row)].Value = passexel[i + 4].LabourMaster.EMPNO;
+                                        Sheet.Cells[string.Format("I{0}", row)].Value =
+                                            passexel[i + 4].LabourMaster.EMPNO;
                                         Sheet.Cells[string.Format("J{0}", row)].Value = passexel[i + 4].C27;
                                     }
                                 }
@@ -2834,7 +2874,8 @@
                                     Sheet.Cells[string.Format("H{0}", row)].Value = passexel[i + 3].C28;
                                     if (passexel.Count > 4)
                                     {
-                                        Sheet.Cells[string.Format("I{0}", row)].Value = passexel[i + 4].LabourMaster.EMPNO;
+                                        Sheet.Cells[string.Format("I{0}", row)].Value =
+                                            passexel[i + 4].LabourMaster.EMPNO;
                                         Sheet.Cells[string.Format("J{0}", row)].Value = passexel[i + 4].C28;
                                     }
                                 }
@@ -2860,7 +2901,8 @@
                                     Sheet.Cells[string.Format("H{0}", row)].Value = passexel[i + 3].C29;
                                     if (passexel.Count > 4)
                                     {
-                                        Sheet.Cells[string.Format("I{0}", row)].Value = passexel[i + 4].LabourMaster.EMPNO;
+                                        Sheet.Cells[string.Format("I{0}", row)].Value =
+                                            passexel[i + 4].LabourMaster.EMPNO;
                                         Sheet.Cells[string.Format("J{0}", row)].Value = passexel[i + 4].C29;
                                     }
                                 }
@@ -2886,7 +2928,8 @@
                                     Sheet.Cells[string.Format("H{0}", row)].Value = passexel[i + 3].C30;
                                     if (passexel.Count > 4)
                                     {
-                                        Sheet.Cells[string.Format("I{0}", row)].Value = passexel[i + 4].LabourMaster.EMPNO;
+                                        Sheet.Cells[string.Format("I{0}", row)].Value =
+                                            passexel[i + 4].LabourMaster.EMPNO;
                                         Sheet.Cells[string.Format("J{0}", row)].Value = passexel[i + 4].C30;
                                     }
                                 }
@@ -2912,7 +2955,8 @@
                                     Sheet.Cells[string.Format("H{0}", row)].Value = passexel[i + 3].C31;
                                     if (passexel.Count > 4)
                                     {
-                                        Sheet.Cells[string.Format("I{0}", row)].Value = passexel[i + 4].LabourMaster.EMPNO;
+                                        Sheet.Cells[string.Format("I{0}", row)].Value =
+                                            passexel[i + 4].LabourMaster.EMPNO;
                                         Sheet.Cells[string.Format("J{0}", row)].Value = passexel[i + 4].C31;
                                     }
                                 }
@@ -2922,9 +2966,10 @@
 
                     row++;
                 }
-                pcount = pcount+passexel.Count;
+
+                pcount = pcount + passexel.Count;
             }
-                
+
             Sheet.Cells["A" + pcount].Value = "Prepared by";
             Sheet.Cells["D" + pcount].Value = "Reviewed by";
             Sheet.Cells["H" + pcount].Value = "Approved ";

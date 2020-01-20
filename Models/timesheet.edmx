@@ -15,6 +15,20 @@
           <Property Name="Model" Type="varbinary(max)" Nullable="false" />
           <Property Name="ProductVersion" Type="nvarchar" MaxLength="32" Nullable="false" />
         </EntityType>
+        <EntityType Name="approval">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="adate" Type="date" />
+          <Property Name="P_id" Type="bigint" />
+          <Property Name="MPS_id" Type="bigint" />
+          <Property Name="status" Type="nvarchar(max)" />
+          <Property Name="A_id" Type="bigint" />
+          <Property Name="Susername" Type="nvarchar(max)" />
+          <Property Name="Ausername" Type="nvarchar(max)" />
+          <Property Name="Empno" Type="bigint" />
+        </EntityType>
         <EntityType Name="AspNetRoles">
           <Key>
             <PropertyRef Name="Id" />
@@ -648,6 +662,18 @@ warning 6013: The table/view 'LogisticsSoft.dbo.Users_Email' does not have a pri
           <Property Name="PrimarySMTP_Address" Type="nvarchar" MaxLength="255" />
           <Property Name="EmpId" Type="float" />
         </EntityType>-->
+        <Association Name="FK_approval_Toattendance">
+          <End Role="Attendance" Type="Self.Attendance" Multiplicity="0..1" />
+          <End Role="approval" Type="Self.approval" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Attendance">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="approval">
+              <PropertyRef Name="A_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_Attendance_ToLabourMaster">
           <End Role="LabourMaster" Type="Self.LabourMaster" Multiplicity="1" />
           <End Role="Attendance" Type="Self.Attendance" Multiplicity="*" />
@@ -754,6 +780,7 @@ warning 6013: The table/view 'LogisticsSoft.dbo.Users_Email' does not have a pri
         </Association>
         <EntityContainer Name="LogisticsSoftModelStoreContainer">
           <EntitySet Name="__MigrationHistory" EntityType="Self.__MigrationHistory" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="approval" EntityType="Self.approval" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="AspNetRoles" EntityType="Self.AspNetRoles" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="AspNetUserClaims" EntityType="Self.AspNetUserClaims" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="AspNetUserLogins" EntityType="Self.AspNetUserLogins" Schema="dbo" store:Type="Tables" />
@@ -1036,6 +1063,10 @@ warning 6013: The table/view 'LogisticsSoft.dbo.Users_Email' does not have a pri
     [UserInfo].[File Type] AS [File Type]
     FROM [dbo].[UserInfo] AS [UserInfo]</DefiningQuery>
           </EntitySet>
+          <AssociationSet Name="FK_approval_Toattendance" Association="Self.FK_approval_Toattendance">
+            <End Role="Attendance" EntitySet="Attendance" />
+            <End Role="approval" EntitySet="approval" />
+          </AssociationSet>
           <AssociationSet Name="FK_Attendance_ToLabourMaster" Association="Self.FK_Attendance_ToLabourMaster">
             <End Role="LabourMaster" EntitySet="LabourMaster" />
             <End Role="Attendance" EntitySet="Attendance" />
@@ -1083,6 +1114,21 @@ warning 6013: The table/view 'LogisticsSoft.dbo.Users_Email' does not have a pri
           <Property Name="ContextKey" Type="String" MaxLength="300" FixedLength="false" Unicode="true" Nullable="false" />
           <Property Name="Model" Type="Binary" MaxLength="Max" FixedLength="false" Nullable="false" />
           <Property Name="ProductVersion" Type="String" MaxLength="32" FixedLength="false" Unicode="true" Nullable="false" />
+        </EntityType>
+        <EntityType Name="approval">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="adate" Type="DateTime" Precision="0" />
+          <Property Name="P_id" Type="Int64" />
+          <Property Name="MPS_id" Type="Int64" />
+          <Property Name="status" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="A_id" Type="Int64" />
+          <Property Name="Susername" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Ausername" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Empno" Type="Int64" />
+          <NavigationProperty Name="Attendance" Relationship="Self.FK_approval_Toattendance" FromRole="approval" ToRole="Attendance" />
         </EntityType>
         <EntityType Name="AspNetRole">
           <Key>
@@ -1196,6 +1242,7 @@ warning 6013: The table/view 'LogisticsSoft.dbo.Users_Email' does not have a pri
           <Property Name="xOT" Type="Int64" />
           <Property Name="nnOT" Type="Int64" />
           <Property Name="status" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="approvals" Relationship="Self.FK_approval_Toattendance" FromRole="Attendance" ToRole="approval" />
           <NavigationProperty Name="LabourMaster" Relationship="Self.FK_Attendance_ToLabourMaster" FromRole="Attendance" ToRole="LabourMaster" />
           <NavigationProperty Name="MainTimeSheet" Relationship="Self.FK_Attendance_ToMainTimeSheet" FromRole="Attendance" ToRole="MainTimeSheet" />
         </EntityType>
@@ -1651,6 +1698,18 @@ warning 6013: The table/view 'LogisticsSoft.dbo.Users_Email' does not have a pri
           <Property Name="Workflow_Instance_ID" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="File_Type" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
         </EntityType>
+        <Association Name="FK_approval_Toattendance">
+          <End Role="Attendance" Type="Self.Attendance" Multiplicity="0..1" />
+          <End Role="approval" Type="Self.approval" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Attendance">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="approval">
+              <PropertyRef Name="A_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_dbo_AspNetUserClaims_dbo_AspNetUsers_UserId">
           <End Role="AspNetUsers" Type="Self.AspNetUser" Multiplicity="1">
             <OnDelete Action="Cascade" />
@@ -1733,6 +1792,7 @@ warning 6013: The table/view 'LogisticsSoft.dbo.Users_Email' does not have a pri
         </Association>
         <EntityContainer Name="LogisticsSoftEntities" annotation:LazyLoadingEnabled="true">
           <EntitySet Name="C__MigrationHistory" EntityType="Self.C__MigrationHistory" />
+          <EntitySet Name="approvals" EntityType="Self.approval" />
           <EntitySet Name="AspNetRoles" EntityType="Self.AspNetRole" />
           <EntitySet Name="AspNetUserClaims" EntityType="Self.AspNetUserClaim" />
           <EntitySet Name="AspNetUserLogins" EntityType="Self.AspNetUserLogin" />
@@ -1763,6 +1823,10 @@ warning 6013: The table/view 'LogisticsSoft.dbo.Users_Email' does not have a pri
           <EntitySet Name="tblUsers" EntityType="Self.tblUser" />
           <EntitySet Name="USER_ROLES" EntityType="Self.USER_ROLES" />
           <EntitySet Name="UserInfoes" EntityType="Self.UserInfo" />
+          <AssociationSet Name="FK_approval_Toattendance" Association="Self.FK_approval_Toattendance">
+            <End Role="Attendance" EntitySet="Attendances" />
+            <End Role="approval" EntitySet="approvals" />
+          </AssociationSet>
           <AssociationSet Name="FK_dbo_AspNetUserClaims_dbo_AspNetUsers_UserId" Association="Self.FK_dbo_AspNetUserClaims_dbo_AspNetUsers_UserId">
             <End Role="AspNetUsers" EntitySet="AspNetUsers" />
             <End Role="AspNetUserClaims" EntitySet="AspNetUserClaims" />
@@ -1805,6 +1869,21 @@ warning 6013: The table/view 'LogisticsSoft.dbo.Users_Email' does not have a pri
                 <ScalarProperty Name="ContextKey" ColumnName="ContextKey" />
                 <ScalarProperty Name="Model" ColumnName="Model" />
                 <ScalarProperty Name="ProductVersion" ColumnName="ProductVersion" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="approvals">
+            <EntityTypeMapping TypeName="LogisticsSoftModel.approval">
+              <MappingFragment StoreEntitySet="approval">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="adate" ColumnName="adate" />
+                <ScalarProperty Name="P_id" ColumnName="P_id" />
+                <ScalarProperty Name="MPS_id" ColumnName="MPS_id" />
+                <ScalarProperty Name="status" ColumnName="status" />
+                <ScalarProperty Name="A_id" ColumnName="A_id" />
+                <ScalarProperty Name="Susername" ColumnName="Susername" />
+                <ScalarProperty Name="Ausername" ColumnName="Ausername" />
+                <ScalarProperty Name="Empno" ColumnName="Empno" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
