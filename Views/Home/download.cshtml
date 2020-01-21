@@ -90,15 +90,17 @@ using (Html.BeginForm("download", "Home", FormMethod.Get, new { id = "form1" }))
         <div class="row">
             <div class="col-xs-1">
                 <input type="submit" value="search" name="search" class="btn1" id="search" />
-                <input type="submit" value="submit" name="approval" class="btn1"  formaction="@Url.Action("approval")"/>
+            </div>
+            <div class="col-xs-1">
+                <input type="submit" value="submit" name="approval" class="btn1" formaction="@Url.Action("approval")"/>
             </div>
             <div class="col-xs-1">
                 <input type="button" value="Print" class="btn1" onclick="PrintDoc()" />
-            </div>@*
-            <div class="col-xs-1">
-                <input type="button" value="Print Preview" class="btn1" onclick="PrintPreview()" />
-
-            </div>*@
+            </div>
+            
+        </div>
+        <div class="row">
+            @Html.ValidationSummary(false, string.Empty, new { @class = "text-danger", style = "font-size: 20px;" })
         </div>
     </div>
     <br />

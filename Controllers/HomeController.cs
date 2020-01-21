@@ -28,6 +28,8 @@
         public DateTime Tmonth;
 
         private readonly LogisticsSoftEntities db = new LogisticsSoftEntities();
+
+        private string errorm ="";
         public ActionResult About()
         {
             this.ViewBag.Message = "Your application description page.";
@@ -1413,7 +1415,6 @@
 
                         date = date.AddDays(1);
                     }
-
                     {
                         at.TotalHours = 0;
                         long.TryParse(at.C1, out var tl);
@@ -1912,6 +1913,8 @@
         [Authorize(Roles = "Admin,Manager,Employee")]
         public ActionResult download(DateTime? mtsmonth2, long? csp2, long? csmps2)
         {
+            this.errorm = this.TempData["mydata"] as string;
+            this.ModelState.AddModelError(string.Empty, this.errorm);
             DateTime date;
             var final1 = new List<test>();
             if (mtsmonth2.HasValue)
@@ -2062,7 +2065,7 @@
                         x => x.TMonth.Month.Equals(dm.Month) && x.TMonth.Year.Equals(dm.Year)
                                                              && x.ManPowerSupplier.Equals(lcsmps)
                                                              && x.Project.Equals(lcsp)).OrderBy(x => x.ID).ToList();
-
+                var apall = this.db.approvals.ToList();
                 foreach (var abis in ab)
                 {
                     var ass = this.db.Attendances.Where(x => x.SubMain.Equals(abis.ID)).Include(x => x.LabourMaster)
@@ -2070,19 +2073,58 @@
                     /**/
                     foreach (var attendance in ass)
                     {
-                        if (User.IsInRole("Employee"))
+                        if (!apall.Exists(x => x.A_id == attendance.ID && x.adate==dm))
                         {
-                            attendance.status = "submitted for " + dm.Day;
-                            this.db.Entry(attendance).State = EntityState.Modified;
-                            this.db.SaveChanges();
-                            var ap = new approval();
-                            ap.MPS_id = csmps2;
-                            ap.P_id = csp2;
-                            ap.adate = dm;
-                            ap.status = "submitted";
-                            ap.A_id = attendance.ID;
-                            this.db.approvals.Add(ap);
-                            this.db.SaveChanges();
+                            if (User.IsInRole("Employee"))
+                            {
+                                attendance.status = "submitted for " + dm.Day;
+                                this.db.Entry(attendance).State = EntityState.Modified;
+                                this.db.SaveChanges();
+                                var ap = new approval();
+                                ap.MPS_id = csmps2;
+                                ap.P_id = csp2;
+                                ap.adate = dm;
+                                ap.status = "submitted";
+                                ap.A_id = attendance.ID;
+                                ap.Susername = User.Identity.Name;
+                                ap.Empno = attendance.LabourMaster.EMPNO;
+                                this.db.approvals.Add(ap);
+                                this.db.SaveChanges();
+                            }
+                        }
+                        else
+                        {
+                            var aaa = apall.FindAll(x => x.A_id == attendance.ID);
+                            foreach (var aa1 in aaa)
+                            {
+                                if (aa1.status == "submitted" && aa1.adate == dm)
+                            {
+                                this.errorm =  "\n already submitted;";
+                                this.ModelState.AddModelError(string.Empty, this.errorm);
+                                TempData["mydata"] = this.errorm;
+                            }
+
+                            if (aa1.status == "rejected" && aa1.adate == dm)
+                            {
+                                if (User.IsInRole("Employee"))
+                                {
+                                    attendance.status = "submitted for " + dm.Day;
+                                    this.db.Entry(attendance).State = EntityState.Modified;
+                                    this.db.SaveChanges();
+                                    aa1.status = "submitted";
+                                    this.db.Entry(aa1).State = EntityState.Modified;
+                                    this.db.SaveChanges();
+                                }
+                            }
+
+                            if (aa1.status == "approved" && aa1.adate == dm)
+                            {
+                                this.errorm = "\n already approved;";
+                                this.ModelState.AddModelError(string.Empty, this.errorm);
+                                TempData["mydata"] = this.errorm;
+                            }
+                            }
+                            
                         }
                     }
                 }
