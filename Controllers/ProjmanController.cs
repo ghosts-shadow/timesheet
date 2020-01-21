@@ -106,13 +106,14 @@ namespace onlygodknows.Controllers
             foreach (var approval in ap2)
             {
                 approval.status = "approved";
+                approval.Ausername = User.Identity.Name;
                 this.db.Entry(approval).State = EntityState.Modified;
                 this.db.SaveChanges();
             }
             return RedirectToAction("PMapproval");
         }
 
-        public ActionResult rejected()
+        public ActionResult rejected(string  why)
         {
             var t = new List<ProjectList>();
             var uid = User.Identity.GetUserId();
@@ -149,7 +150,7 @@ namespace onlygodknows.Controllers
             var ap2 = ap1.Where(x => x.adate == ap1.First().adate && x.MPS_id == ap1.First().MPS_id);
             foreach (var approval in ap2)
             {
-                approval.status = "rejected";
+                approval.status = "rejected for " + why;
                 this.db.Entry(approval).State = EntityState.Modified;
                 this.db.SaveChanges();
             }

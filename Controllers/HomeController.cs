@@ -1927,7 +1927,7 @@
                 date = DateTime.Now;
                 ViewBag.dateee = date.ToShortDateString();
             }
-
+            var apall = this.db.approvals.ToList();
             this.ViewBag.csp1 = csp2;
             this.ViewBag.csmps1 = csmps2;
             this.ViewBag.mtsmonth1 = date;
@@ -1973,6 +1973,13 @@
                         var et = new test();
                         var epno = this.db.LabourMasters.Find(attendance.EmpID);
                         et.empno = epno.EMPNO;
+                        if (apall.Exists(x => x.A_id == attendance.ID && x.adate == dm))
+                        {
+                            et.approved_by = apall.Find(x => x.status != "submitted" && x.A_id == attendance.ID && x.adate == dm).Ausername;
+                            et.status = apall.Find(x => x.status != "submitted" && x.A_id == attendance.ID && x.adate == dm).status;
+                            et.submitted_by = apall.Find(x => x.status != "submitted" && x.A_id == attendance.ID && x.adate == dm).Susername;
+                        }
+
                         if (date.Day == 1) et.hours = attendance.C1;
 
                         if (date.Day == 2) et.hours = attendance.C2;
@@ -2045,9 +2052,6 @@
                 return this.View(final1.OrderBy(x => x.empno).ToPagedList(1, 100));
 
             }
-
-            
-
             return this.View(final1.OrderBy(x => x.empno).ToPagedList(1, 100));
 
         }
@@ -2104,7 +2108,7 @@
                                 TempData["mydata"] = this.errorm;
                             }
 
-                            if (aa1.status == "rejected" && aa1.adate == dm)
+                            if (aa1.status.Contains("rejected")  && aa1.adate == dm)
                             {
                                 if (User.IsInRole("Employee"))
                                 {

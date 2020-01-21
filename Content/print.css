@@ -1,5 +1,9 @@
 ﻿@media print /*--This is for Print--*/
 {
+
+    #status {
+        display: none;
+    }
     table {
         width: 100%;
         background-color: #eeeeee;
@@ -90,6 +94,9 @@
 }
 @media screen /*--This is for Print Preview Screen--*/
 {
+    #status {
+        display: none;
+    }
     table {
         width: 100%;
         background-color: #eeeeee;

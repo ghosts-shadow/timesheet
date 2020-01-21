@@ -7,26 +7,24 @@
 @if (Request.IsAuthenticated)
 {
     <style>
-        tr:nth-child(even) {
-            background-color: #eee;
-        }
+        tr:nth-child(even) { background-color: #eee; }
 
-        tr:nth-child(odd) {
-            background-color: #fff;
-        }
+        tr:nth-child(odd) { background-color: #fff; }
 
         th {
             background-color: black;
             color: white;
         }
+
         td,
         th {
-            padding: 010px;
             border: 1px solid black;
+            padding: 010px;
         }
+
         @Page {
+            margin: 3mm;
             size: A4;
-            margin: 3mm
         }
     </style>
     <h2>approval </h2>
@@ -86,6 +84,7 @@
             {
                 <tr/>
             }
+
             <td>
                 @Html.DisplayFor(modelItem => item.Empno)
             </td>
@@ -149,7 +148,6 @@
                     @Html.DisplayFor(modelItem => item.Attendance.C10)
                 </td>
             }
-
             else if (date.Day == 11)
             {
                 <td>
@@ -180,7 +178,6 @@
                     @Html.DisplayFor(modelItem => item.Attendance.C15)
                 </td>
             }
-
             else if (date.Day == 16)
             {
                 <td>
@@ -211,7 +208,6 @@
                     @Html.DisplayFor(modelItem => item.Attendance.C20)
                 </td>
             }
-
             else if (date.Day == 21)
             {
                 <td>
@@ -292,6 +288,17 @@
     <br/>
     <br/>
     <br/>
-    <input type="submit" value="approve" style="color: black; background-color: green" onclick="window.location.href = '@Url.Action("approved")'"/>
-    <input type="submit" value="reject" style="color: black; background-color: red" onclick="window.location.href = '@Url.Action("rejected")'"/>
+    <div class="row">
+        <div class="col-lg-1">
+            <input type="submit" value="approve" style="background-color: green; color: black;" onclick="window.location.href = '@Url.Action("approved")'" />
+        </div>
+        <div class="col-lg-5">
+            @using (Html.BeginForm("rejected", "Projman"))
+            {
+                <p>
+                    <input type="submit" value="reject" style="background-color: red; color: black;" @*onclick="window.location.href = '@Url.Action("rejected")'"*@/> coment :<input type="text" name="why" required/>
+                </p>
+            }
+        </div>
+    </div>
 }
