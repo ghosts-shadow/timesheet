@@ -11,7 +11,8 @@ namespace onlygodknows.Models
 {
     using System;
     using System.Collections.Generic;
-    
+    using System.ComponentModel.DataAnnotations;
+
     public partial class Attendance
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
@@ -19,40 +20,72 @@ namespace onlygodknows.Models
         {
             this.approvals = new HashSet<approval>();
         }
-    
+
         public long ID { get; set; }
         public long EmpID { get; set; }
+        [Display(Name = "MTS ID")]
         public long SubMain { get; set; }
+        [Display(Name = "1")]
         public string C1 { get; set; }
+        [Display(Name = "2")]
         public string C2 { get; set; }
+        [Display(Name = "3")]
         public string C3 { get; set; }
+        [Display(Name = "4")]
         public string C4 { get; set; }
+        [Display(Name = "5")]
         public string C5 { get; set; }
+        [Display(Name = "6")]
         public string C6 { get; set; }
+        [Display(Name = "7")]
         public string C7 { get; set; }
+        [Display(Name = "8")]
         public string C8 { get; set; }
+        [Display(Name = "9")]
         public string C9 { get; set; }
+        [Display(Name = "10")]
         public string C10 { get; set; }
+        [Display(Name = "11")]
         public string C11 { get; set; }
+        [Display(Name = "12")]
         public string C12 { get; set; }
+        [Display(Name = "13")]
         public string C13 { get; set; }
+        [Display(Name = "14")]
         public string C14 { get; set; }
+        [Display(Name = "15")]
         public string C15 { get; set; }
+        [Display(Name = "16")]
         public string C16 { get; set; }
+        [Display(Name = "17")]
         public string C17 { get; set; }
+        [Display(Name = "18")]
         public string C18 { get; set; }
+        [Display(Name = "19")]
         public string C19 { get; set; }
+        [Display(Name = "20")]
         public string C20 { get; set; }
+        [Display(Name = "21")]
         public string C21 { get; set; }
+        [Display(Name = "22")]
         public string C22 { get; set; }
+        [Display(Name = "23")]
         public string C23 { get; set; }
+        [Display(Name = "24")]
         public string C24 { get; set; }
+        [Display(Name = "25")]
         public string C25 { get; set; }
+        [Display(Name = "26")]
         public string C26 { get; set; }
+        [Display(Name = "27")]
         public string C27 { get; set; }
+        [Display(Name = "28")]
         public string C28 { get; set; }
+        [Display(Name = "29")]
         public string C29 { get; set; }
+        [Display(Name = "30")]
         public string C30 { get; set; }
+        [Display(Name = "31")]
         public string C31 { get; set; }
         public Nullable<long> TotalHours { get; set; }
         public Nullable<long> TotalOverTime { get; set; }
