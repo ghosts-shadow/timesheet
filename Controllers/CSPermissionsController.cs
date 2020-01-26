@@ -29,12 +29,14 @@ namespace onlygodknows.Controllers
             foreach (var i in prop.props)
             {
                 var a = this.db.CsPermissions.ToList();
-                var aa = a.Last();
-                csp.CsUser = i.empno;
-                csp.Project = i.projectid;
-                csp.CsPermission1 = false;
-                this.db.CsPermissions.Add(csp);
-                this.db.SaveChanges();
+                if (!a.Exists(x=>x.CsUser == i.empno && x.Project == i.projectid))
+                {
+                    csp.CsUser = i.empno;
+                    csp.Project = i.projectid;
+                    csp.CsPermission1 = false;
+                    this.db.CsPermissions.Add(csp);
+                    this.db.SaveChanges();
+                }
             }
             return this.RedirectToAction("project_permissions");
         }

@@ -19,6 +19,8 @@
 
     public class HomeController : Controller
     {
+
+        string errr = "";
         public long ID;
 
         public long manid;
@@ -254,7 +256,7 @@
             return this.View(model1);
         }
 
-        [Authorize(Roles = "Admin,Manager,")]
+        [Authorize(Roles = "Admin,Manager")]
         public ActionResult Asearch(int? page, int? pagesize, string search)
         {
             var a = this.db.MainTimeSheets.OrderByDescending(m => m.ID);
@@ -447,11 +449,31 @@
             this.pid = mainTimeSheet.Project;
             if (this.ModelState.IsValid)
             {
-                this.db.MainTimeSheets.Add(mainTimeSheet);
-                this.db.SaveChanges();
-                return this.RedirectToAction("tests");
-            }
 
+                var apall = this.db.approvals.ToList();
+                if (!apall.Exists(
+                        x => x.MPS_id == mainTimeSheet.ManPowerSupplier && x.P_id == mainTimeSheet.Project
+                                                                        && x.adate == mainTimeSheet.TMonth
+                                                                        && (x.status.Equals("submitted") || x.status.Equals("approved"))))
+                {
+                    
+                        this.db.MainTimeSheets.Add(mainTimeSheet);
+                        this.db.SaveChanges();
+                        return this.RedirectToAction("tests");
+                    
+                    
+                }
+                else
+                    {
+                        string errr1 = "timesheet already " + apall.Find(
+                                               x => x.MPS_id == mainTimeSheet.ManPowerSupplier
+                                                    && x.P_id == mainTimeSheet.Project
+                                                    && x.adate == mainTimeSheet.TMonth)
+                                           .status;
+                        ModelState.AddModelError(string.Empty, errr1);
+                    }
+                    
+            }
             return this.View(mainTimeSheet);
         }
 
@@ -476,7 +498,7 @@
             this.ViewBag.position = new SelectList(d.Where(x => x.EMPNO >= 4).OrderBy(m => m.EMPNO), "ID", "Position");
             var data = new[]
                            {
-                               new SelectListItem { Text = "0", Value = "0" },
+                               new SelectListItem { Text = "", Value = "" },
                                new SelectListItem { Text = "1", Value = "1" },
                                new SelectListItem { Text = "2", Value = "2" },
                                new SelectListItem { Text = "3", Value = "3" },
@@ -537,6 +559,7 @@
 
             var data = new[]
                            {
+                               new SelectListItem { Text = "", Value = "" },
                                new SelectListItem { Text = "1", Value = "1" },
                                new SelectListItem { Text = "2", Value = "2" },
                                new SelectListItem { Text = "3", Value = "3" },
@@ -572,1341 +595,1351 @@
             {
                 var check = new List<Attendance>();
                 var oldmts1 = new MainTimeSheet();
+                var apall = this.db.approvals.ToList();
                 foreach (var list in test.Tests)
                 {
                     var trial = list.date = aa.TMonth;
-                    oldmts = this.db.MainTimeSheets.Where(x => x.TMonth.Month.Equals(list.date.Month) && x.TMonth.Year.Equals(list.date.Year)
-                                                                        && x.ManPowerSupplier.Equals(aa.ManPowerSupplier)
+                    oldmts = this.db.MainTimeSheets
+                        .Where(
+                            x => x.TMonth.Month.Equals(list.date.Month) && x.TMonth.Year.Equals(list.date.Year)
+                                                                        && x.ManPowerSupplier.Equals(
+                                                                            aa.ManPowerSupplier)
                                                                         && x.Project.Equals(aa.Project)).OrderByDescending(x => x.ID).ToList();
+                    
 
-                    if (oldmts.Count != 0)
-                    {
-                        oldmts1 = oldmts.Last();
-
-                        // First();
-                        check = this.db.Attendances.Where(z => z.EmpID.Equals(list.empno) && z.SubMain.Equals(oldmts1.ID)).ToList();
-                    }
-                    else
-                    {
-                        check = this.db.Attendances.Where(z => z.EmpID.Equals(list.empno) && z.SubMain.Equals(aa.ID))
-                            .ToList();
-                    }
-                    {
-                        var tb = this.db;
-                        var lo = this.db.MainTimeSheets.Where(e => e.ManPowerSupplier.Equals(aa.ManPowerSupplier) && e.TMonth.Year.Equals(list.date.Year) && e.TMonth.Month.Equals(list.date.Month)).ToList();
-                        List<Attendance> lo1 = new List<Attendance>();
-                        foreach (var same in lo)
+                        if (oldmts.Count != 0)
                         {
-                            var at1 = this.db.Attendances.Where(e => e.SubMain.Equals(same.ID)).ToList();
-                            if (at1 != null)
+                            oldmts1 = oldmts.Last();
+
+                            // First();
+                            check = this.db.Attendances
+                                .Where(z => z.EmpID.Equals(list.empno) && z.SubMain.Equals(oldmts1.ID)).ToList();
+                        }
+                        else
+                        {
+                            check = this.db.Attendances.Where(z => z.EmpID.Equals(list.empno) && z.SubMain.Equals(aa.ID))
+                                .ToList();
+                        }
+
+                        {
+                            var tb = this.db;
+                            var lo = this.db.MainTimeSheets.Where(
+                                e => e.ManPowerSupplier.Equals(aa.ManPowerSupplier) && e.TMonth.Year.Equals(list.date.Year)
+                                                                                    && e.TMonth.Month.Equals(
+                                                                                        list.date.Month)).ToList();
+                            List<Attendance> lo1 = new List<Attendance>();
+                            foreach (var same in lo)
                             {
-                                foreach (var at2 in at1)
+                                var at1 = this.db.Attendances.Where(e => e.SubMain.Equals(same.ID)).ToList();
+                                if (at1 != null)
                                 {
-                                    lo1.Add(at2);
+                                    foreach (var at2 in at1)
+                                    {
+                                        lo1.Add(at2);
+                                    }
+                                }
+                            }
+
+                            List<Attendance> lo3 = new List<Attendance>();
+                            foreach (var lo2 in lo1)
+                            {
+                                if (list.empno == lo2.EmpID)
+                                {
+                                    lo3.Add(lo2);
+                                }
+                            }
+
+                            long com = 0;
+                            foreach (var at1 in lo3)
+                            {
+                                if (check.Count != 0) at = check.First();
+                                if (!at1.SubMain.Equals(at.SubMain))
+                                {
+
+
+                                    if (list.date.Day == 1)
+                                    {
+                                        long.TryParse(at1.C1, out long k);
+                                        long.TryParse(list.hours, out long l);
+                                        com = k + l;
+                                        if (com > 24)
+                                        {
+                                            var dd = this.db.LabourMasters.Find(list.empno);
+                                            string errorm = "total time of the employee no:" + dd.EMPNO.ToString()
+                                                                                             + " for the day is "
+                                                                                             + com.ToString()
+                                                                                             + "hrs which is greater then 24hrs";
+                                            ModelState.AddModelError(string.Empty, errorm);
+                                            return View(test);
+                                        }
+                                    }
+
+                                    if (list.date.Day == 2)
+                                    {
+                                        long.TryParse(at1.C2, out long k);
+                                        long.TryParse(list.hours, out long l);
+                                        com = k + l;
+                                        if (com > 24)
+                                        {
+                                            var dd = this.db.LabourMasters.Find(list.empno);
+                                            string errorm = "total time of the employee no:" + dd.EMPNO.ToString()
+                                                                                             + " for the day is "
+                                                                                             + com.ToString()
+                                                                                             + "hrs which is greater then 24hrs";
+                                            ModelState.AddModelError(string.Empty, errorm);
+                                            return View(test);
+                                        }
+                                    }
+
+                                    if (list.date.Day == 3)
+                                    {
+                                        long.TryParse(at1.C3, out long k);
+                                        long.TryParse(list.hours, out long l);
+                                        com = k + l;
+                                        if (com > 24)
+                                        {
+                                            var dd = this.db.LabourMasters.Find(list.empno);
+                                            string errorm = "total time of the employee no:" + dd.EMPNO.ToString()
+                                                                                             + " for the day is "
+                                                                                             + com.ToString()
+                                                                                             + "hrs which is greater then 24hrs";
+                                            ModelState.AddModelError(string.Empty, errorm);
+                                            return View(test);
+                                        }
+                                    }
+
+                                    if (list.date.Day == 4)
+                                    {
+                                        long.TryParse(at1.C4, out long k);
+                                        long.TryParse(list.hours, out long l);
+                                        com = k + l;
+                                        if (com > 24)
+                                        {
+                                            var dd = this.db.LabourMasters.Find(list.empno);
+                                            string errorm = "total time of the employee no:" + dd.EMPNO.ToString()
+                                                                                             + " for the day is "
+                                                                                             + com.ToString()
+                                                                                             + "hrs which is greater then 24hrs";
+                                            ModelState.AddModelError(string.Empty, errorm);
+                                            return View(test);
+                                        }
+                                    }
+
+                                    if (list.date.Day == 5)
+                                    {
+                                        long.TryParse(at1.C5, out long k);
+                                        long.TryParse(list.hours, out long l);
+                                        com = k + l;
+                                        if (com > 24)
+                                        {
+                                            var dd = this.db.LabourMasters.Find(list.empno);
+                                            string errorm = "total time of the employee no:" + dd.EMPNO.ToString()
+                                                                                             + " for the day is "
+                                                                                             + com.ToString()
+                                                                                             + "hrs which is greater then 24hrs";
+                                            ModelState.AddModelError(string.Empty, errorm);
+                                            return View(test);
+                                        }
+                                    }
+
+                                    if (list.date.Day == 6)
+                                    {
+                                        long.TryParse(at1.C6, out long k);
+                                        long.TryParse(list.hours, out long l);
+                                        com = k + l;
+                                        if (com > 24)
+                                        {
+                                            var dd = this.db.LabourMasters.Find(list.empno);
+                                            string errorm = "total time of the employee no:" + dd.EMPNO.ToString()
+                                                                                             + " for the day is "
+                                                                                             + com.ToString()
+                                                                                             + "hrs which is greater then 24hrs";
+                                            ModelState.AddModelError(string.Empty, errorm);
+                                            return View(test);
+                                        }
+                                    }
+
+                                    if (list.date.Day == 7)
+                                    {
+                                        long.TryParse(at1.C7, out long k);
+                                        long.TryParse(list.hours, out long l);
+                                        com = k + l;
+                                        if (com > 24)
+                                        {
+                                            var dd = this.db.LabourMasters.Find(list.empno);
+                                            string errorm = "total time of the employee no:" + dd.EMPNO.ToString()
+                                                                                             + " for the day is "
+                                                                                             + com.ToString()
+                                                                                             + "hrs which is greater then 24hrs";
+                                            ModelState.AddModelError(string.Empty, errorm);
+                                            return View(test);
+                                        }
+                                    }
+
+                                    if (list.date.Day == 8)
+                                    {
+                                        long.TryParse(at1.C8, out long k);
+                                        long.TryParse(list.hours, out long l);
+                                        com = k + l;
+                                        if (com > 24)
+                                        {
+                                            var dd = this.db.LabourMasters.Find(list.empno);
+                                            string errorm = "total time of the employee no:" + dd.EMPNO.ToString()
+                                                                                             + " for the day is "
+                                                                                             + com.ToString()
+                                                                                             + "hrs which is greater then 24hrs";
+                                            ModelState.AddModelError(string.Empty, errorm);
+                                            return View(test);
+                                        }
+
+                                    }
+                                    if (list.date.Day == 9)
+                                    {
+                                        long.TryParse(at1.C9, out long k);
+                                        long.TryParse(list.hours, out long l);
+                                        com = k + l;
+                                        if (com > 24)
+                                        {
+                                            var dd = this.db.LabourMasters.Find(list.empno);
+                                            string errorm = "total time of the employee no:" + dd.EMPNO.ToString()
+                                                                                             + " for the day is "
+                                                                                             + com.ToString()
+                                                                                             + "hrs which is greater then 24hrs";
+                                            ModelState.AddModelError(string.Empty, errorm);
+                                            return View(test);
+                                        }
+                                    }
+                                    if (list.date.Day == 10)
+                                    {
+                                        long.TryParse(at1.C10, out long k);
+                                        long.TryParse(list.hours, out long l);
+                                        com = k + l;
+                                        if (com > 24)
+                                        {
+                                            var dd = this.db.LabourMasters.Find(list.empno);
+                                            string errorm = "total time of the employee no:" + dd.EMPNO.ToString()
+                                                                                             + " for the day is "
+                                                                                             + com.ToString()
+                                                                                             + "hrs which is greater then 24hrs";
+                                            ModelState.AddModelError(string.Empty, errorm);
+                                            return View(test);
+                                        }
+                                    }
+
+                                    if (list.date.Day == 11)
+                                    {
+                                        long.TryParse(at1.C11, out long k);
+                                        long.TryParse(list.hours, out long l);
+                                        com = k + l;
+                                        if (com > 24)
+                                        {
+                                            var dd = this.db.LabourMasters.Find(list.empno);
+                                            string errorm = "total time of the employee no:" + dd.EMPNO.ToString()
+                                                                                             + " for the day is "
+                                                                                             + com.ToString()
+                                                                                             + "hrs which is greater then 24hrs";
+                                            ModelState.AddModelError(string.Empty, errorm);
+                                            return View(test);
+                                        }
+                                    }
+
+                                    if (list.date.Day == 12)
+                                    {
+                                        long.TryParse(at1.C12, out long k);
+                                        long.TryParse(list.hours, out long l);
+                                        com = k + l;
+                                        if (com > 24)
+                                        {
+                                            var dd = this.db.LabourMasters.Find(list.empno);
+                                            string errorm = "total time of the employee no:" + dd.EMPNO.ToString()
+                                                                                             + " for the day is "
+                                                                                             + com.ToString()
+                                                                                             + "hrs which is greater then 24hrs";
+                                            ModelState.AddModelError(string.Empty, errorm);
+                                            return View(test);
+                                        }
+                                    }
+
+                                    if (list.date.Day == 13)
+                                    {
+                                        long.TryParse(at1.C13, out long k);
+                                        long.TryParse(list.hours, out long l);
+                                        com = k + l;
+                                        if (com > 24)
+                                        {
+                                            var dd = this.db.LabourMasters.Find(list.empno);
+                                            string errorm = "total time of the employee no:" + dd.EMPNO.ToString()
+                                                                                             + " for the day is "
+                                                                                             + com.ToString()
+                                                                                             + "hrs which is greater then 24hrs";
+                                            ModelState.AddModelError(string.Empty, errorm);
+                                            return View(test);
+                                        }
+                                    }
+
+                                    if (list.date.Day == 14)
+                                    {
+                                        long.TryParse(at1.C14, out long k);
+                                        long.TryParse(list.hours, out long l);
+                                        com = k + l;
+                                        if (com > 24)
+                                        {
+                                            var dd = this.db.LabourMasters.Find(list.empno);
+                                            string errorm = "total time of the employee no:" + dd.EMPNO.ToString()
+                                                                                             + " for the day is "
+                                                                                             + com.ToString()
+                                                                                             + "hrs which is greater then 24hrs";
+                                            ModelState.AddModelError(string.Empty, errorm);
+                                            return View(test);
+                                        }
+                                    }
+
+                                    if (list.date.Day == 15)
+                                    {
+                                        long.TryParse(at1.C15, out long k);
+                                        long.TryParse(list.hours, out long l);
+                                        com = k + l;
+                                        if (com > 24)
+                                        {
+                                            var dd = this.db.LabourMasters.Find(list.empno);
+                                            string errorm = "total time of the employee no:" + dd.EMPNO.ToString()
+                                                                                             + " for the day is "
+                                                                                             + com.ToString()
+                                                                                             + "hrs which is greater then 24hrs";
+                                            ModelState.AddModelError(string.Empty, errorm);
+                                            return View(test);
+                                        }
+                                    }
+
+                                    if (list.date.Day == 16)
+                                    {
+                                        long.TryParse(at1.C16, out long k);
+                                        long.TryParse(list.hours, out long l);
+                                        com = k + l;
+                                        if (com > 24)
+                                        {
+                                            var dd = this.db.LabourMasters.Find(list.empno);
+                                            string errorm = "total time of the employee no:" + dd.EMPNO.ToString()
+                                                                                             + " for the day is "
+                                                                                             + com.ToString()
+                                                                                             + "hrs which is greater then 24hrs";
+                                            ModelState.AddModelError(string.Empty, errorm);
+                                            return View(test);
+                                        }
+                                    }
+
+                                    if (list.date.Day == 17)
+                                    {
+                                        long.TryParse(at1.C17, out long k);
+                                        long.TryParse(list.hours, out long l);
+                                        com = k + l;
+                                        if (com > 24)
+                                        {
+                                            var dd = this.db.LabourMasters.Find(list.empno);
+                                            string errorm = "total time of the employee no:" + dd.EMPNO.ToString()
+                                                                                             + " for the day is "
+                                                                                             + com.ToString()
+                                                                                             + "hrs which is greater then 24hrs";
+                                            ModelState.AddModelError(string.Empty, errorm);
+                                            return View(test);
+                                        }
+                                    }
+
+                                    if (list.date.Day == 18)
+                                    {
+                                        long.TryParse(at1.C18, out long k);
+                                        long.TryParse(list.hours, out long l);
+                                        com = k + l;
+                                        if (com > 24)
+                                        {
+                                            var dd = this.db.LabourMasters.Find(list.empno);
+                                            string errorm = "total time of the employee no:" + dd.EMPNO.ToString()
+                                                                                             + " for the day is "
+                                                                                             + com.ToString()
+                                                                                             + "hrs which is greater then 24hrs";
+                                            ModelState.AddModelError(string.Empty, errorm);
+                                            return View(test);
+                                        }
+                                    }
+
+                                    if (list.date.Day == 19)
+                                    {
+                                        long.TryParse(at1.C19, out long k);
+                                        long.TryParse(list.hours, out long l);
+                                        com = k + l;
+                                        if (com > 24)
+                                        {
+                                            var dd = this.db.LabourMasters.Find(list.empno);
+                                            string errorm = "total time of the employee no:" + dd.EMPNO.ToString()
+                                                                                             + " for the day is "
+                                                                                             + com.ToString()
+                                                                                             + "hrs which is greater then 24hrs";
+                                            ModelState.AddModelError(string.Empty, errorm);
+                                            return View(test);
+                                        }
+                                    }
+
+                                    if (list.date.Day == 20)
+                                    {
+                                        long.TryParse(at1.C20, out long k);
+                                        long.TryParse(list.hours, out long l);
+                                        com = k + l;
+                                        if (com > 24)
+                                        {
+                                            var dd = this.db.LabourMasters.Find(list.empno);
+                                            string errorm = "total time of the employee no:" + dd.EMPNO.ToString()
+                                                                                             + " for the day is "
+                                                                                             + com.ToString()
+                                                                                             + "hrs which is greater then 24hrs";
+                                            ModelState.AddModelError(string.Empty, errorm);
+                                            return View(test);
+                                        }
+                                    }
+
+                                    if (list.date.Day == 21)
+                                    {
+                                        long.TryParse(at1.C21, out long k);
+                                        long.TryParse(list.hours, out long l);
+                                        com = k + l;
+                                        if (com > 24)
+                                        {
+                                            var dd = this.db.LabourMasters.Find(list.empno);
+                                            string errorm = "total time of the employee no:" + dd.EMPNO.ToString()
+                                                                                             + " for the day is "
+                                                                                             + com.ToString()
+                                                                                             + "hrs which is greater then 24hrs";
+                                            ModelState.AddModelError(string.Empty, errorm);
+                                            return View(test);
+                                        }
+                                    }
+
+                                    if (list.date.Day == 22)
+                                    {
+                                        long.TryParse(at1.C22, out long k);
+                                        long.TryParse(list.hours, out long l);
+                                        com = k + l;
+                                        if (com > 24)
+                                        {
+                                            var dd = this.db.LabourMasters.Find(list.empno);
+                                            string errorm = "total time of the employee no:" + dd.EMPNO.ToString()
+                                                                                             + " for the day is "
+                                                                                             + com.ToString()
+                                                                                             + "hrs which is greater then 24hrs";
+                                            ModelState.AddModelError(string.Empty, errorm);
+                                            return View(test);
+                                        }
+                                    }
+
+                                    if (list.date.Day == 23)
+                                    {
+                                        long.TryParse(at1.C23, out long k);
+                                        long.TryParse(list.hours, out long l);
+                                        com = k + l;
+                                        if (com > 24)
+                                        {
+                                            var dd = this.db.LabourMasters.Find(list.empno);
+                                            string errorm = "total time of the employee no:" + dd.EMPNO.ToString()
+                                                                                             + " for the day is "
+                                                                                             + com.ToString()
+                                                                                             + "hrs which is greater then 24hrs";
+                                            ModelState.AddModelError(string.Empty, errorm);
+                                            return View(test);
+                                        }
+                                    }
+
+                                    if (list.date.Day == 24)
+                                    {
+                                        long.TryParse(at1.C24, out long k);
+                                        long.TryParse(list.hours, out long l);
+                                        com = k + l;
+                                        if (com > 24)
+                                        {
+                                            var dd = this.db.LabourMasters.Find(list.empno);
+                                            string errorm = "total time of the employee no:" + dd.EMPNO.ToString()
+                                                                                             + " for the day is "
+                                                                                             + com.ToString()
+                                                                                             + "hrs which is greater then 24hrs";
+                                            ModelState.AddModelError(string.Empty, errorm);
+                                            return View(test);
+                                        }
+                                    }
+
+                                    if (list.date.Day == 25)
+                                    {
+                                        long.TryParse(at1.C25, out long k);
+                                        long.TryParse(list.hours, out long l);
+                                        com = k + l;
+                                        if (com > 24)
+                                        {
+                                            var dd = this.db.LabourMasters.Find(list.empno);
+                                            string errorm = "total time of the employee no:" + dd.EMPNO.ToString()
+                                                                                             + " for the day is "
+                                                                                             + com.ToString()
+                                                                                             + "hrs which is greater then 24hrs";
+                                            ModelState.AddModelError(string.Empty, errorm);
+                                            return View(test);
+                                        }
+                                    }
+
+                                    if (list.date.Day == 26)
+                                    {
+                                        long.TryParse(at1.C26, out long k);
+                                        long.TryParse(list.hours, out long l);
+                                        com = k + l;
+                                        if (com > 24)
+                                        {
+                                            var dd = this.db.LabourMasters.Find(list.empno);
+                                            string errorm = "total time of the employee no:" + dd.EMPNO.ToString()
+                                                                                             + " for the day is "
+                                                                                             + com.ToString()
+                                                                                             + "hrs which is greater then 24hrs";
+                                            ModelState.AddModelError(string.Empty, errorm);
+                                            return View(test);
+                                        }
+                                    }
+
+                                    if (list.date.Day == 27)
+                                    {
+                                        long.TryParse(at1.C27, out long k);
+                                        long.TryParse(list.hours, out long l);
+                                        com = k + l;
+                                        if (com > 24)
+                                        {
+                                            var dd = this.db.LabourMasters.Find(list.empno);
+                                            string errorm = "total time of the employee no:" + dd.EMPNO.ToString()
+                                                                                             + " for the day is "
+                                                                                             + com.ToString()
+                                                                                             + "hrs which is greater then 24hrs";
+                                            ModelState.AddModelError(string.Empty, errorm);
+                                            return View(test);
+                                        }
+                                    }
+
+                                    if (list.date.Day == 28)
+                                    {
+                                        long.TryParse(at1.C28, out long k);
+                                        long.TryParse(list.hours, out long l);
+                                        com = k + l;
+                                        if (com > 24)
+                                        {
+                                            var dd = this.db.LabourMasters.Find(list.empno);
+                                            string errorm = "total time of the employee no:" + dd.EMPNO.ToString()
+                                                                                             + " for the day is "
+                                                                                             + com.ToString()
+                                                                                             + "hrs which is greater then 24hrs";
+                                            ModelState.AddModelError(string.Empty, errorm);
+                                            return View(test);
+                                        }
+                                    }
+
+                                    if (list.date.Day == 29)
+                                    {
+                                        long.TryParse(at1.C29, out long k);
+                                        long.TryParse(list.hours, out long l);
+                                        com = k + l;
+                                        if (com > 24)
+                                        {
+                                            var dd = this.db.LabourMasters.Find(list.empno);
+                                            string errorm = "total time of the employee no:" + dd.EMPNO.ToString()
+                                                                                             + " for the day is "
+                                                                                             + com.ToString()
+                                                                                             + "hrs which is greater then 24hrs";
+                                            ModelState.AddModelError(string.Empty, errorm);
+                                            return View(test);
+                                        }
+                                    }
+
+                                    if (list.date.Day == 30)
+                                    {
+                                        long.TryParse(at1.C30, out long k);
+                                        long.TryParse(list.hours, out long l);
+                                        com = k + l;
+                                        if (com > 24)
+                                        {
+                                            var dd = this.db.LabourMasters.Find(list.empno);
+                                            string errorm = "total time of the employee no:" + dd.EMPNO.ToString()
+                                                                                             + " for the day is "
+                                                                                             + com.ToString()
+                                                                                             + "hrs which is greater then 24hrs";
+                                            ModelState.AddModelError(string.Empty, errorm);
+                                            return View(test);
+                                        }
+                                    }
+
+                                    if (list.date.Day == 31)
+                                    {
+                                        long.TryParse(at1.C31, out long k);
+                                        long.TryParse(list.hours, out long l);
+                                        com = k + l;
+                                        if (com > 24)
+                                        {
+                                            var dd = this.db.LabourMasters.Find(list.empno);
+                                            string errorm = "total time of the employee no:" + dd.EMPNO.ToString()
+                                                                                             + " for the day is "
+                                                                                             + com.ToString()
+                                                                                             + "hrs which is greater then 24hrs";
+                                            ModelState.AddModelError(string.Empty, errorm);
+                                            return View(test);
+                                        }
+                                    }
                                 }
                             }
                         }
-                        List<Attendance> lo3 = new List<Attendance>();
-                        foreach (var lo2 in lo1)
+                        if (check.Count != 0) at = check.First();
+                        else at.SubMain = oldmts1.ID;
+                        at.EmpID = list.empno;
+                        list.date = aa.TMonth;
                         {
-                            if (list.empno == lo2.EmpID)
-                            {
-                                lo3.Add(lo2);
-                            }
+                            if (list.date.Day == 1) at.C1 = list.hours;
+                            if (list.date.Day == 2) at.C2 = list.hours;
+                            if (list.date.Day == 3) at.C3 = list.hours;
+                            if (list.date.Day == 4) at.C4 = list.hours;
+                            if (list.date.Day == 5) at.C5 = list.hours;
+                            if (list.date.Day == 6) at.C6 = list.hours;
+                            if (list.date.Day == 7) at.C7 = list.hours;
+                            if (list.date.Day == 8) at.C8 = list.hours;
+                            if (list.date.Day == 9) at.C9 = list.hours;
+                            if (list.date.Day == 10) at.C10 = list.hours;
+                            if (list.date.Day == 11) at.C11 = list.hours;
+                            if (list.date.Day == 12) at.C12 = list.hours;
+                            if (list.date.Day == 13) at.C13 = list.hours;
+                            if (list.date.Day == 14) at.C14 = list.hours;
+                            if (list.date.Day == 15) at.C15 = list.hours;
+                            if (list.date.Day == 16) at.C16 = list.hours;
+                            if (list.date.Day == 17) at.C17 = list.hours;
+                            if (list.date.Day == 18) at.C18 = list.hours;
+                            if (list.date.Day == 19) at.C19 = list.hours;
+                            if (list.date.Day == 20) at.C20 = list.hours;
+                            if (list.date.Day == 21) at.C21 = list.hours;
+                            if (list.date.Day == 22) at.C22 = list.hours;
+                            if (list.date.Day == 23) at.C23 = list.hours;
+                            if (list.date.Day == 24) at.C24 = list.hours;
+                            if (list.date.Day == 25) at.C25 = list.hours;
+                            if (list.date.Day == 26) at.C26 = list.hours;
+                            if (list.date.Day == 27) at.C27 = list.hours;
+                            if (list.date.Day == 28) at.C28 = list.hours;
+                            if (list.date.Day == 29) at.C29 = list.hours;
+                            if (list.date.Day == 30) at.C30 = list.hours;
+                            if (list.date.Day == 31) at.C31 = list.hours;
+                        }
+                        if (check.Count != 0)
+                        {
+                            this.db.Entry(at).State = EntityState.Modified;
+                            this.db.SaveChanges();
+                        }
+                        else
+                        {
+                            this.db.Attendances.Add(at);
+                            this.db.SaveChanges();
                         }
 
-                        long com = 0;
-                        foreach (var at1 in lo3)
+                        if (oldmts.Count != 0)
                         {
-                            if (check.Count != 0) at = check.First();
-                            if (!at1.SubMain.Equals(at.SubMain))
-                            {
+                            oldmts1 = oldmts.Last();
 
-
-                                if (list.date.Day == 1)
-                                {
-                                    long.TryParse(at1.C1, out long k);
-                                    long.TryParse(list.hours, out long l);
-                                    com = k + l;
-                                    if (com > 24)
-                                    {
-                                        var dd = this.db.LabourMasters.Find(list.empno);
-                                        string errorm = "total time of the employee no:" + dd.EMPNO.ToString()
-                                                                                         + " for the day is "
-                                                                                         + com.ToString()
-                                                                                         + "hrs which is greater then 24hrs";
-                                        ModelState.AddModelError(string.Empty, errorm);
-                                        return View(test);
-                                    }
-                                }
-
-                                if (list.date.Day == 2)
-                                {
-                                    long.TryParse(at1.C2, out long k);
-                                    long.TryParse(list.hours, out long l);
-                                    com = k + l;
-                                    if (com > 24)
-                                    {
-                                        var dd = this.db.LabourMasters.Find(list.empno);
-                                        string errorm = "total time of the employee no:" + dd.EMPNO.ToString()
-                                                                                         + " for the day is "
-                                                                                         + com.ToString()
-                                                                                         + "hrs which is greater then 24hrs";
-                                        ModelState.AddModelError(string.Empty, errorm);
-                                        return View(test);
-                                    }
-                                }
-
-                                if (list.date.Day == 3)
-                                {
-                                    long.TryParse(at1.C3, out long k);
-                                    long.TryParse(list.hours, out long l);
-                                    com = k + l;
-                                    if (com > 24)
-                                    {
-                                        var dd = this.db.LabourMasters.Find(list.empno);
-                                        string errorm = "total time of the employee no:" + dd.EMPNO.ToString()
-                                                                                         + " for the day is "
-                                                                                         + com.ToString()
-                                                                                         + "hrs which is greater then 24hrs";
-                                        ModelState.AddModelError(string.Empty, errorm);
-                                        return View(test);
-                                    }
-                                }
-
-                                if (list.date.Day == 4)
-                                {
-                                    long.TryParse(at1.C4, out long k);
-                                    long.TryParse(list.hours, out long l);
-                                    com = k + l;
-                                    if (com > 24)
-                                    {
-                                        var dd = this.db.LabourMasters.Find(list.empno);
-                                        string errorm = "total time of the employee no:" + dd.EMPNO.ToString()
-                                                                                         + " for the day is "
-                                                                                         + com.ToString()
-                                                                                         + "hrs which is greater then 24hrs";
-                                        ModelState.AddModelError(string.Empty, errorm);
-                                        return View(test);
-                                    }
-                                }
-
-                                if (list.date.Day == 5)
-                                {
-                                    long.TryParse(at1.C5, out long k);
-                                    long.TryParse(list.hours, out long l);
-                                    com = k + l;
-                                    if (com > 24)
-                                    {
-                                        var dd = this.db.LabourMasters.Find(list.empno);
-                                        string errorm = "total time of the employee no:" + dd.EMPNO.ToString()
-                                                                                         + " for the day is "
-                                                                                         + com.ToString()
-                                                                                         + "hrs which is greater then 24hrs";
-                                        ModelState.AddModelError(string.Empty, errorm);
-                                        return View(test);
-                                    }
-                                }
-
-                                if (list.date.Day == 6)
-                                {
-                                    long.TryParse(at1.C6, out long k);
-                                    long.TryParse(list.hours, out long l);
-                                    com = k + l;
-                                    if (com > 24)
-                                    {
-                                        var dd = this.db.LabourMasters.Find(list.empno);
-                                        string errorm = "total time of the employee no:" + dd.EMPNO.ToString()
-                                                                                         + " for the day is "
-                                                                                         + com.ToString()
-                                                                                         + "hrs which is greater then 24hrs";
-                                        ModelState.AddModelError(string.Empty, errorm);
-                                        return View(test);
-                                    }
-                                }
-
-                                if (list.date.Day == 7)
-                                {
-                                    long.TryParse(at1.C7, out long k);
-                                    long.TryParse(list.hours, out long l);
-                                    com = k + l;
-                                    if (com > 24)
-                                    {
-                                        var dd = this.db.LabourMasters.Find(list.empno);
-                                        string errorm = "total time of the employee no:" + dd.EMPNO.ToString()
-                                                                                         + " for the day is "
-                                                                                         + com.ToString()
-                                                                                         + "hrs which is greater then 24hrs";
-                                        ModelState.AddModelError(string.Empty, errorm);
-                                        return View(test);
-                                    }
-                                }
-
-                                if (list.date.Day == 8)
-                                {
-                                    long.TryParse(at1.C8, out long k);
-                                    long.TryParse(list.hours, out long l);
-                                    com = k + l;
-                                    if (com > 24)
-                                    {
-                                        var dd = this.db.LabourMasters.Find(list.empno);
-                                        string errorm = "total time of the employee no:" + dd.EMPNO.ToString()
-                                                                                         + " for the day is "
-                                                                                         + com.ToString()
-                                                                                         + "hrs which is greater then 24hrs";
-                                        ModelState.AddModelError(string.Empty, errorm);
-                                        return View(test);
-                                    }
-
-                                }
-
-                                if (list.date.Day == 9)
-                                {
-                                    long.TryParse(at1.C9, out long k);
-                                    long.TryParse(list.hours, out long l);
-                                    com = k + l;
-                                    if (com > 24)
-                                    {
-                                        var dd = this.db.LabourMasters.Find(list.empno);
-                                        string errorm = "total time of the employee no:" + dd.EMPNO.ToString()
-                                                                                         + " for the day is "
-                                                                                         + com.ToString()
-                                                                                         + "hrs which is greater then 24hrs";
-                                        ModelState.AddModelError(string.Empty, errorm);
-                                        return View(test);
-                                    }
-                                }
-
-                                if (list.date.Day == 10)
-                                {
-                                    long.TryParse(at1.C10, out long k);
-                                    long.TryParse(list.hours, out long l);
-                                    com = k + l;
-                                    if (com > 24)
-                                    {
-                                        var dd = this.db.LabourMasters.Find(list.empno);
-                                        string errorm = "total time of the employee no:" + dd.EMPNO.ToString()
-                                                                                         + " for the day is "
-                                                                                         + com.ToString()
-                                                                                         + "hrs which is greater then 24hrs";
-                                        ModelState.AddModelError(string.Empty, errorm);
-                                        return View(test);
-                                    }
-                                }
-
-                                if (list.date.Day == 11)
-                                {
-                                    long.TryParse(at1.C11, out long k);
-                                    long.TryParse(list.hours, out long l);
-                                    com = k + l;
-                                    if (com > 24)
-                                    {
-                                        var dd = this.db.LabourMasters.Find(list.empno);
-                                        string errorm = "total time of the employee no:" + dd.EMPNO.ToString()
-                                                                                         + " for the day is "
-                                                                                         + com.ToString()
-                                                                                         + "hrs which is greater then 24hrs";
-                                        ModelState.AddModelError(string.Empty, errorm);
-                                        return View(test);
-                                    }
-                                }
-
-                                if (list.date.Day == 12)
-                                {
-                                    long.TryParse(at1.C12, out long k);
-                                    long.TryParse(list.hours, out long l);
-                                    com = k + l;
-                                    if (com > 24)
-                                    {
-                                        var dd = this.db.LabourMasters.Find(list.empno);
-                                        string errorm = "total time of the employee no:" + dd.EMPNO.ToString()
-                                                                                         + " for the day is "
-                                                                                         + com.ToString()
-                                                                                         + "hrs which is greater then 24hrs";
-                                        ModelState.AddModelError(string.Empty, errorm);
-                                        return View(test);
-                                    }
-                                }
-
-                                if (list.date.Day == 13)
-                                {
-                                    long.TryParse(at1.C13, out long k);
-                                    long.TryParse(list.hours, out long l);
-                                    com = k + l;
-                                    if (com > 24)
-                                    {
-                                        var dd = this.db.LabourMasters.Find(list.empno);
-                                        string errorm = "total time of the employee no:" + dd.EMPNO.ToString()
-                                                                                         + " for the day is "
-                                                                                         + com.ToString()
-                                                                                         + "hrs which is greater then 24hrs";
-                                        ModelState.AddModelError(string.Empty, errorm);
-                                        return View(test);
-                                    }
-                                }
-
-                                if (list.date.Day == 14)
-                                {
-                                    long.TryParse(at1.C14, out long k);
-                                    long.TryParse(list.hours, out long l);
-                                    com = k + l;
-                                    if (com > 24)
-                                    {
-                                        var dd = this.db.LabourMasters.Find(list.empno);
-                                        string errorm = "total time of the employee no:" + dd.EMPNO.ToString()
-                                                                                         + " for the day is "
-                                                                                         + com.ToString()
-                                                                                         + "hrs which is greater then 24hrs";
-                                        ModelState.AddModelError(string.Empty, errorm);
-                                        return View(test);
-                                    }
-                                }
-
-                                if (list.date.Day == 15)
-                                {
-                                    long.TryParse(at1.C15, out long k);
-                                    long.TryParse(list.hours, out long l);
-                                    com = k + l;
-                                    if (com > 24)
-                                    {
-                                        var dd = this.db.LabourMasters.Find(list.empno);
-                                        string errorm = "total time of the employee no:" + dd.EMPNO.ToString()
-                                                                                         + " for the day is "
-                                                                                         + com.ToString()
-                                                                                         + "hrs which is greater then 24hrs";
-                                        ModelState.AddModelError(string.Empty, errorm);
-                                        return View(test);
-                                    }
-                                }
-
-                                if (list.date.Day == 16)
-                                {
-                                    long.TryParse(at1.C16, out long k);
-                                    long.TryParse(list.hours, out long l);
-                                    com = k + l;
-                                    if (com > 24)
-                                    {
-                                        var dd = this.db.LabourMasters.Find(list.empno);
-                                        string errorm = "total time of the employee no:" + dd.EMPNO.ToString()
-                                                                                         + " for the day is "
-                                                                                         + com.ToString()
-                                                                                         + "hrs which is greater then 24hrs";
-                                        ModelState.AddModelError(string.Empty, errorm);
-                                        return View(test);
-                                    }
-                                }
-
-                                if (list.date.Day == 17)
-                                {
-                                    long.TryParse(at1.C17, out long k);
-                                    long.TryParse(list.hours, out long l);
-                                    com = k + l;
-                                    if (com > 24)
-                                    {
-                                        var dd = this.db.LabourMasters.Find(list.empno);
-                                        string errorm = "total time of the employee no:" + dd.EMPNO.ToString()
-                                                                                         + " for the day is "
-                                                                                         + com.ToString()
-                                                                                         + "hrs which is greater then 24hrs";
-                                        ModelState.AddModelError(string.Empty, errorm);
-                                        return View(test);
-                                    }
-                                }
-
-                                if (list.date.Day == 18)
-                                {
-                                    long.TryParse(at1.C18, out long k);
-                                    long.TryParse(list.hours, out long l);
-                                    com = k + l;
-                                    if (com > 24)
-                                    {
-                                        var dd = this.db.LabourMasters.Find(list.empno);
-                                        string errorm = "total time of the employee no:" + dd.EMPNO.ToString()
-                                                                                         + " for the day is "
-                                                                                         + com.ToString()
-                                                                                         + "hrs which is greater then 24hrs";
-                                        ModelState.AddModelError(string.Empty, errorm);
-                                        return View(test);
-                                    }
-                                }
-
-                                if (list.date.Day == 19)
-                                {
-                                    long.TryParse(at1.C19, out long k);
-                                    long.TryParse(list.hours, out long l);
-                                    com = k + l;
-                                    if (com > 24)
-                                    {
-                                        var dd = this.db.LabourMasters.Find(list.empno);
-                                        string errorm = "total time of the employee no:" + dd.EMPNO.ToString()
-                                                                                         + " for the day is "
-                                                                                         + com.ToString()
-                                                                                         + "hrs which is greater then 24hrs";
-                                        ModelState.AddModelError(string.Empty, errorm);
-                                        return View(test);
-                                    }
-                                }
-
-                                if (list.date.Day == 20)
-                                {
-                                    long.TryParse(at1.C20, out long k);
-                                    long.TryParse(list.hours, out long l);
-                                    com = k + l;
-                                    if (com > 24)
-                                    {
-                                        var dd = this.db.LabourMasters.Find(list.empno);
-                                        string errorm = "total time of the employee no:" + dd.EMPNO.ToString()
-                                                                                         + " for the day is "
-                                                                                         + com.ToString()
-                                                                                         + "hrs which is greater then 24hrs";
-                                        ModelState.AddModelError(string.Empty, errorm);
-                                        return View(test);
-                                    }
-                                }
-
-                                if (list.date.Day == 21)
-                                {
-                                    long.TryParse(at1.C21, out long k);
-                                    long.TryParse(list.hours, out long l);
-                                    com = k + l;
-                                    if (com > 24)
-                                    {
-                                        var dd = this.db.LabourMasters.Find(list.empno);
-                                        string errorm = "total time of the employee no:" + dd.EMPNO.ToString()
-                                                                                         + " for the day is "
-                                                                                         + com.ToString()
-                                                                                         + "hrs which is greater then 24hrs";
-                                        ModelState.AddModelError(string.Empty, errorm);
-                                        return View(test);
-                                    }
-                                }
-
-                                if (list.date.Day == 22)
-                                {
-                                    long.TryParse(at1.C22, out long k);
-                                    long.TryParse(list.hours, out long l);
-                                    com = k + l;
-                                    if (com > 24)
-                                    {
-                                        var dd = this.db.LabourMasters.Find(list.empno);
-                                        string errorm = "total time of the employee no:" + dd.EMPNO.ToString()
-                                                                                         + " for the day is "
-                                                                                         + com.ToString()
-                                                                                         + "hrs which is greater then 24hrs";
-                                        ModelState.AddModelError(string.Empty, errorm);
-                                        return View(test);
-                                    }
-                                }
-
-                                if (list.date.Day == 23)
-                                {
-                                    long.TryParse(at1.C23, out long k);
-                                    long.TryParse(list.hours, out long l);
-                                    com = k + l;
-                                    if (com > 24)
-                                    {
-                                        var dd = this.db.LabourMasters.Find(list.empno);
-                                        string errorm = "total time of the employee no:" + dd.EMPNO.ToString()
-                                                                                         + " for the day is "
-                                                                                         + com.ToString()
-                                                                                         + "hrs which is greater then 24hrs";
-                                        ModelState.AddModelError(string.Empty, errorm);
-                                        return View(test);
-                                    }
-                                }
-
-                                if (list.date.Day == 24)
-                                {
-                                    long.TryParse(at1.C24, out long k);
-                                    long.TryParse(list.hours, out long l);
-                                    com = k + l;
-                                    if (com > 24)
-                                    {
-                                        var dd = this.db.LabourMasters.Find(list.empno);
-                                        string errorm = "total time of the employee no:" + dd.EMPNO.ToString()
-                                                                                         + " for the day is "
-                                                                                         + com.ToString()
-                                                                                         + "hrs which is greater then 24hrs";
-                                        ModelState.AddModelError(string.Empty, errorm);
-                                        return View(test);
-                                    }
-                                }
-
-                                if (list.date.Day == 25)
-                                {
-                                    long.TryParse(at1.C25, out long k);
-                                    long.TryParse(list.hours, out long l);
-                                    com = k + l;
-                                    if (com > 24)
-                                    {
-                                        var dd = this.db.LabourMasters.Find(list.empno);
-                                        string errorm = "total time of the employee no:" + dd.EMPNO.ToString()
-                                                                                         + " for the day is "
-                                                                                         + com.ToString()
-                                                                                         + "hrs which is greater then 24hrs";
-                                        ModelState.AddModelError(string.Empty, errorm);
-                                        return View(test);
-                                    }
-                                }
-
-                                if (list.date.Day == 26)
-                                {
-                                    long.TryParse(at1.C26, out long k);
-                                    long.TryParse(list.hours, out long l);
-                                    com = k + l;
-                                    if (com > 24)
-                                    {
-                                        var dd = this.db.LabourMasters.Find(list.empno);
-                                        string errorm = "total time of the employee no:" + dd.EMPNO.ToString()
-                                                                                         + " for the day is "
-                                                                                         + com.ToString()
-                                                                                         + "hrs which is greater then 24hrs";
-                                        ModelState.AddModelError(string.Empty, errorm);
-                                        return View(test);
-                                    }
-                                }
-
-                                if (list.date.Day == 27)
-                                {
-                                    long.TryParse(at1.C27, out long k);
-                                    long.TryParse(list.hours, out long l);
-                                    com = k + l;
-                                    if (com > 24)
-                                    {
-                                        var dd = this.db.LabourMasters.Find(list.empno);
-                                        string errorm = "total time of the employee no:" + dd.EMPNO.ToString()
-                                                                                         + " for the day is "
-                                                                                         + com.ToString()
-                                                                                         + "hrs which is greater then 24hrs";
-                                        ModelState.AddModelError(string.Empty, errorm);
-                                        return View(test);
-                                    }
-                                }
-
-                                if (list.date.Day == 28)
-                                {
-                                    long.TryParse(at1.C28, out long k);
-                                    long.TryParse(list.hours, out long l);
-                                    com = k + l;
-                                    if (com > 24)
-                                    {
-                                        var dd = this.db.LabourMasters.Find(list.empno);
-                                        string errorm = "total time of the employee no:" + dd.EMPNO.ToString()
-                                                                                         + " for the day is "
-                                                                                         + com.ToString()
-                                                                                         + "hrs which is greater then 24hrs";
-                                        ModelState.AddModelError(string.Empty, errorm);
-                                        return View(test);
-                                    }
-                                }
-
-                                if (list.date.Day == 29)
-                                {
-                                    long.TryParse(at1.C29, out long k);
-                                    long.TryParse(list.hours, out long l);
-                                    com = k + l;
-                                    if (com > 24)
-                                    {
-                                        var dd = this.db.LabourMasters.Find(list.empno);
-                                        string errorm = "total time of the employee no:" + dd.EMPNO.ToString()
-                                                                                         + " for the day is "
-                                                                                         + com.ToString()
-                                                                                         + "hrs which is greater then 24hrs";
-                                        ModelState.AddModelError(string.Empty, errorm);
-                                        return View(test);
-                                    }
-                                }
-
-                                if (list.date.Day == 30)
-                                {
-                                    long.TryParse(at1.C30, out long k);
-                                    long.TryParse(list.hours, out long l);
-                                    com = k + l;
-                                    if (com > 24)
-                                    {
-                                        var dd = this.db.LabourMasters.Find(list.empno);
-                                        string errorm = "total time of the employee no:" + dd.EMPNO.ToString()
-                                                                                         + " for the day is "
-                                                                                         + com.ToString()
-                                                                                         + "hrs which is greater then 24hrs";
-                                        ModelState.AddModelError(string.Empty, errorm);
-                                        return View(test);
-                                    }
-                                }
-
-                                if (list.date.Day == 31)
-                                {
-                                    long.TryParse(at1.C31, out long k);
-                                    long.TryParse(list.hours, out long l);
-                                    com = k + l;
-                                    if (com > 24)
-                                    {
-                                        var dd = this.db.LabourMasters.Find(list.empno);
-                                        string errorm = "total time of the employee no:" + dd.EMPNO.ToString()
-                                                                                         + " for the day is "
-                                                                                         + com.ToString()
-                                                                                         + "hrs which is greater then 24hrs";
-                                        ModelState.AddModelError(string.Empty, errorm);
-                                        return View(test);
-                                    }
-                                }
-                            }
+                            // First();
+                            check = this.db.Attendances
+                                .Where(z => z.EmpID.Equals(list.empno) && z.SubMain.Equals(oldmts1.ID)).ToList();
                         }
-                    }
-                    if (check.Count != 0) at = check.First();
-                    else at.SubMain = oldmts1.ID;
-                    at.EmpID = list.empno;
-                    list.date = aa.TMonth;
-                    {
-                        if (list.date.Day == 1) at.C1 = list.hours;
-                        if (list.date.Day == 2) at.C2 = list.hours;
-                        if (list.date.Day == 3) at.C3 = list.hours;
-                        if (list.date.Day == 4) at.C4 = list.hours;
-                        if (list.date.Day == 5) at.C5 = list.hours;
-                        if (list.date.Day == 6) at.C6 = list.hours;
-                        if (list.date.Day == 7) at.C7 = list.hours;
-                        if (list.date.Day == 8) at.C8 = list.hours;
-                        if (list.date.Day == 9) at.C9 = list.hours;
-                        if (list.date.Day == 10) at.C10 = list.hours;
-                        if (list.date.Day == 11) at.C11 = list.hours;
-                        if (list.date.Day == 12) at.C12 = list.hours;
-                        if (list.date.Day == 13) at.C13 = list.hours;
-                        if (list.date.Day == 14) at.C14 = list.hours;
-                        if (list.date.Day == 15) at.C15 = list.hours;
-                        if (list.date.Day == 16) at.C16 = list.hours;
-                        if (list.date.Day == 17) at.C17 = list.hours;
-                        if (list.date.Day == 18) at.C18 = list.hours;
-                        if (list.date.Day == 19) at.C19 = list.hours;
-                        if (list.date.Day == 20) at.C20 = list.hours;
-                        if (list.date.Day == 21) at.C21 = list.hours;
-                        if (list.date.Day == 22) at.C22 = list.hours;
-                        if (list.date.Day == 23) at.C23 = list.hours;
-                        if (list.date.Day == 24) at.C24 = list.hours;
-                        if (list.date.Day == 25) at.C25 = list.hours;
-                        if (list.date.Day == 26) at.C26 = list.hours;
-                        if (list.date.Day == 27) at.C27 = list.hours;
-                        if (list.date.Day == 28) at.C28 = list.hours;
-                        if (list.date.Day == 29) at.C29 = list.hours;
-                        if (list.date.Day == 30) at.C30 = list.hours;
-                        if (list.date.Day == 31) at.C31 = list.hours;
-                    }
-                    if (check.Count != 0)
-                    {
-                        this.db.Entry(at).State = EntityState.Modified;
-                        this.db.SaveChanges();
-                    }
-                    else
-                    {
-                        this.db.Attendances.Add(at);
-                        this.db.SaveChanges();
-                    }
-
-                    if (oldmts.Count != 0)
-                    {
-                        oldmts1 = oldmts.Last();
-
-                        // First();
-                        check = this.db.Attendances
-                            .Where(z => z.EmpID.Equals(list.empno) && z.SubMain.Equals(oldmts1.ID)).ToList();
-                    }
-                    else
-                    {
-                        check = this.db.Attendances.Where(z => z.EmpID.Equals(list.empno) && z.SubMain.Equals(aa.ID))
-                            .ToList();
-                    }
-
-                    if (check.Count != 0) at = check.First();
-                    else at.SubMain = oldmts1.ID;
-                    long fri1 = 0;
-                    var date = new DateTime(list.date.Year, list.date.Month, 1);
-                    for (var i = 0; i < DateTime.DaysInMonth(list.date.Year, list.date.Month); i++)
-                    {
-                        if (date.DayOfWeek.Equals(DayOfWeek.Friday))
+                        else
                         {
-                            if (date.Day == 1)
-                            {
-                                long.TryParse(at.C1, out var tl);
-                                fri1 = fri1 + tl;
-                            }
-
-                            if (date.Day == 2)
-                            {
-                                long.TryParse(at.C2, out var tl);
-                                fri1 = fri1 + tl;
-                            }
-
-                            if (date.Day == 3)
-                            {
-                                long.TryParse(at.C3, out var tl);
-                                fri1 = fri1 + tl;
-                            }
-
-                            if (date.Day == 4)
-                            {
-                                long.TryParse(at.C4, out var tl);
-                                fri1 = fri1 + tl;
-                            }
-
-                            if (date.Day == 5)
-                            {
-                                long.TryParse(at.C5, out var tl);
-                                fri1 = fri1 + tl;
-                            }
-
-                            if (date.Day == 6)
-                            {
-                                long.TryParse(at.C6, out var tl);
-                                fri1 = fri1 + tl;
-                            }
-
-                            if (date.Day == 7)
-                            {
-                                long.TryParse(at.C7, out var tl);
-                                fri1 = fri1 + tl;
-                            }
-
-                            if (date.Day == 8)
-                            {
-                                long.TryParse(at.C8, out var tl);
-                                fri1 = fri1 + tl;
-                            }
-
-                            if (date.Day == 9)
-                            {
-                                long.TryParse(at.C9, out var tl);
-                                fri1 = fri1 + tl;
-                            }
-
-                            if (date.Day == 10)
-                            {
-                                long.TryParse(at.C10, out var tl);
-                                fri1 = fri1 + tl;
-                            }
-
-                            if (date.Day == 11)
-                            {
-                                long.TryParse(at.C11, out var tl);
-                                fri1 = fri1 + tl;
-                            }
-
-                            if (date.Day == 12)
-                            {
-                                long.TryParse(at.C11, out var tl);
-                                fri1 = fri1 + tl;
-                            }
-
-                            if (date.Day == 13)
-                            {
-                                long.TryParse(at.C13, out var tl);
-                                fri1 = fri1 + tl;
-                            }
-
-                            if (date.Day == 14)
-                            {
-                                long.TryParse(at.C14, out var tl);
-                                fri1 = fri1 + tl;
-                            }
-
-                            if (date.Day == 15)
-                            {
-                                long.TryParse(at.C15, out var tl);
-                                fri1 = fri1 + tl;
-                            }
-
-                            if (date.Day == 16)
-                            {
-                                long.TryParse(at.C16, out var tl);
-                                fri1 = fri1 + tl;
-                            }
-
-                            if (date.Day == 17)
-                            {
-                                long.TryParse(at.C17, out var tl);
-                                fri1 = fri1 + tl;
-                            }
-
-                            if (date.Day == 18)
-                            {
-                                long.TryParse(at.C18, out var tl);
-                                fri1 = fri1 + tl;
-                            }
-
-                            if (date.Day == 19)
-                            {
-                                long.TryParse(at.C19, out var tl);
-                                fri1 = fri1 + tl;
-                            }
-
-                            if (date.Day == 20)
-                            {
-                                long.TryParse(at.C20, out var tl);
-                                fri1 = fri1 + tl;
-                            }
-
-                            if (date.Day == 21)
-                            {
-                                long.TryParse(at.C21, out var tl);
-                                fri1 = fri1 + tl;
-                            }
-
-                            if (date.Day == 22)
-                            {
-                                long.TryParse(at.C22, out var tl);
-                                fri1 = fri1 + tl;
-                            }
-
-                            if (date.Day == 23)
-                            {
-                                long.TryParse(at.C23, out var tl);
-                                fri1 = fri1 + tl;
-                            }
-
-                            if (date.Day == 24)
-                            {
-                                long.TryParse(at.C24, out var tl);
-                                fri1 = fri1 + tl;
-                            }
-
-                            if (date.Day == 25)
-                            {
-                                long.TryParse(at.C25, out var tl);
-                                fri1 = fri1 + tl;
-                            }
-
-                            if (date.Day == 26)
-                            {
-                                long.TryParse(at.C26, out var tl);
-                                fri1 = fri1 + tl;
-                            }
-
-                            if (date.Day == 27)
-                            {
-                                long.TryParse(at.C27, out var tl);
-                                fri1 = fri1 + tl;
-                            }
-
-                            if (date.Day == 28)
-                            {
-                                long.TryParse(at.C28, out var tl);
-                                fri1 = fri1 + tl;
-                            }
-
-                            if (date.Day == 29)
-                            {
-                                long.TryParse(at.C29, out var tl);
-                                fri1 = fri1 + tl;
-                            }
-
-                            if (date.Day == 30)
-                            {
-                                long.TryParse(at.C30, out var tl);
-                                fri1 = fri1 + tl;
-                            }
-
-                            if (date.Day == 31)
-                            {
-                                long.TryParse(at.C31, out var tl);
-                                fri1 = fri1 + tl;
-                            }
-
-                            long.TryParse(list.hours, out var fri);
-                            at.FridayHours = fri1;
+                            check = this.db.Attendances.Where(z => z.EmpID.Equals(list.empno) && z.SubMain.Equals(aa.ID))
+                                .ToList();
                         }
 
-                        date = date.AddDays(1);
-                    }
-                    {
-                        at.TotalHours = 0;
-                        long.TryParse(at.C1, out var tl);
-                        long.TryParse(at.C2, out var tl1);
-                        long.TryParse(at.C3, out var tl2);
-                        long.TryParse(at.C4, out var tl3);
-                        long.TryParse(at.C5, out var tl4);
-                        long.TryParse(at.C6, out var tl5);
-                        long.TryParse(at.C7, out var tl6);
-                        long.TryParse(at.C8, out var tl7);
-                        long.TryParse(at.C9, out var tl8);
-                        long.TryParse(at.C10, out var tl9);
-                        long.TryParse(at.C11, out var tl10);
-                        long.TryParse(at.C12, out var tl11);
-                        long.TryParse(at.C13, out var tl12);
-                        long.TryParse(at.C14, out var tl13);
-                        long.TryParse(at.C15, out var tl14);
-                        long.TryParse(at.C16, out var tl15);
-                        long.TryParse(at.C17, out var tl16);
-                        long.TryParse(at.C18, out var tl17);
-                        long.TryParse(at.C19, out var tl18);
-                        long.TryParse(at.C20, out var tl19);
-                        long.TryParse(at.C21, out var tl20);
-                        long.TryParse(at.C22, out var tl21);
-                        long.TryParse(at.C23, out var tl22);
-                        long.TryParse(at.C24, out var tl23);
-                        long.TryParse(at.C25, out var tl24);
-                        long.TryParse(at.C26, out var tl25);
-                        long.TryParse(at.C27, out var tl26);
-                        long.TryParse(at.C28, out var tl27);
-                        long.TryParse(at.C29, out var tl28);
-                        long.TryParse(at.C30, out var tl29);
-                        long.TryParse(at.C31, out var tl30);
-                        long.TryParse(at.TotalHours.ToString(), out var atlg);
-                        at.TotalHours = tl + tl1 + tl2 + tl3 + tl4 + tl5 + tl6 + tl7 + tl8 + tl9 + tl10 + tl11 + tl12
-                                        + tl13 + tl14 + tl15 + tl16 + tl17 + tl18 + tl19 + tl20 + tl21 + tl22 + tl23
-                                        + tl24 + tl25 + tl26 + tl27 + tl28 + tl29 + tl30;
-                        double.TryParse(b.NormalTimeUpto.ToString(), out var tho);
+                        if (check.Count != 0) at = check.First();
+                        else at.SubMain = oldmts1.ID;
+                        long fri1 = 0;
+                        var date = new DateTime(list.date.Year, list.date.Month, 1);
+                        for (var i = 0; i < DateTime.DaysInMonth(list.date.Year, list.date.Month); i++)
                         {
-                            var t = new List<long>();
-                            at.TotalOverTime = 0;
-                            t.Add(tl);
-                            t.Add(tl1);
-                            t.Add(tl2);
-                            t.Add(tl3);
-                            t.Add(tl4);
-                            t.Add(tl5);
-                            t.Add(tl6);
-                            t.Add(tl7);
-                            t.Add(tl8);
-                            t.Add(tl9);
-                            t.Add(tl10);
-                            t.Add(tl11);
-                            t.Add(tl12);
-                            t.Add(tl13);
-                            t.Add(tl14);
-                            t.Add(tl15);
-                            t.Add(tl16);
-                            t.Add(tl17);
-                            t.Add(tl18);
-                            t.Add(tl19);
-                            t.Add(tl20);
-                            t.Add(tl21);
-                            t.Add(tl22);
-                            t.Add(tl23);
-                            t.Add(tl24);
-                            t.Add(tl25);
-                            t.Add(tl26);
-                            t.Add(tl27);
-                            t.Add(tl28);
-                            t.Add(tl29);
-                            t.Add(tl30);
-                            long tho1 = 0;
-                            foreach (var l in t)
-                                if (l > tho)
+                            if (date.DayOfWeek.Equals(DayOfWeek.Friday))
+                            {
+                                if (date.Day == 1)
                                 {
-                                    tho1 += l - (long)tho;
-                                    at.TotalOverTime = tho1;
+                                    long.TryParse(at.C1, out var tl);
+                                    fri1 = fri1 + tl;
                                 }
+
+                                if (date.Day == 2)
+                                {
+                                    long.TryParse(at.C2, out var tl);
+                                    fri1 = fri1 + tl;
+                                }
+
+                                if (date.Day == 3)
+                                {
+                                    long.TryParse(at.C3, out var tl);
+                                    fri1 = fri1 + tl;
+                                }
+
+                                if (date.Day == 4)
+                                {
+                                    long.TryParse(at.C4, out var tl);
+                                    fri1 = fri1 + tl;
+                                }
+
+                                if (date.Day == 5)
+                                {
+                                    long.TryParse(at.C5, out var tl);
+                                    fri1 = fri1 + tl;
+                                }
+
+                                if (date.Day == 6)
+                                {
+                                    long.TryParse(at.C6, out var tl);
+                                    fri1 = fri1 + tl;
+                                }
+
+                                if (date.Day == 7)
+                                {
+                                    long.TryParse(at.C7, out var tl);
+                                    fri1 = fri1 + tl;
+                                }
+
+                                if (date.Day == 8)
+                                {
+                                    long.TryParse(at.C8, out var tl);
+                                    fri1 = fri1 + tl;
+                                }
+
+                                if (date.Day == 9)
+                                {
+                                    long.TryParse(at.C9, out var tl);
+                                    fri1 = fri1 + tl;
+                                }
+
+                                if (date.Day == 10)
+                                {
+                                    long.TryParse(at.C10, out var tl);
+                                    fri1 = fri1 + tl;
+                                }
+
+                                if (date.Day == 11)
+                                {
+                                    long.TryParse(at.C11, out var tl);
+                                    fri1 = fri1 + tl;
+                                }
+
+                                if (date.Day == 12)
+                                {
+                                    long.TryParse(at.C11, out var tl);
+                                    fri1 = fri1 + tl;
+                                }
+
+                                if (date.Day == 13)
+                                {
+                                    long.TryParse(at.C13, out var tl);
+                                    fri1 = fri1 + tl;
+                                }
+
+                                if (date.Day == 14)
+                                {
+                                    long.TryParse(at.C14, out var tl);
+                                    fri1 = fri1 + tl;
+                                }
+
+                                if (date.Day == 15)
+                                {
+                                    long.TryParse(at.C15, out var tl);
+                                    fri1 = fri1 + tl;
+                                }
+
+                                if (date.Day == 16)
+                                {
+                                    long.TryParse(at.C16, out var tl);
+                                    fri1 = fri1 + tl;
+                                }
+
+                                if (date.Day == 17)
+                                {
+                                    long.TryParse(at.C17, out var tl);
+                                    fri1 = fri1 + tl;
+                                }
+
+                                if (date.Day == 18)
+                                {
+                                    long.TryParse(at.C18, out var tl);
+                                    fri1 = fri1 + tl;
+                                }
+
+                                if (date.Day == 19)
+                                {
+                                    long.TryParse(at.C19, out var tl);
+                                    fri1 = fri1 + tl;
+                                }
+
+                                if (date.Day == 20)
+                                {
+                                    long.TryParse(at.C20, out var tl);
+                                    fri1 = fri1 + tl;
+                                }
+
+                                if (date.Day == 21)
+                                {
+                                    long.TryParse(at.C21, out var tl);
+                                    fri1 = fri1 + tl;
+                                }
+
+                                if (date.Day == 22)
+                                {
+                                    long.TryParse(at.C22, out var tl);
+                                    fri1 = fri1 + tl;
+                                }
+
+                                if (date.Day == 23)
+                                {
+                                    long.TryParse(at.C23, out var tl);
+                                    fri1 = fri1 + tl;
+                                }
+
+                                if (date.Day == 24)
+                                {
+                                    long.TryParse(at.C24, out var tl);
+                                    fri1 = fri1 + tl;
+                                }
+
+                                if (date.Day == 25)
+                                {
+                                    long.TryParse(at.C25, out var tl);
+                                    fri1 = fri1 + tl;
+                                }
+
+                                if (date.Day == 26)
+                                {
+                                    long.TryParse(at.C26, out var tl);
+                                    fri1 = fri1 + tl;
+                                }
+
+                                if (date.Day == 27)
+                                {
+                                    long.TryParse(at.C27, out var tl);
+                                    fri1 = fri1 + tl;
+                                }
+
+                                if (date.Day == 28)
+                                {
+                                    long.TryParse(at.C28, out var tl);
+                                    fri1 = fri1 + tl;
+                                }
+
+                                if (date.Day == 29)
+                                {
+                                    long.TryParse(at.C29, out var tl);
+                                    fri1 = fri1 + tl;
+                                }
+
+                                if (date.Day == 30)
+                                {
+                                    long.TryParse(at.C30, out var tl);
+                                    fri1 = fri1 + tl;
+                                }
+
+                                if (date.Day == 31)
+                                {
+                                    long.TryParse(at.C31, out var tl);
+                                    fri1 = fri1 + tl;
+                                }
+
+                                long.TryParse(list.hours, out var fri);
+                                at.FridayHours = fri1;
+                            }
+
+                            date = date.AddDays(1);
                         }
-                    }
-                    {
-                        at.TotalSickLeave = 0;
-                        long ts = 0;
-                        if (!at.C1.IsNullOrWhiteSpace())
-                            if (at.C1.Equals("S"))
-                                ts = ts + 1;
-                        if (!at.C2.IsNullOrWhiteSpace())
-                            if (at.C2.Equals("S"))
-                                ts = ts + 1;
-                        if (!at.C3.IsNullOrWhiteSpace())
-                            if (at.C3.Equals("S"))
-                                ts = ts + 1;
-                        if (!at.C4.IsNullOrWhiteSpace())
-                            if (at.C4.Equals("S"))
-                                ts = ts + 1;
-                        if (!at.C5.IsNullOrWhiteSpace())
-                            if (at.C5.Equals("S"))
-                                ts = ts + 1;
-                        if (!at.C6.IsNullOrWhiteSpace())
-                            if (at.C6.Equals("S"))
-                                ts = ts + 1;
-                        if (!at.C7.IsNullOrWhiteSpace())
-                            if (at.C7.Equals("S"))
-                                ts = ts + 1;
-                        if (!at.C8.IsNullOrWhiteSpace())
-                            if (at.C8.Equals("S"))
-                                ts = ts + 1;
-                        if (!at.C9.IsNullOrWhiteSpace())
-                            if (at.C9.Equals("S"))
-                                ts = ts + 1;
-                        if (!at.C10.IsNullOrWhiteSpace())
-                            if (at.C10.Equals("S"))
-                                ts = ts + 1;
-                        if (!at.C11.IsNullOrWhiteSpace())
-                            if (at.C11.Equals("S"))
-                                ts = ts + 1;
-                        if (!at.C12.IsNullOrWhiteSpace())
-                            if (at.C12.Equals("S"))
-                                ts = ts + 1;
-                        if (!at.C13.IsNullOrWhiteSpace())
-                            if (at.C13.Equals("S"))
-                                ts = ts + 1;
-                        if (!at.C14.IsNullOrWhiteSpace())
-                            if (at.C14.Equals("S"))
-                                ts = ts + 1;
-                        if (!at.C15.IsNullOrWhiteSpace())
-                            if (at.C15.Equals("S"))
-                                ts = ts + 1;
-                        if (!at.C16.IsNullOrWhiteSpace())
-                            if (at.C16.Equals("S"))
-                                ts = ts + 1;
-                        if (!at.C17.IsNullOrWhiteSpace())
-                            if (at.C17.Equals("S"))
-                                ts = ts + 1;
-                        if (!at.C18.IsNullOrWhiteSpace())
-                            if (at.C18.Equals("S"))
-                                ts = ts + 1;
-                        if (!at.C19.IsNullOrWhiteSpace())
-                            if (at.C19.Equals("S"))
-                                ts = ts + 1;
-                        if (!at.C20.IsNullOrWhiteSpace())
-                            if (at.C20.Equals("S"))
-                                ts = ts + 1;
-                        if (!at.C21.IsNullOrWhiteSpace())
-                            if (at.C21.Equals("S"))
-                                ts = ts + 1;
-                        if (!at.C22.IsNullOrWhiteSpace())
-                            if (at.C22.Equals("S"))
-                                ts = ts + 1;
-                        if (!at.C23.IsNullOrWhiteSpace())
-                            if (at.C23.Equals("S"))
-                                ts = ts + 1;
-                        if (!at.C24.IsNullOrWhiteSpace())
-                            if (at.C24.Equals("S"))
-                                ts = ts + 1;
-                        if (!at.C25.IsNullOrWhiteSpace())
-                            if (at.C25.Equals("S"))
-                                ts = ts + 1;
-                        if (!at.C26.IsNullOrWhiteSpace())
-                            if (at.C26.Equals("S"))
-                                ts = ts + 1;
-                        if (!at.C27.IsNullOrWhiteSpace())
-                            if (at.C27.Equals("S"))
-                                ts = ts + 1;
-                        if (!at.C28.IsNullOrWhiteSpace())
-                            if (at.C28.Equals("S"))
-                                ts = ts + 1;
-                        if (!at.C29.IsNullOrWhiteSpace())
-                            if (at.C29.Equals("S"))
-                                ts = ts + 1;
-                        if (!at.C30.IsNullOrWhiteSpace())
-                            if (at.C30.Equals("S"))
-                                ts = ts + 1;
-                        if (!at.C31.IsNullOrWhiteSpace())
-                            if (at.C31.Equals("S"))
-                                ts = ts + 1;
 
-                        at.TotalSickLeave = ts;
-                    }
-                    {
-                        at.TotalVL = 0;
-                        long tv = 0;
-                        if (!at.C1.IsNullOrWhiteSpace())
-                            if (at.C1.Equals("V"))
-                                tv = tv + 1;
-                        if (!at.C2.IsNullOrWhiteSpace())
-                            if (at.C2.Equals("V"))
-                                tv = tv + 1;
-                        if (!at.C3.IsNullOrWhiteSpace())
-                            if (at.C3.Equals("V"))
-                                tv = tv + 1;
-                        if (!at.C4.IsNullOrWhiteSpace())
-                            if (at.C4.Equals("V"))
-                                tv = tv + 1;
-                        if (!at.C5.IsNullOrWhiteSpace())
-                            if (at.C5.Equals("V"))
-                                tv = tv + 1;
-                        if (!at.C6.IsNullOrWhiteSpace())
-                            if (at.C6.Equals("V"))
-                                tv = tv + 1;
-                        if (!at.C7.IsNullOrWhiteSpace())
-                            if (at.C7.Equals("V"))
-                                tv = tv + 1;
-                        if (!at.C8.IsNullOrWhiteSpace())
-                            if (at.C8.Equals("V"))
-                                tv = tv + 1;
-                        if (!at.C9.IsNullOrWhiteSpace())
-                            if (at.C9.Equals("V"))
-                                tv = tv + 1;
-                        if (!at.C10.IsNullOrWhiteSpace())
-                            if (at.C10.Equals("V"))
-                                tv = tv + 1;
-                        if (!at.C11.IsNullOrWhiteSpace())
-                            if (at.C11.Equals("V"))
-                                tv = tv + 1;
-                        if (!at.C12.IsNullOrWhiteSpace())
-                            if (at.C12.Equals("V"))
-                                tv = tv + 1;
-                        if (!at.C13.IsNullOrWhiteSpace())
-                            if (at.C13.Equals("V"))
-                                tv = tv + 1;
-                        if (!at.C14.IsNullOrWhiteSpace())
-                            if (at.C14.Equals("V"))
-                                tv = tv + 1;
-                        if (!at.C15.IsNullOrWhiteSpace())
-                            if (at.C15.Equals("V"))
-                                tv = tv + 1;
-                        if (!at.C16.IsNullOrWhiteSpace())
-                            if (at.C16.Equals("V"))
-                                tv = tv + 1;
-                        if (!at.C17.IsNullOrWhiteSpace())
-                            if (at.C17.Equals("V"))
-                                tv = tv + 1;
-                        if (!at.C18.IsNullOrWhiteSpace())
-                            if (at.C18.Equals("V"))
-                                tv = tv + 1;
-                        if (!at.C19.IsNullOrWhiteSpace())
-                            if (at.C19.Equals("V"))
-                                tv = tv + 1;
-                        if (!at.C20.IsNullOrWhiteSpace())
-                            if (at.C20.Equals("V"))
-                                tv = tv + 1;
-                        if (!at.C21.IsNullOrWhiteSpace())
-                            if (at.C21.Equals("V"))
-                                tv = tv + 1;
-                        if (!at.C22.IsNullOrWhiteSpace())
-                            if (at.C22.Equals("V"))
-                                tv = tv + 1;
-                        if (!at.C23.IsNullOrWhiteSpace())
-                            if (at.C23.Equals("V"))
-                                tv = tv + 1;
-                        if (!at.C24.IsNullOrWhiteSpace())
-                            if (at.C24.Equals("V"))
-                                tv = tv + 1;
-                        if (!at.C25.IsNullOrWhiteSpace())
-                            if (at.C25.Equals("V"))
-                                tv = tv + 1;
-                        if (!at.C26.IsNullOrWhiteSpace())
-                            if (at.C26.Equals("V"))
-                                tv = tv + 1;
-                        if (!at.C27.IsNullOrWhiteSpace())
-                            if (at.C27.Equals("V"))
-                                tv = tv + 1;
-                        if (!at.C28.IsNullOrWhiteSpace())
-                            if (at.C28.Equals("V"))
-                                tv = tv + 1;
-                        if (!at.C29.IsNullOrWhiteSpace())
-                            if (at.C29.Equals("V"))
-                                tv = tv + 1;
-                        if (!at.C30.IsNullOrWhiteSpace())
-                            if (at.C30.Equals("V"))
-                                tv = tv + 1;
-                        if (!at.C31.IsNullOrWhiteSpace())
-                            if (at.C31.Equals("V"))
-                                tv = tv + 1;
+                        {
+                            at.TotalHours = 0;
+                            long.TryParse(at.C1, out var tl);
+                            long.TryParse(at.C2, out var tl1);
+                            long.TryParse(at.C3, out var tl2);
+                            long.TryParse(at.C4, out var tl3);
+                            long.TryParse(at.C5, out var tl4);
+                            long.TryParse(at.C6, out var tl5);
+                            long.TryParse(at.C7, out var tl6);
+                            long.TryParse(at.C8, out var tl7);
+                            long.TryParse(at.C9, out var tl8);
+                            long.TryParse(at.C10, out var tl9);
+                            long.TryParse(at.C11, out var tl10);
+                            long.TryParse(at.C12, out var tl11);
+                            long.TryParse(at.C13, out var tl12);
+                            long.TryParse(at.C14, out var tl13);
+                            long.TryParse(at.C15, out var tl14);
+                            long.TryParse(at.C16, out var tl15);
+                            long.TryParse(at.C17, out var tl16);
+                            long.TryParse(at.C18, out var tl17);
+                            long.TryParse(at.C19, out var tl18);
+                            long.TryParse(at.C20, out var tl19);
+                            long.TryParse(at.C21, out var tl20);
+                            long.TryParse(at.C22, out var tl21);
+                            long.TryParse(at.C23, out var tl22);
+                            long.TryParse(at.C24, out var tl23);
+                            long.TryParse(at.C25, out var tl24);
+                            long.TryParse(at.C26, out var tl25);
+                            long.TryParse(at.C27, out var tl26);
+                            long.TryParse(at.C28, out var tl27);
+                            long.TryParse(at.C29, out var tl28);
+                            long.TryParse(at.C30, out var tl29);
+                            long.TryParse(at.C31, out var tl30);
+                            long.TryParse(at.TotalHours.ToString(), out var atlg);
+                            at.TotalHours = tl + tl1 + tl2 + tl3 + tl4 + tl5 + tl6 + tl7 + tl8 + tl9 + tl10 + tl11 + tl12
+                                            + tl13 + tl14 + tl15 + tl16 + tl17 + tl18 + tl19 + tl20 + tl21 + tl22 + tl23
+                                            + tl24 + tl25 + tl26 + tl27 + tl28 + tl29 + tl30;
+                            double.TryParse(b.NormalTimeUpto.ToString(), out var tho);
+                            {
+                                var t = new List<long>();
+                                at.TotalOverTime = 0;
+                                t.Add(tl);
+                                t.Add(tl1);
+                                t.Add(tl2);
+                                t.Add(tl3);
+                                t.Add(tl4);
+                                t.Add(tl5);
+                                t.Add(tl6);
+                                t.Add(tl7);
+                                t.Add(tl8);
+                                t.Add(tl9);
+                                t.Add(tl10);
+                                t.Add(tl11);
+                                t.Add(tl12);
+                                t.Add(tl13);
+                                t.Add(tl14);
+                                t.Add(tl15);
+                                t.Add(tl16);
+                                t.Add(tl17);
+                                t.Add(tl18);
+                                t.Add(tl19);
+                                t.Add(tl20);
+                                t.Add(tl21);
+                                t.Add(tl22);
+                                t.Add(tl23);
+                                t.Add(tl24);
+                                t.Add(tl25);
+                                t.Add(tl26);
+                                t.Add(tl27);
+                                t.Add(tl28);
+                                t.Add(tl29);
+                                t.Add(tl30);
+                                long tho1 = 0;
+                                foreach (var l in t)
+                                    if (l > tho)
+                                    {
+                                        tho1 += l - (long)tho;
+                                        at.TotalOverTime = tho1;
+                                    }
+                            }
+                        }
+                        {
+                            at.TotalSickLeave = 0;
+                            long ts = 0;
+                            if (!at.C1.IsNullOrWhiteSpace())
+                                if (at.C1.Equals("S"))
+                                    ts = ts + 1;
+                            if (!at.C2.IsNullOrWhiteSpace())
+                                if (at.C2.Equals("S"))
+                                    ts = ts + 1;
+                            if (!at.C3.IsNullOrWhiteSpace())
+                                if (at.C3.Equals("S"))
+                                    ts = ts + 1;
+                            if (!at.C4.IsNullOrWhiteSpace())
+                                if (at.C4.Equals("S"))
+                                    ts = ts + 1;
+                            if (!at.C5.IsNullOrWhiteSpace())
+                                if (at.C5.Equals("S"))
+                                    ts = ts + 1;
+                            if (!at.C6.IsNullOrWhiteSpace())
+                                if (at.C6.Equals("S"))
+                                    ts = ts + 1;
+                            if (!at.C7.IsNullOrWhiteSpace())
+                                if (at.C7.Equals("S"))
+                                    ts = ts + 1;
+                            if (!at.C8.IsNullOrWhiteSpace())
+                                if (at.C8.Equals("S"))
+                                    ts = ts + 1;
+                            if (!at.C9.IsNullOrWhiteSpace())
+                                if (at.C9.Equals("S"))
+                                    ts = ts + 1;
+                            if (!at.C10.IsNullOrWhiteSpace())
+                                if (at.C10.Equals("S"))
+                                    ts = ts + 1;
+                            if (!at.C11.IsNullOrWhiteSpace())
+                                if (at.C11.Equals("S"))
+                                    ts = ts + 1;
+                            if (!at.C12.IsNullOrWhiteSpace())
+                                if (at.C12.Equals("S"))
+                                    ts = ts + 1;
+                            if (!at.C13.IsNullOrWhiteSpace())
+                                if (at.C13.Equals("S"))
+                                    ts = ts + 1;
+                            if (!at.C14.IsNullOrWhiteSpace())
+                                if (at.C14.Equals("S"))
+                                    ts = ts + 1;
+                            if (!at.C15.IsNullOrWhiteSpace())
+                                if (at.C15.Equals("S"))
+                                    ts = ts + 1;
+                            if (!at.C16.IsNullOrWhiteSpace())
+                                if (at.C16.Equals("S"))
+                                    ts = ts + 1;
+                            if (!at.C17.IsNullOrWhiteSpace())
+                                if (at.C17.Equals("S"))
+                                    ts = ts + 1;
+                            if (!at.C18.IsNullOrWhiteSpace())
+                                if (at.C18.Equals("S"))
+                                    ts = ts + 1;
+                            if (!at.C19.IsNullOrWhiteSpace())
+                                if (at.C19.Equals("S"))
+                                    ts = ts + 1;
+                            if (!at.C20.IsNullOrWhiteSpace())
+                                if (at.C20.Equals("S"))
+                                    ts = ts + 1;
+                            if (!at.C21.IsNullOrWhiteSpace())
+                                if (at.C21.Equals("S"))
+                                    ts = ts + 1;
+                            if (!at.C22.IsNullOrWhiteSpace())
+                                if (at.C22.Equals("S"))
+                                    ts = ts + 1;
+                            if (!at.C23.IsNullOrWhiteSpace())
+                                if (at.C23.Equals("S"))
+                                    ts = ts + 1;
+                            if (!at.C24.IsNullOrWhiteSpace())
+                                if (at.C24.Equals("S"))
+                                    ts = ts + 1;
+                            if (!at.C25.IsNullOrWhiteSpace())
+                                if (at.C25.Equals("S"))
+                                    ts = ts + 1;
+                            if (!at.C26.IsNullOrWhiteSpace())
+                                if (at.C26.Equals("S"))
+                                    ts = ts + 1;
+                            if (!at.C27.IsNullOrWhiteSpace())
+                                if (at.C27.Equals("S"))
+                                    ts = ts + 1;
+                            if (!at.C28.IsNullOrWhiteSpace())
+                                if (at.C28.Equals("S"))
+                                    ts = ts + 1;
+                            if (!at.C29.IsNullOrWhiteSpace())
+                                if (at.C29.Equals("S"))
+                                    ts = ts + 1;
+                            if (!at.C30.IsNullOrWhiteSpace())
+                                if (at.C30.Equals("S"))
+                                    ts = ts + 1;
+                            if (!at.C31.IsNullOrWhiteSpace())
+                                if (at.C31.Equals("S"))
+                                    ts = ts + 1;
 
-                        at.TotalVL = tv;
-                    }
-                    {
-                        at.TotalAbsent = 0;
-                        long tv = 0;
-                        if (!at.C1.IsNullOrWhiteSpace())
-                            if (at.C1.Equals("A"))
-                                tv = tv + 1;
-                        if (!at.C2.IsNullOrWhiteSpace())
-                            if (at.C2.Equals("A"))
-                                tv = tv + 1;
-                        if (!at.C3.IsNullOrWhiteSpace())
-                            if (at.C3.Equals("A"))
-                                tv = tv + 1;
-                        if (!at.C4.IsNullOrWhiteSpace())
-                            if (at.C4.Equals("A"))
-                                tv = tv + 1;
-                        if (!at.C5.IsNullOrWhiteSpace())
-                            if (at.C5.Equals("A"))
-                                tv = tv + 1;
-                        if (!at.C6.IsNullOrWhiteSpace())
-                            if (at.C6.Equals("A"))
-                                tv = tv + 1;
-                        if (!at.C7.IsNullOrWhiteSpace())
-                            if (at.C7.Equals("A"))
-                                tv = tv + 1;
-                        if (!at.C8.IsNullOrWhiteSpace())
-                            if (at.C8.Equals("A"))
-                                tv = tv + 1;
-                        if (!at.C9.IsNullOrWhiteSpace())
-                            if (at.C9.Equals("A"))
-                                tv = tv + 1;
-                        if (!at.C10.IsNullOrWhiteSpace())
-                            if (at.C10.Equals("A"))
-                                tv = tv + 1;
-                        if (!at.C11.IsNullOrWhiteSpace())
-                            if (at.C11.Equals("A"))
-                                tv = tv + 1;
-                        if (!at.C12.IsNullOrWhiteSpace())
-                            if (at.C12.Equals("A"))
-                                tv = tv + 1;
-                        if (!at.C13.IsNullOrWhiteSpace())
-                            if (at.C13.Equals("A"))
-                                tv = tv + 1;
-                        if (!at.C14.IsNullOrWhiteSpace())
-                            if (at.C14.Equals("A"))
-                                tv = tv + 1;
-                        if (!at.C15.IsNullOrWhiteSpace())
-                            if (at.C15.Equals("A"))
-                                tv = tv + 1;
-                        if (!at.C16.IsNullOrWhiteSpace())
-                            if (at.C16.Equals("A"))
-                                tv = tv + 1;
-                        if (!at.C17.IsNullOrWhiteSpace())
-                            if (at.C17.Equals("A"))
-                                tv = tv + 1;
-                        if (!at.C18.IsNullOrWhiteSpace())
-                            if (at.C18.Equals("A"))
-                                tv = tv + 1;
-                        if (!at.C19.IsNullOrWhiteSpace())
-                            if (at.C19.Equals("A"))
-                                tv = tv + 1;
-                        if (!at.C20.IsNullOrWhiteSpace())
-                            if (at.C20.Equals("A"))
-                                tv = tv + 1;
-                        if (!at.C21.IsNullOrWhiteSpace())
-                            if (at.C21.Equals("A"))
-                                tv = tv + 1;
-                        if (!at.C22.IsNullOrWhiteSpace())
-                            if (at.C22.Equals("A"))
-                                tv = tv + 1;
-                        if (!at.C23.IsNullOrWhiteSpace())
-                            if (at.C23.Equals("A"))
-                                tv = tv + 1;
-                        if (!at.C24.IsNullOrWhiteSpace())
-                            if (at.C24.Equals("A"))
-                                tv = tv + 1;
-                        if (!at.C25.IsNullOrWhiteSpace())
-                            if (at.C25.Equals("A"))
-                                tv = tv + 1;
-                        if (!at.C26.IsNullOrWhiteSpace())
-                            if (at.C26.Equals("A"))
-                                tv = tv + 1;
-                        if (!at.C27.IsNullOrWhiteSpace())
-                            if (at.C27.Equals("A"))
-                                tv = tv + 1;
-                        if (!at.C28.IsNullOrWhiteSpace())
-                            if (at.C28.Equals("A"))
-                                tv = tv + 1;
-                        if (!at.C29.IsNullOrWhiteSpace())
-                            if (at.C29.Equals("A"))
-                                tv = tv + 1;
-                        if (!at.C30.IsNullOrWhiteSpace())
-                            if (at.C30.Equals("A"))
-                                tv = tv + 1;
-                        if (!at.C31.IsNullOrWhiteSpace())
-                            if (at.C31.Equals("A"))
-                                tv = tv + 1;
+                            at.TotalSickLeave = ts;
+                        }
+                        {
+                            at.TotalVL = 0;
+                            long tv = 0;
+                            if (!at.C1.IsNullOrWhiteSpace())
+                                if (at.C1.Equals("V"))
+                                    tv = tv + 1;
+                            if (!at.C2.IsNullOrWhiteSpace())
+                                if (at.C2.Equals("V"))
+                                    tv = tv + 1;
+                            if (!at.C3.IsNullOrWhiteSpace())
+                                if (at.C3.Equals("V"))
+                                    tv = tv + 1;
+                            if (!at.C4.IsNullOrWhiteSpace())
+                                if (at.C4.Equals("V"))
+                                    tv = tv + 1;
+                            if (!at.C5.IsNullOrWhiteSpace())
+                                if (at.C5.Equals("V"))
+                                    tv = tv + 1;
+                            if (!at.C6.IsNullOrWhiteSpace())
+                                if (at.C6.Equals("V"))
+                                    tv = tv + 1;
+                            if (!at.C7.IsNullOrWhiteSpace())
+                                if (at.C7.Equals("V"))
+                                    tv = tv + 1;
+                            if (!at.C8.IsNullOrWhiteSpace())
+                                if (at.C8.Equals("V"))
+                                    tv = tv + 1;
+                            if (!at.C9.IsNullOrWhiteSpace())
+                                if (at.C9.Equals("V"))
+                                    tv = tv + 1;
+                            if (!at.C10.IsNullOrWhiteSpace())
+                                if (at.C10.Equals("V"))
+                                    tv = tv + 1;
+                            if (!at.C11.IsNullOrWhiteSpace())
+                                if (at.C11.Equals("V"))
+                                    tv = tv + 1;
+                            if (!at.C12.IsNullOrWhiteSpace())
+                                if (at.C12.Equals("V"))
+                                    tv = tv + 1;
+                            if (!at.C13.IsNullOrWhiteSpace())
+                                if (at.C13.Equals("V"))
+                                    tv = tv + 1;
+                            if (!at.C14.IsNullOrWhiteSpace())
+                                if (at.C14.Equals("V"))
+                                    tv = tv + 1;
+                            if (!at.C15.IsNullOrWhiteSpace())
+                                if (at.C15.Equals("V"))
+                                    tv = tv + 1;
+                            if (!at.C16.IsNullOrWhiteSpace())
+                                if (at.C16.Equals("V"))
+                                    tv = tv + 1;
+                            if (!at.C17.IsNullOrWhiteSpace())
+                                if (at.C17.Equals("V"))
+                                    tv = tv + 1;
+                            if (!at.C18.IsNullOrWhiteSpace())
+                                if (at.C18.Equals("V"))
+                                    tv = tv + 1;
+                            if (!at.C19.IsNullOrWhiteSpace())
+                                if (at.C19.Equals("V"))
+                                    tv = tv + 1;
+                            if (!at.C20.IsNullOrWhiteSpace())
+                                if (at.C20.Equals("V"))
+                                    tv = tv + 1;
+                            if (!at.C21.IsNullOrWhiteSpace())
+                                if (at.C21.Equals("V"))
+                                    tv = tv + 1;
+                            if (!at.C22.IsNullOrWhiteSpace())
+                                if (at.C22.Equals("V"))
+                                    tv = tv + 1;
+                            if (!at.C23.IsNullOrWhiteSpace())
+                                if (at.C23.Equals("V"))
+                                    tv = tv + 1;
+                            if (!at.C24.IsNullOrWhiteSpace())
+                                if (at.C24.Equals("V"))
+                                    tv = tv + 1;
+                            if (!at.C25.IsNullOrWhiteSpace())
+                                if (at.C25.Equals("V"))
+                                    tv = tv + 1;
+                            if (!at.C26.IsNullOrWhiteSpace())
+                                if (at.C26.Equals("V"))
+                                    tv = tv + 1;
+                            if (!at.C27.IsNullOrWhiteSpace())
+                                if (at.C27.Equals("V"))
+                                    tv = tv + 1;
+                            if (!at.C28.IsNullOrWhiteSpace())
+                                if (at.C28.Equals("V"))
+                                    tv = tv + 1;
+                            if (!at.C29.IsNullOrWhiteSpace())
+                                if (at.C29.Equals("V"))
+                                    tv = tv + 1;
+                            if (!at.C30.IsNullOrWhiteSpace())
+                                if (at.C30.Equals("V"))
+                                    tv = tv + 1;
+                            if (!at.C31.IsNullOrWhiteSpace())
+                                if (at.C31.Equals("V"))
+                                    tv = tv + 1;
 
-                        at.TotalAbsent = tv;
-                    }
-                    {
-                        at.TotalTransefer = 0;
-                        long tv = 0;
-                        if (!at.C1.IsNullOrWhiteSpace())
-                            if (at.C1.Equals("T"))
-                                tv = tv + 1;
-                        if (!at.C2.IsNullOrWhiteSpace())
-                            if (at.C2.Equals("T"))
-                                tv = tv + 1;
-                        if (!at.C3.IsNullOrWhiteSpace())
-                            if (at.C3.Equals("T"))
-                                tv = tv + 1;
-                        if (!at.C4.IsNullOrWhiteSpace())
-                            if (at.C4.Equals("T"))
-                                tv = tv + 1;
-                        if (!at.C5.IsNullOrWhiteSpace())
-                            if (at.C5.Equals("T"))
-                                tv = tv + 1;
-                        if (!at.C6.IsNullOrWhiteSpace())
-                            if (at.C6.Equals("T"))
-                                tv = tv + 1;
-                        if (!at.C7.IsNullOrWhiteSpace())
-                            if (at.C7.Equals("T"))
-                                tv = tv + 1;
-                        if (!at.C8.IsNullOrWhiteSpace())
-                            if (at.C8.Equals("T"))
-                                tv = tv + 1;
-                        if (!at.C9.IsNullOrWhiteSpace())
-                            if (at.C9.Equals("T"))
-                                tv = tv + 1;
-                        if (!at.C10.IsNullOrWhiteSpace())
-                            if (at.C10.Equals("T"))
-                                tv = tv + 1;
-                        if (!at.C11.IsNullOrWhiteSpace())
-                            if (at.C11.Equals("T"))
-                                tv = tv + 1;
-                        if (!at.C12.IsNullOrWhiteSpace())
-                            if (at.C12.Equals("T"))
-                                tv = tv + 1;
-                        if (!at.C13.IsNullOrWhiteSpace())
-                            if (at.C13.Equals("T"))
-                                tv = tv + 1;
-                        if (!at.C14.IsNullOrWhiteSpace())
-                            if (at.C14.Equals("T"))
-                                tv = tv + 1;
-                        if (!at.C15.IsNullOrWhiteSpace())
-                            if (at.C15.Equals("T"))
-                                tv = tv + 1;
-                        if (!at.C16.IsNullOrWhiteSpace())
-                            if (at.C16.Equals("T"))
-                                tv = tv + 1;
-                        if (!at.C17.IsNullOrWhiteSpace())
-                            if (at.C17.Equals("T"))
-                                tv = tv + 1;
-                        if (!at.C18.IsNullOrWhiteSpace())
-                            if (at.C18.Equals("T"))
-                                tv = tv + 1;
-                        if (!at.C19.IsNullOrWhiteSpace())
-                            if (at.C19.Equals("T"))
-                                tv = tv + 1;
-                        if (!at.C20.IsNullOrWhiteSpace())
-                            if (at.C20.Equals("T"))
-                                tv = tv + 1;
-                        if (!at.C21.IsNullOrWhiteSpace())
-                            if (at.C21.Equals("T"))
-                                tv = tv + 1;
-                        if (!at.C22.IsNullOrWhiteSpace())
-                            if (at.C22.Equals("T"))
-                                tv = tv + 1;
-                        if (!at.C23.IsNullOrWhiteSpace())
-                            if (at.C23.Equals("T"))
-                                tv = tv + 1;
-                        if (!at.C24.IsNullOrWhiteSpace())
-                            if (at.C24.Equals("T"))
-                                tv = tv + 1;
-                        if (!at.C25.IsNullOrWhiteSpace())
-                            if (at.C25.Equals("T"))
-                                tv = tv + 1;
-                        if (!at.C26.IsNullOrWhiteSpace())
-                            if (at.C26.Equals("T"))
-                                tv = tv + 1;
-                        if (!at.C27.IsNullOrWhiteSpace())
-                            if (at.C27.Equals("T"))
-                                tv = tv + 1;
-                        if (!at.C28.IsNullOrWhiteSpace())
-                            if (at.C28.Equals("T"))
-                                tv = tv + 1;
-                        if (!at.C29.IsNullOrWhiteSpace())
-                            if (at.C29.Equals("T"))
-                                tv = tv + 1;
-                        if (!at.C30.IsNullOrWhiteSpace())
-                            if (at.C30.Equals("T"))
-                                tv = tv + 1;
-                        if (!at.C31.IsNullOrWhiteSpace())
-                            if (at.C31.Equals("T"))
-                                tv = tv + 1;
+                            at.TotalVL = tv;
+                        }
+                        {
+                            at.TotalAbsent = 0;
+                            long tv = 0;
+                            if (!at.C1.IsNullOrWhiteSpace())
+                                if (at.C1.Equals("A"))
+                                    tv = tv + 1;
+                            if (!at.C2.IsNullOrWhiteSpace())
+                                if (at.C2.Equals("A"))
+                                    tv = tv + 1;
+                            if (!at.C3.IsNullOrWhiteSpace())
+                                if (at.C3.Equals("A"))
+                                    tv = tv + 1;
+                            if (!at.C4.IsNullOrWhiteSpace())
+                                if (at.C4.Equals("A"))
+                                    tv = tv + 1;
+                            if (!at.C5.IsNullOrWhiteSpace())
+                                if (at.C5.Equals("A"))
+                                    tv = tv + 1;
+                            if (!at.C6.IsNullOrWhiteSpace())
+                                if (at.C6.Equals("A"))
+                                    tv = tv + 1;
+                            if (!at.C7.IsNullOrWhiteSpace())
+                                if (at.C7.Equals("A"))
+                                    tv = tv + 1;
+                            if (!at.C8.IsNullOrWhiteSpace())
+                                if (at.C8.Equals("A"))
+                                    tv = tv + 1;
+                            if (!at.C9.IsNullOrWhiteSpace())
+                                if (at.C9.Equals("A"))
+                                    tv = tv + 1;
+                            if (!at.C10.IsNullOrWhiteSpace())
+                                if (at.C10.Equals("A"))
+                                    tv = tv + 1;
+                            if (!at.C11.IsNullOrWhiteSpace())
+                                if (at.C11.Equals("A"))
+                                    tv = tv + 1;
+                            if (!at.C12.IsNullOrWhiteSpace())
+                                if (at.C12.Equals("A"))
+                                    tv = tv + 1;
+                            if (!at.C13.IsNullOrWhiteSpace())
+                                if (at.C13.Equals("A"))
+                                    tv = tv + 1;
+                            if (!at.C14.IsNullOrWhiteSpace())
+                                if (at.C14.Equals("A"))
+                                    tv = tv + 1;
+                            if (!at.C15.IsNullOrWhiteSpace())
+                                if (at.C15.Equals("A"))
+                                    tv = tv + 1;
+                            if (!at.C16.IsNullOrWhiteSpace())
+                                if (at.C16.Equals("A"))
+                                    tv = tv + 1;
+                            if (!at.C17.IsNullOrWhiteSpace())
+                                if (at.C17.Equals("A"))
+                                    tv = tv + 1;
+                            if (!at.C18.IsNullOrWhiteSpace())
+                                if (at.C18.Equals("A"))
+                                    tv = tv + 1;
+                            if (!at.C19.IsNullOrWhiteSpace())
+                                if (at.C19.Equals("A"))
+                                    tv = tv + 1;
+                            if (!at.C20.IsNullOrWhiteSpace())
+                                if (at.C20.Equals("A"))
+                                    tv = tv + 1;
+                            if (!at.C21.IsNullOrWhiteSpace())
+                                if (at.C21.Equals("A"))
+                                    tv = tv + 1;
+                            if (!at.C22.IsNullOrWhiteSpace())
+                                if (at.C22.Equals("A"))
+                                    tv = tv + 1;
+                            if (!at.C23.IsNullOrWhiteSpace())
+                                if (at.C23.Equals("A"))
+                                    tv = tv + 1;
+                            if (!at.C24.IsNullOrWhiteSpace())
+                                if (at.C24.Equals("A"))
+                                    tv = tv + 1;
+                            if (!at.C25.IsNullOrWhiteSpace())
+                                if (at.C25.Equals("A"))
+                                    tv = tv + 1;
+                            if (!at.C26.IsNullOrWhiteSpace())
+                                if (at.C26.Equals("A"))
+                                    tv = tv + 1;
+                            if (!at.C27.IsNullOrWhiteSpace())
+                                if (at.C27.Equals("A"))
+                                    tv = tv + 1;
+                            if (!at.C28.IsNullOrWhiteSpace())
+                                if (at.C28.Equals("A"))
+                                    tv = tv + 1;
+                            if (!at.C29.IsNullOrWhiteSpace())
+                                if (at.C29.Equals("A"))
+                                    tv = tv + 1;
+                            if (!at.C30.IsNullOrWhiteSpace())
+                                if (at.C30.Equals("A"))
+                                    tv = tv + 1;
+                            if (!at.C31.IsNullOrWhiteSpace())
+                                if (at.C31.Equals("A"))
+                                    tv = tv + 1;
 
-                        at.TotalTransefer = tv;
-                    }
-                    at.status = "panding";
-                    if (check.Count != 0)
-                    {
-                        this.db.Entry(at).State = EntityState.Modified;
-                        this.db.SaveChanges();
-                    }
-                    else
-                    {
-                        this.db.Attendances.Add(at);
-                        this.db.SaveChanges();
-                    }
+                            at.TotalAbsent = tv;
+                        }
+                        {
+                            at.TotalTransefer = 0;
+                            long tv = 0;
+                            if (!at.C1.IsNullOrWhiteSpace())
+                                if (at.C1.Equals("T"))
+                                    tv = tv + 1;
+                            if (!at.C2.IsNullOrWhiteSpace())
+                                if (at.C2.Equals("T"))
+                                    tv = tv + 1;
+                            if (!at.C3.IsNullOrWhiteSpace())
+                                if (at.C3.Equals("T"))
+                                    tv = tv + 1;
+                            if (!at.C4.IsNullOrWhiteSpace())
+                                if (at.C4.Equals("T"))
+                                    tv = tv + 1;
+                            if (!at.C5.IsNullOrWhiteSpace())
+                                if (at.C5.Equals("T"))
+                                    tv = tv + 1;
+                            if (!at.C6.IsNullOrWhiteSpace())
+                                if (at.C6.Equals("T"))
+                                    tv = tv + 1;
+                            if (!at.C7.IsNullOrWhiteSpace())
+                                if (at.C7.Equals("T"))
+                                    tv = tv + 1;
+                            if (!at.C8.IsNullOrWhiteSpace())
+                                if (at.C8.Equals("T"))
+                                    tv = tv + 1;
+                            if (!at.C9.IsNullOrWhiteSpace())
+                                if (at.C9.Equals("T"))
+                                    tv = tv + 1;
+                            if (!at.C10.IsNullOrWhiteSpace())
+                                if (at.C10.Equals("T"))
+                                    tv = tv + 1;
+                            if (!at.C11.IsNullOrWhiteSpace())
+                                if (at.C11.Equals("T"))
+                                    tv = tv + 1;
+                            if (!at.C12.IsNullOrWhiteSpace())
+                                if (at.C12.Equals("T"))
+                                    tv = tv + 1;
+                            if (!at.C13.IsNullOrWhiteSpace())
+                                if (at.C13.Equals("T"))
+                                    tv = tv + 1;
+                            if (!at.C14.IsNullOrWhiteSpace())
+                                if (at.C14.Equals("T"))
+                                    tv = tv + 1;
+                            if (!at.C15.IsNullOrWhiteSpace())
+                                if (at.C15.Equals("T"))
+                                    tv = tv + 1;
+                            if (!at.C16.IsNullOrWhiteSpace())
+                                if (at.C16.Equals("T"))
+                                    tv = tv + 1;
+                            if (!at.C17.IsNullOrWhiteSpace())
+                                if (at.C17.Equals("T"))
+                                    tv = tv + 1;
+                            if (!at.C18.IsNullOrWhiteSpace())
+                                if (at.C18.Equals("T"))
+                                    tv = tv + 1;
+                            if (!at.C19.IsNullOrWhiteSpace())
+                                if (at.C19.Equals("T"))
+                                    tv = tv + 1;
+                            if (!at.C20.IsNullOrWhiteSpace())
+                                if (at.C20.Equals("T"))
+                                    tv = tv + 1;
+                            if (!at.C21.IsNullOrWhiteSpace())
+                                if (at.C21.Equals("T"))
+                                    tv = tv + 1;
+                            if (!at.C22.IsNullOrWhiteSpace())
+                                if (at.C22.Equals("T"))
+                                    tv = tv + 1;
+                            if (!at.C23.IsNullOrWhiteSpace())
+                                if (at.C23.Equals("T"))
+                                    tv = tv + 1;
+                            if (!at.C24.IsNullOrWhiteSpace())
+                                if (at.C24.Equals("T"))
+                                    tv = tv + 1;
+                            if (!at.C25.IsNullOrWhiteSpace())
+                                if (at.C25.Equals("T"))
+                                    tv = tv + 1;
+                            if (!at.C26.IsNullOrWhiteSpace())
+                                if (at.C26.Equals("T"))
+                                    tv = tv + 1;
+                            if (!at.C27.IsNullOrWhiteSpace())
+                                if (at.C27.Equals("T"))
+                                    tv = tv + 1;
+                            if (!at.C28.IsNullOrWhiteSpace())
+                                if (at.C28.Equals("T"))
+                                    tv = tv + 1;
+                            if (!at.C29.IsNullOrWhiteSpace())
+                                if (at.C29.Equals("T"))
+                                    tv = tv + 1;
+                            if (!at.C30.IsNullOrWhiteSpace())
+                                if (at.C30.Equals("T"))
+                                    tv = tv + 1;
+                            if (!at.C31.IsNullOrWhiteSpace())
+                                if (at.C31.Equals("T"))
+                                    tv = tv + 1;
+
+                            at.TotalTransefer = tv;
+                        }
+                        at.status = "panding";
+                        if (check.Count != 0)
+                        {
+                            this.db.Entry(at).State = EntityState.Modified;
+                            this.db.SaveChanges();
+                        }
+                        else
+                        {
+                            this.db.Attendances.Add(at);
+                            this.db.SaveChanges();
+                        }
+                    
                 }
-                return this.RedirectToAction("MCreate");
+            return this.RedirectToAction("MCreate");
             }
-
             return this.View(test);
         }
 
@@ -1975,9 +2008,15 @@
                         et.empno = epno.EMPNO;
                         if (apall.Exists(x => x.A_id == attendance.ID && x.adate == dm))
                         {
-                            et.approved_by = apall.Find(x => x.status != "submitted" && x.A_id == attendance.ID && x.adate == dm).Ausername;
-                            et.status = apall.Find(x => x.status != "submitted" && x.A_id == attendance.ID && x.adate == dm).status;
-                            et.submitted_by = apall.Find(x => x.status != "submitted" && x.A_id == attendance.ID && x.adate == dm).Susername;
+                            if (apall.Exists(x => x.status != "submitted" && x.A_id == attendance.ID && x.adate == dm))
+                            {
+                                et.approved_by = apall.Find(
+                                    x => x.status != "submitted" && x.A_id == attendance.ID && x.adate == dm).Ausername;
+                                et.status = apall.Find(
+                                    x => x.status != "submitted" && x.A_id == attendance.ID && x.adate == dm).status;
+                                et.submitted_by = apall.Find(
+                                    x => x.status != "submitted" && x.A_id == attendance.ID && x.adate == dm).Susername;
+                            }
                         }
 
                         if (date.Day == 1) et.hours = attendance.C1;
@@ -2044,7 +2083,10 @@
 
                         if (!final1.Exists(x => x.empno.Equals(et.empno)))
                         {
-                            final1.Add(et);
+                            if (et.hours != null)
+                            {
+                                final1.Add(et);
+                            }
                         }
 
                     }
@@ -2055,7 +2097,7 @@
             return this.View(final1.OrderBy(x => x.empno).ToPagedList(1, 100));
 
         }
-
+        [Authorize(Roles = "Employee")]
         public ActionResult approval(DateTime? mtsmonth2, long? csp2, long? csmps2)
         {
             var final1 = new List<test>();
@@ -2107,7 +2149,6 @@
                                 this.ModelState.AddModelError(string.Empty, this.errorm);
                                 TempData["mydata"] = this.errorm;
                             }
-
                             if (aa1.status.Contains("rejected")  && aa1.adate == dm)
                             {
                                 if (User.IsInRole("Employee"))
@@ -2120,7 +2161,6 @@
                                     this.db.SaveChanges();
                                 }
                             }
-
                             if (aa1.status == "approved" && aa1.adate == dm)
                             {
                                 this.errorm = "\n already approved;";
@@ -2128,7 +2168,6 @@
                                 TempData["mydata"] = this.errorm;
                             }
                             }
-                            
                         }
                     }
                 }

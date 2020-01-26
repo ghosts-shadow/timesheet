@@ -11,25 +11,27 @@
 {
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script>
-        var counter = 1;
-        var number = 0;
-        $(function () {
-            $('#add').click(() => {
-                number = counter++;
-                container = $('#tablerow1');
-                template = $('#tablerow0');
-                var clone = template.clone(true);
-                clone.attr('id', number);
-                clone.find('#un' + 0).attr('name', 'props[' + number + '].empno');
-                clone.find('#cp' + 0).attr('name', 'props[' + number + '].projectid');
-                clone.find('#un' + 0).attr('id', 'un' + number);
-                clone.find('#cp' + 0).attr('id', 'cp' + number);
-                container.append(clone).before(clone);
+    var counter = 1;
+    var number = 0;
+    $(function() {
+        $('#add').click(() => {
+            number = counter++;
+            container = $('#tablerow1');
+            template = $('#tablerow0');
+            var clone = template.clone(true);
+            clone.attr('id', 'tr'+number);
+            clone.find('#un' + 0).attr('name', 'props[' + number + '].empno');
+            clone.find('#cp' + 0).attr('name', 'props[' + number + '].projectid');
+            clone.find('#un' + 0).attr('id', 'un' + number);
+            clone.find('#cp' + 0).attr('id', 'cp' + number);
+            clone.find('#re').append(" <input type = \"button\" value = \"Remove\" onclick = \"remove(this.id)\"  id=\"" +number +"\"/>");
+            container.append(clone).before(clone);
             });
         });
         function hi() {
             for (var i = 0; i < number + 1; i++) {
                 for (var j = 0; j < i; j++) {
+                    if ($('#un' + i).length) {
                     if ($('#un' + i + ' option:selected').text() === $('#un' + j + ' option:selected').text() && $('#cp' + i + ' option:selected').text() === $('#cp' + j + ' option:selected').text()) {
                         $('#save').attr("disabled", true);
                         $('#add').attr("disabled", true);
@@ -38,56 +40,70 @@
                     } else {
                         $('#dd' + j).hide();
                         check();
-                    }
+                    }}
                 }
             }
         }
-        function check() {
-            for (var i = 0; i < counter; i++) {
-                if ($('#un' + i + ' option:selected').val() == '') {
+
+    function check() {
+        for (var i = 0; i < counter; i++) {
+            if ($('#un' + i).length) {
+                if ($('#un' + i + ' option:selected').text() == "") {
                     $('#add').attr('disabled', true);
                     $('#save').attr('disabled', true);
                     break;
                 }
+
+            }
+            if ($('#cp' + i).length) {
                 if ($('#cp' + i + ' option:selected').val() == "") {
                     $('#add').attr('disabled', true);
                     $('#save').attr('disabled', true);
                     break;
                 }
-                $('#add').attr('disabled', false);
-                $('#save').attr('disabled', false);
-
             }
+            $('#add').attr('disabled', false);
+            $('#save').attr('disabled', false);
+
         }
+    }
+
+    function remove(id) {
+        $('#tr'+id).remove();
+        check();
+    }
+
     </script>
     <script>
         document.onclick = hi;
     </script>
-    using (Html.BeginForm("project_permissions", "CSPermissions"))
+    using (Html.BeginForm("project_permissions", "CSPermissions" ))
     {
         @Html.AntiForgeryToken()
-        <p> save permission <input type="submit" value="save" class="btn btn-default" id="save" disabled="disabled:true" /></p>
+        <p onclick="check()"> <b>save permission</b> <input type="submit" value="Save" class="btn btn-default" id="save" disabled="disabled:true" /></p>
 
-        <table id="submissionTable" class="table table-bordered">
+        <table id="submissionTable" class="table table-bordered" onclick="check()">
             <thead style="text-transform: capitalize">
             <th>user name</th>
             <th>project permissions</th>
+            <th></th>
             </thead>
             <tbody>
-                <tr id="tablerow0">
+                <tr id="tablerow0" onclick="check()">
                     <td>
-                        @Html.DropDownList("props[0].empno", new List<SelectListItem>(ViewBag.permi), " ", new { @id = "un0" })
+                        @Html.DropDownList("props[0].empno", new List<SelectListItem>(ViewBag.permi), " ", new { @id = "un0" , @class = "form-control" , @onclick = "check()", @onblur="check()" })
                     </td>
                     <td>
-                        @Html.DropDownList("props[0].projectid", new List<SelectListItem>(ViewBag.csp), " ", new { @id = "cp0", onchange = "check()" })
+                        @Html.DropDownList("props[0].projectid", new List<SelectListItem>(ViewBag.csp), " ", new { @id = "cp0", @class = "form-control", @onchange = "check()" })
                     </td>
+                    <td id="re"></td>
                     <td style="color: red; display: none;" id="dd0">dublicate</td>
                 </tr>
-                <tr id="tablerow1"></tr>
+                <tr id="tablerow1" ></tr>
             </tbody>
         </table>
-        <div class="col-sm-2">
-            <input type="button" value="add" id="add" name="add" onclick="$('#add').attr('disabled', true);$('#save').attr('disabled', true);" disabled="disabled:true" />
+        <div class="col-sm-2" onclick="check()">
+            <input type="button" value="Add" id="add" name="add" class="btn btn-default" onclick="$('#add').attr('disabled', true); $('#save').attr('disabled', true); check();" disabled="disabled:true" />
         </div>
         <br />
         <br />

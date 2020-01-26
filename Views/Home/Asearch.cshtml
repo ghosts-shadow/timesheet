@@ -10,8 +10,17 @@
 using (Html.BeginForm("Asearch", "Home", FormMethod.Get, new { id = "form1" }))
 {
     <h2>search</h2>
-    @Html.TextBox("search")
-    <input type="submit" value="search"/>
+    <div class="col-md-2">
+        <b>employee no:</b>
+        @Html.TextBox("search", "", new { @class = "form-control" })
+    </div>
+    <div class="col-md-2" style="margin-top:1.2%">
+        <input type="submit" value="search" class="btn btn-default" />
+    </div>
+    <br/>
+    <br/>
+    <br/>
+    <br/>
     <table class="table">
         <tr>
             <th>

@@ -16,7 +16,7 @@
              if (number < $('#empno0').children('option').length - 1) {
 
                  container = $('#tablerow1');
-                 template = $('#tablerow0');
+                 template = $('#tr0');
                  // Add clones
 
                  var no = number - 1;
@@ -48,7 +48,8 @@
      function hi() {
          for (var i = 0; i < number + 1; i++) {
              for (var j = 0; j < i; j++) {
-                 if ($('#empno' + i + ' option:selected').text() ===
+                 if ($('#empno' + j).length) {
+                     if ($('#empno' + i + ' option:selected').text() ===
                      $('#empno' + j + ' option:selected').text()) {
                      $('#save').attr("disabled", true);
                      $('#add').attr("disabled", true);
@@ -60,6 +61,8 @@
                      check();
                      $('#dd' + j).hide();
                  }
+                 }
+                 
              }
          }
      }
@@ -78,15 +81,20 @@
 
      function check() {
          for (var i = 0; i < counter; i++) {
-             if ($('#hours' + i + ' option:selected').text() == '0') {
+             if ($('#hours' + i).length) {
+                 if ($('#hours' + i + ' option:selected').text() == "") {
                  $('#add').attr('disabled', true);
                  $('#save').attr('disabled', true);
                  break;
              }
+             
+             }
+             if ($('#empno' + i).length) {
              if ($('#empno' + i + ' option:selected').val() == "") {
                  $('#add').attr('disabled', true);
                  $('#save').attr('disabled', true);
                  break;
+             }
              }
              $('#add').attr('disabled', false);
              $('#save').attr('disabled', false);
@@ -113,30 +121,18 @@
 </script>
 <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js">
 </script>
-<script type="text/javascript">
-    $(document).ready(function() {
-        $('input#btnSubmit').on('click',
-            function() {
-                var myForm = $("form#form1");
-                if (myForm) {
-                    $(this).prop('disabled', true);
-                    $(myForm).submit();
-                }
-            });
-    });
-</script>
 @if (Request.IsAuthenticated)
 {
     using (Html.BeginForm("tests", "Home"))
     {
         @Html.AntiForgeryToken()
-        <div class="row" onclick="validator.resetForm();">
-        <input type="text" value="@ViewBag.mdate" disabled="disabled:true" style="font-size: 1vw;"/>
+        <div class="row" onclick="check()" style="margin-left:-25px">
+        <input type="text" value="@ViewBag.mdate" disabled="disabled:true" style="font-size: 14px; width: 183px;"/>
         <input type="text" value="@ViewBag.mps" disabled="disabled:true"/>
-        <input type="text" value="@ViewBag.pid" disabled="disabled:true" style="font-size: 1vw;"/>
+        <input type="text" value="@ViewBag.pid" disabled="disabled:true" style="font-size: 14px; width: 183px;"/>
         <input type="submit" value="save" class="btn btn-default" id="save" disabled="disabled:true"/>
         </div>
-        <div class="form-horizontal">
+        <div class="form-horizontal" onclick="check()">
         <div class="form-group">
             <div class="row">
                 @Html.ValidationSummary(false, string.Empty, new { @class = "text-danger", style = "font-size: 20px;" })
@@ -144,14 +140,23 @@
                     <thead style="text-transform: capitalize">
                     <th>employee no</th>
                     <th>hours</th>
+                    <th></th>
                     </thead>
                     <tbody>
-                    <tr id="tablerow0">
+                    <tr id="tr0">
                         <td>
-                            @Html.DropDownList("Tests[" + 0 + "].empno", new List<SelectListItem>(ViewBag.empno), "Select EMP No", new { @id = "empno0", @onchange = "trial(this.id)" })
-                            @Html.DropDownList("name0", new List<SelectListItem>(ViewBag.name), "  ", new { @id = "name0", @disabled = "disabled:true" })
-                            @Html.DropDownList("position0", new List<SelectListItem>(ViewBag.position), "  ", new { @id = "position0", @disabled = "disabled:true" })
-
+                            <div class="row">
+                                <div class="col-lg-3">
+                                    @Html.DropDownList("Tests[" + 0 + "].empno", new List<SelectListItem>(ViewBag.empno), "Select EMP No", new { @id = "empno0", @onchange = "trial(this.id)", @class = "form-control" })
+                                </div>
+                                <div class="col-lg-3">
+                                    @Html.DropDownList("name0", new List<SelectListItem>(ViewBag.name), "  ", new { @id = "name0", @disabled = "disabled:true", @class = "form-control" })
+                                </div>
+                                <div class="col-lg-3">
+                                    @Html.DropDownList("position0", new List<SelectListItem>(ViewBag.position), "  ", new { @id = "position0", @disabled = "disabled:true", @class = "form-control" })
+                                </div>
+                            </div>
+                            
                         </td>
                         <td>
                             @Html.DropDownList("Tests[" + 0 + "].hours", new List<SelectListItem>(ViewBag.hours), new { @class = "form-control", id = "hours0", onchange = "check()" })
@@ -164,7 +169,7 @@
                     </tbody>
                 </table>
                 <div class="col-sm-2">
-                    <input type="button" value="add" id="add" name="add" onclick="$('#add').attr('disabled', true);$('#save').attr('disabled', true);" disabled="disabled:true"/>
+                    <input type="button" class="btn btn-default" value="add" id="add" name="add" onclick="$('#add').attr('disabled', true);$('#save').attr('disabled', true);" disabled="disabled:true"/>
                 </div>
             </div>
         </div>

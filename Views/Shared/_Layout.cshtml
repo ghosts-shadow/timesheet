@@ -1,13 +1,14 @@
 ﻿<!DOCTYPE html>
-<html@* oncontextmenu="return false;*@" style="text-transform: capitalize;">
+<html  style="text-transform: capitalize;">
 <head>
-    <meta charset="utf-8"/>
+    <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@ViewBag.Title</title>
     @Styles.Render("~/Content/css")
     @Scripts.Render("~/bundles/modernizr")
+    @Scripts.Render("~/favicon.ico");
     <script>
-        document.onkeydown = function(e) {
+        document.onkeydown = function (e) {
             if (event.keyCode == 123) {
                 return false;
             }
@@ -23,14 +24,14 @@
             if (e.ctrlKey && e.keyCode == 'U'.charCodeAt(0)) {
                 return false;
             } /*
-            if (e.ctrlKey && e.keyCode == 'P'.charCodeAt(0)) {
-                return false;
-            }*/
+                    if (e.ctrlKey && e.keyCode == 'P'.charCodeAt(0)) {
+                        return false;
+                    }*/
         }
     </script>
 </head>
-<body>
-<div class="navbar navbar-inverse navbar-fixed-top">
+<body style="margin-left: 1%;margin-right: 1%">
+<div class="navbar navbar-inverse navbar-fixed-top" style="background-color: #2c6faa; color: #fff">
     <div class="navbar-header">
         <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
             <span class="icon-bar"></span>
@@ -41,28 +42,30 @@
     </div>
 
 
-    <div class="navbar-collapse collapse" style="font-size: 1vw; margin-left: 5%; margin-right: 5%">
+    <div class="navbar-collapse collapse" style="font-size: 1vw; margin-left: 5%; margin-right: 5%; color: #fff">
         @if (Request.IsAuthenticated)
         {
-            <ul class="nav navbar-nav">
-                <li>@Html.ActionLink("Add new Time-sheet", "MCreate", "Home")</li>
-                @if (User.Identity.IsAuthenticated)
+        <ul class="nav navbar-nav">
+            @if (User.Identity.IsAuthenticated)
+            {
+                if (User.IsInRole("Admin"))
                 {
-                    if (User.IsInRole("Admin") || User.IsInRole("Manager"))
-                    {
-                        <li>@Html.ActionLink("search all", "Asearch", "Home")</li>
-                        <li>@Html.ActionLink("project permissions", "project_permissions", "CSPermissions")</li>
-                    }
+                    <li>@Html.ActionLink("search all", "Asearch", "Home")</li>
+                    <li>@Html.ActionLink("project permissions", "project_permissions", "CSPermissions")</li>
+                }
 
-                    if (User.IsInRole("Project_manager") || User.IsInRole("Admin"))
-                    {
-                        <li>@Html.ActionLink("approval", "PMapproval", "Projman")</li>
-                    }
-
+                if (User.IsInRole("Project_manager") || User.IsInRole("Admin"))
+                {
+                    <li>@Html.ActionLink("approve timesheet", "PMapproval", "Projman")</li>
+                }
+                if (User.IsInRole("Admin") || User.IsInRole("Employee"))
+                {
+                    <li>@Html.ActionLink("Add new Time-sheet", "MCreate", "Home")</li>
                     <li>@Html.ActionLink("Print Timesheet", "download", "Home")</li>
                     <li>@Html.ActionLink("search by month", "csearch", "Home")</li>
                 }
-            </ul>
+            }
+        </ul>
         }
         @Html.Partial("_LoginPartial")
     </div>

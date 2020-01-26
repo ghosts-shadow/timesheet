@@ -19,14 +19,21 @@
         });
     });
 </script>
+@*<script>$(function() {
+        $('#datepicker').attr('readonly', true);
+        $('#csp2').attr('readonly', true);
+        $('#csmps2').attr('readonly', true);
+    });
+</script>*@
 <script type="text/javascript">
     /*--This JavaScript method for Print command--*/
     function PrintDoc() {
         var toPrint = document.getElementById('printarea');
         var popupWin = window.open('', '_blank', 'width=1000,height=500,location=no,left=200px');
+        var ss="<script>$(function() {$('#datepicker').attr('readonly', true);$('#csp2').attr('readonly', true);$('#csmps2').attr('readonly', true);});<\/scrip>";
         popupWin.document.open();
         popupWin.document.write(
-            '<html><link rel="stylesheet" type="text/css" href="/Content/print.css" /></head><body onload="window.print()" style="margin-left: 50px;">');
+            '<html><head><link href="/Content/bootstrap.css" rel="stylesheet"><link rel="stylesheet" type="text/css" href="/Content/print.css" /></head><body onload="window.print()" style="margin-left: 50px;">');
         popupWin.document.write(toPrint.innerHTML);
         popupWin.document.write('</body></html>');
         popupWin.document.close();
@@ -38,7 +45,7 @@
         var popupWin = window.open('', '_blank', 'width=1000,height=500,location=no,left=200px');
         popupWin.document.open();
         popupWin.document.write(
-            '<html><link href="/Content/bootstrap.css" rel="stylesheet"><link href="/Content/site.css" rel="stylesheet"><link rel="stylesheet" type="text/css" href="/Content/Print.css" media="screen"/></head><body style="margin-left: 50px;">');
+            '<html><link rel="stylesheet" type="text/css" href="/Content/Print.css" media="screen"/></head><body style="margin-left: 50px;">');
         popupWin.document.write(toPrint.innerHTML);
         popupWin.document.write('</html>');
         popupWin.document.close();
@@ -58,29 +65,40 @@
             });
     });
 </script>
-<h2>download</h2>
+<h2>print timesheet</h2>
 @if (Request.IsAuthenticated)
 {
 
 using (Html.BeginForm("download", "Home", FormMethod.Get, new { id = "form1" }))
 {
 <div id="printarea">
-    <div>
-        <input id="datepicker" name="mtsmonth2" type="text" value="@ViewBag.dateee" placeholder="select date">
-        @Html.DropDownList("csp2", new List<SelectListItem>(ViewBag.csp))
-        @Html.DropDownList("csmps2", new List<SelectListItem>(ViewBag.csmps))
-       
+    <div >
         <div class="row">
+            <div class="col-lg-3"><input id="datepicker" name="mtsmonth2" type="text" value="@ViewBag.dateee" placeholder="select date" class="form-control"></div>
+            <div class="col-lg-3"> @Html.DropDownList("csp2", new List<SelectListItem>(ViewBag.csp), new { @class = "form-control" })</div>
+            <div class="col-lg-3"> @Html.DropDownList("csmps2", new List<SelectListItem>(ViewBag.csmps), new { @class = "form-control" })</div>
+            
+           
+           
+        </div>
+        
+        <div class="row" style="margin-top: 10px">
             <div class="col-xs-1">
-                <input type="submit" value="search" name="search" class="btn1" id="search" />
+                <input type="submit" value="Search" name="search" class="btn1 btn btn-default" id="search" />
             </div>
             <div class="col-xs-1">
-                <input type="submit" value="submit" name="approval" class="btn1" formaction="@Url.Action("approval")" />
+            @if (User.Identity.IsAuthenticated)
+            {
+                if (User.IsInRole("Employee"))
+                {
+                    <input type="submit" value="Submit" name="approval" class="btn1 btn btn-default" formaction="@Url.Action("approval")"/>
+                }
+            }
             </div>
             <div class="col-xs-1">
-                <input type="button" value="Print" class="btn1" onclick="PrintDoc()" />
+                <input type="button" value="Print" class="btn1 btn btn-default" onclick="PrintDoc()"/>
             </div>
-            <div class="col-xs-1">
+            <div class="col-lg-5">
                 @if (Model.Count > 0)
                 {
                     <p style="color: red; font-size: 16px" id="status">@Model[0].status</p>
@@ -150,7 +168,7 @@ using (Html.BeginForm("download", "Home", FormMethod.Get, new { id = "form1" }))
 
                     }
                     <td>
-                        @Html.DisplayFor(modelItem => item.empno):-
+                        @Html.DisplayFor(modelItem => item.empno)
                     </td>
 
                     <td>
