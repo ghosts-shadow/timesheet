@@ -26,6 +26,40 @@ namespace onlygodknows.Controllers
     {
         private readonly LogisticsSoftEntities db = new LogisticsSoftEntities();
         private int i = 0;
+        public JsonResult GetNotificationContacts()
+        {
+            var notificationRegisterTime = Session["LastUpdated"] != null
+                                               ? Convert.ToDateTime(Session["LastUpdated"])
+                                               : DateTime.Now;
+            NotificationComponent NC = new NotificationComponent();/*
+            var list = NC.GetContacts(notificationRegisterTime);*/
+            var list = NC.GetContacts(DateTime.Now);
+            //update session here for get only new added contacts (notification)
+            Session["LastUpdate"] = DateTime.Now;
+            return new JsonResult { Data = list, JsonRequestBehavior = JsonRequestBehavior.AllowGet };
+        }
+
+        public ActionResult getsubmitted()
+        {
+            var aap = new List<approval>();
+            var a = 0;
+            var submitted = this.db.approvals.Where(x => x.adate.Value.Month == DateTime.Now.Month && x.status == "submitted");
+            foreach (var app1 in submitted) 
+            {
+                if (aap.Count == 0)
+                {
+                    aap.Add(app1);
+                }
+
+                if (app1.MPS_id != aap[a].MPS_id && app1.P_id != aap[a].P_id)
+                {
+                    aap.Add(app1);
+                    a++;
+                }
+            }
+
+            return new JsonResult { Data = aap, JsonRequestBehavior = JsonRequestBehavior.AllowGet };
+        }
         public ActionResult PMapproval( long? manPower,long? pro, DateTime? mtsmonth2)
         {
             var t = new List<ProjectList>();

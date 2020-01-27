@@ -6,7 +6,7 @@ using Microsoft.AspNet.SignalR;
 
 namespace onlygodknows
 {
-    public class NotificationHub
+    public class NotificationHub :Hub
     {
     }
 }

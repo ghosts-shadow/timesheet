@@ -1,16 +1,15 @@
 ﻿namespace onlygodknows.Controllers
 {
     using System;
+    using EASendMail;
     using System.Collections.Generic;
     using System.Data.Entity;
     using System.Diagnostics.CodeAnalysis;
     using System.Linq;
     using System.Net;
     using System.Web.Mvc;
-
     using Microsoft.Ajax.Utilities;
     using Microsoft.AspNet.Identity;
-
     using OfficeOpenXml;
 
     using onlygodknows.Models;
@@ -2097,6 +2096,22 @@
             return this.View(final1.OrderBy(x => x.empno).ToPagedList(1, 100));
 
         }
+
+        public void SendMail( string sup,string prop,DateTime da, string na)
+        {
+            SmtpMail oMail = new SmtpMail("TryIt");
+            oMail.From = "it@citiscapegroup.com";
+            oMail.To = "amohamed@citiscapegroup.com";
+            oMail.Subject = "A NEW TIMESHEET SUBMITTED";
+            oMail.TextBody = "Dear Sir,\n\n Please note that I have sent a new Time-Sheet for the date "+ da.ToShortDateString() + ", ManPowerSupplier: " + sup + " and Project name: " + prop + " for your approval / reject\n\nBest regards\n"+na+"\n\n\n\n";
+            SmtpServer oServer = new SmtpServer("mail.citiscapegroup.com");
+            oServer.Protocol = ServerProtocol.ExchangeEWS;
+            oServer.User = "it";
+            oServer.Password = "123citiadmin$";
+            oServer.ConnectType = SmtpConnectType.ConnectSSLAuto;
+            SmtpClient oSmtp = new SmtpClient();
+            oSmtp.SendMail(oServer, oMail);
+        }
         [Authorize(Roles = "Employee")]
         public ActionResult approval(DateTime? mtsmonth2, long? csp2, long? csmps2)
         {
@@ -2117,12 +2132,14 @@
                     var ass = this.db.Attendances.Where(x => x.SubMain.Equals(abis.ID)).Include(x => x.LabourMaster)
                         .ToList();
                     /**/
+                    var i=0;
                     foreach (var attendance in ass)
                     {
                         if (!apall.Exists(x => x.A_id == attendance.ID && x.adate==dm))
                         {
                             if (User.IsInRole("Employee"))
                             {
+                                i++;
                                 attendance.status = "submitted for " + dm.Day;
                                 this.db.Entry(attendance).State = EntityState.Modified;
                                 this.db.SaveChanges();
@@ -2135,6 +2152,10 @@
                                 ap.Susername = User.Identity.Name;
                                 ap.Empno = attendance.LabourMaster.EMPNO;
                                 this.db.approvals.Add(ap);
+                                if (i == 1)
+                                {
+                                    this.SendMail(attendance.MainTimeSheet.ManPowerSupplier1.Supplier, attendance.MainTimeSheet.ProjectList.PROJECT_NAME,dm,User.Identity.Name);
+                                }
                                 this.db.SaveChanges();
                             }
                         }
@@ -2158,6 +2179,14 @@
                                     this.db.SaveChanges();
                                     aa1.status = "submitted";
                                     this.db.Entry(aa1).State = EntityState.Modified;
+                                    if (i==1)
+                                    {
+                                        this.SendMail(
+                                        attendance.MainTimeSheet.ManPowerSupplier1.Supplier,
+                                        attendance.MainTimeSheet.ProjectList.PROJECT_NAME,
+                                        dm,
+                                        User.Identity.Name);
+                                    }
                                     this.db.SaveChanges();
                                 }
                             }
