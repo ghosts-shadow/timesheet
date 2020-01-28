@@ -157,7 +157,7 @@ namespace onlygodknows.Controllers
                 {
                     LogisticsSoftEntities df = new LogisticsSoftEntities();
                     username un = new username();
-                    var user = new ApplicationUser { UserName = model.Email, Email = model.Email };
+                    var user = new ApplicationUser { UserName = model.username, Email = model.Email };
                     var result = await UserManager.CreateAsync(user, model.Password);
                     if (result.Succeeded)
                     {

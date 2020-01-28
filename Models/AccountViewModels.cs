@@ -66,7 +66,6 @@ namespace onlygodknows.Models
     }
     public class RegisterViewModel
     {
-        [Display(Name = "Username")]
         public string Email { get; set; }
 
         [Required]
@@ -85,6 +84,8 @@ namespace onlygodknows.Models
         [Required]
         [Display(Name = "Name")]
         public string full_name { get; set; }
+        [Display(Name = "Username")]
+        public string username { get; set; }
     }
 
     public class ResetPasswordViewModel

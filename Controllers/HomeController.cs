@@ -2099,9 +2099,39 @@
 
         public void SendMail( string sup,string prop,DateTime da, string na)
         {
+            var man = this.db.AspNetUsers.ToList();
+            var context = new ApplicationDbContext();
+            var users = context.Users.Where(x => x.Roles.Select(y => y.RoleId).Contains("6023f0a5-8d24-45d3-9641-b3c2e39aa763")).ToList();
+            var asa= new List<AspNetUser>();
+            var cper = this.db.CsPermissions.ToList();
+            foreach (var user1 in users)
+            {
+                asa.Add(man.Find(x => x.Id == user1.Id));
+            }
+            var fuser = new List<CsPermission>();
+            foreach (var netUser in asa)
+            { 
+                fuser.Add(cper.Find(x=>x.CsUser == netUser.csid));
+            }
+
+            var pname = this.db.ProjectLists.ToList();
+            var pname1 = pname.Find(x => x.PROJECT_NAME == prop);
+            var pno = fuser.FindAll(x => x.Project == pname1.ID);
+            var pasa=new List<AspNetUser>();
+            foreach (var permission in pno)
+            {
+                pasa.Add(asa.Find(x => x.csid == permission.CsUser));
+            }
             SmtpMail oMail = new SmtpMail("TryIt");
+            var ccstring = "mkhairy@citiscapegroup.com,efathy@citiscapegroup.com,zNader@citiscapegroup.com";
             oMail.From = "it@citiscapegroup.com";
-            oMail.To = "amohamed@citiscapegroup.com";
+            oMail.To = pasa.First().Email;
+            pasa.Remove(pasa.First());
+            foreach (var ccpasa in pasa)
+            {
+                ccstring += "," + ccpasa.Email;
+            }
+            oMail.Cc = ccstring;
             oMail.Subject = "A NEW TIMESHEET SUBMITTED";
             oMail.TextBody = "Dear Sir,\n\n Please note that I have sent a new Time-Sheet for the date "+ da.ToShortDateString() + ", ManPowerSupplier: " + sup + " and Project name: " + prop + " for your approval / reject\n\nBest regards\n"+na+"\n\n\n\n";
             SmtpServer oServer = new SmtpServer("mail.citiscapegroup.com");
