@@ -10,22 +10,22 @@
      var counter = 1;
      var number = 0;
 
-     $(function() {
+     $(function () {
+         $("#empno0").chosen({ no_results_text: "Oops, nothing found!" }); 
          $('#add').click(() => {
+             chosendestroy();
              number = counter++;
              if (number < $('#empno0').children('option').length - 1) {
 
                  container = $('#tablerow1');
                  template = $('#tr0');
-                 // Add clones
-
                  var no = number - 1;
-                 var clone = template.clone(true);
+                 var clone = template.clone(true).val('');
                  clone.attr('id', "tr" + number);
                  clone.find('#hours' + 0).attr('name', 'Tests[' + number + '].hours');
                  clone.find('#hours' + 0).attr('id', 'hours' + number);
-                 clone.find('select:first').attr('name', 'Tests[' + number + '].empno');
-                 clone.find('select:first').attr('id', 'empno' + number);
+                 clone.find('#empno0').attr('name', 'Tests[' + number + '].empno');
+                 clone.find('#empno0').attr('id', 'empno'+number);
                  clone.find('#dd' + 0).attr('id', 'dd' + number);
                  clone.find('#name' + 0).attr('id', 'name' + number);
                  clone.find('#position' + 0).attr('id', 'position' + number);
@@ -40,27 +40,40 @@
          });
      });
 
+     function chosendestroy() {
+         $("#empno0").chosen("destroy");
+     }
+     function createchosen() {
+         for (var i = 0; i < counter; i++) {
+             if ($("#empno"+i).length !=0) {
+                 $("#empno" + i).chosen({ no_results_text: "Oops, nothing found!" });
+             }
+         }
+     }
      function remove(id) {
          $("#tr" + id).remove();
          check();
      }
 
      function hi() {
+         createchosen();
          for (var i = 0; i < number + 1; i++) {
              for (var j = 0; j < i; j++) {
                  if ($('#empno' + j).length) {
                      if ($('#empno' + i + ' option:selected').text() ===
-                     $('#empno' + j + ' option:selected').text()) {
-                     $('#save').attr("disabled", true);
-                     $('#add').attr("disabled", true);
-                     dishr();
-                     $('#dd' + j).show();
-                     break;
-                 } else {
-                     enhr();
-                     check();
-                     $('#dd' + j).hide();
-                 }
+                         $('#empno' + j + ' option:selected').text()) {
+                         $('#save').attr("disabled", true);
+                         $('#add').attr("disabled", true);
+                         dishr();
+                         $('#dd' + j).show();
+                         $('#ddd').show();
+                         break;
+                     } else {
+                         enhr();
+                         check();
+                         $('#dd' + j).hide();
+                         $('#ddd').hide();
+                     }
                  }
                  
              }
@@ -83,18 +96,18 @@
          for (var i = 0; i < counter; i++) {
              if ($('#hours' + i).length) {
                  if ($('#hours' + i + ' option:selected').text() == "") {
-                 $('#add').attr('disabled', true);
-                 $('#save').attr('disabled', true);
-                 break;
-             }
+                     $('#add').attr('disabled', true);
+                     $('#save').attr('disabled', true);
+                     break;
+                 }
              
              }
              if ($('#empno' + i).length) {
-             if ($('#empno' + i + ' option:selected').val() == "") {
-                 $('#add').attr('disabled', true);
-                 $('#save').attr('disabled', true);
-                 break;
-             }
+                 if ($('#empno' + i + ' option:selected').val() == "") {
+                     $('#add').attr('disabled', true);
+                     $('#save').attr('disabled', true);
+                     break;
+                 }
              }
              $('#add').attr('disabled', false);
              $('#save').attr('disabled', false);
@@ -122,8 +135,8 @@
 <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js">
 </script>
 @if (Request.IsAuthenticated)
-{
-    using (Html.BeginForm("tests", "Home"))
+    {
+        using (Html.BeginForm("tests", "Home"))
     {
         @Html.AntiForgeryToken()
         <div class="row" onclick="check()" style="margin-left:-25px">
@@ -141,6 +154,7 @@
                     <th>employee no</th>
                     <th>hours</th>
                     <th></th>
+                    <th id="ddd" style="display: none;"></th>
                     </thead>
                     <tbody>
                     <tr id="tr0">

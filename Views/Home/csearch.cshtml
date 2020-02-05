@@ -63,7 +63,7 @@ using (Html.BeginForm("csearch", "Home", FormMethod.Get, new { id = "form1" }))
 {
     <div>
         <div class="col-lg-2"><input id="datepicker" name="mtsmonth" type="text" value="@ViewBag.dateee" placeholder="select date" class="form-control"></div>
-        <div class="col-lg-2">@Html.DropDownList("csp", new List<SelectListItem>(ViewBag.csp), new { @class = "form-control" })</div>
+        <div class="col-lg-4">@Html.DropDownList("csp", new List<SelectListItem>(ViewBag.csp), new { @class = "form-control" })</div>
         <div class="col-lg-2">@Html.DropDownList("csmps", new List<SelectListItem>(ViewBag.csmps), new { @class = "form-control" })</div>
         <div class="col-lg-2"><input type="text" id="alternate" readonly="readonly" value="@ViewBag.MM" name="MM" class="form-control" /></div>
         

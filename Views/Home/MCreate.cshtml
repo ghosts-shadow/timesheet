@@ -79,7 +79,7 @@ using (Html.BeginForm())
 
                     *@
                     <div class="row">
-                        <div class="col-md-2">
+                        <div class="col-md-4">
                             @Html.Label("date:",new { @class = "control-label col-md-2" })
                         </div>
                         <div class="col-md-8">
@@ -94,14 +94,17 @@ using (Html.BeginForm())
                     @Html.ValidationMessageFor(model => model.ManPowerSupplier, "", new { @class = "text-danger" })
                 </div>
                 @Html.LabelFor(model => model.Project, htmlAttributes: new { @class = "control-label col-md-2"})
-                <div class="col-md-2">
+                <div class="col-md-3">
                     @Html.DropDownList("Project", null, new { htmlAttributes = new { @class = "form-control" } })
                     @Html.ValidationMessageFor(model => model.Project, "", new { @class = "text-danger" })
                 </div>
-                <div class="col-md-2">
-                    <input type="submit" value="Create" class="btn btn-default"/>
-                </div>
-            </div>@*
+                
+            </div>
+            <div class="row" align="center">
+                <br/>
+                <input type="submit" value="Create" class="btn btn-default"/>
+            </div>
+            @*
             <div class="row">
                 @Html.LabelFor(model => model.Ref, htmlAttributes: new { @class = "control-label col-md-2" })
                 <div class="col-md-2">

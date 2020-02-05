@@ -552,6 +552,7 @@
             var d = from LabourMaster in this.db.LabourMasters
                     where LabourMaster.ManPowerSupply == b.ID
                     select LabourMaster;
+            this.ViewBag.emplist = d.Select(x => x.EMPNO).ToList();
             this.ViewBag.empno = new SelectList(d.Where(x => x.EMPNO >= 4).OrderBy(m => m.EMPNO), "ID", "EMPNO");
             this.ViewBag.name = new SelectList(d.Where(x => x.EMPNO >= 4).OrderBy(m => m.EMPNO), "ID", "Person_Name");
             this.ViewBag.position = new SelectList(d.Where(x => x.EMPNO >= 4).OrderBy(m => m.EMPNO), "ID", "Position");

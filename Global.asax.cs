@@ -20,22 +20,6 @@ namespace onlygodknows
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             BundleConfig.RegisterBundles(BundleTable.Bundles);
-            SqlDependency.Start(con);
-        }
-
-        protected void Session_Start(object sender, EventArgs e)
-        {
-            NotificationComponent NC = new NotificationComponent();
-            var currentTime = DateTime.Now;
-            HttpContext.Current.Session["LastUpdated"] = currentTime;
-            NC.RegisterNotification(currentTime);
-        }
-
-
-        protected void Application_End()
-        {
-            //here we will stop Sql Dependency
-            SqlDependency.Stop(con);
         }
     }
 }

@@ -26,19 +26,6 @@ namespace onlygodknows.Controllers
     {
         private readonly LogisticsSoftEntities db = new LogisticsSoftEntities();
         private int i = 0;
-        public JsonResult GetNotificationContacts()
-        {
-            var notificationRegisterTime = Session["LastUpdated"] != null
-                                               ? Convert.ToDateTime(Session["LastUpdated"])
-                                               : DateTime.Now;
-            NotificationComponent NC = new NotificationComponent();/*
-            var list = NC.GetContacts(notificationRegisterTime);*/
-            var list = NC.GetContacts(DateTime.Now);
-            //update session here for get only new added contacts (notification)
-            Session["LastUpdate"] = DateTime.Now;
-            return new JsonResult { Data = list, JsonRequestBehavior = JsonRequestBehavior.AllowGet };
-        }
-
         public ActionResult getsubmitted()
         {
             var aap = new List<approval>();
@@ -57,7 +44,6 @@ namespace onlygodknows.Controllers
                     a++;
                 }
             }
-
             return new JsonResult { Data = aap, JsonRequestBehavior = JsonRequestBehavior.AllowGet };
         }
         public ActionResult PMapproval( long? manPower,long? pro, DateTime? mtsmonth2)
