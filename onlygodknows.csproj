@@ -217,6 +217,7 @@
     <Compile Include="Models\Camp_Details.cs">
       <DependentUpon>timesheet.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\approvalnonsence.cs" />
     <Compile Include="Models\ControlRoom.cs">
       <DependentUpon>timesheet.tt</DependentUpon>
     </Compile>
@@ -320,6 +321,7 @@
     <Content Include="Content\chosen\options.html" />
     <Content Include="Content\print.css" />
     <Content Include="Content\Style.css" />
+    <Content Include="Content\userhelp\a_and_k.mp4" />
     <Content Include="Models\timesheet.Context.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <DependentUpon>timesheet.edmx</DependentUpon>
@@ -364,6 +366,8 @@
     </Content>
     <Content Include="Content\chosen\composer.json" />
     <Content Include="Content\chosen\LICENSE.md" />
+    <Content Include="Content\userhelp\GTS-CP-1.9.pdf" />
+    <Content Include="Content\userhelp\a_and_k .flv" />
     <None Include="Properties\PublishProfiles\CustomProfile.pubxml" />
     <Content Include="Views\CSPermissions\project_permissions.cshtml" />
     <None Include="Views\Home\Class1.cshtml" />
@@ -381,6 +385,7 @@
     <Content Include="Views\Projman\PMapproval.cshtml" />
     <Content Include="Views\LabourMasters\Create.cshtml" />
     <Content Include="Views\LabourMasters\Index.cshtml" />
+    <Content Include="Views\Projman\appsum.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\bootstrap-theme.css" />
@@ -425,6 +430,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Content\userhelp\NewFolder1\" />
     <Folder Include="img\" />
   </ItemGroup>
   <ItemGroup>

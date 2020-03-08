@@ -1,3 +1,18 @@
 ﻿@{
-    ViewBag.Title = "Home Page";
+    ViewBag.Title = "user guide";
 }
+    <div class="row">
+        <b>user guid(video)</b>
+    </div>
+<div class="row" align="center" >
+        <video controls  width="50%" preload="auto" style="border: 5px black solid">
+            <source src='@Url.Content("~/Content/userhelp/a_and_k.mp4")' type=video/mp4 />
+            <source src='@Url.Content("~/Content/userhelp/a_and_k .flv")' type=video/flv />
+            <source src='@Url.Content("~/Content/userhelp/a_and_k.mkv")' type=video/mkv />
+            Your browser does not support the video
+        </video>
+</div>
+<div class="row">
+    <br/>
+    <a href="@Url.Content("~/Content/userhelp/GTS-CP-1.9.pdf")" target="_blank"><b>user guid</b></a>
+</div>

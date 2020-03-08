@@ -36,7 +36,7 @@
         }
     </script>
 </head>
-<body style="margin-left: 1%; margin-right: 1%;">
+<body style="margin-left: 1%; margin-right: 1%; margin-top: -45px;">
     <div class="navbar navbar-inverse navbar-fixed-top" style="background-color: #2c6faa; color: #fff; position: relative; top: 100%">
         <div class="navbar-header">
             <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
@@ -48,32 +48,33 @@
         </div>
 
 
-        <div class="navbar-collapse collapse" style="font-size: 1vw; margin-left: 5%; margin-right: 5%; color: #fff">
+        <div class="navbar-collapse collapse" style=" margin-left: 5%; margin-right: 5%; color: #fff">
             @if (Request.IsAuthenticated)
             {
-                <ul class="nav navbar-nav">
-                    @if (User.Identity.IsAuthenticated)
+            <ul class="nav navbar-nav">
+                @if (User.Identity.IsAuthenticated)
+                {
+                    <li>@Html.ActionLink("user manual", "Index", "Home")</li>
+                    if (User.IsInRole("Admin"))
                     {
-                        if (User.IsInRole("Admin"))
-                        {
-                            <li>@Html.ActionLink("search all", "Asearch", "Home")</li>
-                            <li>@Html.ActionLink("project permissions", "project_permissions", "CSPermissions")</li>
-                        }
-
-                        if (User.IsInRole("Project_manager") || User.IsInRole("Admin"))
-                        {
-                            <li>@Html.ActionLink("approve timesheet", "PMapproval", "Projman")</li>
-                            
-                        }
-                        if (User.IsInRole("Admin") || User.IsInRole("Employee"))
-                        {
-                            <li>@Html.ActionLink("Add new Time-sheet", "MCreate", "Home")</li>
-                            <li>@Html.ActionLink("Print Timesheet", "download", "Home")</li>
-                            <li>@Html.ActionLink("search by month", "csearch", "Home")</li>
-                        }
-                        <li>@Html.ActionLink("add new labour", "Create", "LabourMasters")</li>
+                        <li>@Html.ActionLink("search all", "Asearch", "Home")</li>
+                        <li>@Html.ActionLink("project permissions", "project_permissions", "CSPermissions")</li>
                     }
-                </ul>
+
+                    if (User.IsInRole("Project_manager") || User.IsInRole("Admin"))
+                    {
+                        <li>@Html.ActionLink("approve timesheet", "appsum", "Projman")</li>
+
+                    }
+                    if (User.IsInRole("Admin") || User.IsInRole("Employee"))
+                    {
+                        <li>@Html.ActionLink("Add new Time-sheet", "MCreate", "Home")</li>
+                        <li>@Html.ActionLink("Print Timesheet", "download", "Home")</li>
+                        <li>@Html.ActionLink("search by month", "csearch", "Home")</li>
+                    }
+                    <li>@Html.ActionLink("add new labour", "Create", "LabourMasters")</li>
+                }
+            </ul>
             }
             @Html.Partial("_LoginPartial")
         </div>

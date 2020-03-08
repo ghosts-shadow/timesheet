@@ -11,10 +11,12 @@ namespace onlygodknows.Models
 {
     using System;
     using System.Collections.Generic;
-    
+    using System.ComponentModel.DataAnnotations;
+
     public partial class approval
     {
         public int Id { get; set; }
+        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:d}")]
         public Nullable<System.DateTime> adate { get; set; }
         public Nullable<long> P_id { get; set; }
         public Nullable<long> MPS_id { get; set; }

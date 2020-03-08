@@ -331,12 +331,12 @@
                     t.Add(this.db.ProjectLists.Find(i.Project));
                 }
 
-                this.ViewBag.csp = new SelectList(t, "ID", "PROJECT_NAME");
+                this.ViewBag.csp = new SelectList(t, "ID", "PROJECT_NAME").OrderBy(x => x.Text);
 
             }
             else
             {
-                this.ViewBag.csp = new SelectList(this.db.ProjectLists, "ID", "PROJECT_NAME");
+                this.ViewBag.csp = new SelectList(this.db.ProjectLists, "ID", "PROJECT_NAME").OrderBy(x => x.Text);
 
 
             }
@@ -396,12 +396,12 @@
                 {
                     t.Add(this.db.ProjectLists.Find(i.Project));
                 }
-                this.ViewBag.Project = new SelectList(t, "ID", "PROJECT_NAME");
+                this.ViewBag.Project = new SelectList(t, "ID", "PROJECT_NAME").OrderBy(x => x.Text);
 
             }
             else
             {
-                this.ViewBag.Project = new SelectList(this.db.ProjectLists, "ID", "PROJECT_NAME");
+                this.ViewBag.Project = new SelectList(this.db.ProjectLists, "ID", "PROJECT_NAME").OrderBy(x => x.Text);
 
 
             }
@@ -432,12 +432,12 @@
                     t.Add(this.db.ProjectLists.Find(i.Project));
                 }
 
-                this.ViewBag.Project = new SelectList(t, "ID", "PROJECT_NAME");
+                this.ViewBag.Project = new SelectList(t, "ID", "PROJECT_NAME").OrderBy(x => x.Text);
 
             }
             else
             {
-                this.ViewBag.Project = new SelectList(this.db.ProjectLists, "ID", "PROJECT_NAME");
+                this.ViewBag.Project = new SelectList(this.db.ProjectLists, "ID", "PROJECT_NAME").OrderBy(x => x.Text);
 
 
             }
@@ -1976,12 +1976,12 @@
                     t.Add(this.db.ProjectLists.Find(i.Project));
                 }
 
-                this.ViewBag.csp = new SelectList(t, "ID", "PROJECT_NAME");
+                this.ViewBag.csp = new SelectList(t, "ID", "PROJECT_NAME").OrderBy(x => x.Text);
 
             }
             else
             {
-                this.ViewBag.csp = new SelectList(this.db.ProjectLists, "ID", "PROJECT_NAME");
+                this.ViewBag.csp = new SelectList(this.db.ProjectLists, "ID", "PROJECT_NAME").OrderBy(x => x.Text);
 
 
             }
@@ -2109,15 +2109,18 @@
             {
                 asa.Add(man.Find(x => x.Id == user1.Id));
             }
-            var fuser = new List<CsPermission>();
+            var fuser1 = new List<CsPermission>();
             foreach (var netUser in asa)
-            { 
-                fuser.Add(cper.Find(x=>x.CsUser == netUser.csid));
+            {
+                if (cper.Exists(x => x.CsUser == netUser.csid))
+                {
+                    fuser1.Add(cper.Find(x => x.CsUser == netUser.csid));
+                }
             }
 
             var pname = this.db.ProjectLists.ToList();
             var pname1 = pname.Find(x => x.PROJECT_NAME == prop);
-            var pno = fuser.FindAll(x => x.Project == pname1.ID);
+            var pno = fuser1.FindAll(x => x.Project == pname1.ID);
             var pasa=new List<AspNetUser>();
             foreach (var permission in pno)
             {
@@ -2125,7 +2128,7 @@
             }
             SmtpMail oMail = new SmtpMail("TryIt");
             var ccstring = "mkhairy@citiscapegroup.com,efathy@citiscapegroup.com,zNader@citiscapegroup.com";
-            oMail.From = "it@citiscapegroup.com";
+            oMail.From = "sdiniz@citiscapegroup.com";
             oMail.To = pasa.First().Email;
             pasa.Remove(pasa.First());
             foreach (var ccpasa in pasa)
@@ -2135,10 +2138,10 @@
             oMail.Cc = ccstring;
             oMail.Subject = "A NEW TIMESHEET SUBMITTED";
             oMail.TextBody = "Dear Sir,\n\n Please note that I have sent a new Time-Sheet for the date "+ da.ToShortDateString() + ", ManPowerSupplier: " + sup + " and Project name: " + prop + " for your approval / reject\n\nBest regards\n"+na+"\n\n\n\n";
-            SmtpServer oServer = new SmtpServer("mail.citiscapegroup.com");
+            SmtpServer oServer = new SmtpServer("outlook.office365.com");
             oServer.Protocol = ServerProtocol.ExchangeEWS;
-            oServer.User = "it";
-            oServer.Password = "123citiadmin$";
+            oServer.User = "sdiniz@citiscapegroup.com";
+            oServer.Password = "Xay59626";
             oServer.ConnectType = SmtpConnectType.ConnectSSLAuto;
             SmtpClient oSmtp = new SmtpClient();
             oSmtp.SendMail(oServer, oMail);

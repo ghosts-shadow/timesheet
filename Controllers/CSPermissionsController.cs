@@ -13,7 +13,7 @@ namespace onlygodknows.Controllers
         private readonly LogisticsSoftEntities db = new LogisticsSoftEntities();
         public ActionResult project_permissions()
         {
-            this.ViewBag.csp = new SelectList(this.db.ProjectLists, "ID", "PROJECT_NAME");
+            this.ViewBag.csp = new SelectList(this.db.ProjectLists, "ID", "PROJECT_NAME").OrderBy(x => x.Text);
             this.ViewBag.permi = new SelectList(this.db.AspNetUsers, "csid", "UserName");
 
             return View();
@@ -23,7 +23,7 @@ namespace onlygodknows.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult project_permissions(proplist prop)
         {
-            this.ViewBag.csp = new SelectList(this.db.ProjectLists, "ID", "PROJECT_NAME");
+            this.ViewBag.csp = new SelectList(this.db.ProjectLists, "ID", "PROJECT_NAME").OrderBy(x => x.Text);
             this.ViewBag.permi = new SelectList(this.db.AspNetUsers, "csid", "UserName");
             var csp =new CsPermission();
             foreach (var i in prop.props)

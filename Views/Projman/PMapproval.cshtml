@@ -43,7 +43,7 @@
         }
     </style>
     <h2>approval timesheet</h2>
-    using (Html.BeginForm())
+    @*using (Html.BeginForm())
     {
 <div style="margin-left:-16px ">
     <div class="col-lg-3"><input id="datepicker" name="mtsmonth2" type="text" value="@ViewBag.csdate" placeholder="select date" class="form-control"></div>
@@ -54,7 +54,12 @@
         
        
         
-    }
+    }*@
+    <div>
+        <div class="col-lg-3"></div>
+        <div class="col-lg-3"></div>
+        <div class="col-lg-3"></div>
+    </div>
     <br/>
     <br/>
     <br/>
@@ -329,7 +334,7 @@
                  <div class="col-md-6">
                      @using (Html.BeginForm("rejected", "Projman"))
                      {
-                         <div class="col-md-1"><input type="submit" class="btn btn-default" value="Reject" style="color: red;" @*onclick="window.location.href = '@Url.Action("rejected")'"*@/></div>
+                         <div class="col-md-3"><input type="submit" class="btn btn-default" value="Reject" style="color: red;" @*onclick="window.location.href = '@Url.Action("rejected")'"*@/></div>
                          <div class="col-md-3">
                              <p><input type="text" name="why" required class="btn btn-default" placeholder="Comment"/></p></div>
 
