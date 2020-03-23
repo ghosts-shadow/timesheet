@@ -180,6 +180,13 @@
                     where LabourMaster.ManPowerSupply == b.ID
                     select LabourMaster;
             this.ViewBag.EmpID = new SelectList(d.OrderBy(m => m.EMPNO), "EmpID", "EMPNO");
+
+            // oldmts = this.db.MainTimeSheets
+            //     .Where(
+            //         x => x.TMonth.Month.Equals(list.date.Month) && x.TMonth.Year.Equals(list.date.Year)
+            //                                                     && x.ManPowerSupplier.Equals(aa.ManPowerSupplier)
+            //                                                     && x.Project.Equals(aa.Project))
+            //    .OrderByDescending(x => x.ID).ToList();
             var data = new[]
                            {
                                new SelectListItem { Text = "0", Value = "0" },
@@ -259,7 +266,7 @@
         public ActionResult Asearch(int? page, int? pagesize, string search)
         {
             var a = this.db.MainTimeSheets.OrderByDescending(m => m.ID);
-            var aa = a.First();
+            //var aa = a.First();
             var pageIndex = 1;
             pageIndex = page.HasValue ? Convert.ToInt32(page) : 1;
             var defaSize = 100;
@@ -363,7 +370,7 @@
                 {
                     abis = ab.First();
                     return this.View(
-                        this.db.Attendances.Where(x => x.SubMain.Equals(abis.ID)).Include(x => x.LabourMaster).OrderByDescending(x => x.ID)
+                        this.db.Attendances.Where(x => x.SubMain.Equals(abis.ID)).Include(x => x.LabourMaster).OrderBy(x => x.ID)
                             .ToPagedList(1, 100));
                 }
                 else
@@ -375,7 +382,7 @@
             }
 
 
-            return this.View(ll.OrderByDescending(x => x.ID).ToPagedList(1, 100));
+            return this.View(ll.OrderBy(x => x.LabourMaster.EMPNO).ToPagedList(1, 100));
         }
 
         public ActionResult Index()
@@ -1936,9 +1943,8 @@
                             this.db.Attendances.Add(at);
                             this.db.SaveChanges();
                         }
-                    
                 }
-            return this.RedirectToAction("MCreate");
+                return this.RedirectToAction("tests");
             }
             return this.View(test);
         }

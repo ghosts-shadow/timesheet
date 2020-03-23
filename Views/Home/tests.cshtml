@@ -10,42 +10,42 @@
      var counter = 1;
      var number = 0;
 
-     $(function () {
-         $("#empno0").chosen({ no_results_text: "Oops, nothing found!" }); 
+     $(function() {
+         $("#empno0").chosen({ no_results_text: "Oops, nothing found!" });
          $('#add').click(() => {
              chosendestroy();
              number = counter++;
-             if (number < $('#empno0').children('option').length - 1) {
-
-                 container = $('#tablerow1');
-                 template = $('#tr0');
-                 var no = number - 1;
-                 var clone = template.clone(true).val('');
-                 clone.attr('id', "tr" + number);
-                 clone.find('#hours' + 0).attr('name', 'Tests[' + number + '].hours');
-                 clone.find('#hours' + 0).attr('id', 'hours' + number);
-                 clone.find('#empno0').attr('name', 'Tests[' + number + '].empno');
-                 clone.find('#empno0').attr('id', 'empno'+number);
-                 clone.find('#dd' + 0).attr('id', 'dd' + number);
-                 clone.find('#name' + 0).attr('id', 'name' + number);
-                 clone.find('#position' + 0).attr('id', 'position' + number);
-                 clone.find('#name' + 0).attr('name', 'name' + number);
-                 clone.find('#position' + 0).attr('name', 'position' + number);
-                 clone.find('#re')
-                     .append(" <input type = \"button\" value = \"Remove\" onclick = \"remove(this.id)\"  id=\"" +
-                         number +
-                         "\"/> ");
-                 container.append(clone).before(clone);
+             if (counter < 25) {
+                 if (number < $('#empno0').children('option').length - 1) {
+                     container = $('#tablerow1');
+                     template = $('#tr0');
+                     var no = number - 1;
+                     var clone = template.clone(true).val('');
+                     clone.attr('id', "tr" + number);
+                     clone.find('#hours' + 0).attr('name', 'Tests[' + number + '].hours');
+                     clone.find('#hours' + 0).attr('id', 'hours' + number);
+                     clone.find('#empno0').attr('name', 'Tests[' + number + '].empno');
+                     clone.find('#empno0').attr('id', 'empno' + number);
+                     clone.find('#dd' + 0).attr('id', 'dd' + number);
+                     clone.find('#name' + 0).attr('id', 'name' + number);
+                     clone.find('#position' + 0).attr('id', 'position' + number);
+                     clone.find('#name' + 0).attr('name', 'name' + number);
+                     clone.find('#position' + 0).attr('name', 'position' + number);
+                     clone.find('#re')
+                         .append(" <input type = \"button\" value = \"Remove\" onclick = \"remove(this.id)\"  id=\"" +
+                             number +
+                             "\"/> ");
+                     container.append(clone).before(clone);
+                 }
              }
          });
      });
-
      function chosendestroy() {
          $("#empno0").chosen("destroy");
      }
      function createchosen() {
          for (var i = 0; i < counter; i++) {
-             if ($("#empno"+i).length !=0) {
+             if ($("#empno"+i).length !== 0) {
                  $("#empno" + i).chosen({ no_results_text: "Oops, nothing found!" });
              }
          }
@@ -135,8 +135,8 @@
 <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js">
 </script>
 @if (Request.IsAuthenticated)
-    {
-        using (Html.BeginForm("tests", "Home"))
+{
+    using (Html.BeginForm("tests", "Home", FormMethod.Post, new { id = "myform" }))
     {
         @Html.AntiForgeryToken()
         <div class="row" onclick="check()" style="margin-left:-25px">

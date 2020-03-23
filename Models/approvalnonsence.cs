@@ -19,7 +19,11 @@ namespace onlygodknows.Models
         public string P_name { get; set; }
 
         public string MPS_name { get; set; }
+
+        [Display(Name = "N T")]
         public Nullable<long> N_T { get; set; }
+        [Display(Name = "O T")]
+
         public Nullable<long> O_T { get; set; }
         public Nullable<long> friday { get; set; }
 

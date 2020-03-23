@@ -11,7 +11,8 @@ namespace onlygodknows.Models
 {
     using System;
     using System.Collections.Generic;
-    
+    using System.ComponentModel.DataAnnotations;
+
     public partial class ProjectList
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
@@ -24,6 +25,8 @@ namespace onlygodknows.Models
         public string ProjectCode { get; set; }
         public string STAMP_CODE { get; set; }
         public string INQUIRY { get; set; }
+
+        [Display(Name = "project")]
         public string PROJECT_NAME { get; set; }
         public string CLIENT_MC { get; set; }
         public string Notice_01 { get; set; }

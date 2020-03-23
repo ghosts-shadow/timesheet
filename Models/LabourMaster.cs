@@ -11,7 +11,8 @@ namespace onlygodknows.Models
 {
     using System;
     using System.Collections.Generic;
-    
+    using System.ComponentModel.DataAnnotations;
+
     public partial class LabourMaster
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
@@ -24,6 +25,7 @@ namespace onlygodknows.Models
         public long EMPNO { get; set; }
         public int ManPowerSupply { get; set; }
         public string VisaSponser { get; set; }
+        [Display(Name = "employee name")]
         public string Person_Name { get; set; }
         public string Position { get; set; }
         public string Nationality { get; set; }

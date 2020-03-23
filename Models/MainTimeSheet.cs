@@ -24,6 +24,7 @@ namespace onlygodknows.Models
         public long ID { get; set; }
 
         [DisplayFormat(DataFormatString = "{0:MMMM  yyyy}", ApplyFormatInEditMode = true)]
+        [Display(Name = "Month")]
         public System.DateTime TMonth { get; set; }
         public long ManPowerSupplier { get; set; }
         public long Project { get; set; }
