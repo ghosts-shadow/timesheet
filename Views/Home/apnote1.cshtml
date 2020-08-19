@@ -1,0 +1,21 @@
+﻿@model IEnumerable<onlygodknows.Models.approval>
+
+@{
+    var i = 0;
+}
+    @foreach (var item in Model)
+    {
+        
+        <li>
+            @{
+                i++;
+            }
+            <b style="color: red">@i:</b> 
+            @Html.DisplayFor(modelItem => item.adate)
+            @Html.DisplayFor(modelItem => item.Attendance.MainTimeSheet.ProjectList.PROJECT_NAME)
+            @Html.DisplayFor(modelItem => item.Attendance.MainTimeSheet.ManPowerSupplier1.Supplier)
+        </li>
+
+    }
+
+

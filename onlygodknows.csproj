@@ -319,9 +319,11 @@
     <Content Include="Content\chosen\index.html" />
     <Content Include="Content\chosen\index.proto.html" />
     <Content Include="Content\chosen\options.html" />
+    <Content Include="Content\note.css" />
     <Content Include="Content\print.css" />
     <Content Include="Content\Style.css" />
     <Content Include="Content\userhelp\a_and_k.mp4" />
+    <Content Include="img\iconbell.jpg" />
     <Content Include="Models\timesheet.Context.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <DependentUpon>timesheet.edmx</DependentUpon>
@@ -370,6 +372,7 @@
     <Content Include="Content\userhelp\a_and_k .flv" />
     <None Include="Properties\PublishProfiles\CustomProfile.pubxml" />
     <Content Include="Views\CSPermissions\project_permissions.cshtml" />
+    <Content Include="Views\Home\apnote1.cshtml" />
     <None Include="Views\Home\Class1.cshtml" />
     <Content Include="Views\Home\tests.cshtml" />
     <Content Include="Views\Home\csearch.cshtml" />
@@ -386,6 +389,7 @@
     <Content Include="Views\LabourMasters\Create.cshtml" />
     <Content Include="Views\LabourMasters\Index.cshtml" />
     <Content Include="Views\Projman\appsum.cshtml" />
+    <Content Include="Views\Home\AIndex1.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\bootstrap-theme.css" />
@@ -431,7 +435,6 @@
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="Content\userhelp\NewFolder1\" />
-    <Folder Include="img\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff2" />

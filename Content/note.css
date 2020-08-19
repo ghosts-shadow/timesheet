@@ -1,0 +1,86 @@
+﻿.wrapper {
+    height: 100%;
+    width: 100%;
+}
+
+
+   
+
+    
+
+.icon_wrap { cursor: pointer; }
+
+.notifications { margin-right: 25px; }
+
+.navbar .navbar_right .notifications .icon_wrap { font-size: 28px; }
+
+.notifications { position: relative; }
+
+    
+.notification_dd {
+    background: #fff;
+    border: 1px solid #c7d8e2;
+    border-radius: 3px;
+    box-shadow: 10px 10px 35px rgba(0, 0, 0, 0.125), -10px -10px 35px rgba(0, 0, 0, 0.125);
+    display: none;
+    height: auto;
+    position: absolute;
+    right: -15px;
+    top: 48px;
+    user-select: none;
+    width: 350px;
+}
+
+.notification_dd:before {
+    border: 10px solid;
+    border-color: transparent transparent #fff transparent;
+    content: "";
+    position: absolute;
+    right: 15px;
+    top: -20px;
+}
+
+.notification_dd li {
+    align-items: center;
+    border-bottom: 1px solid #f1f2f4;
+    display: flex;
+    padding: 10px 20px;
+}
+
+.notification_dd li .notify_icon { display: flex; }
+
+.notification_dd li .notify_icon .icon {
+    background: url('https://i.imgur.com/MVJNkqW.png') no-repeat 0 0;
+    display: inline-block;
+    height: 42px;
+    width: 40px;
+}
+
+           
+
+.notification_dd li .notify_data {
+    margin: 0 15px;
+    width: 185px;
+}
+
+.notification_dd li .notify_data .title {
+    color: #000;
+    font-weight: 600;
+}
+
+.notification_dd li {
+    font-size: 14px;
+    margin-top: 5px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+            
+           
+           
+
+            
+
+               
+   

@@ -2,76 +2,90 @@
 
 @{
     ViewBag.Title = "appsum";
-    Layout = "~/Views/Shared/_Layout.cshtml";
 }
+<script>
 
-<h2>approval</h2>
-
-<table class="table">
-    <tr>
-        <th></th>
-        <th>
-            @Html.DisplayNameFor(model => model.adate)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Attendance.MainTimeSheet.ProjectList.PROJECT_NAME)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Attendance.MainTimeSheet.ManPowerSupplier1.Supplier)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.O_T)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.N_T)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.friday)
-        </th>
-        <th></th>
-    </tr>
-    
-@foreach (var item in Model) {
-    <tr>
-        <td>
-            <input type="submit" value="open" class="btn btn-default"  onclick="window.location.href = '@Url.Action("PMapproval", new { manPower = item.MPS_id, pro = item.P_id, mtsmonth2 = item.adate })'"/>
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.adate)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.P_name)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.MPS_name)
-        </td>
-        <td>@Html.DisplayFor(modelItem => item.O_T)</td>
-        <td>@Html.DisplayFor(modelItem => item.N_T)</td>
-        <td>@Html.DisplayFor(modelItem => item.friday)</td>
-        <td>
-            @if (User.Identity.IsAuthenticated)
-            {
-                if (User.IsInRole("Project_manager"))
-                {
-                    <div class="row">
-                        <div class="col-md-2">
-                            <input type="submit" value="Approve" class="btn btn-default" style="color: green;" onclick="window.location.href = '@Url.Action("approved1", new { mp = item.MPS_id, p = item.P_id, da = item.adate })'"/>
-                        </div>
-                        <div class="col-md-6">
-                            @using (Html.BeginForm("rejected1", "Projman", new { mp = item.MPS_id, p = item.P_id, da = item.adate }))
-                            {
-                                <div class="col-md-3"><input type="submit" class="btn btn-default" value="Reject" style="color: red;" @*onclick="window.location.href = '@Url.Action("rejected")'"*@/></div>
-                                <div class="col-md-3">
-                                    <p><input type="text" name="why" required class="btn btn-default" placeholder="Comment"/></p>
-                                </div>
-
-                            }
-                        </div>
-                    </div>
+    setInterval(function() {
+            $.ajax({
+                url: '/Projman/appsum',
+                type: "POST",
+                success: function(result) {
+                    $("#charts").html(result);
                 }
-            }
-        </td>
-    </tr>
-}
+            });
+        },
+        30000);
+</script>
+<div id="charts">
+    <h1>approval</h1>
+    <table class="table">
+        <tr>
+            <th></th>
+            <th>
+                @Html.DisplayNameFor(model => model.adate)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Attendance.MainTimeSheet.ProjectList.PROJECT_NAME)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Attendance.MainTimeSheet.ManPowerSupplier1.Supplier)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.O_T)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.N_T)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.friday)
+            </th>
+            <th></th>
+        </tr>
 
-</table>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    <input type="submit" value="open" class="btn btn-default" onclick="window.location.href = '@Url.Action("PMapproval", new { manPower = item.MPS_id, pro = item.P_id, mtsmonth2 = item.adate })'" />
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.adate)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.P_name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.MPS_name)
+                </td>
+                <td>@Html.DisplayFor(modelItem => item.O_T)</td>
+                <td>@Html.DisplayFor(modelItem => item.N_T)</td>
+                <td>@Html.DisplayFor(modelItem => item.friday)</td>
+                <td>
+                    @if (User.Identity.IsAuthenticated)
+                    {
+                        if (User.IsInRole("Project_manager"))
+                        {
+                            <div class="row">
+                                <div class="col-md-2">
+                                    <input type="submit" value="Approve" class="btn btn-default" style="color: green;" onclick="window.location.href = '@Url.Action("approved1", new { mp = item.MPS_id, p = item.P_id, da = item.adate })'" />
+                                </div>
+                                <div class="col-md-6">
+                                    @using (Html.BeginForm("rejected1", "Projman", new { mp = item.MPS_id, p = item.P_id, da = item.adate }))
+                                    {
+                                        <div class="col-md-3"><input type="submit" class="btn btn-default" value="Reject" style="color: red;" /></div>
+                                        <div class="col-md-3">
+                                            <p><input type="text" name="why" required class="form-control" placeholder="comment" /></p>
+                                        </div>
+
+                                    }
+                                </div>
+                            </div>
+                        }
+                    }
+                </td>
+            </tr>
+        }
+
+    </table>
+
+</div>

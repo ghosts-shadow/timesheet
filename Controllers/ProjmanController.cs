@@ -848,6 +848,11 @@ namespace onlygodknows.Controllers
                 apno.Add(apnon);
             }
 
+            if (Request.IsAjaxRequest())
+            {
+                return PartialView(apno); 
+            }
+
             return this.View(apno);
         }
 

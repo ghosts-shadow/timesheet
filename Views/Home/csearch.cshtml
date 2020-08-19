@@ -80,7 +80,7 @@ using (Html.BeginForm("csearch", "Home", FormMethod.Get, new { id = "form1" }))
         if (User.Identity.Name == "sdiniz")
         {
             <div>
-                <b><a href="@Url.Action("DownloadExcel", "home", new { mtsmonth1 = ViewBag.mtsmonth1, csp1 = ViewBag.csp1, csmps1 = ViewBag.csmps1 })">Download Excel</a></b>
+                <b><a href="@Url.Action("DownloadExcelfull", "home", new { mtsmonth1 = ViewBag.mtsmonth1, csp1 = ViewBag.csp1, csmps1 = ViewBag.csmps1 })">Download Excel</a></b>
             </div>
         }
     }
