@@ -1,0 +1,227 @@
+﻿@model onlygodknows.Models.ProjectList
+
+@{
+    ViewBag.Title = "Details";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>ProjectList</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.ProjectCode)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.ProjectCode)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.STAMP_CODE)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.STAMP_CODE)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.INQUIRY)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.INQUIRY)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.PROJECT_NAME)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.PROJECT_NAME)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.CLIENT_MC)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.CLIENT_MC)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Notice_01)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Notice_01)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Notice_02)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Notice_02)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.SCOPE_OF_WORK)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.SCOPE_OF_WORK)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.START_DATE)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.START_DATE)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.END_DATE)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.END_DATE)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.STATUS)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.STATUS)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.INSURANCE_STATUS)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.INSURANCE_STATUS)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.LOCATION)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.LOCATION)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.PM)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.PM)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.PM_CONTACT)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.PM_CONTACT)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Completion_Certificate)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Completion_Certificate)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.REMARKS)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.REMARKS)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Notice)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Notice)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Source)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Source)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Closed)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Closed)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Encoded_Absolute_URL)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Encoded_Absolute_URL)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Item_Type)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Item_Type)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Path)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Path)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.URL_Path)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.URL_Path)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Workflow_Instance_ID)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Workflow_Instance_ID)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.File_Type)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.File_Type)
+        </dd>
+
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.ID }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>

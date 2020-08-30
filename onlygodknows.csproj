@@ -188,6 +188,7 @@
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\LabourMastersController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
+    <Compile Include="Controllers\ProjectListsController.cs" />
     <Compile Include="Controllers\ProjmanController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -390,6 +391,11 @@
     <Content Include="Views\LabourMasters\Index.cshtml" />
     <Content Include="Views\Projman\appsum.cshtml" />
     <Content Include="Views\Home\AIndex1.cshtml" />
+    <Content Include="Views\ProjectLists\Create.cshtml" />
+    <Content Include="Views\ProjectLists\Delete.cshtml" />
+    <Content Include="Views\ProjectLists\Details.cshtml" />
+    <Content Include="Views\ProjectLists\Edit.cshtml" />
+    <Content Include="Views\ProjectLists\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\bootstrap-theme.css" />

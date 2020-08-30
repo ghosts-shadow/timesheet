@@ -135,7 +135,10 @@
             this.ViewBag.mpssh = b.ShortName;
             this.ViewBag.mdate = aa.TMonth.ToLongDateString();
             this.ViewBag.mdate1 = aa.TMonth;
-            
+            if (b.Supplier == "GROVE")
+            {
+                b = this.db.ManPowerSuppliers.Find(1);
+            }
             var d = from LabourMaster in this.db.LabourMasters
                     where LabourMaster.ManPowerSupply == b.ID
                     select LabourMaster;
@@ -1743,6 +1746,10 @@
             this.ViewBag.mpssh = b.ShortName;
             this.ViewBag.mdate = aa.TMonth.ToLongDateString();
             this.ViewBag.mdate1 = aa.TMonth;
+            if (b.Supplier == "GROVE")
+            {
+                b = this.db.ManPowerSuppliers.Find(1);
+            }
             var d = from LabourMaster in this.db.LabourMasters
                     where LabourMaster.ManPowerSupply == b.ID
                     select LabourMaster;
@@ -1750,6 +1757,7 @@
             this.ViewBag.empno = new SelectList(d.Where(x => x.EMPNO >= 4).OrderBy(m => m.EMPNO), "ID", "EMPNO", empno);
             this.ViewBag.pos = new SelectList(d.Where(x => x.EMPNO >= 4).OrderBy(m => m.EMPNO), "ID", "Position", empno);
             this.ViewBag.name = new SelectList(d.Where(x => x.EMPNO >= 4).OrderBy(m => m.EMPNO), "ID", "Person_name", empno);
+            
             var data = new[]
                            {
                                new SelectListItem { Text = "0", Value = "0" },
@@ -3483,6 +3491,10 @@
             this.ViewBag.mdate = aa.TMonth.ToLongDateString();
             ViewBag.mdate1 = aa.TMonth;
             ViewBag.exist = "";
+            if (b.Supplier== "GROVE")
+            {
+                b = this.db.ManPowerSuppliers.Find(1);
+            }
             var d = from LabourMaster in this.db.LabourMasters
                     where LabourMaster.ManPowerSupply == b.ID
                     select LabourMaster;
@@ -3490,7 +3502,7 @@
             this.ViewBag.empno = new SelectList(d.Where(x => x.EMPNO >= 4).OrderBy(m => m.EMPNO), "ID", "EMPNO");
             this.ViewBag.pos = new SelectList(d.Where(x => x.EMPNO >= 4).OrderBy(m => m.EMPNO), "ID", "Position");
             this.ViewBag.name = new SelectList(d.Where(x => x.EMPNO >= 4).OrderBy(m => m.EMPNO), "ID", "Person_name");
-
+            
             // oldmts = this.db.MainTimeSheets
             //     .Where(
             //         x => x.TMonth.Month.Equals(list.date.Month) && x.TMonth.Year.Equals(list.date.Year)
@@ -5874,12 +5886,17 @@
             this.ViewBag.mps = b.Supplier;
             this.ViewBag.mpssh = b.ShortName;
             this.ViewBag.mdate = aa.TMonth.ToLongDateString();
+            if (b.Supplier == "GROVE")
+            {
+                b = this.db.ManPowerSuppliers.Find(1);
+            }
             var d = from LabourMaster in this.db.LabourMasters
                     where LabourMaster.ManPowerSupply == b.ID
                     select LabourMaster;
             this.ViewBag.empno = new SelectList(d.Where(x => x.EMPNO >= 4).OrderBy(m => m.EMPNO), "ID", "EMPNO");
             this.ViewBag.name = new SelectList(d.Where(x => x.EMPNO >= 4).OrderBy(m => m.EMPNO), "ID", "Person_Name");
             this.ViewBag.position = new SelectList(d.Where(x => x.EMPNO >= 4).OrderBy(m => m.EMPNO), "ID", "Position");
+            
             var data = new[]
                            {
                                new SelectListItem { Text = "", Value = "" },
@@ -5934,6 +5951,10 @@
             this.ViewBag.mps = b.Supplier;
             this.ViewBag.mpssh = b.ShortName;
             this.ViewBag.mdate = aa.TMonth.ToLongDateString();
+            if (b.Supplier == "GROVE")
+            {
+                b = this.db.ManPowerSuppliers.Find(1);
+            }
             var d = from LabourMaster in this.db.LabourMasters
                     where LabourMaster.ManPowerSupply == b.ID
                     select LabourMaster;
@@ -5941,7 +5962,7 @@
             this.ViewBag.empno = new SelectList(d.Where(x => x.EMPNO >= 4).OrderBy(m => m.EMPNO), "ID", "EMPNO");
             this.ViewBag.name = new SelectList(d.Where(x => x.EMPNO >= 4).OrderBy(m => m.EMPNO), "ID", "Person_Name");
             this.ViewBag.position = new SelectList(d.Where(x => x.EMPNO >= 4).OrderBy(m => m.EMPNO), "ID", "Position");
-
+            
             var data = new[]
                            {
                                new SelectListItem { Text = "", Value = "" },
