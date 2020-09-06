@@ -130,6 +130,7 @@
                             <li>@Html.ActionLink("project permissions", "project_permissions", "CSPermissions")</li>
                             <li>@Html.ActionLink("add new user", "Register", "Account")</li>
                             <li>@Html.ActionLink("add new labor", "Create", "LabourMasters")</li>
+                            <li>@Html.ActionLink("project list", "Index", "ProjectLists")</li>
                         }
 
                         if (User.IsInRole("Project_manager") || User.IsInRole("Admin"))

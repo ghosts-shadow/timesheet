@@ -12,7 +12,7 @@ namespace onlygodknows.Models
     using System;
     using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
-
+    
     public partial class ProjectList
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
@@ -22,21 +22,31 @@ namespace onlygodknows.Models
         }
     
         public long ID { get; set; }
+
+        [Display(Name = "project code")]
         public string ProjectCode { get; set; }
+
+        [Display(Name = "project")]
         public string STAMP_CODE { get; set; }
         public string INQUIRY { get; set; }
 
-        [Display(Name = "project")]
+        [Display(Name = "project name")]
         public string PROJECT_NAME { get; set; }
         public string CLIENT_MC { get; set; }
         public string Notice_01 { get; set; }
         public string Notice_02 { get; set; }
         public string SCOPE_OF_WORK { get; set; }
+
+        [Display(Name = "start date")]
         public Nullable<System.DateTime> START_DATE { get; set; }
+
+        [Display(Name = "end date")]
         public Nullable<System.DateTime> END_DATE { get; set; }
         public string STATUS { get; set; }
         public Nullable<System.DateTime> INSURANCE_STATUS { get; set; }
         public string LOCATION { get; set; }
+
+        [Display(Name = "PM name")]
         public string PM { get; set; }
         public string PM_CONTACT { get; set; }
         public string Completion_Certificate { get; set; }
@@ -50,6 +60,18 @@ namespace onlygodknows.Models
         public string URL_Path { get; set; }
         public string Workflow_Instance_ID { get; set; }
         public string File_Type { get; set; }
+
+        [Display(Name = "excuted by")]
+        public string excute_by { get; set; }
+
+        [Display(Name = "project period")]
+        public string project_period { get; set; }
+
+        [Display(Name = "equipment budget")]
+        public Nullable<decimal> equipment_budget { get; set; }
+
+        [Display(Name = "man power budget")]
+        public Nullable<decimal> man_power_budget { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<MainTimeSheet> MainTimeSheets { get; set; }

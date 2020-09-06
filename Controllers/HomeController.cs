@@ -5586,7 +5586,7 @@
             return this.View();
         }
         [Authorize(Roles = "Admin,Manager,Employee")]
-        public ActionResult csearch(DateTime? mtsmonth, long? csp, long? csmps, string MM)
+        public ActionResult csearch(DateTime? mtsmonth, long? csmps, string MM)
         {
             var ll = new List<Attendance>();
             DateTime date;
@@ -5621,7 +5621,6 @@
 
 
             }
-            this.ViewBag.csp1 = csp;
             this.ViewBag.csmps1 = csmps;
             this.ViewBag.mtsmonth1 = date;
             this.db.Database.CommandTimeout = 300;
@@ -5629,20 +5628,18 @@
             this.ViewBag.csmps = new SelectList(this.db.ManPowerSuppliers, "ID", "Supplier");
             var list = this.db.Attendances.Include(x => x.LabourMaster).ToList();
             var abis = new MainTimeSheet();
-            if (csmps.HasValue && csp.HasValue && mtsmonth.HasValue)
+            if (csmps.HasValue  && mtsmonth.HasValue)
             {
                 DateTime.TryParse(mtsmonth.Value.ToString(), out var dm);
-                long.TryParse(csp.ToString(), out var lcsp);
                 long.TryParse(csmps.ToString(), out var lcsmps);
                 var ab = this.db.MainTimeSheets
                     .Where(
                         x => x.TMonth.Month.Equals(dm.Month) && x.TMonth.Year.Equals(dm.Year)
-                                                             && x.ManPowerSupplier.Equals(lcsmps)
-                                                             && x.Project.Equals(lcsp)).OrderBy(x => x.ID)
+                                                             && x.ManPowerSupplier.Equals(lcsmps)).OrderBy(x => x.ID)
                     .ToPagedList(1, 100);
                 if (ab.Count != 0)
                 {
-                    abis = ab.First();
+                    abis = ab.Last();
                     return this.View(
                         this.db.Attendances.Where(x => x.SubMain.Equals(abis.ID)).Include(x => x.LabourMaster).OrderBy(x => x.ID)
                             .ToPagedList(1, 1000));
@@ -8529,7 +8526,7 @@
             this.Response.BinaryWrite(Ep.GetAsByteArray());
             this.Response.End();
         }
-        public void DownloadExcelfull(DateTime? mtsmonth1, long? csp1, long? csmps1)
+        public void DownloadExcelfull(DateTime? mtsmonth1, long? csmps1)
         {
             List<Attendance> passexel;
             var Ep = new ExcelPackage();
@@ -8537,9 +8534,7 @@
             var row = 4;
             var pcount = 5;
             DateTime.TryParse(mtsmonth1.ToString(), out var date);
-            var p = this.db.ProjectLists.Find(csp1);
             var m = this.db.ManPowerSuppliers.Find(csmps1);
-            Sheet.Cells["A1"].Value = p.PROJECT_NAME;
             Sheet.Cells["C1"].Value = m.Supplier;
             Sheet.Cells["E1"].Value = date.ToLongDateString();
 
@@ -8575,10 +8570,18 @@
             Sheet.Cells["AD3"].Value = "29";
             Sheet.Cells["AE3"].Value = "30";
             Sheet.Cells["AF3"].Value = "31";
+            Sheet.Cells["AG3"].Value = "TotalHours";
+            Sheet.Cells["AH3"].Value = "total normalTime";
+            Sheet.Cells["AI3"].Value = "TotalOverTime";
+            Sheet.Cells["AJ3"].Value = "TotalAbsent";
+            Sheet.Cells["AK3"].Value = "TotalVL";
+            Sheet.Cells["AL3"].Value = "TotalTransefer";
+            Sheet.Cells["AM3"].Value = "TotalSickLeave";
+            Sheet.Cells["AN3"].Value = "FridayHours";
+            Sheet.Cells["AO3"].Value = "PROJECT NAME";
             long.TryParse(csmps1.ToString(), out var mcs);
-            long.TryParse(csp1.ToString(), out var pcs);
             var Msum = this.db.MainTimeSheets.Where(
-                y => y.Project == pcs && y.ManPowerSupplier == mcs && y.TMonth.Month == date.Month
+                y =>y.ManPowerSupplier == mcs && y.TMonth.Month == date.Month
                      && y.TMonth.Year == date.Year).ToList();
             foreach (var sum in Msum)
             {
@@ -8780,7 +8783,35 @@
                         Sheet.Cells[string.Format("AF{0}", row)].Value = passexel[i].C31;
                     }
 
-                    days = days.AddDays(1);
+                    Sheet.Cells[string.Format("AG{0}", row)].Value = passexel[i].TotalHours;
+
+                    var a = passexel[i].TotalHours;
+                    var b = passexel[i].TotalOverTime;
+                    var a_b = new long?();
+                    if (a != null || a != 0)
+                    {
+                        if (b != null || b != 0)
+                        {
+                            a_b = a - b;
+                        }
+                        else
+                        {
+                            a_b = a;
+                        }
+                    }
+                    else
+                    {
+                        a_b = 0;
+                    }
+                    Sheet.Cells[string.Format("AH{0}", row)].Value = a_b;
+                    Sheet.Cells[string.Format("AI{0}", row)].Value = passexel[i].TotalOverTime;
+                    Sheet.Cells[string.Format("AJ{0}", row)].Value = passexel[i].TotalAbsent;
+                    Sheet.Cells[string.Format("AK{0}", row)].Value = passexel[i].TotalVL;
+                    Sheet.Cells[string.Format("AL{0}", row)].Value = passexel[i].TotalTransefer;
+                    Sheet.Cells[string.Format("AM{0}", row)].Value = passexel[i].TotalSickLeave;
+                    Sheet.Cells[string.Format("AN{0}", row)].Value = passexel[i].FridayHours;
+                    Sheet.Cells[string.Format("AO{0}", row)].Value = passexel[i].MainTimeSheet.ProjectList.PROJECT_NAME;
+                        days = days.AddDays(1);
                     }
 
                 row++;

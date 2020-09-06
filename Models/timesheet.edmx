@@ -4,7 +4,7 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-      <Schema Namespace="LogisticsSoftModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+    <Schema Namespace="LogisticsSoftModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
         <EntityType Name="__MigrationHistory">
           <Key>
             <PropertyRef Name="MigrationId" />
@@ -483,7 +483,7 @@ warning 6002: The table/view 'LogisticsSoft.dbo.Pprint' does not have a primary 
           <Key>
             <PropertyRef Name="ID" />
           </Key>
-          <Property Name="ID" Type="bigint" Nullable="false" />
+          <Property Name="ID" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="ProjectCode" Type="nvarchar" MaxLength="255" />
           <Property Name="STAMP CODE" Type="nvarchar" MaxLength="255" />
           <Property Name="INQUIRY" Type="nvarchar" MaxLength="255" />
@@ -510,6 +510,10 @@ warning 6002: The table/view 'LogisticsSoft.dbo.Pprint' does not have a primary 
           <Property Name="URL Path" Type="nvarchar" MaxLength="255" />
           <Property Name="Workflow Instance ID" Type="nvarchar" MaxLength="255" />
           <Property Name="File Type" Type="nvarchar" MaxLength="255" />
+          <Property Name="excute_by" Type="nvarchar(max)" />
+          <Property Name="project_period" Type="nvarchar(max)" />
+          <Property Name="equipment_budget" Type="money" />
+          <Property Name="man_power_budget" Type="money" />
         </EntityType>
         <!--Errors Found During Generation:
 warning 6002: The table/view 'LogisticsSoft.dbo.RefsList' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
@@ -663,7 +667,9 @@ warning 6013: The table/view 'LogisticsSoft.dbo.Users_Email' does not have a pri
           <Property Name="EmpId" Type="float" />
         </EntityType>-->
         <Association Name="FK_approval_Toattendance">
-          <End Role="Attendance" Type="Self.Attendance" Multiplicity="0..1" />
+          <End Role="Attendance" Type="Self.Attendance" Multiplicity="0..1">
+            <OnDelete Action="Cascade" />
+          </End>
           <End Role="approval" Type="Self.approval" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Attendance">
@@ -675,7 +681,9 @@ warning 6013: The table/view 'LogisticsSoft.dbo.Users_Email' does not have a pri
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_Attendance_ToLabourMaster">
-          <End Role="LabourMaster" Type="Self.LabourMaster" Multiplicity="1" />
+          <End Role="LabourMaster" Type="Self.LabourMaster" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
           <End Role="Attendance" Type="Self.Attendance" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="LabourMaster">
@@ -687,7 +695,9 @@ warning 6013: The table/view 'LogisticsSoft.dbo.Users_Email' does not have a pri
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_Attendance_ToMainTimeSheet">
-          <End Role="MainTimeSheet" Type="Self.MainTimeSheet" Multiplicity="1" />
+          <End Role="MainTimeSheet" Type="Self.MainTimeSheet" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
           <End Role="Attendance" Type="Self.Attendance" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="MainTimeSheet">
@@ -755,7 +765,9 @@ warning 6013: The table/view 'LogisticsSoft.dbo.Users_Email' does not have a pri
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_MainTimeSheet_ToTable">
-          <End Role="ManPowerSupplier" Type="Self.ManPowerSupplier" Multiplicity="1" />
+          <End Role="ManPowerSupplier" Type="Self.ManPowerSupplier" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
           <End Role="MainTimeSheet" Type="Self.MainTimeSheet" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="ManPowerSupplier">
@@ -767,7 +779,9 @@ warning 6013: The table/view 'LogisticsSoft.dbo.Users_Email' does not have a pri
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_MainTimeSheet_ToTable_1">
-          <End Role="ProjectList" Type="Self.ProjectList" Multiplicity="1" />
+          <End Role="ProjectList" Type="Self.ProjectList" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
           <End Role="MainTimeSheet" Type="Self.MainTimeSheet" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="ProjectList">
@@ -1100,8 +1114,7 @@ warning 6013: The table/view 'LogisticsSoft.dbo.Users_Email' does not have a pri
             <End Role="MainTimeSheet" EntitySet="MainTimeSheet" />
           </AssociationSet>
         </EntityContainer>
-      </Schema>
-    </edmx:StorageModels>
+      </Schema></edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="LogisticsSoftModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
@@ -1395,6 +1408,10 @@ warning 6013: The table/view 'LogisticsSoft.dbo.Users_Email' does not have a pri
           <Property Name="Workflow_Instance_ID" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="File_Type" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="MainTimeSheets" Relationship="Self.FK_MainTimeSheet_ToTable_1" FromRole="ProjectList" ToRole="MainTimeSheet" />
+          <Property Name="excute_by" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="project_period" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="equipment_budget" Type="Decimal" Precision="19" Scale="4" />
+          <Property Name="man_power_budget" Type="Decimal" Precision="19" Scale="4" />
         </EntityType>
         <EntityType Name="username">
           <Key>
@@ -2118,6 +2135,10 @@ warning 6013: The table/view 'LogisticsSoft.dbo.Users_Email' does not have a pri
           <EntitySetMapping Name="ProjectLists">
             <EntityTypeMapping TypeName="LogisticsSoftModel.ProjectList">
               <MappingFragment StoreEntitySet="ProjectList">
+                <ScalarProperty Name="man_power_budget" ColumnName="man_power_budget" />
+                <ScalarProperty Name="equipment_budget" ColumnName="equipment_budget" />
+                <ScalarProperty Name="project_period" ColumnName="project_period" />
+                <ScalarProperty Name="excute_by" ColumnName="excute_by" />
                 <ScalarProperty Name="ID" ColumnName="ID" />
                 <ScalarProperty Name="ProjectCode" ColumnName="ProjectCode" />
                 <ScalarProperty Name="STAMP_CODE" ColumnName="STAMP CODE" />
