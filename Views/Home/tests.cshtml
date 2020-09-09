@@ -170,7 +170,6 @@
                                     @Html.DropDownList("position0", new List<SelectListItem>(ViewBag.position), "  ", new { @id = "position0", @disabled = "disabled:true", @class = "form-control" })
                                 </div>
                             </div>
-                            
                         </td>
                         <td>
                             @Html.DropDownList("Tests[" + 0 + "].hours", new List<SelectListItem>(ViewBag.hours), new { @class = "form-control", id = "hours0", onchange = "check()" })
@@ -182,9 +181,6 @@
                     <tr id="tablerow1"></tr>
                     </tbody>
                 </table>
-                <div class="col-sm-2">
-                    <input type="button" class="btn btn-default" value="add" id="add" name="add" onclick="$('#add').attr('disabled', true);$('#save').attr('disabled', true);" disabled="disabled:true"/>
-                </div>
             </div>
         </div>
         </div>

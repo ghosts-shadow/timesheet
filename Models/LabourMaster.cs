@@ -12,13 +12,14 @@ namespace onlygodknows.Models
     using System;
     using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
-
+    
     public partial class LabourMaster
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public LabourMaster()
         {
             this.Attendances = new HashSet<Attendance>();
+            this.towemps = new HashSet<towemp>();
         }
     
         public long ID { get; set; }
@@ -48,5 +49,7 @@ namespace onlygodknows.Models
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Attendance> Attendances { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<towemp> towemps { get; set; }
     }
 }

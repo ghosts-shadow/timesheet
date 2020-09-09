@@ -171,14 +171,6 @@
           <Property Name="Remark" Type="nvarchar(max)" />
         </EntityType>
         <!--Errors Found During Generation:
-warning 6013: The table/view 'LogisticsSoft.dbo.Citynames' does not have a primary key defined and no valid primary key could be inferred. This table/view has been excluded. To use the entity, you will need to review your schema, add the correct keys, and uncomment it.
-        <EntityType Name="Citynames">
-          <Property Name="English name" Type="nvarchar" MaxLength="255" />
-          <Property Name="Local name" Type="nvarchar" MaxLength="255" />
-          <Property Name="Past English or local names" Type="nvarchar" MaxLength="255" />
-          <Property Name="Country" Type="nvarchar" MaxLength="255" />
-        </EntityType>-->
-        <!--Errors Found During Generation:
 warning 6002: The table/view 'LogisticsSoft.dbo.ControlRoom' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
         <EntityType Name="ControlRoom">
           <Key>
@@ -306,16 +298,6 @@ warning 6002: The table/view 'LogisticsSoft.dbo.Holidays' does not have a primar
           <Property Name="Workflow Instance ID" Type="nvarchar" MaxLength="255" />
           <Property Name="File Type" Type="nvarchar" MaxLength="255" />
         </EntityType>
-        <!--Errors Found During Generation:
-warning 6013: The table/view 'LogisticsSoft.dbo.Info' does not have a primary key defined and no valid primary key could be inferred. This table/view has been excluded. To use the entity, you will need to review your schema, add the correct keys, and uncomment it.
-        <EntityType Name="Info">
-          <Property Name="Name" Type="nvarchar(max)" />
-          <Property Name="Adress" Type="nvarchar(max)" />
-          <Property Name="Logo" Type="image" />
-          <Property Name="Adress_OLE" Type="image" />
-          <Property Name="Namearab" Type="nvarchar(max)" />
-          <Property Name="EditDate" Type="datetime" />
-        </EntityType>-->
         <EntityType Name="LabourMaster">
           <Key>
             <PropertyRef Name="ID" />
@@ -539,15 +521,6 @@ warning 6002: The table/view 'LogisticsSoft.dbo.Room_Details' does not have a pr
           <Property Name="Camp" Type="int" />
         </EntityType>
         <!--Errors Found During Generation:
-warning 6013: The table/view 'LogisticsSoft.dbo.Segate_Users' does not have a primary key defined and no valid primary key could be inferred. This table/view has been excluded. To use the entity, you will need to review your schema, add the correct keys, and uncomment it.
-        <EntityType Name="Segate_Users">
-          <Property Name="Seagate Username" Type="nvarchar" MaxLength="255" />
-          <Property Name="Password" Type="nvarchar" MaxLength="255" />
-          <Property Name="Link Access 1" Type="nvarchar" MaxLength="255" />
-          <Property Name="Link Access 2" Type="nvarchar" MaxLength="255" />
-          <Property Name="Quote Size" Type="nvarchar" MaxLength="255" />
-        </EntityType>-->
-        <!--Errors Found During Generation:
 warning 6002: The table/view 'LogisticsSoft.dbo.ShiftingFile' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
         <EntityType Name="ShiftingFile">
           <Key>
@@ -617,6 +590,26 @@ warning 6002: The table/view 'LogisticsSoft.dbo.tblUser' does not have a primary
           <Property Name="RemoteAccessPassword" Type="nvarchar" MaxLength="255" />
           <Property Name="ShareFolderPassword2" Type="nvarchar" MaxLength="255" />
         </EntityType>
+        <EntityType Name="towemp">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="lab_no" Type="bigint" />
+          <Property Name="effectivedate" Type="date" />
+          <Property Name="rowref" Type="int" />
+        </EntityType>
+        <EntityType Name="towref">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="refe1" Type="bigint" />
+          <Property Name="mp_to" Type="bigint" />
+          <Property Name="mp_from" Type="bigint" />
+          <Property Name="R_no" Type="bigint" />
+          <Property Name="mpcdate" Type="date" />
+        </EntityType>
         <!--Errors Found During Generation:
 warning 6002: The table/view 'LogisticsSoft.dbo.USER_ROLES' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
         <EntityType Name="USER_ROLES">
@@ -655,17 +648,6 @@ warning 6002: The table/view 'LogisticsSoft.dbo.UserInfo' does not have a primar
           <Property Name="full_name" Type="nvarchar(max)" Nullable="false" />
           <Property Name="aspnet_uid" Type="nvarchar" MaxLength="128" Nullable="false" />
         </EntityType>
-        <!--Errors Found During Generation:
-warning 6013: The table/view 'LogisticsSoft.dbo.Users_Email' does not have a primary key defined and no valid primary key could be inferred. This table/view has been excluded. To use the entity, you will need to review your schema, add the correct keys, and uncomment it.
-        <EntityType Name="Users_Email">
-          <Property Name="Display Name" Type="nvarchar" MaxLength="255" />
-          <Property Name="Database" Type="nvarchar" MaxLength="255" />
-          <Property Name="Alias" Type="nvarchar" MaxLength="255" />
-          <Property Name="Organizational Unit" Type="nvarchar" MaxLength="255" />
-          <Property Name="Recipient Type Details" Type="nvarchar" MaxLength="255" />
-          <Property Name="PrimarySMTP_Address" Type="nvarchar" MaxLength="255" />
-          <Property Name="EmpId" Type="float" />
-        </EntityType>-->
         <Association Name="FK_approval_Toattendance">
           <End Role="Attendance" Type="Self.Attendance" Multiplicity="0..1">
             <OnDelete Action="Cascade" />
@@ -792,6 +774,54 @@ warning 6013: The table/view 'LogisticsSoft.dbo.Users_Email' does not have a pri
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_towemp_Tolab">
+          <End Role="LabourMaster" Type="Self.LabourMaster" Multiplicity="0..1" />
+          <End Role="towemp" Type="Self.towemp" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="LabourMaster">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="towemp">
+              <PropertyRef Name="lab_no" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_towemp_Toref">
+          <End Role="towref" Type="Self.towref" Multiplicity="0..1" />
+          <End Role="towemp" Type="Self.towemp" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="towref">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="towemp">
+              <PropertyRef Name="rowref" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_towref_Topro1">
+          <End Role="ProjectList" Type="Self.ProjectList" Multiplicity="0..1" />
+          <End Role="towref" Type="Self.towref" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ProjectList">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="towref">
+              <PropertyRef Name="mp_to" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_towref_Topro2">
+          <End Role="ProjectList" Type="Self.ProjectList" Multiplicity="0..1" />
+          <End Role="towref" Type="Self.towref" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ProjectList">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="towref">
+              <PropertyRef Name="mp_from" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <EntityContainer Name="LogisticsSoftModelStoreContainer">
           <EntitySet Name="__MigrationHistory" EntityType="Self.__MigrationHistory" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="approval" EntityType="Self.approval" Schema="dbo" store:Type="Tables" />
@@ -808,6 +838,8 @@ warning 6013: The table/view 'LogisticsSoft.dbo.Users_Email' does not have a pri
           <EntitySet Name="MainTimeSheet" EntityType="Self.MainTimeSheet" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ManPowerSupplier" EntityType="Self.ManPowerSupplier" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ProjectList" EntityType="Self.ProjectList" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="towemp" EntityType="Self.towemp" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="towref" EntityType="Self.towref" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="usernames" EntityType="Self.usernames" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ControlRoom" EntityType="Self.ControlRoom" store:Type="Tables" store:Schema="dbo">
             <DefiningQuery>SELECT 
@@ -1113,6 +1145,22 @@ warning 6013: The table/view 'LogisticsSoft.dbo.Users_Email' does not have a pri
             <End Role="ProjectList" EntitySet="ProjectList" />
             <End Role="MainTimeSheet" EntitySet="MainTimeSheet" />
           </AssociationSet>
+          <AssociationSet Name="FK_towemp_Tolab" Association="Self.FK_towemp_Tolab">
+            <End Role="LabourMaster" EntitySet="LabourMaster" />
+            <End Role="towemp" EntitySet="towemp" />
+          </AssociationSet>
+          <AssociationSet Name="FK_towemp_Toref" Association="Self.FK_towemp_Toref">
+            <End Role="towref" EntitySet="towref" />
+            <End Role="towemp" EntitySet="towemp" />
+          </AssociationSet>
+          <AssociationSet Name="FK_towref_Topro1" Association="Self.FK_towref_Topro1">
+            <End Role="ProjectList" EntitySet="ProjectList" />
+            <End Role="towref" EntitySet="towref" />
+          </AssociationSet>
+          <AssociationSet Name="FK_towref_Topro2" Association="Self.FK_towref_Topro2">
+            <End Role="ProjectList" EntitySet="ProjectList" />
+            <End Role="towref" EntitySet="towref" />
+          </AssociationSet>
         </EntityContainer>
       </Schema></edmx:StorageModels>
     <!-- CSDL content -->
@@ -1329,6 +1377,7 @@ warning 6013: The table/view 'LogisticsSoft.dbo.Users_Email' does not have a pri
           <Property Name="Workflow_Instance_ID" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="File_Type" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="Attendances" Relationship="Self.FK_Attendance_ToLabourMaster" FromRole="LabourMaster" ToRole="Attendance" />
+          <NavigationProperty Name="towemps" Relationship="Self.FK_towemp_Tolab" FromRole="LabourMaster" ToRole="towemp" />
         </EntityType>
         <EntityType Name="MainTimeSheet">
           <Key>
@@ -1380,7 +1429,7 @@ warning 6013: The table/view 'LogisticsSoft.dbo.Users_Email' does not have a pri
           <Key>
             <PropertyRef Name="ID" />
           </Key>
-          <Property Name="ID" Type="Int64" Nullable="false" />
+          <Property Name="ID" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="ProjectCode" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="STAMP_CODE" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="INQUIRY" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
@@ -1407,11 +1456,38 @@ warning 6013: The table/view 'LogisticsSoft.dbo.Users_Email' does not have a pri
           <Property Name="URL_Path" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="Workflow_Instance_ID" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="File_Type" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <NavigationProperty Name="MainTimeSheets" Relationship="Self.FK_MainTimeSheet_ToTable_1" FromRole="ProjectList" ToRole="MainTimeSheet" />
           <Property Name="excute_by" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="project_period" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="equipment_budget" Type="Decimal" Precision="19" Scale="4" />
           <Property Name="man_power_budget" Type="Decimal" Precision="19" Scale="4" />
+          <NavigationProperty Name="MainTimeSheets" Relationship="Self.FK_MainTimeSheet_ToTable_1" FromRole="ProjectList" ToRole="MainTimeSheet" />
+          <NavigationProperty Name="towrefs" Relationship="Self.FK_towref_Topro1" FromRole="ProjectList" ToRole="towref" />
+          <NavigationProperty Name="towrefs1" Relationship="Self.FK_towref_Topro2" FromRole="ProjectList" ToRole="towref" />
+        </EntityType>
+        <EntityType Name="towemp">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="lab_no" Type="Int64" />
+          <Property Name="effectivedate" Type="DateTime" Precision="0" />
+          <Property Name="rowref" Type="Int32" />
+          <NavigationProperty Name="LabourMaster" Relationship="Self.FK_towemp_Tolab" FromRole="towemp" ToRole="LabourMaster" />
+          <NavigationProperty Name="towref" Relationship="Self.FK_towemp_Toref" FromRole="towemp" ToRole="towref" />
+        </EntityType>
+        <EntityType Name="towref">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="refe1" Type="Int64" />
+          <Property Name="mp_to" Type="Int64" />
+          <Property Name="mp_from" Type="Int64" />
+          <Property Name="R_no" Type="Int64" />
+          <Property Name="mpcdate" Type="DateTime" Precision="0" />
+          <NavigationProperty Name="ProjectList" Relationship="Self.FK_towref_Topro1" FromRole="towref" ToRole="ProjectList" />
+          <NavigationProperty Name="ProjectList1" Relationship="Self.FK_towref_Topro2" FromRole="towref" ToRole="ProjectList" />
+          <NavigationProperty Name="towemps" Relationship="Self.FK_towemp_Toref" FromRole="towref" ToRole="towemp" />
         </EntityType>
         <EntityType Name="username">
           <Key>
@@ -1716,7 +1792,9 @@ warning 6013: The table/view 'LogisticsSoft.dbo.Users_Email' does not have a pri
           <Property Name="File_Type" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
         </EntityType>
         <Association Name="FK_approval_Toattendance">
-          <End Role="Attendance" Type="Self.Attendance" Multiplicity="0..1" />
+          <End Role="Attendance" Type="Self.Attendance" Multiplicity="0..1">
+            <OnDelete Action="Cascade" />
+          </End>
           <End Role="approval" Type="Self.approval" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Attendance">
@@ -1756,7 +1834,9 @@ warning 6013: The table/view 'LogisticsSoft.dbo.Users_Email' does not have a pri
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_Attendance_ToLabourMaster">
-          <End Role="LabourMaster" Type="Self.LabourMaster" Multiplicity="1" />
+          <End Role="LabourMaster" Type="Self.LabourMaster" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
           <End Role="Attendance" Type="Self.Attendance" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="LabourMaster">
@@ -1768,7 +1848,9 @@ warning 6013: The table/view 'LogisticsSoft.dbo.Users_Email' does not have a pri
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_Attendance_ToMainTimeSheet">
-          <End Role="MainTimeSheet" Type="Self.MainTimeSheet" Multiplicity="1" />
+          <End Role="MainTimeSheet" Type="Self.MainTimeSheet" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
           <End Role="Attendance" Type="Self.Attendance" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="MainTimeSheet">
@@ -1779,8 +1861,22 @@ warning 6013: The table/view 'LogisticsSoft.dbo.Users_Email' does not have a pri
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_towemp_Tolab">
+          <End Role="LabourMaster" Type="Self.LabourMaster" Multiplicity="0..1" />
+          <End Role="towemp" Type="Self.towemp" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="LabourMaster">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="towemp">
+              <PropertyRef Name="lab_no" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_MainTimeSheet_ToTable">
-          <End Role="ManPowerSupplier" Type="Self.ManPowerSupplier" Multiplicity="1" />
+          <End Role="ManPowerSupplier" Type="Self.ManPowerSupplier" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
           <End Role="MainTimeSheet" Type="Self.MainTimeSheet" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="ManPowerSupplier">
@@ -1792,7 +1888,9 @@ warning 6013: The table/view 'LogisticsSoft.dbo.Users_Email' does not have a pri
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_MainTimeSheet_ToTable_1">
-          <End Role="ProjectList" Type="Self.ProjectList" Multiplicity="1" />
+          <End Role="ProjectList" Type="Self.ProjectList" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
           <End Role="MainTimeSheet" Type="Self.MainTimeSheet" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="ProjectList">
@@ -1800,6 +1898,42 @@ warning 6013: The table/view 'LogisticsSoft.dbo.Users_Email' does not have a pri
             </Principal>
             <Dependent Role="MainTimeSheet">
               <PropertyRef Name="Project" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_towref_Topro1">
+          <End Role="ProjectList" Type="Self.ProjectList" Multiplicity="0..1" />
+          <End Role="towref" Type="Self.towref" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ProjectList">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="towref">
+              <PropertyRef Name="mp_to" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_towref_Topro2">
+          <End Role="ProjectList" Type="Self.ProjectList" Multiplicity="0..1" />
+          <End Role="towref" Type="Self.towref" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ProjectList">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="towref">
+              <PropertyRef Name="mp_from" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_towemp_Toref">
+          <End Role="towref" Type="Self.towref" Multiplicity="0..1" />
+          <End Role="towemp" Type="Self.towemp" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="towref">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="towemp">
+              <PropertyRef Name="rowref" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -1822,6 +1956,8 @@ warning 6013: The table/view 'LogisticsSoft.dbo.Users_Email' does not have a pri
           <EntitySet Name="MainTimeSheets" EntityType="Self.MainTimeSheet" />
           <EntitySet Name="ManPowerSuppliers" EntityType="Self.ManPowerSupplier" />
           <EntitySet Name="ProjectLists" EntityType="Self.ProjectList" />
+          <EntitySet Name="towemps" EntityType="Self.towemp" />
+          <EntitySet Name="towrefs" EntityType="Self.towref" />
           <EntitySet Name="usernames" EntityType="Self.username" />
           <EntitySet Name="ControlRooms" EntityType="Self.ControlRoom" />
           <EntitySet Name="Copy_of_Attendances" EntityType="Self.Copy_of_Attendance" />
@@ -1860,6 +1996,10 @@ warning 6013: The table/view 'LogisticsSoft.dbo.Users_Email' does not have a pri
             <End Role="MainTimeSheet" EntitySet="MainTimeSheets" />
             <End Role="Attendance" EntitySet="Attendances" />
           </AssociationSet>
+          <AssociationSet Name="FK_towemp_Tolab" Association="Self.FK_towemp_Tolab">
+            <End Role="LabourMaster" EntitySet="LabourMasters" />
+            <End Role="towemp" EntitySet="towemps" />
+          </AssociationSet>
           <AssociationSet Name="FK_MainTimeSheet_ToTable" Association="Self.FK_MainTimeSheet_ToTable">
             <End Role="ManPowerSupplier" EntitySet="ManPowerSuppliers" />
             <End Role="MainTimeSheet" EntitySet="MainTimeSheets" />
@@ -1867,6 +2007,18 @@ warning 6013: The table/view 'LogisticsSoft.dbo.Users_Email' does not have a pri
           <AssociationSet Name="FK_MainTimeSheet_ToTable_1" Association="Self.FK_MainTimeSheet_ToTable_1">
             <End Role="ProjectList" EntitySet="ProjectLists" />
             <End Role="MainTimeSheet" EntitySet="MainTimeSheets" />
+          </AssociationSet>
+          <AssociationSet Name="FK_towref_Topro1" Association="Self.FK_towref_Topro1">
+            <End Role="ProjectList" EntitySet="ProjectLists" />
+            <End Role="towref" EntitySet="towrefs" />
+          </AssociationSet>
+          <AssociationSet Name="FK_towref_Topro2" Association="Self.FK_towref_Topro2">
+            <End Role="ProjectList" EntitySet="ProjectLists" />
+            <End Role="towref" EntitySet="towrefs" />
+          </AssociationSet>
+          <AssociationSet Name="FK_towemp_Toref" Association="Self.FK_towemp_Toref">
+            <End Role="towref" EntitySet="towrefs" />
+            <End Role="towemp" EntitySet="towemps" />
           </AssociationSet>
           <AssociationSet Name="AspNetUserRoles" Association="Self.AspNetUserRoles">
             <End Role="AspNetRoles" EntitySet="AspNetRoles" />
@@ -2135,10 +2287,6 @@ warning 6013: The table/view 'LogisticsSoft.dbo.Users_Email' does not have a pri
           <EntitySetMapping Name="ProjectLists">
             <EntityTypeMapping TypeName="LogisticsSoftModel.ProjectList">
               <MappingFragment StoreEntitySet="ProjectList">
-                <ScalarProperty Name="man_power_budget" ColumnName="man_power_budget" />
-                <ScalarProperty Name="equipment_budget" ColumnName="equipment_budget" />
-                <ScalarProperty Name="project_period" ColumnName="project_period" />
-                <ScalarProperty Name="excute_by" ColumnName="excute_by" />
                 <ScalarProperty Name="ID" ColumnName="ID" />
                 <ScalarProperty Name="ProjectCode" ColumnName="ProjectCode" />
                 <ScalarProperty Name="STAMP_CODE" ColumnName="STAMP CODE" />
@@ -2166,6 +2314,32 @@ warning 6013: The table/view 'LogisticsSoft.dbo.Users_Email' does not have a pri
                 <ScalarProperty Name="URL_Path" ColumnName="URL Path" />
                 <ScalarProperty Name="Workflow_Instance_ID" ColumnName="Workflow Instance ID" />
                 <ScalarProperty Name="File_Type" ColumnName="File Type" />
+                <ScalarProperty Name="excute_by" ColumnName="excute_by" />
+                <ScalarProperty Name="project_period" ColumnName="project_period" />
+                <ScalarProperty Name="equipment_budget" ColumnName="equipment_budget" />
+                <ScalarProperty Name="man_power_budget" ColumnName="man_power_budget" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="towemps">
+            <EntityTypeMapping TypeName="LogisticsSoftModel.towemp">
+              <MappingFragment StoreEntitySet="towemp">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="lab_no" ColumnName="lab_no" />
+                <ScalarProperty Name="effectivedate" ColumnName="effectivedate" />
+                <ScalarProperty Name="rowref" ColumnName="rowref" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="towrefs">
+            <EntityTypeMapping TypeName="LogisticsSoftModel.towref">
+              <MappingFragment StoreEntitySet="towref">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="refe1" ColumnName="refe1" />
+                <ScalarProperty Name="mp_to" ColumnName="mp_to" />
+                <ScalarProperty Name="mp_from" ColumnName="mp_from" />
+                <ScalarProperty Name="R_no" ColumnName="R_no" />
+                <ScalarProperty Name="mpcdate" ColumnName="mpcdate" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

@@ -1,0 +1,75 @@
+﻿@model IEnumerable<onlygodknows.Models.towemp>
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Index</h2>
+
+<p>
+    @Html.ActionLink("Create New", "Create","towrefs")
+</p>
+<table class="table">
+    <tr>
+        <th>
+            form
+        </th>
+        <th>
+            to
+        </th>
+        <th>R no</th>
+        <th>ref</th>
+        <th>date</th>
+    </tr>
+    <tr>
+        <td>
+            @ViewBag.form
+        </td>
+        <td>
+            @ViewBag.to
+        </td>
+        <td>
+            @ViewBag.R_no
+        </td>
+        <td>
+            @ViewBag.refe1
+        </td>
+        <td>
+            @ViewBag.mpcdate
+        </td>
+    </tr>
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.effectivedate)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.LabourMaster.EMPNO)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.LabourMaster.Person_Name)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.LabourMaster.Position)
+        </th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.effectivedate)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.LabourMaster.EMPNO)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.LabourMaster.Person_Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.LabourMaster.Position)
+            </td>
+        </tr>
+    }
+
+</table>

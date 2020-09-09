@@ -39,6 +39,8 @@ namespace onlygodknows.Models
         public virtual DbSet<MainTimeSheet> MainTimeSheets { get; set; }
         public virtual DbSet<ManPowerSupplier> ManPowerSuppliers { get; set; }
         public virtual DbSet<ProjectList> ProjectLists { get; set; }
+        public virtual DbSet<towemp> towemps { get; set; }
+        public virtual DbSet<towref> towrefs { get; set; }
         public virtual DbSet<username> usernames { get; set; }
         public virtual DbSet<ControlRoom> ControlRooms { get; set; }
         public virtual DbSet<Copy_of_Attendance> Copy_of_Attendances { get; set; }

@@ -1,0 +1,116 @@
+﻿@model onlygodknows.Models.towemp
+
+@{
+    ViewBag.Title = "Create";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Create</h2>
+<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
+<script>
+    $(function () {
+        $("#effectivedate0").datepicker();
+    });
+    var counter = 1;
+    var number = 0;
+
+    $(function () {
+        $("#lab_no0").chosen({ no_results_text: "Oops, nothing found!" });
+        $('#add').click(() => {
+            chosendestroy();
+            number = counter++;
+            if (counter < 25) {
+                if (number < $('#lab_no0').children('option').length - 1) {
+                    container = $('#tablerow1');
+                    template = $('#tr0');
+                    var no = number - 1;
+                    var clone = template.clone(true).val('');
+                    clone.attr('id', "tr" + number);
+                    clone.find('#effectivedate' + 0).attr('name', 'towemp[' + number + '].effectivedate');
+                    clone.find('#effectivedate' + 0).attr('id', 'effectivedate' + number);
+                    clone.find('#lab_no0').attr('name', 'towemp[' + number + '].lab_no');
+                    clone.find('#lab_no0').attr('id', 'lab_no' + number);
+                    clone.find('#dd' + 0).attr('id', 'dd' + number);
+                    clone.find('#re')
+                        .append(" <input type = \"button\" value = \"Remove\" onclick = \"remove(this.id)\"  id=\"" +
+                            number +
+                            "\"/> ");
+                    container.append(clone).before(clone);
+                }
+            }
+            $("#" + (number - 1)).remove();
+            createchosen();
+        });
+    });
+
+    function chosendestroy() {
+        $("#lab_no0").chosen("destroy");
+        $("#effectivedate0").datepicker("destroy");
+    }
+
+    function createchosen() {
+        for (var i = 0; i < counter; i++) {
+            if ($("#lab_no" + i).length !== 0) {
+                $("#lab_no" + i).chosen({ no_results_text: "Oops, nothing found!" });
+                $("#effectivedate"+i).datepicker();
+            }
+        }
+    }
+
+    function remove(id) {
+        $("#tr" + id).remove();
+        counter--;
+        if ((id - 1) != 0) {
+            $("#tr" + (id - 1)).find('#re')
+                .append(" <input type = \"button\" value = \"Remove\" onclick = \"remove(this.id)\"  id=\"" +
+                    (id - 1) +
+                    "\"/> ");
+        }
+        
+    }
+
+</script>
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal" onclick="createchosen()">
+        <h4>towemp</h4>
+        <hr />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="save" class="btn btn-default" id="save" />
+            </div>
+        </div>
+    </div>
+    <table id="submissionTable" class="table table-bordered" onclick="createchosen()">
+        <thead style="text-transform: capitalize">
+        <th> employee no</th>
+        <th>effective date</th>
+        <th ></th>
+        </thead>
+        <tbody>
+            <tr id="tr0">
+                <td>
+                    @Html.DropDownList("towemp[0].lab_no", new List<SelectListItem>(ViewBag.lab_no), htmlAttributes: new { @class = "form-control" ,@id="lab_no0"})
+                    @Html.ValidationMessageFor(model => model.lab_no, "", new { @class = "text-danger" })
+                </td>
+                <td>
+                    <input class="form-control text-box single-line" data-val="true" data-val-date="The field effectivedate must be a date." id="effectivedate0" name="towemp[0].effectivedate" value="" type="datetime">
+                    @Html.ValidationMessageFor(model => model.effectivedate, "", new { @class = "text-danger" })
+                </td>
+                <td id="re"></td>
+            </tr>
+            <tr id="tablerow1"></tr>
+        </tbody>
+    </table>
+    <div class="col-sm-2">
+        <input type="button" class="btn btn-default" value="add" id="add" name="add"  />
+    </div>
+}

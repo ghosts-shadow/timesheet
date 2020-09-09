@@ -190,6 +190,8 @@
     <Compile Include="Controllers\ManageController.cs" />
     <Compile Include="Controllers\ProjectListsController.cs" />
     <Compile Include="Controllers\ProjmanController.cs" />
+    <Compile Include="Controllers\towempsController.cs" />
+    <Compile Include="Controllers\towrefsController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -197,6 +199,7 @@
     <Compile Include="Models\approval.cs">
       <DependentUpon>timesheet.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\approvalnonsence.cs" />
     <Compile Include="Models\AspNetRole.cs">
       <DependentUpon>timesheet.tt</DependentUpon>
     </Compile>
@@ -218,7 +221,6 @@
     <Compile Include="Models\Camp_Details.cs">
       <DependentUpon>timesheet.tt</DependentUpon>
     </Compile>
-    <Compile Include="Models\approvalnonsence.cs" />
     <Compile Include="Models\ControlRoom.cs">
       <DependentUpon>timesheet.tt</DependentUpon>
     </Compile>
@@ -302,6 +304,12 @@
       <DependentUpon>timesheet.edmx</DependentUpon>
     </Compile>
     <Compile Include="Models\timesheetViewModel.cs" />
+    <Compile Include="Models\towemp.cs">
+      <DependentUpon>timesheet.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\towref.cs">
+      <DependentUpon>timesheet.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\UserInfo.cs">
       <DependentUpon>timesheet.tt</DependentUpon>
     </Compile>
@@ -360,6 +368,10 @@
     <Content Include="Views\Account\SendCode.cshtml" />
     <Content Include="Views\Account\VerifyCode.cshtml" />
     <Content Include="Views\Account\_ExternalLoginsListPartial.cshtml" />
+    <Content Include="Content\chosen\composer.json" />
+    <Content Include="Content\chosen\LICENSE.md" />
+    <Content Include="Content\userhelp\GTS-CP-1.9.pdf" />
+    <Content Include="Content\userhelp\a_and_k .flv" />
     <EntityDeploy Include="Models\timesheet.edmx">
       <Generator>EntityModelCodeGenerator</Generator>
       <LastGenOutput>timesheet.Designer.cs</LastGenOutput>
@@ -367,10 +379,6 @@
     <Content Include="Models\timesheet.edmx.diagram">
       <DependentUpon>timesheet.edmx</DependentUpon>
     </Content>
-    <Content Include="Content\chosen\composer.json" />
-    <Content Include="Content\chosen\LICENSE.md" />
-    <Content Include="Content\userhelp\GTS-CP-1.9.pdf" />
-    <Content Include="Content\userhelp\a_and_k .flv" />
     <None Include="Properties\PublishProfiles\CustomProfile.pubxml" />
     <Content Include="Views\CSPermissions\project_permissions.cshtml" />
     <Content Include="Views\Home\apnote1.cshtml" />
@@ -396,6 +404,16 @@
     <Content Include="Views\ProjectLists\Details.cshtml" />
     <Content Include="Views\ProjectLists\Edit.cshtml" />
     <Content Include="Views\ProjectLists\Index.cshtml" />
+    <Content Include="Views\towrefs\Create.cshtml" />
+    <Content Include="Views\towrefs\Delete.cshtml" />
+    <Content Include="Views\towrefs\Details.cshtml" />
+    <Content Include="Views\towrefs\Edit.cshtml" />
+    <Content Include="Views\towrefs\Index.cshtml" />
+    <Content Include="Views\towemps\Create.cshtml" />
+    <Content Include="Views\towemps\Delete.cshtml" />
+    <Content Include="Views\towemps\Details.cshtml" />
+    <Content Include="Views\towemps\Edit.cshtml" />
+    <Content Include="Views\towemps\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\bootstrap-theme.css" />
