@@ -610,6 +610,16 @@ warning 6002: The table/view 'LogisticsSoft.dbo.tblUser' does not have a primary
           <Property Name="R_no" Type="bigint" />
           <Property Name="mpcdate" Type="date" />
         </EntityType>
+        <EntityType Name="trattfile">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="name" Type="nvarchar(max)" />
+          <Property Name="content_type" Type="nvarchar" MaxLength="200" />
+          <Property Name="data" Type="varbinary(max)" />
+          <Property Name="rowref" Type="int" />
+        </EntityType>
         <!--Errors Found During Generation:
 warning 6002: The table/view 'LogisticsSoft.dbo.USER_ROLES' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
         <EntityType Name="USER_ROLES">
@@ -774,8 +784,24 @@ warning 6002: The table/view 'LogisticsSoft.dbo.UserInfo' does not have a primar
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_towemp_To">
+          <End Role="towref" Type="Self.towref" Multiplicity="0..1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="trattfile" Type="Self.trattfile" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="towref">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="trattfile">
+              <PropertyRef Name="rowref" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_towemp_Tolab">
-          <End Role="LabourMaster" Type="Self.LabourMaster" Multiplicity="0..1" />
+          <End Role="LabourMaster" Type="Self.LabourMaster" Multiplicity="0..1">
+            <OnDelete Action="Cascade" />
+          </End>
           <End Role="towemp" Type="Self.towemp" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="LabourMaster">
@@ -787,7 +813,9 @@ warning 6002: The table/view 'LogisticsSoft.dbo.UserInfo' does not have a primar
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_towemp_Toref">
-          <End Role="towref" Type="Self.towref" Multiplicity="0..1" />
+          <End Role="towref" Type="Self.towref" Multiplicity="0..1">
+            <OnDelete Action="Cascade" />
+          </End>
           <End Role="towemp" Type="Self.towemp" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="towref">
@@ -840,6 +868,7 @@ warning 6002: The table/view 'LogisticsSoft.dbo.UserInfo' does not have a primar
           <EntitySet Name="ProjectList" EntityType="Self.ProjectList" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="towemp" EntityType="Self.towemp" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="towref" EntityType="Self.towref" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="trattfile" EntityType="Self.trattfile" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="usernames" EntityType="Self.usernames" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ControlRoom" EntityType="Self.ControlRoom" store:Type="Tables" store:Schema="dbo">
             <DefiningQuery>SELECT 
@@ -1144,6 +1173,10 @@ warning 6002: The table/view 'LogisticsSoft.dbo.UserInfo' does not have a primar
           <AssociationSet Name="FK_MainTimeSheet_ToTable_1" Association="Self.FK_MainTimeSheet_ToTable_1">
             <End Role="ProjectList" EntitySet="ProjectList" />
             <End Role="MainTimeSheet" EntitySet="MainTimeSheet" />
+          </AssociationSet>
+          <AssociationSet Name="FK_towemp_To" Association="Self.FK_towemp_To">
+            <End Role="towref" EntitySet="towref" />
+            <End Role="trattfile" EntitySet="trattfile" />
           </AssociationSet>
           <AssociationSet Name="FK_towemp_Tolab" Association="Self.FK_towemp_Tolab">
             <End Role="LabourMaster" EntitySet="LabourMaster" />
@@ -1488,6 +1521,7 @@ warning 6002: The table/view 'LogisticsSoft.dbo.UserInfo' does not have a primar
           <NavigationProperty Name="ProjectList" Relationship="Self.FK_towref_Topro1" FromRole="towref" ToRole="ProjectList" />
           <NavigationProperty Name="ProjectList1" Relationship="Self.FK_towref_Topro2" FromRole="towref" ToRole="ProjectList" />
           <NavigationProperty Name="towemps" Relationship="Self.FK_towemp_Toref" FromRole="towref" ToRole="towemp" />
+          <NavigationProperty Name="trattfiles" Relationship="LogisticsSoftModel.FK_towemp_To" FromRole="towref" ToRole="trattfile" />
         </EntityType>
         <EntityType Name="username">
           <Key>
@@ -2024,7 +2058,37 @@ warning 6002: The table/view 'LogisticsSoft.dbo.UserInfo' does not have a primar
             <End Role="AspNetRoles" EntitySet="AspNetRoles" />
             <End Role="AspNetUsers" EntitySet="AspNetUsers" />
           </AssociationSet>
+          <EntitySet Name="trattfiles" EntityType="LogisticsSoftModel.trattfile" />
+          <AssociationSet Name="FK_towemp_To" Association="LogisticsSoftModel.FK_towemp_To">
+            <End Role="towref" EntitySet="towrefs" />
+            <End Role="trattfile" EntitySet="trattfiles" />
+          </AssociationSet>
         </EntityContainer>
+        <EntityType Name="trattfile">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="name" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="content_type" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="data" Type="Binary" MaxLength="Max" FixedLength="false" />
+          <Property Name="rowref" Type="Int32" />
+          <NavigationProperty Name="towref" Relationship="LogisticsSoftModel.FK_towemp_To" FromRole="trattfile" ToRole="towref" />
+        </EntityType>
+        <Association Name="FK_towemp_To">
+          <End Type="LogisticsSoftModel.towref" Role="towref" Multiplicity="0..1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Type="LogisticsSoftModel.trattfile" Role="trattfile" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="towref">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="trattfile">
+              <PropertyRef Name="rowref" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -2661,6 +2725,17 @@ warning 6002: The table/view 'LogisticsSoft.dbo.UserInfo' does not have a primar
               <ScalarProperty Name="Id" ColumnName="UserId" />
             </EndProperty>
           </AssociationSetMapping>
+          <EntitySetMapping Name="trattfiles">
+            <EntityTypeMapping TypeName="LogisticsSoftModel.trattfile">
+              <MappingFragment StoreEntitySet="trattfile">
+                <ScalarProperty Name="rowref" ColumnName="rowref" />
+                <ScalarProperty Name="data" ColumnName="data" />
+                <ScalarProperty Name="content_type" ColumnName="content_type" />
+                <ScalarProperty Name="name" ColumnName="name" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
         </EntityContainerMapping>
       </Mapping>
     </edmx:Mappings>

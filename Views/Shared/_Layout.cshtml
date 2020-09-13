@@ -73,7 +73,7 @@
     <style>
 
         /* The actual popup */
-         .popuptext {
+        .popuptext {
             visibility: hidden;
             width: 160px;
             background-color: #555;
@@ -86,7 +86,7 @@
         }
 
         /* Popup arrow */
-         /*.popuptext::after {
+        /*.popuptext::after {
             content: "";
             position: absolute;
             top: 100%;
@@ -98,7 +98,7 @@
         }*/
 
         /* Toggle this class - hide and show the popup */
-         .show {
+        .show {
             visibility: visible;
             -webkit-animation: fadeIn 1s;
             animation: fadeIn 1s;
@@ -153,6 +153,7 @@
                             <li>@Html.ActionLink("Add new Time-sheet", "MCreate", "Home")</li>
                             <li>@Html.ActionLink("Print Timesheet", "download", "Home")</li>
                             <li>@Html.ActionLink("search by month", "csearch", "Home")</li>
+                            <li>@Html.ActionLink("transfer workers", "Index", "towrefs")</li>
                         }
 
                         if (User.Identity.Name == "sdiniz")
@@ -167,19 +168,19 @@
         </div>
 
     </div>
-<div class=" body-content" style="margin-left: 5%; margin-right: 5%">
+    <div class=" body-content" style="margin-left: 5%; margin-right: 5%">
 
 
-    @RenderBody()
+        @RenderBody()
 
-    <hr/>
-    <footer>
+        <hr/>
+        <footer>
 
-        <p>&copy; @DateTime.Now.Year - Citiscape L.L.C</p>
-    </footer>
-</div>
-@Scripts.Render("~/bundles/jquery")
-@Scripts.Render("~/bundles/bootstrap")
-@RenderSection("scripts", false)
+            <p>&copy; @DateTime.Now.Year - Citiscape L.L.C</p>
+        </footer>
+    </div>
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/bootstrap")
+    @RenderSection("scripts", false)
 </body>
 </html>

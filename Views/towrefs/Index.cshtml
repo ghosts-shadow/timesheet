@@ -6,11 +6,16 @@
 }
 
 <h2>Index</h2>
-
+<style>
+    #tttttt td {
+        text-align: center;
+        vertical-align: middle;
+    }
+</style>
 <p>
     @Html.ActionLink("Create New", "Create","towrefs")
 </p>
-<table class="table">
+<table class="table" id="tttttt">
     <tr>
         <th>
             @Html.DisplayNameFor(model => model.refe1)
@@ -21,16 +26,21 @@
         <th>
             @Html.DisplayNameFor(model => model.mpcdate)
         </th>
-        <th>form
+        <th>
+            form
         </th>
-        <th>to
+        <th>
+            to
+        </th>
+        <th>
+            attachment
         </th>
         <th></th>
     </tr>
-
+    
     @foreach (var item in Model)
     {
-        <tr>
+        <tr style="text-align: center; ">
             <td>
                 @Html.DisplayFor(modelItem => item.refe1)
             </td>
@@ -45,6 +55,28 @@
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.ProjectList1.PROJECT_NAME)
+            </td>
+            <td style="width: 150px">
+                @{
+                    if (item.trattfiles.Count != 0)
+                    {
+                    var postedFileExtension = Path.GetExtension(item.trattfiles.First().name);
+                    if (string.Equals(postedFileExtension, ".pdf", StringComparison.OrdinalIgnoreCase))
+                    {
+                        <a href="data:@item.trattfiles.First().content_type;base64,@Convert.ToBase64String(item.trattfiles.First().data)" target="_blank" name="@item.trattfiles.First().name">
+                            view
+                        </a>
+                    }
+                    else
+                    {
+                        <a href="data:@item.trattfiles.First().content_type;base64,@Convert.ToBase64String(item.trattfiles.First().data)" target="_blank">
+                            <img src="data:@item.trattfiles.First().content_type;base64,@Convert.ToBase64String(item.trattfiles.First().data)" type="@item.trattfiles.First().content_type" width="150px" height="150px"/>
+                        </a>
+                        }
+
+                    }
+
+                }
             </td>
             <td>
                 @Html.ActionLink("Details", "Index", "towemps", new { id = item.Id }, new { id = item.Id })

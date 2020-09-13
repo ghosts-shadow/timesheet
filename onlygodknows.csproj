@@ -310,6 +310,9 @@
     <Compile Include="Models\towref.cs">
       <DependentUpon>timesheet.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\trattfile.cs">
+      <DependentUpon>timesheet.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\UserInfo.cs">
       <DependentUpon>timesheet.tt</DependentUpon>
     </Compile>

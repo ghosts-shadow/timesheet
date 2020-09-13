@@ -51,6 +51,8 @@
         <AssociationConnector Association="LogisticsSoftModel.FK_towref_Topro2" ManuallyRouted="false" />
         <AssociationConnector Association="LogisticsSoftModel.FK_towemp_Toref" ManuallyRouted="false" />
         <AssociationConnector Association="LogisticsSoftModel.AspNetUserRoles" ManuallyRouted="false" />
+        <EntityTypeShape EntityType="LogisticsSoftModel.trattfile" Width="1.5" PointX="5.25" PointY="18.625" />
+        <AssociationConnector Association="LogisticsSoftModel.FK_towemp_To" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>
