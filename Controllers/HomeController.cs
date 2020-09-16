@@ -553,11 +553,19 @@
                             t.Add(tal29);
                             t.Add(tal30);
                             long tho1 = 0;
-                            foreach (var l in t)
-                                if (l > tho)
+                                int i = 0;
+                                foreach (var l in t)
                                 {
-                                    tho1 += l - (long)tho;
-                                    sd.TotalOverTime = tho1;
+                                    i++;
+                                    if (!fday.Exists(x=>x.Equals(i)))
+                                    {
+                                        if (l > tho)
+                                        {
+                                            tho1 += l - (long)tho;
+                                            at.TotalOverTime = tho1;
+                                        }
+                                    }
+                                    
                                 }
                         }
                     {
@@ -2623,6 +2631,7 @@
                                             + tl24 + tl25 + tl26 + tl27 + tl28 + tl29 + tl30;
                             this.db.Entry(at).State = EntityState.Modified;
                             this.db.SaveChanges();
+                            var fday = GetAll(aa.TMonth);
                             double.TryParse(b.NormalTimeUpto.ToString(), out var tho);
                             {
                                 var t = new List<long>();
@@ -2659,13 +2668,20 @@
                                 t.Add(tl29);
                                 t.Add(tl30);
                                 long tho1 = 0;
+                                int i = 0;
                                 foreach (var l in t)
-                                    if (l > tho)
+                                {
+                                    i++;
+                                    if (!fday.Exists(x=>x.Equals(i)))
                                     {
-                                        tho1 += l - (long)tho;
-                                        at.TotalOverTime = tho1;
+                                        if (l > tho)
+                                        {
+                                            tho1 += l - (long)tho;
+                                            at.TotalOverTime = tho1;
+                                        }
                                     }
-
+                                    
+                                }
                                 this.db.Entry(at).State = EntityState.Modified;
                                 this.db.SaveChanges();
                             }
@@ -4137,7 +4153,7 @@
             ViewBag.MM = MM;
             this.ViewBag.csmps = new SelectList(this.db.ManPowerSuppliers, "ID", "Supplier");
             var list = this.db.Attendances.Include(x => x.LabourMaster).ToList();
-            var abis = new MainTimeSheet();
+            var atlist = new List<Attendance>();
             if (csmps.HasValue  && mtsmonth.HasValue)
             {
                 DateTime.TryParse(mtsmonth.Value.ToString(), out var dm);
@@ -4146,12 +4162,14 @@
                     .Where(
                         x => x.TMonth.Month.Equals(dm.Month) && x.TMonth.Year.Equals(dm.Year)
                                                              && x.ManPowerSupplier.Equals(lcsmps)).OrderBy(x => x.ID)
-                    .ToPagedList(1, 100);
+                    .ToPagedList(1, 1000);
                 if (ab.Count != 0)
                 {
-                    abis = ab.Last();
-                    return this.View(
-                        this.db.Attendances.Where(x => x.SubMain.Equals(abis.ID)).Include(x => x.LabourMaster).OrderBy(x => x.ID)
+                    foreach (var abis in ab)
+                    {
+                        atlist.AddRange(this.db.Attendances.Where(x => x.SubMain.Equals(abis.ID)).Include(x => x.LabourMaster));
+                    }
+                    return this.View(atlist.OrderBy(x => x.MainTimeSheet.Project).ThenBy(x=>x.EmpID)
                             .ToPagedList(1, 1000));
                 }
                 else

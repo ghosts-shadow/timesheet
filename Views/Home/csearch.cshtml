@@ -378,16 +378,17 @@ using (Html.BeginForm("csearch", "Home", FormMethod.Get, new { id = "form1" }))
             @{
                 var a = item.TotalHours;
                 var b = item.TotalOverTime;
+                var c = item.FridayHours;
                 var a_b = new long?();
                 if (a != null || a != 0)
                 {
                     if (b != null || b != 0)
                     {
-                        a_b = a - b;
+                        a_b = a - b - c;
                     }
                     else
                     {
-                        a_b = a;
+                        a_b = a - c ;
                     }
                 }
                 else
@@ -450,7 +451,18 @@ using (Html.BeginForm("csearch", "Home", FormMethod.Get, new { id = "form1" }))
     </tr>
     }
     <tr>
-        <td colspan="34">total</td>
+        @if (User.Identity.IsAuthenticated)
+        {
+            if (User.Identity.Name == "sdiniz")
+            {
+                <td colspan="36">total</td>
+            }
+        }
+        else
+        {
+
+            <td colspan="35">total</td>
+        }
         <td>@tth</td>
         <td>@ttnt</td>
         <td>@ttot</td>
