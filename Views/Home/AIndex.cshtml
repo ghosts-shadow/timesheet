@@ -411,6 +411,9 @@
                 <th>
                     @Html.DisplayNameFor(model => model.attendance.FridayHours)
                 </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.attendance.Holidays)
+                </th>
             </tr>
             <tbody id="mytable">
                 @foreach (var item in Model.Attendancecollection)
@@ -545,6 +548,9 @@
                         </td>
                         <td>
                             @Html.DisplayFor(modelItem => item.FridayHours)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Holidays)
                         </td>
                     </tr>
                 }

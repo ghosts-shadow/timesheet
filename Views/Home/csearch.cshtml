@@ -86,7 +86,7 @@ using (Html.BeginForm("csearch", "Home", FormMethod.Get, new { id = "form1" }))
     <div>
     <br/>
     @{
-        long? tth=0, ttnt=0, ttot=0, tta=0, ttvl=0, ttt=0, ttsl=0, tfh=0;
+        long? tth=0, ttnt=0, ttot=0, tta=0, ttvl=0, ttt=0, ttsl=0, tfh=0,tho=0 ;
         
 
 
@@ -245,6 +245,9 @@ using (Html.BeginForm("csearch", "Home", FormMethod.Get, new { id = "form1" }))
             <th>
                 @Html.DisplayNameFor(model => model.FridayHours)
             </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Holidays)
+            </th>
         </tr>
 
     @foreach (var item in Model)
@@ -379,16 +382,17 @@ using (Html.BeginForm("csearch", "Home", FormMethod.Get, new { id = "form1" }))
                 var a = item.TotalHours;
                 var b = item.TotalOverTime;
                 var c = item.FridayHours;
+                var d = item.Holidays;
                 var a_b = new long?();
                 if (a != null || a != 0)
                 {
                     if (b != null || b != 0)
                     {
-                        a_b = a - b - c;
+                        a_b = a - b - c - d;
                     }
                     else
                     {
-                        a_b = a - c ;
+                        a_b = a - c - d;
                     }
                 }
                 else
@@ -448,6 +452,12 @@ using (Html.BeginForm("csearch", "Home", FormMethod.Get, new { id = "form1" }))
             }
             @Html.DisplayFor(modelItem => item.FridayHours)
         </td>
+        <td>
+            @{
+                tho += item.Holidays;
+            }
+            @Html.DisplayFor(modelItem => item.Holidays)
+        </td>
     </tr>
     }
     <tr>
@@ -471,6 +481,7 @@ using (Html.BeginForm("csearch", "Home", FormMethod.Get, new { id = "form1" }))
         <td>@ttt</td>
         <td>@ttsl</td>
         <td>@tfh</td>
+        <td>@tho</td>
     </tr>
     </table>
     </div>

@@ -185,6 +185,7 @@
     <Compile Include="App_Start\Startup.Auth.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\CSPermissionsController.cs" />
+    <Compile Include="Controllers\HolidaysController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\LabourMastersController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
@@ -336,6 +337,9 @@
     <Content Include="Content\Style.css" />
     <Content Include="Content\userhelp\a_and_k.mp4" />
     <Content Include="img\iconbell.jpg" />
+    <Content Include="img\img_chicago.jpg" />
+    <Content Include="img\img_la.jpg" />
+    <Content Include="img\img_ny.jpg" />
     <Content Include="Models\timesheet.Context.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <DependentUpon>timesheet.edmx</DependentUpon>
@@ -385,6 +389,11 @@
     <None Include="Properties\PublishProfiles\CustomProfile.pubxml" />
     <Content Include="Views\CSPermissions\project_permissions.cshtml" />
     <Content Include="Views\Home\apnote1.cshtml" />
+    <Content Include="Views\Holidays\Create.cshtml" />
+    <Content Include="Views\Holidays\Delete.cshtml" />
+    <Content Include="Views\Holidays\Details.cshtml" />
+    <Content Include="Views\Holidays\Edit.cshtml" />
+    <Content Include="Views\Holidays\Index.cshtml" />
     <None Include="Views\Home\Class1.cshtml" />
     <Content Include="Views\Home\tests.cshtml" />
     <Content Include="Views\Home\csearch.cshtml" />

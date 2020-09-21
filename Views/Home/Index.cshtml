@@ -1,18 +1,95 @@
 ﻿@{
     ViewBag.Title = "user guide";
 }
-    <div class="row">
-        <b>user guid(video)</b>
+@*
+        <div class="row">
+            <b>user guid(video)</b>
+        </div>
+    <div class="row" align="center" >
+            <video controls  width="50%" preload="auto" style="border: 5px black solid">
+                <source src='@Url.Content("~/Content/userhelp/a_and_k.mp4")' type=video/mp4 />
+                <source src='@Url.Content("~/Content/userhelp/a_and_k .flv")' type=video/flv />
+                <source src='@Url.Content("~/Content/userhelp/a_and_k.mkv")' type=video/mkv />
+                Your browser does not support the video
+            </video>
     </div>
-<div class="row" align="center" >
-        <video controls  width="50%" preload="auto" style="border: 5px black solid">
-            <source src='@Url.Content("~/Content/userhelp/a_and_k.mp4")' type=video/mp4 />
-            <source src='@Url.Content("~/Content/userhelp/a_and_k .flv")' type=video/flv />
-            <source src='@Url.Content("~/Content/userhelp/a_and_k.mkv")' type=video/mkv />
-            Your browser does not support the video
-        </video>
+    <div class="row">
+        <br/>
+        <a href="@Url.Content("~/Content/userhelp/GTS-CP-1.9.pdf")" target="_blank"><b>user guid</b></a>
+    </div>*@
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+<style>
+    .mySlides {
+        display: none;
+        
+    }
+
+    .w3-left, .w3-right, .w3-badge {
+        cursor: pointer
+    }
+
+    .w3-badge {
+        height: 13px;
+        width: 13px;
+        padding: 0
+    }
+    </style> 
+<div class="w3-content w3-section w3-display-container">
+    <img class="mySlides  w3-animate-fading" src=@Url.Content("~/img/img_la.jpg") style="width: 100%; ">
+    <img class="mySlides w3-animate-fading" src=@Url.Content("~/img/img_chicago.jpg") style="width: 100%; ">
+    <img class="mySlides w3-animate-fading" src=@Url.Content("~/img/img_ny.jpg") style="width: 100%; ">
+    <div class="w3-center w3-container w3-section w3-large w3-text-white w3-display-bottommiddle" style="width:100%">
+        <div class="w3-left w3-hover-text-khaki" onclick="plusDivs(-1)">&#10094;</div>
+        <div class="w3-right w3-hover-text-khaki" onclick="plusDivs(1)">&#10095;</div>
+        <span class="w3-badge demo w3-border w3-transparent w3-hover-white" onclick="currentDiv(1)"></span>
+        <span class="w3-badge demo w3-border w3-transparent w3-hover-white" onclick="currentDiv(2)"></span>
+        <span class="w3-badge demo w3-border w3-transparent w3-hover-white" onclick="currentDiv(3)"></span>
+    </div>
 </div>
-<div class="row">
-    <br/>
-    <a href="@Url.Content("~/Content/userhelp/GTS-CP-1.9.pdf")" target="_blank"><b>user guid</b></a>
-</div>
+
+<script>
+    var myIndex = 0;
+    carousel();
+
+    function carousel() {
+        var i;
+        var x = document.getElementsByClassName("mySlides");
+        var dots = document.getElementsByClassName("demo");
+        for (i = 0; i < x.length; i++) {
+            x[i].style.display = "none"; dots[i].className = dots[i].className.replace(" w3-white", "");
+        }
+        myIndex++;
+        if (myIndex > x.length) { myIndex = 1 }
+        x[myIndex - 1].style.display = "block";
+        dots[myIndex - 1].className += " w3-white";
+        setTimeout(carousel, 10000); // Change image every 2 seconds
+    }
+</script>
+<script>
+    var slideIndex = 1;
+    showDivs(slideIndex);
+
+    function plusDivs(n) {
+        showDivs(slideIndex += n);
+    }
+
+    function currentDiv(n) {
+        showDivs(slideIndex = n);
+    }
+
+    function showDivs(n) {
+        var i;
+        var x = document.getElementsByClassName("mySlides");
+        var dots = document.getElementsByClassName("demo");
+        if (n > x.length) { slideIndex = 1 }
+        if (n < 1) { slideIndex = x.length }
+        for (i = 0; i < x.length; i++) {
+            x[i].style.display = "none";
+        }
+        for (i = 0; i < dots.length; i++) {
+            dots[i].className = dots[i].className.replace(" w3-white", "");
+        }
+        x[slideIndex - 1].style.display = "block";
+        dots[slideIndex - 1].className += " w3-white";
+    }
+</script>

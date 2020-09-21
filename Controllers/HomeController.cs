@@ -1,7 +1,6 @@
 ﻿namespace onlygodknows.Controllers
 {
     using System;
-    using EASendMail;
     using System.Collections.Generic;
     using System.Data.Entity;
     using System.Diagnostics.CodeAnalysis;
@@ -11,6 +10,8 @@
     using System.Web.Mvc;
     using System.Web.Script.Serialization;
     using System.Web.Services;
+
+    using EASendMail;
 
     using Microsoft.Ajax.Utilities;
     using Microsoft.AspNet.Identity;
@@ -34,12 +35,12 @@
         public override bool IsValidName(ControllerContext controllerContext, string actionName, MethodInfo methodInfo)
         {
             var isValidName = false;
-            var keyValue = string.Format("{0}:{1}", Name, Argument);
+            var keyValue = string.Format("{0}:{1}", this.Name, this.Argument);
             var value = controllerContext.Controller.ValueProvider.GetValue(keyValue);
 
             if (value != null)
             {
-                controllerContext.Controller.ControllerContext.RouteData.Values[Name] = Argument;
+                controllerContext.Controller.ControllerContext.RouteData.Values[this.Name] = this.Argument;
                 isValidName = true;
             }
 
@@ -49,8 +50,8 @@
 
     public class HomeController : Controller
     {
+        private string errr = string.Empty;
 
-        string errr = "";
         public long ID;
 
         public long manid;
@@ -61,7 +62,8 @@
 
         private readonly LogisticsSoftEntities db = new LogisticsSoftEntities();
 
-        private string errorm = "";
+        private string errorm = string.Empty;
+
         public ActionResult About()
         {
             this.ViewBag.Message = "Your application description page.";
@@ -74,20 +76,14 @@
             var aplistf = this.db.approvals.ToList();
             var aplists = new List<approval>();
             foreach (var ap in aplistf)
-            {
-                if (!aplists.Exists(x=>x.adate == ap.adate && x.MPS_id == ap.MPS_id && x.P_id == ap.P_id && x.status == "submitted"))
-                {
+                if (!aplists.Exists(
+                        x => x.adate == ap.adate && x.MPS_id == ap.MPS_id && x.P_id == ap.P_id
+                             && x.status == "submitted"))
                     if (ap.status == "submitted")
-                    {
-                    aplists.Add(ap);
-                        
-                    }
-                }
-            }
+                        aplists.Add(ap);
 
             return this.PartialView(aplists);
         }
-
 
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -123,9 +119,10 @@
         }
 
         [Authorize(Roles = "Employee,Admin")]
-        public ActionResult AIndex()
+        public ActionResult AIndex(MainTimeSheet ids)
         {
-            var a = this.db.MainTimeSheets.OrderByDescending(m => m.ID);
+            var a = this.db.MainTimeSheets.Where(x => x.ID == ids.ID).OrderByDescending(m => m.ID);
+            this.TempData["mcreateid"] = ids;
             var aa = a.First();
             this.ViewBag.mid = aa.ID;
             var b = this.db.ManPowerSuppliers.Find(aa.ManPowerSupplier);
@@ -135,10 +132,7 @@
             this.ViewBag.mpssh = b.ShortName;
             this.ViewBag.mdate = aa.TMonth.ToLongDateString();
             this.ViewBag.mdate1 = aa.TMonth;
-            if (b.Supplier == "GROVE")
-            {
-                b = this.db.ManPowerSuppliers.Find(1);
-            }
+            if (b.Supplier == "GROVE") b = this.db.ManPowerSuppliers.Find(1);
             var d = from LabourMaster in this.db.LabourMasters
                     where LabourMaster.ManPowerSupply == b.ID
                     select LabourMaster;
@@ -148,77 +142,75 @@
             this.ViewBag.name = new SelectList(d.Where(x => x.EMPNO >= 4).OrderBy(m => m.EMPNO), "ID", "Person_name");
             var atlist = this.db.Attendances.ToList();
             var dateat = aa.TMonth;
-            if (dateat.Day == 1)
+            if (dateat.Day == 1) this.fillformpremon(aa.ID);
             {
-                fillformpremon(aa.ID);
+                var data = new[]
+                               {
+                                   new SelectListItem { Text = "0", Value = "0" },
+                                   new SelectListItem { Text = "1", Value = "1" },
+                                   new SelectListItem { Text = "2", Value = "2" },
+                                   new SelectListItem { Text = "3", Value = "3" },
+                                   new SelectListItem { Text = "4", Value = "4" },
+                                   new SelectListItem { Text = "5", Value = "5" },
+                                   new SelectListItem { Text = "6", Value = "6" },
+                                   new SelectListItem { Text = "7", Value = "7" },
+                                   new SelectListItem { Text = "8", Value = "8" },
+                                   new SelectListItem { Text = "9", Value = "9" },
+                                   new SelectListItem { Text = "10", Value = "10" },
+                                   new SelectListItem { Text = "11", Value = "11" },
+                                   new SelectListItem { Text = "12", Value = "12" },
+                                   new SelectListItem { Text = "13", Value = "13" },
+                                   new SelectListItem { Text = "14", Value = "14" },
+                                   new SelectListItem { Text = "15", Value = "15" },
+                                   new SelectListItem { Text = "16", Value = "16" },
+                                   new SelectListItem { Text = "17", Value = "17" },
+                                   new SelectListItem { Text = "18", Value = "18" },
+                                   new SelectListItem { Text = "19", Value = "19" },
+                                   new SelectListItem { Text = "20", Value = "20" },
+                                   new SelectListItem { Text = "21", Value = "21" },
+                                   new SelectListItem { Text = "22", Value = "22" },
+                                   new SelectListItem { Text = "23", Value = "23" },
+                                   new SelectListItem { Text = "24", Value = "24" },
+                                   new SelectListItem { Text = "S", Value = "S" },
+                                   new SelectListItem { Text = "A", Value = "A" },
+                                   new SelectListItem { Text = "T", Value = "T" },
+                                   new SelectListItem { Text = "V", Value = "V" }
+                               };
+                this.ViewBag.C1 = data;
+                this.ViewBag.C2 = data;
+                this.ViewBag.C3 = data;
+                this.ViewBag.C4 = data;
+                this.ViewBag.C5 = data;
+                this.ViewBag.C6 = data;
+                this.ViewBag.C7 = data;
+                this.ViewBag.C8 = data;
+                this.ViewBag.C9 = data;
+                this.ViewBag.C10 = data;
+                this.ViewBag.C11 = data;
+                this.ViewBag.C12 = data;
+                this.ViewBag.C13 = data;
+                this.ViewBag.C14 = data;
+                this.ViewBag.C15 = data;
+                this.ViewBag.C16 = data;
+                this.ViewBag.C17 = data;
+                this.ViewBag.C18 = data;
+                this.ViewBag.C19 = data;
+                this.ViewBag.C20 = data;
+                this.ViewBag.C21 = data;
+                this.ViewBag.C22 = data;
+                this.ViewBag.C23 = data;
+                this.ViewBag.C24 = data;
+                this.ViewBag.C25 = data;
+                this.ViewBag.C26 = data;
+                this.ViewBag.C27 = data;
+                this.ViewBag.C28 = data;
+                this.ViewBag.C29 = data;
+                this.ViewBag.C30 = data;
+                this.ViewBag.C31 = data;
             }
-            { 
-            var data = new[]
-                           {
-                               new SelectListItem { Text = "0", Value = "0" },
-                               new SelectListItem { Text = "1", Value = "1" },
-                               new SelectListItem { Text = "2", Value = "2" },
-                               new SelectListItem { Text = "3", Value = "3" },
-                               new SelectListItem { Text = "4", Value = "4" },
-                               new SelectListItem { Text = "5", Value = "5" },
-                               new SelectListItem { Text = "6", Value = "6" },
-                               new SelectListItem { Text = "7", Value = "7" },
-                               new SelectListItem { Text = "8", Value = "8" },
-                               new SelectListItem { Text = "9", Value = "9" },
-                               new SelectListItem { Text = "10", Value = "10" },
-                               new SelectListItem { Text = "11", Value = "11" },
-                               new SelectListItem { Text = "12", Value = "12" },
-                               new SelectListItem { Text = "13", Value = "13" },
-                               new SelectListItem { Text = "14", Value = "14" },
-                               new SelectListItem { Text = "15", Value = "15" },
-                               new SelectListItem { Text = "16", Value = "16" },
-                               new SelectListItem { Text = "17", Value = "17" },
-                               new SelectListItem { Text = "18", Value = "18" },
-                               new SelectListItem { Text = "19", Value = "19" },
-                               new SelectListItem { Text = "20", Value = "20" },
-                               new SelectListItem { Text = "21", Value = "21" },
-                               new SelectListItem { Text = "22", Value = "22" },
-                               new SelectListItem { Text = "23", Value = "23" },
-                               new SelectListItem { Text = "24", Value = "24" },
-                               new SelectListItem { Text = "S", Value = "S" },
-                               new SelectListItem { Text = "A", Value = "A" },
-                               new SelectListItem { Text = "T", Value = "T" },
-                               new SelectListItem { Text = "V", Value = "V" }
-                           };
-            this.ViewBag.C1 = data;
-            this.ViewBag.C2 = data;
-            this.ViewBag.C3 = data;
-            this.ViewBag.C4 = data;
-            this.ViewBag.C5 = data;
-            this.ViewBag.C6 = data;
-            this.ViewBag.C7 = data;
-            this.ViewBag.C8 = data;
-            this.ViewBag.C9 = data;
-            this.ViewBag.C10 = data;
-            this.ViewBag.C11 = data;
-            this.ViewBag.C12 = data;
-            this.ViewBag.C13 = data;
-            this.ViewBag.C14 = data;
-            this.ViewBag.C15 = data;
-            this.ViewBag.C16 = data;
-            this.ViewBag.C17 = data;
-            this.ViewBag.C18 = data;
-            this.ViewBag.C19 = data;
-            this.ViewBag.C20 = data;
-            this.ViewBag.C21 = data;
-            this.ViewBag.C22 = data;
-            this.ViewBag.C23 = data;
-            this.ViewBag.C24 = data;
-            this.ViewBag.C25 = data;
-            this.ViewBag.C26 = data;
-            this.ViewBag.C27 = data;
-            this.ViewBag.C28 = data;
-            this.ViewBag.C29 = data;
-            this.ViewBag.C30 = data;
-            this.ViewBag.C31 = data;}
 
             var atlist1 = this.db.Attendances.Where(x => x.SubMain.Equals(aa.ID)).Include(x => x.LabourMaster)
-                    .OrderByDescending(m => m.ID).ToList();
+                .OrderByDescending(m => m.ID).ToList();
 
             /*
             foreach (var sd in atlist1)
@@ -1731,12 +1723,11 @@
 
             }
             */
-
             var model1 = new timesheetViewModel
-                {
-                    Attendancecollection = this.db.Attendances.Where(x => x.SubMain.Equals(aa.ID)).Include(x => x.LabourMaster).OrderByDescending(m => m.ID)
-
-                };
+                             {
+                                 Attendancecollection = this.db.Attendances.Where(x => x.SubMain.Equals(aa.ID))
+                                     .Include(x => x.LabourMaster).OrderByDescending(m => m.ID)
+                             };
 
             return this.View(model1);
         }
@@ -1746,7 +1737,8 @@
         [MultipleButton(Name = "action", Argument = "AIndex1")]
         public ActionResult AIndex1(long? empno)
         {
-            var a = this.db.MainTimeSheets.OrderByDescending(m => m.ID);
+            var ids = this.TempData["mcreateid"] as MainTimeSheet;
+            var a = this.db.MainTimeSheets.Where(x => x.ID == ids.ID).OrderByDescending(m => m.ID);
             var aa = a.First();
             this.ViewBag.mid = aa.ID;
             var b = this.db.ManPowerSuppliers.Find(aa.ManPowerSupplier);
@@ -1756,18 +1748,23 @@
             this.ViewBag.mpssh = b.ShortName;
             this.ViewBag.mdate = aa.TMonth.ToLongDateString();
             this.ViewBag.mdate1 = aa.TMonth;
-            if (b.Supplier == "GROVE")
-            {
-                b = this.db.ManPowerSuppliers.Find(1);
-            }
+            if (b.Supplier == "GROVE") b = this.db.ManPowerSuppliers.Find(1);
             var d = from LabourMaster in this.db.LabourMasters
                     where LabourMaster.ManPowerSupply == b.ID
                     select LabourMaster;
             this.ViewBag.EmpID = new SelectList(d.Where(x => x.EMPNO >= 4).OrderBy(m => m.EMPNO), "ID", "EMPNO", empno);
             this.ViewBag.empno = new SelectList(d.Where(x => x.EMPNO >= 4).OrderBy(m => m.EMPNO), "ID", "EMPNO", empno);
-            this.ViewBag.pos = new SelectList(d.Where(x => x.EMPNO >= 4).OrderBy(m => m.EMPNO), "ID", "Position", empno);
-            this.ViewBag.name = new SelectList(d.Where(x => x.EMPNO >= 4).OrderBy(m => m.EMPNO), "ID", "Person_name", empno);
-            
+            this.ViewBag.pos = new SelectList(
+                d.Where(x => x.EMPNO >= 4).OrderBy(m => m.EMPNO),
+                "ID",
+                "Position",
+                empno);
+            this.ViewBag.name = new SelectList(
+                d.Where(x => x.EMPNO >= 4).OrderBy(m => m.EMPNO),
+                "ID",
+                "Person_name",
+                empno);
+
             var data = new[]
                            {
                                new SelectListItem { Text = "0", Value = "0" },
@@ -1831,45 +1828,36 @@
             this.ViewBag.C29 = data;
             this.ViewBag.C30 = data;
             this.ViewBag.C31 = data;
-            
-            
+
             var model1 = new timesheetViewModel();
             if (empno != null)
             {
-                var testi = this.db.Attendances.Where(x => x.SubMain.Equals(aa.ID) && x.EmpID==(empno))
+                var testi = this.db.Attendances.Where(x => x.SubMain.Equals(aa.ID) && x.EmpID == empno)
                     .Include(x => x.LabourMaster).OrderByDescending(m => m.ID);
                 if (testi != null)
-                {
-                 model1 = new timesheetViewModel
-                                 {
-                                     Attendancecollection = testi.ToList()
-                                 };
-                    
-                }
+                    model1 = new timesheetViewModel { Attendancecollection = testi.ToList() };
             }
             else
             {
-                 model1 = new timesheetViewModel
-                                 {
-                                     Attendancecollection = this.db.Attendances.Where(x => x.SubMain.Equals(aa.ID)).Include(x => x.LabourMaster).OrderByDescending(m => m.ID)
-
-                                 };
+                model1 = new timesheetViewModel
+                             {
+                                 Attendancecollection = this.db.Attendances.Where(x => x.SubMain.Equals(aa.ID))
+                                     .Include(x => x.LabourMaster).OrderByDescending(m => m.ID)
+                             };
             }
-            
+
             return this.View(model1);
         }
 
         public List<int> GetAll(DateTime date)
         {
-
             var month = date.Month;
-            var lastDayOfMonth = new DateTime(date.Year, date.Month,1);
+            var lastDayOfMonth = new DateTime(date.Year, date.Month, 1);
             var lastDay = DateTime.DaysInMonth(date.Year, date.Month);
-            var array = new List<int>(); //dd/mm/yy
+            var array = new List<int>(); // dd/mm/yy
             var count = -1;
             for (var i = 1; i <= lastDay; i++)
             {
-
                 var temp = new DateTime(date.Year, month, i);
                 var day = temp.DayOfWeek;
                 if (day == DayOfWeek.Friday)
@@ -1883,18 +1871,25 @@
             return array;
         }
 
+        public List<int> GetAllholi(DateTime date)
+        {
+            var holilist = this.db.Holidays.Where(x => x.Date.Value.Month == date.Month).ToList();
+            var array = new List<int>();
+            foreach (var ho in holilist) array.Add(ho.Date.Value.Day);
+
+            return array;
+        }
+
         public void fillformpremon(long mid)
         {
-            var mainlit = this.db.MainTimeSheets.OrderByDescending(x=>x.ID).ToList();
+            var mainlit = this.db.MainTimeSheets.OrderByDescending(x => x.ID).ToList();
             var qw = mainlit.Find(x => x.ID == mid);
-            var lm = mainlit.Find(x => x.TMonth.Month == qw.TMonth.Month - 1 && x.TMonth.Year == qw.TMonth.Year
+            var lm = mainlit.Find(
+                x => x.TMonth.Month == qw.TMonth.Month - 1 && x.TMonth.Year == qw.TMonth.Year
                                                            && x.ManPowerSupplier == qw.ManPowerSupplier
                                                            && x.Project == qw.Project);
             var lastmainid = lm;
-            if (lm == null)
-            {
-                goto q1;
-            }
+            if (lm == null) goto q1;
             if (lastmainid.TMonth.Month + 1 != 13)
             {
                 var fillmonth = lastmainid.TMonth.Month + 1;
@@ -1903,25 +1898,21 @@
             var at = this.db.Attendances.ToList();
             var atp = at.FindAll(x => x.SubMain == qw.ID);
             var atflist = at.FindAll(x => x.SubMain == lastmainid.ID);
-            if (atp.Count != 0)
-            {
-                goto q1;
-            }
+            if (atp.Count != 0) goto q1;
             foreach (var at1 in atflist)
             {
-                
-                    var at2 = new Attendance();
+                var at2 = new Attendance();
                 at2.SubMain = qw.ID;
                 at2.EmpID = at1.EmpID;
                 var dms = DateTime.DaysInMonth(lm.TMonth.Year, lm.TMonth.Month);
-                var fday = new DateTime(lm.TMonth.Year, lm.TMonth.Month+1,1);
-                var fdaylist = GetAll(fday);
+                var fday = new DateTime(lm.TMonth.Year, lm.TMonth.Month + 1, 1);
+                var fdaylist = this.GetAll(fday);
                 if (dms == 30)
                 {
-                    if (fdaylist.Exists(x=>x == 1))
+                    if (fdaylist.Exists(x => x == 1))
                     {
                         at2.C2 = at1.C30;
-                        long.TryParse(at2.C2,out var q1 );
+                        long.TryParse(at2.C2, out var q1);
                         at2.TotalHours = q1;
                     }
                     else
@@ -1931,6 +1922,7 @@
                         at2.TotalHours = q1;
                     }
                 }
+
                 if (dms == 31)
                 {
                     if (fdaylist.Exists(x => x == 1))
@@ -1946,6 +1938,7 @@
                         at2.TotalHours = q1;
                     }
                 }
+
                 if (dms == 29)
                 {
                     if (fdaylist.Exists(x => x == 1))
@@ -1961,6 +1954,7 @@
                         at2.TotalHours = q1;
                     }
                 }
+
                 if (dms == 28)
                 {
                     if (fdaylist.Exists(x => x == 1))
@@ -1977,11 +1971,10 @@
                     }
                 }
 
-                
                 this.db.Attendances.Add(at2);
                 this.db.SaveChanges();
-                   
             }
+
             q1: ;
         }
 
@@ -1998,7 +1991,8 @@
             var ap = this.db.approvals.ToList();
             var model1 = new timesheetViewModel { attendance = attendance };
             var check = new List<Attendance>();
-            var a = this.db.MainTimeSheets.OrderByDescending(m => m.ID);
+            var ids = this.TempData["mcreateid"] as MainTimeSheet;
+            var a = this.db.MainTimeSheets.Where(x => x.ID == ids.ID).OrderByDescending(m => m.ID);
             var aa = a.First();
             this.ViewBag.mid = aa.ID;
             var b = this.db.ManPowerSuppliers.Find(aa.ManPowerSupplier);
@@ -2007,12 +2001,9 @@
             this.ViewBag.mps = b.Supplier;
             this.ViewBag.mpssh = b.ShortName;
             this.ViewBag.mdate = aa.TMonth.ToLongDateString();
-            ViewBag.mdate1 = aa.TMonth;
-            ViewBag.exist = "";
-            if (b.Supplier== "GROVE")
-            {
-                b = this.db.ManPowerSuppliers.Find(1);
-            }
+            this.ViewBag.mdate1 = aa.TMonth;
+            this.ViewBag.exist = string.Empty;
+            if (b.Supplier == "GROVE") b = this.db.ManPowerSuppliers.Find(1);
             var d = from LabourMaster in this.db.LabourMasters
                     where LabourMaster.ManPowerSupply == b.ID
                     select LabourMaster;
@@ -2020,13 +2011,13 @@
             this.ViewBag.empno = new SelectList(d.Where(x => x.EMPNO >= 4).OrderBy(m => m.EMPNO), "ID", "EMPNO");
             this.ViewBag.pos = new SelectList(d.Where(x => x.EMPNO >= 4).OrderBy(m => m.EMPNO), "ID", "Position");
             this.ViewBag.name = new SelectList(d.Where(x => x.EMPNO >= 4).OrderBy(m => m.EMPNO), "ID", "Person_name");
-            
+
             // oldmts = this.db.MainTimeSheets
-            //     .Where(
-            //         x => x.TMonth.Month.Equals(list.date.Month) && x.TMonth.Year.Equals(list.date.Year)
-            //                                                     && x.ManPowerSupplier.Equals(aa.ManPowerSupplier)
-            //                                                     && x.Project.Equals(aa.Project))
-            //    .OrderByDescending(x => x.ID).ToList();
+            // .Where(
+            // x => x.TMonth.Month.Equals(list.date.Month) && x.TMonth.Year.Equals(list.date.Year)
+            // && x.ManPowerSupplier.Equals(aa.ManPowerSupplier)
+            // && x.Project.Equals(aa.Project))
+            // .OrderByDescending(x => x.ID).ToList();
             var data = new[]
                            {
                                new SelectListItem { Text = "0", Value = "0" },
@@ -2060,51 +2051,50 @@
                                new SelectListItem { Text = "V", Value = "V" }
                            };
             {
-            this.ViewBag.C1 = data;
-            this.ViewBag.C2 = data;
-            this.ViewBag.C3 = data;
-            this.ViewBag.C4 = data;
-            this.ViewBag.C5 = data;
-            this.ViewBag.C6 = data;
-            this.ViewBag.C7 = data;
-            this.ViewBag.C8 = data;
-            this.ViewBag.C9 = data;
-            this.ViewBag.C10 = data;
-            this.ViewBag.C11 = data;
-            this.ViewBag.C12 = data;
-            this.ViewBag.C13 = data;
-            this.ViewBag.C14 = data;
-            this.ViewBag.C15 = data;
-            this.ViewBag.C16 = data;
-            this.ViewBag.C17 = data;
-            this.ViewBag.C18 = data;
-            this.ViewBag.C19 = data;
-            this.ViewBag.C20 = data;
-            this.ViewBag.C21 = data;
-            this.ViewBag.C22 = data;
-            this.ViewBag.C23 = data;
-            this.ViewBag.C24 = data;
-            this.ViewBag.C25 = data;
-            this.ViewBag.C26 = data;
-            this.ViewBag.C27 = data;
-            this.ViewBag.C28 = data;
-            this.ViewBag.C29 = data;
-            this.ViewBag.C30 = data;
-            this.ViewBag.C31 = data;
-
+                this.ViewBag.C1 = data;
+                this.ViewBag.C2 = data;
+                this.ViewBag.C3 = data;
+                this.ViewBag.C4 = data;
+                this.ViewBag.C5 = data;
+                this.ViewBag.C6 = data;
+                this.ViewBag.C7 = data;
+                this.ViewBag.C8 = data;
+                this.ViewBag.C9 = data;
+                this.ViewBag.C10 = data;
+                this.ViewBag.C11 = data;
+                this.ViewBag.C12 = data;
+                this.ViewBag.C13 = data;
+                this.ViewBag.C14 = data;
+                this.ViewBag.C15 = data;
+                this.ViewBag.C16 = data;
+                this.ViewBag.C17 = data;
+                this.ViewBag.C18 = data;
+                this.ViewBag.C19 = data;
+                this.ViewBag.C20 = data;
+                this.ViewBag.C21 = data;
+                this.ViewBag.C22 = data;
+                this.ViewBag.C23 = data;
+                this.ViewBag.C24 = data;
+                this.ViewBag.C25 = data;
+                this.ViewBag.C26 = data;
+                this.ViewBag.C27 = data;
+                this.ViewBag.C28 = data;
+                this.ViewBag.C29 = data;
+                this.ViewBag.C30 = data;
+                this.ViewBag.C31 = data;
             }
+
             if (this.ModelState.IsValid)
             {
-                
-                var oldmts = this.db.MainTimeSheets
-                    .Where(x => x.ID == attendance.SubMain).OrderByDescending(x => x.ID).ToList();
+                var oldmts = this.db.MainTimeSheets.Where(x => x.ID == attendance.SubMain).OrderByDescending(x => x.ID)
+                    .ToList();
                 if (oldmts.Count != 0)
                 {
-                  var  oldmts1 = oldmts.Last();
+                    var oldmts1 = oldmts.Last();
 
                     // First();
-                    check = this.db.Attendances.Where(z => z.EmpID.Equals(attendance.EmpID) && z.SubMain.Equals(oldmts1.ID))
-                        .ToList();
+                    check = this.db.Attendances
+                        .Where(z => z.EmpID.Equals(attendance.EmpID) && z.SubMain.Equals(oldmts1.ID)).ToList();
                 }
                 else
                 {
@@ -2112,485 +2102,596 @@
                         .ToList();
                 }
 
-                
                 if (check.Count != 0)
                 {
                     var at = this.db.Attendances.Find(check.First().ID);
                     long fri1 = 0;
+                    long holi = 0;
                     var date = new DateTime(aa.TMonth.Year, aa.TMonth.Month, 1);
                     if (at != null)
                     {
                         if (attendance.C1 != "0" && attendance.C1 != null)
-                        {
-                            if (!ap.Exists(x=>x.adate == new DateTime(aa.TMonth.Year,aa.TMonth.Month,1) && !(x.status == null || x.status.Contains("rejected"))))
-                            {
-                            at.C1 = attendance.C1;
-                            }
-                        }
+                            if (!ap.Exists(
+                                    x => x.adate == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 1)
+                                         && !(x.status == null || x.status.Contains("rejected"))))
+                                at.C1 = attendance.C1;
 
                         if (attendance.C2 != "0" && attendance.C2 != null)
-                        {
-                            if (!ap.Exists(x => x.adate == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 2) && !(x.status == null || x.status.Contains("rejected"))))
-                            {
-                            at.C2 = attendance.C2;
-                            }
-                        }
+                            if (!ap.Exists(
+                                    x => x.adate == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 2)
+                                         && !(x.status == null || x.status.Contains("rejected"))))
+                                at.C2 = attendance.C2;
 
                         if (attendance.C3 != "0" && attendance.C3 != null)
-                        {
-                            if (!ap.Exists(x => x.adate == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 3) && !(x.status == null || x.status.Contains("rejected"))))
-                            {
-                            at.C3 = attendance.C3;
-                            }
-
-                        }
+                            if (!ap.Exists(
+                                    x => x.adate == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 3)
+                                         && !(x.status == null || x.status.Contains("rejected"))))
+                                at.C3 = attendance.C3;
 
                         if (attendance.C4 != "0" && attendance.C4 != null)
-                        {
-                            if (!ap.Exists(x => x.adate == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 4) && !(x.status == null || x.status.Contains("rejected"))))
-                            {
-                            at.C4 = attendance.C4;
-                            }
-
-                        }
+                            if (!ap.Exists(
+                                    x => x.adate == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 4)
+                                         && !(x.status == null || x.status.Contains("rejected"))))
+                                at.C4 = attendance.C4;
 
                         if (attendance.C5 != "0" && attendance.C5 != null)
-                        {
-                            if (!ap.Exists(x => x.adate == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 5) && !(x.status == null || x.status.Contains("rejected"))))
-                            {
-                            at.C5 = attendance.C5;
-                            }
-
-                        }
+                            if (!ap.Exists(
+                                    x => x.adate == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 5)
+                                         && !(x.status == null || x.status.Contains("rejected"))))
+                                at.C5 = attendance.C5;
 
                         if (attendance.C6 != "0" && attendance.C6 != null)
-                        {
-                            if (!ap.Exists(x => x.adate == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 6) && !(x.status == null || x.status.Contains("rejected"))))
-                            {
-                            at.C6 = attendance.C6;
-                            }
-
-                        }
+                            if (!ap.Exists(
+                                    x => x.adate == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 6)
+                                         && !(x.status == null || x.status.Contains("rejected"))))
+                                at.C6 = attendance.C6;
 
                         if (attendance.C7 != "0" && attendance.C7 != null)
-                        {
-                            if (!ap.Exists(x => x.adate == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 7) && !(x.status == null || x.status.Contains("rejected"))))
-                            {
-                            at.C7 = attendance.C7;
-                            }
-
-                        }
+                            if (!ap.Exists(
+                                    x => x.adate == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 7)
+                                         && !(x.status == null || x.status.Contains("rejected"))))
+                                at.C7 = attendance.C7;
 
                         if (attendance.C8 != "0" && attendance.C8 != null)
-                        {
-                            if (!ap.Exists(x => x.adate == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 8) && !(x.status == null || x.status.Contains("rejected"))))
-                            {
-                            at.C8 = attendance.C8;
-                            }
-
-                        }
+                            if (!ap.Exists(
+                                    x => x.adate == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 8)
+                                         && !(x.status == null || x.status.Contains("rejected"))))
+                                at.C8 = attendance.C8;
 
                         if (attendance.C9 != "0" && attendance.C9 != null)
-                        {
-                            if (!ap.Exists(x => x.adate == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 9) && !(x.status == null || x.status.Contains("rejected"))))
-                            {
-                            at.C9 = attendance.C9;
-                            }
-
-                        }
+                            if (!ap.Exists(
+                                    x => x.adate == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 9)
+                                         && !(x.status == null || x.status.Contains("rejected"))))
+                                at.C9 = attendance.C9;
 
                         if (attendance.C10 != "0" && attendance.C10 != null)
-                        {
-                            if (!ap.Exists(x => x.adate == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 10) && !(x.status == null || x.status.Contains("rejected"))))
-                            {
-                            at.C10 = attendance.C10;
-                            }
+                            if (!ap.Exists(
+                                    x => x.adate == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 10)
+                                         && !(x.status == null || x.status.Contains("rejected"))))
+                                at.C10 = attendance.C10;
 
-                        }
-
-                        if (attendance.C11!= "0" && attendance.C11 != null)
-                        {
-                            if (!ap.Exists(x => x.adate == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 11) && !(x.status == null || x.status.Contains("rejected"))))
-                            {
-                            at.C11 = attendance.C11;
-                            }
-
-                        }
+                        if (attendance.C11 != "0" && attendance.C11 != null)
+                            if (!ap.Exists(
+                                    x => x.adate == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 11)
+                                         && !(x.status == null || x.status.Contains("rejected"))))
+                                at.C11 = attendance.C11;
 
                         if (attendance.C12 != "0" && attendance.C12 != null)
-                        {
-                            if (!ap.Exists(x => x.adate == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 12) && !(x.status == null || x.status.Contains("rejected"))))
-                            {
-                            at.C12 = attendance.C12;
-                            }
-
-                        }
+                            if (!ap.Exists(
+                                    x => x.adate == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 12)
+                                         && !(x.status == null || x.status.Contains("rejected"))))
+                                at.C12 = attendance.C12;
 
                         if (attendance.C13 != "0" && attendance.C13 != null)
-                        {
-                            if (!ap.Exists(x => x.adate == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 13) && !(x.status == null || x.status.Contains("rejected"))))
-                            {
-                            at.C13 = attendance.C13;
-                            }
-
-                        }
+                            if (!ap.Exists(
+                                    x => x.adate == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 13)
+                                         && !(x.status == null || x.status.Contains("rejected"))))
+                                at.C13 = attendance.C13;
 
                         if (attendance.C14 != "0" && attendance.C14 != null)
-                        {
-                            if (!ap.Exists(x => x.adate == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 14) && !(x.status == null || x.status.Contains("rejected"))))
-                            {
-                            at.C14 = attendance.C14;
-                            }
-
-                        }
+                            if (!ap.Exists(
+                                    x => x.adate == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 14)
+                                         && !(x.status == null || x.status.Contains("rejected"))))
+                                at.C14 = attendance.C14;
 
                         if (attendance.C15 != "0" && attendance.C15 != null)
-                        {
-                            if (!ap.Exists(x => x.adate == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 15) && !(x.status == null || x.status.Contains("rejected"))))
-                            {
-                            at.C15 = attendance.C15;
-                            }
-
-                        }
+                            if (!ap.Exists(
+                                    x => x.adate == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 15)
+                                         && !(x.status == null || x.status.Contains("rejected"))))
+                                at.C15 = attendance.C15;
 
                         if (attendance.C16 != "0" && attendance.C16 != null)
-                        {
-                            if (!ap.Exists(x => x.adate == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 16) && !(x.status == null || x.status.Contains("rejected"))))
-                            {
-                            at.C16 = attendance.C16;
-                            }
-
-                        }
+                            if (!ap.Exists(
+                                    x => x.adate == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 16)
+                                         && !(x.status == null || x.status.Contains("rejected"))))
+                                at.C16 = attendance.C16;
 
                         if (attendance.C17 != "0" && attendance.C17 != null)
-                        {
-                            if (!ap.Exists(x => x.adate == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 17) && !(x.status == null || x.status.Contains("rejected"))))
-                            {
-                            at.C17 = attendance.C17;
-                            }
-
-                        }
+                            if (!ap.Exists(
+                                    x => x.adate == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 17)
+                                         && !(x.status == null || x.status.Contains("rejected"))))
+                                at.C17 = attendance.C17;
 
                         if (attendance.C18 != "0" && attendance.C18 != null)
-                        {
-                            if (!ap.Exists(x => x.adate == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 18) && !(x.status == null || x.status.Contains("rejected"))))
-                            {
-                            at.C18 = attendance.C18;
-                            }
+                            if (!ap.Exists(
+                                    x => x.adate == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 18)
+                                         && !(x.status == null || x.status.Contains("rejected"))))
+                                at.C18 = attendance.C18;
 
-                        }
-
-                        if (attendance.C19 != "0" && attendance.C19!= null)
-                        {
-                            if (!ap.Exists(x => x.adate == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 19) && !(x.status == null || x.status.Contains("rejected"))))
-                            {
-                            at.C19 = attendance.C19;
-                            }
-
-                        }
+                        if (attendance.C19 != "0" && attendance.C19 != null)
+                            if (!ap.Exists(
+                                    x => x.adate == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 19)
+                                         && !(x.status == null || x.status.Contains("rejected"))))
+                                at.C19 = attendance.C19;
 
                         if (attendance.C20 != "0" && attendance.C20 != null)
-                        {
-                            if (!ap.Exists(x => x.adate == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 20) && !(x.status == null || x.status.Contains("rejected"))))
-                            {
-                            at.C20 = attendance.C20;
-                            }
-
-                        }
+                            if (!ap.Exists(
+                                    x => x.adate == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 20)
+                                         && !(x.status == null || x.status.Contains("rejected"))))
+                                at.C20 = attendance.C20;
 
                         if (attendance.C21 != "0" && attendance.C21 != null)
-                        {
-                            if (!ap.Exists(x => x.adate == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 21) && !(x.status == null || x.status.Contains("rejected"))))
-                            {
-                            at.C21 = attendance.C21;
-                            }
-
-                        }
+                            if (!ap.Exists(
+                                    x => x.adate == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 21)
+                                         && !(x.status == null || x.status.Contains("rejected"))))
+                                at.C21 = attendance.C21;
 
                         if (attendance.C22 != "0" && attendance.C22 != null)
-                        {
-                            if (!ap.Exists(x => x.adate == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 22) && !(x.status == null || x.status.Contains("rejected"))))
-                            {
-                            at.C22 = attendance.C22;
-                            }
-
-                        }
+                            if (!ap.Exists(
+                                    x => x.adate == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 22)
+                                         && !(x.status == null || x.status.Contains("rejected"))))
+                                at.C22 = attendance.C22;
 
                         if (attendance.C23 != "0" && attendance.C23 != null)
-                        {
-                            if (!ap.Exists(x => x.adate == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 23) && !(x.status == null || x.status.Contains("rejected"))))
-                            {
-                            at.C23 = attendance.C23;
-                            }
-
-                        }
+                            if (!ap.Exists(
+                                    x => x.adate == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 23)
+                                         && !(x.status == null || x.status.Contains("rejected"))))
+                                at.C23 = attendance.C23;
 
                         if (attendance.C24 != "0" && attendance.C24 != null)
-                        {
-                            if (!ap.Exists(x => x.adate == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 24) && !(x.status == null || x.status.Contains("rejected"))))
-                            {
-                            at.C24 = attendance.C24;
-                            }
-
-                        }
+                            if (!ap.Exists(
+                                    x => x.adate == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 24)
+                                         && !(x.status == null || x.status.Contains("rejected"))))
+                                at.C24 = attendance.C24;
 
                         if (attendance.C25 != "0" && attendance.C25 != null)
-                        {
-                            if (!ap.Exists(x => x.adate == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 25) && !(x.status == null || x.status.Contains("rejected"))))
-                            {
-                            at.C25 = attendance.C25;
-                            }
-
-                        }
+                            if (!ap.Exists(
+                                    x => x.adate == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 25)
+                                         && !(x.status == null || x.status.Contains("rejected"))))
+                                at.C25 = attendance.C25;
 
                         if (attendance.C26 != "0" && attendance.C26 != null)
-                        {
-                            if (!ap.Exists(x => x.adate == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 26) && !(x.status == null || x.status.Contains("rejected"))))
-                            {
-                            at.C26 = attendance.C26;
-                            }
-
-                        }
+                            if (!ap.Exists(
+                                    x => x.adate == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 26)
+                                         && !(x.status == null || x.status.Contains("rejected"))))
+                                at.C26 = attendance.C26;
 
                         if (attendance.C27 != "0" && attendance.C27 != null)
-                        {
-                            if (!ap.Exists(x => x.adate == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 27) && !(x.status == null || x.status.Contains("rejected"))))
-                            {
-                            at.C27 = attendance.C27;
-                            }
-                        }
+                            if (!ap.Exists(
+                                    x => x.adate == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 27)
+                                         && !(x.status == null || x.status.Contains("rejected"))))
+                                at.C27 = attendance.C27;
 
                         if (attendance.C28 != "0" && attendance.C28 != null)
-                        {
-                            if (!ap.Exists(x => x.adate == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 28) && !(x.status == null || x.status.Contains("rejected"))))
-                            {
-                            at.C28 = attendance.C28;
-                            }
-                        }
+                            if (!ap.Exists(
+                                    x => x.adate == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 28)
+                                         && !(x.status == null || x.status.Contains("rejected"))))
+                                at.C28 = attendance.C28;
 
                         if (attendance.C29 != "0" && attendance.C29 != null)
-                        {
-                            if (!ap.Exists(x => x.adate == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 29) && !(x.status == null || x.status.Contains("rejected"))))
-                            {
-                            at.C29 = attendance.C29;
-                            }
-                        }
+                            if (!ap.Exists(
+                                    x => x.adate == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 29)
+                                         && !(x.status == null || x.status.Contains("rejected"))))
+                                at.C29 = attendance.C29;
 
                         if (attendance.C30 != "0" && attendance.C30 != null)
-                        {
-                            if (!ap.Exists(x => x.adate == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 30) && !(x.status == null || x.status.Contains("rejected"))))
-                            {
-                            at.C30 = attendance.C30;
-                            }
-                        }
+                            if (!ap.Exists(
+                                    x => x.adate == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 30)
+                                         && !(x.status == null || x.status.Contains("rejected"))))
+                                at.C30 = attendance.C30;
 
                         if (attendance.C31 != "0" && attendance.C31 != null)
-                        {
-                            if (!ap.Exists(x => x.adate == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 31) && !(x.status == null || x.status.Contains("rejected"))))
-                            {
-                            at.C31 = attendance.C31;
-                            }
-                        }
+                            if (!ap.Exists(
+                                    x => x.adate == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 31)
+                                         && !(x.status == null || x.status.Contains("rejected"))))
+                                at.C31 = attendance.C31;
 
                         this.db.Entry(at).State = EntityState.Modified;
                         this.db.SaveChanges();
 
                         for (var i = 0; i < DateTime.DaysInMonth(aa.TMonth.Year, aa.TMonth.Month); i++)
-                    {
-                        if (date.DayOfWeek.Equals(DayOfWeek.Friday))
                         {
-                            if (date.Day == 1)
+                            if (date.DayOfWeek.Equals(DayOfWeek.Friday))
                             {
-                                long.TryParse(at.C1, out var tl);
-                                fri1 = fri1 + tl;
+                                if (date.Day == 1)
+                                {
+                                    long.TryParse(at.C1, out var tl);
+                                    fri1 = fri1 + tl;
+                                }
+
+                                if (date.Day == 2)
+                                {
+                                    long.TryParse(at.C2, out var tl);
+                                    fri1 = fri1 + tl;
+                                }
+
+                                if (date.Day == 3)
+                                {
+                                    long.TryParse(at.C3, out var tl);
+                                    fri1 = fri1 + tl;
+                                }
+
+                                if (date.Day == 4)
+                                {
+                                    long.TryParse(at.C4, out var tl);
+                                    fri1 = fri1 + tl;
+                                }
+
+                                if (date.Day == 5)
+                                {
+                                    long.TryParse(at.C5, out var tl);
+                                    fri1 = fri1 + tl;
+                                }
+
+                                if (date.Day == 6)
+                                {
+                                    long.TryParse(at.C6, out var tl);
+                                    fri1 = fri1 + tl;
+                                }
+
+                                if (date.Day == 7)
+                                {
+                                    long.TryParse(at.C7, out var tl);
+                                    fri1 = fri1 + tl;
+                                }
+
+                                if (date.Day == 8)
+                                {
+                                    long.TryParse(at.C8, out var tl);
+                                    fri1 = fri1 + tl;
+                                }
+
+                                if (date.Day == 9)
+                                {
+                                    long.TryParse(at.C9, out var tl);
+                                    fri1 = fri1 + tl;
+                                }
+
+                                if (date.Day == 10)
+                                {
+                                    long.TryParse(at.C10, out var tl);
+                                    fri1 = fri1 + tl;
+                                }
+
+                                if (date.Day == 11)
+                                {
+                                    long.TryParse(at.C11, out var tl);
+                                    fri1 = fri1 + tl;
+                                }
+
+                                if (date.Day == 12)
+                                {
+                                    long.TryParse(at.C11, out var tl);
+                                    fri1 = fri1 + tl;
+                                }
+
+                                if (date.Day == 13)
+                                {
+                                    long.TryParse(at.C13, out var tl);
+                                    fri1 = fri1 + tl;
+                                }
+
+                                if (date.Day == 14)
+                                {
+                                    long.TryParse(at.C14, out var tl);
+                                    fri1 = fri1 + tl;
+                                }
+
+                                if (date.Day == 15)
+                                {
+                                    long.TryParse(at.C15, out var tl);
+                                    fri1 = fri1 + tl;
+                                }
+
+                                if (date.Day == 16)
+                                {
+                                    long.TryParse(at.C16, out var tl);
+                                    fri1 = fri1 + tl;
+                                }
+
+                                if (date.Day == 17)
+                                {
+                                    long.TryParse(at.C17, out var tl);
+                                    fri1 = fri1 + tl;
+                                }
+
+                                if (date.Day == 18)
+                                {
+                                    long.TryParse(at.C18, out var tl);
+                                    fri1 = fri1 + tl;
+                                }
+
+                                if (date.Day == 19)
+                                {
+                                    long.TryParse(at.C19, out var tl);
+                                    fri1 = fri1 + tl;
+                                }
+
+                                if (date.Day == 20)
+                                {
+                                    long.TryParse(at.C20, out var tl);
+                                    fri1 = fri1 + tl;
+                                }
+
+                                if (date.Day == 21)
+                                {
+                                    long.TryParse(at.C21, out var tl);
+                                    fri1 = fri1 + tl;
+                                }
+
+                                if (date.Day == 22)
+                                {
+                                    long.TryParse(at.C22, out var tl);
+                                    fri1 = fri1 + tl;
+                                }
+
+                                if (date.Day == 23)
+                                {
+                                    long.TryParse(at.C23, out var tl);
+                                    fri1 = fri1 + tl;
+                                }
+
+                                if (date.Day == 24)
+                                {
+                                    long.TryParse(at.C24, out var tl);
+                                    fri1 = fri1 + tl;
+                                }
+
+                                if (date.Day == 25)
+                                {
+                                    long.TryParse(at.C25, out var tl);
+                                    fri1 = fri1 + tl;
+                                }
+
+                                if (date.Day == 26)
+                                {
+                                    long.TryParse(at.C26, out var tl);
+                                    fri1 = fri1 + tl;
+                                }
+
+                                if (date.Day == 27)
+                                {
+                                    long.TryParse(at.C27, out var tl);
+                                    fri1 = fri1 + tl;
+                                }
+
+                                if (date.Day == 28)
+                                {
+                                    long.TryParse(at.C28, out var tl);
+                                    fri1 = fri1 + tl;
+                                }
+
+                                if (date.Day == 29)
+                                {
+                                    long.TryParse(at.C29, out var tl);
+                                    fri1 = fri1 + tl;
+                                }
+
+                                if (date.Day == 30)
+                                {
+                                    long.TryParse(at.C30, out var tl);
+                                    fri1 = fri1 + tl;
+                                }
+
+                                if (date.Day == 31)
+                                {
+                                    long.TryParse(at.C31, out var tl);
+                                    fri1 = fri1 + tl;
+                                }
+
+                                at.FridayHours = fri1;
                             }
 
-                            if (date.Day == 2)
-                            {
-                                long.TryParse(at.C2, out var tl);
-                                fri1 = fri1 + tl;
-                            }
-
-                            if (date.Day == 3)
-                            {
-                                long.TryParse(at.C3, out var tl);
-                                fri1 = fri1 + tl;
-                            }
-
-                            if (date.Day == 4)
-                            {
-                                long.TryParse(at.C4, out var tl);
-                                fri1 = fri1 + tl;
-                            }
-
-                            if (date.Day == 5)
-                            {
-                                long.TryParse(at.C5, out var tl);
-                                fri1 = fri1 + tl;
-                            }
-
-                            if (date.Day == 6)
-                            {
-                                long.TryParse(at.C6, out var tl);
-                                fri1 = fri1 + tl;
-                            }
-
-                            if (date.Day == 7)
-                            {
-                                long.TryParse(at.C7, out var tl);
-                                fri1 = fri1 + tl;
-                            }
-
-                            if (date.Day == 8)
-                            {
-                                long.TryParse(at.C8, out var tl);
-                                fri1 = fri1 + tl;
-                            }
-
-                            if (date.Day == 9)
-                            {
-                                long.TryParse(at.C9, out var tl);
-                                fri1 = fri1 + tl;
-                            }
-
-                            if (date.Day == 10)
-                            {
-                                long.TryParse(at.C10, out var tl);
-                                fri1 = fri1 + tl;
-                            }
-
-                            if (date.Day == 11)
-                            {
-                                long.TryParse(at.C11, out var tl);
-                                fri1 = fri1 + tl;
-                            }
-
-                            if (date.Day == 12)
-                            {
-                                long.TryParse(at.C11, out var tl);
-                                fri1 = fri1 + tl;
-                            }
-
-                            if (date.Day == 13)
-                            {
-                                long.TryParse(at.C13, out var tl);
-                                fri1 = fri1 + tl;
-                            }
-
-                            if (date.Day == 14)
-                            {
-                                long.TryParse(at.C14, out var tl);
-                                fri1 = fri1 + tl;
-                            }
-
-                            if (date.Day == 15)
-                            {
-                                long.TryParse(at.C15, out var tl);
-                                fri1 = fri1 + tl;
-                            }
-
-                            if (date.Day == 16)
-                            {
-                                long.TryParse(at.C16, out var tl);
-                                fri1 = fri1 + tl;
-                            }
-
-                            if (date.Day == 17)
-                            {
-                                long.TryParse(at.C17, out var tl);
-                                fri1 = fri1 + tl;
-                            }
-
-                            if (date.Day == 18)
-                            {
-                                long.TryParse(at.C18, out var tl);
-                                fri1 = fri1 + tl;
-                            }
-
-                            if (date.Day == 19)
-                            {
-                                long.TryParse(at.C19, out var tl);
-                                fri1 = fri1 + tl;
-                            }
-
-                            if (date.Day == 20)
-                            {
-                                long.TryParse(at.C20, out var tl);
-                                fri1 = fri1 + tl;
-                            }
-
-                            if (date.Day == 21)
-                            {
-                                long.TryParse(at.C21, out var tl);
-                                fri1 = fri1 + tl;
-                            }
-
-                            if (date.Day == 22)
-                            {
-                                long.TryParse(at.C22, out var tl);
-                                fri1 = fri1 + tl;
-                            }
-
-                            if (date.Day == 23)
-                            {
-                                long.TryParse(at.C23, out var tl);
-                                fri1 = fri1 + tl;
-                            }
-
-                            if (date.Day == 24)
-                            {
-                                long.TryParse(at.C24, out var tl);
-                                fri1 = fri1 + tl;
-                            }
-
-                            if (date.Day == 25)
-                            {
-                                long.TryParse(at.C25, out var tl);
-                                fri1 = fri1 + tl;
-                            }
-
-                            if (date.Day == 26)
-                            {
-                                long.TryParse(at.C26, out var tl);
-                                fri1 = fri1 + tl;
-                            }
-
-                            if (date.Day == 27)
-                            {
-                                long.TryParse(at.C27, out var tl);
-                                fri1 = fri1 + tl;
-                            }
-
-                            if (date.Day == 28)
-                            {
-                                long.TryParse(at.C28, out var tl);
-                                fri1 = fri1 + tl;
-                            }
-
-                            if (date.Day == 29)
-                            {
-                                long.TryParse(at.C29, out var tl);
-                                fri1 = fri1 + tl;
-                            }
-
-                            if (date.Day == 30)
-                            {
-                                long.TryParse(at.C30, out var tl);
-                                fri1 = fri1 + tl;
-                            }
-
-                            if (date.Day == 31)
-                            {
-                                long.TryParse(at.C31, out var tl);
-                                fri1 = fri1 + tl;
-                            }
-                            
-                            at.FridayHours = fri1;
+                            date = date.AddDays(1);
                         }
 
-                        date = date.AddDays(1);
-                    }
+                        var hday = this.db.Holidays.ToList();
+                        date = new DateTime(aa.TMonth.Year, aa.TMonth.Month, 1);
+                        for (var i = 0; i < DateTime.DaysInMonth(aa.TMonth.Year, aa.TMonth.Month); i++)
+                        {
+                            if (hday.Exists(x => x.Date == date))
+                            {
+                                if (date.Day == 1)
+                                {
+                                    long.TryParse(at.C1, out var tl);
+                                    holi = holi + tl;
+                                }
 
+                                if (date.Day == 2)
+                                {
+                                    long.TryParse(at.C2, out var tl);
+                                    holi = holi + tl;
+                                }
+
+                                if (date.Day == 3)
+                                {
+                                    long.TryParse(at.C3, out var tl);
+                                    holi = holi + tl;
+                                }
+
+                                if (date.Day == 4)
+                                {
+                                    long.TryParse(at.C4, out var tl);
+                                    holi = holi + tl;
+                                }
+
+                                if (date.Day == 5)
+                                {
+                                    long.TryParse(at.C5, out var tl);
+                                    holi = holi + tl;
+                                }
+
+                                if (date.Day == 6)
+                                {
+                                    long.TryParse(at.C6, out var tl);
+                                    holi = holi + tl;
+                                }
+
+                                if (date.Day == 7)
+                                {
+                                    long.TryParse(at.C7, out var tl);
+                                    holi = holi + tl;
+                                }
+
+                                if (date.Day == 8)
+                                {
+                                    long.TryParse(at.C8, out var tl);
+                                    holi = holi + tl;
+                                }
+
+                                if (date.Day == 9)
+                                {
+                                    long.TryParse(at.C9, out var tl);
+                                    holi = holi + tl;
+                                }
+
+                                if (date.Day == 10)
+                                {
+                                    long.TryParse(at.C10, out var tl);
+                                    holi = holi + tl;
+                                }
+
+                                if (date.Day == 11)
+                                {
+                                    long.TryParse(at.C11, out var tl);
+                                    holi = holi + tl;
+                                }
+
+                                if (date.Day == 12)
+                                {
+                                    long.TryParse(at.C11, out var tl);
+                                    holi = holi + tl;
+                                }
+
+                                if (date.Day == 13)
+                                {
+                                    long.TryParse(at.C13, out var tl);
+                                    holi = holi + tl;
+                                }
+
+                                if (date.Day == 14)
+                                {
+                                    long.TryParse(at.C14, out var tl);
+                                    holi = holi + tl;
+                                }
+
+                                if (date.Day == 15)
+                                {
+                                    long.TryParse(at.C15, out var tl);
+                                    holi = holi + tl;
+                                }
+
+                                if (date.Day == 16)
+                                {
+                                    long.TryParse(at.C16, out var tl);
+                                    holi = holi + tl;
+                                }
+
+                                if (date.Day == 17)
+                                {
+                                    long.TryParse(at.C17, out var tl);
+                                    holi = holi + tl;
+                                }
+
+                                if (date.Day == 18)
+                                {
+                                    long.TryParse(at.C18, out var tl);
+                                    holi = holi + tl;
+                                }
+
+                                if (date.Day == 19)
+                                {
+                                    long.TryParse(at.C19, out var tl);
+                                    holi = holi + tl;
+                                }
+
+                                if (date.Day == 20)
+                                {
+                                    long.TryParse(at.C20, out var tl);
+                                    holi = holi + tl;
+                                }
+
+                                if (date.Day == 21)
+                                {
+                                    long.TryParse(at.C21, out var tl);
+                                    holi = holi + tl;
+                                }
+
+                                if (date.Day == 22)
+                                {
+                                    long.TryParse(at.C22, out var tl);
+                                    holi = holi + tl;
+                                }
+
+                                if (date.Day == 23)
+                                {
+                                    long.TryParse(at.C23, out var tl);
+                                    holi = holi + tl;
+                                }
+
+                                if (date.Day == 24)
+                                {
+                                    long.TryParse(at.C24, out var tl);
+                                    holi = holi + tl;
+                                }
+
+                                if (date.Day == 25)
+                                {
+                                    long.TryParse(at.C25, out var tl);
+                                    holi = holi + tl;
+                                }
+
+                                if (date.Day == 26)
+                                {
+                                    long.TryParse(at.C26, out var tl);
+                                    holi = holi + tl;
+                                }
+
+                                if (date.Day == 27)
+                                {
+                                    long.TryParse(at.C27, out var tl);
+                                    holi = holi + tl;
+                                }
+
+                                if (date.Day == 28)
+                                {
+                                    long.TryParse(at.C28, out var tl);
+                                    holi = holi + tl;
+                                }
+
+                                if (date.Day == 29)
+                                {
+                                    long.TryParse(at.C29, out var tl);
+                                    holi = holi + tl;
+                                }
+
+                                if (date.Day == 30)
+                                {
+                                    long.TryParse(at.C30, out var tl);
+                                    holi = holi + tl;
+                                }
+
+                                if (date.Day == 31)
+                                {
+                                    long.TryParse(at.C31, out var tl);
+                                    holi = holi + tl;
+                                }
+
+                                at.Holidays = holi;
+                            }
+
+                            date = date.AddDays(1);
+                        }
                         {
                             at = this.db.Attendances.Find(check.First().ID);
                             at.TotalHours = 0;
@@ -2626,12 +2727,13 @@
                             long.TryParse(at.C30, out var tl29);
                             long.TryParse(at.C31, out var tl30);
                             long.TryParse(at.TotalHours.ToString(), out var atlg);
-                            at.TotalHours = tl + tl1 + tl2 + tl3 + tl4 + tl5 + tl6 + tl7 + tl8 + tl9 + tl10 + tl11 + tl12
-                                            + tl13 + tl14 + tl15 + tl16 + tl17 + tl18 + tl19 + tl20 + tl21 + tl22 + tl23
-                                            + tl24 + tl25 + tl26 + tl27 + tl28 + tl29 + tl30;
+                            at.TotalHours = tl + tl1 + tl2 + tl3 + tl4 + tl5 + tl6 + tl7 + tl8 + tl9 + tl10 + tl11
+                                            + tl12 + tl13 + tl14 + tl15 + tl16 + tl17 + tl18 + tl19 + tl20 + tl21 + tl22
+                                            + tl23 + tl24 + tl25 + tl26 + tl27 + tl28 + tl29 + tl30;
                             this.db.Entry(at).State = EntityState.Modified;
                             this.db.SaveChanges();
-                            var fday = GetAll(aa.TMonth);
+                            var fday = this.GetAll(aa.TMonth);
+                            var hlistday = this.GetAllholi(aa.TMonth);
                             double.TryParse(b.NormalTimeUpto.ToString(), out var tho);
                             {
                                 var t = new List<long>();
@@ -2668,429 +2770,1141 @@
                                 t.Add(tl29);
                                 t.Add(tl30);
                                 long tho1 = 0;
-                                int i = 0;
+                                var i = 0;
                                 foreach (var l in t)
                                 {
                                     i++;
-                                    if (!fday.Exists(x=>x.Equals(i)))
-                                    {
+                                    if (!(fday.Exists(x => x.Equals(i)) || hlistday.Exists(x => x.Equals(i))))
                                         if (l > tho)
                                         {
                                             tho1 += l - (long)tho;
                                             at.TotalOverTime = tho1;
                                         }
-                                    }
-                                    
                                 }
+
                                 this.db.Entry(at).State = EntityState.Modified;
                                 this.db.SaveChanges();
                             }
-                        {
-                            at.TotalSickLeave = 0;
-                            long ts = 0;
-                            if (!at.C1.IsNullOrWhiteSpace())
-                                if (at.C1.Equals("S"))
-                                    ts = ts + 1;
-                            if (!at.C2.IsNullOrWhiteSpace())
-                                if (at.C2.Equals("S"))
-                                    ts = ts + 1;
-                            if (!at.C3.IsNullOrWhiteSpace())
-                                if (at.C3.Equals("S"))
-                                    ts = ts + 1;
-                            if (!at.C4.IsNullOrWhiteSpace())
-                                if (at.C4.Equals("S"))
-                                    ts = ts + 1;
-                            if (!at.C5.IsNullOrWhiteSpace())
-                                if (at.C5.Equals("S"))
-                                    ts = ts + 1;
-                            if (!at.C6.IsNullOrWhiteSpace())
-                                if (at.C6.Equals("S"))
-                                    ts = ts + 1;
-                            if (!at.C7.IsNullOrWhiteSpace())
-                                if (at.C7.Equals("S"))
-                                    ts = ts + 1;
-                            if (!at.C8.IsNullOrWhiteSpace())
-                                if (at.C8.Equals("S"))
-                                    ts = ts + 1;
-                            if (!at.C9.IsNullOrWhiteSpace())
-                                if (at.C9.Equals("S"))
-                                    ts = ts + 1;
-                            if (!at.C10.IsNullOrWhiteSpace())
-                                if (at.C10.Equals("S"))
-                                    ts = ts + 1;
-                            if (!at.C11.IsNullOrWhiteSpace())
-                                if (at.C11.Equals("S"))
-                                    ts = ts + 1;
-                            if (!at.C12.IsNullOrWhiteSpace())
-                                if (at.C12.Equals("S"))
-                                    ts = ts + 1;
-                            if (!at.C13.IsNullOrWhiteSpace())
-                                if (at.C13.Equals("S"))
-                                    ts = ts + 1;
-                            if (!at.C14.IsNullOrWhiteSpace())
-                                if (at.C14.Equals("S"))
-                                    ts = ts + 1;
-                            if (!at.C15.IsNullOrWhiteSpace())
-                                if (at.C15.Equals("S"))
-                                    ts = ts + 1;
-                            if (!at.C16.IsNullOrWhiteSpace())
-                                if (at.C16.Equals("S"))
-                                    ts = ts + 1;
-                            if (!at.C17.IsNullOrWhiteSpace())
-                                if (at.C17.Equals("S"))
-                                    ts = ts + 1;
-                            if (!at.C18.IsNullOrWhiteSpace())
-                                if (at.C18.Equals("S"))
-                                    ts = ts + 1;
-                            if (!at.C19.IsNullOrWhiteSpace())
-                                if (at.C19.Equals("S"))
-                                    ts = ts + 1;
-                            if (!at.C20.IsNullOrWhiteSpace())
-                                if (at.C20.Equals("S"))
-                                    ts = ts + 1;
-                            if (!at.C21.IsNullOrWhiteSpace())
-                                if (at.C21.Equals("S"))
-                                    ts = ts + 1;
-                            if (!at.C22.IsNullOrWhiteSpace())
-                                if (at.C22.Equals("S"))
-                                    ts = ts + 1;
-                            if (!at.C23.IsNullOrWhiteSpace())
-                                if (at.C23.Equals("S"))
-                                    ts = ts + 1;
-                            if (!at.C24.IsNullOrWhiteSpace())
-                                if (at.C24.Equals("S"))
-                                    ts = ts + 1;
-                            if (!at.C25.IsNullOrWhiteSpace())
-                                if (at.C25.Equals("S"))
-                                    ts = ts + 1;
-                            if (!at.C26.IsNullOrWhiteSpace())
-                                if (at.C26.Equals("S"))
-                                    ts = ts + 1;
-                            if (!at.C27.IsNullOrWhiteSpace())
-                                if (at.C27.Equals("S"))
-                                    ts = ts + 1;
-                            if (!at.C28.IsNullOrWhiteSpace())
-                                if (at.C28.Equals("S"))
-                                    ts = ts + 1;
-                            if (!at.C29.IsNullOrWhiteSpace())
-                                if (at.C29.Equals("S"))
-                                    ts = ts + 1;
-                            if (!at.C30.IsNullOrWhiteSpace())
-                                if (at.C30.Equals("S"))
-                                    ts = ts + 1;
-                            if (!at.C31.IsNullOrWhiteSpace())
-                                if (at.C31.Equals("S"))
-                                    ts = ts + 1;
+                            {
+                                var i = 0;
+                                at.TotalSickLeave = 0;
+                                long ts = 0;
+                                if (!at.C1.IsNullOrWhiteSpace())
+                                {
+                                    if (at.C1.Equals("S"))
+                                        if (!(fday.Exists(x => x.Equals(1)) || hlistday.Exists(x => x.Equals(1))))
+                                            ts = ts + 1;
+                                    i++;
+                                }
 
-                            at.TotalSickLeave = ts;
-                            this.db.Entry(at).State = EntityState.Modified;
-                            this.db.SaveChanges();
-                            }
-                        {
-                            at.TotalVL = 0;
-                            long tv = 0;
-                            if (!at.C1.IsNullOrWhiteSpace())
-                                if (at.C1.Equals("V"))
-                                    tv = tv + 1;
-                            if (!at.C2.IsNullOrWhiteSpace())
-                                if (at.C2.Equals("V"))
-                                    tv = tv + 1;
-                            if (!at.C3.IsNullOrWhiteSpace())
-                                if (at.C3.Equals("V"))
-                                    tv = tv + 1;
-                            if (!at.C4.IsNullOrWhiteSpace())
-                                if (at.C4.Equals("V"))
-                                    tv = tv + 1;
-                            if (!at.C5.IsNullOrWhiteSpace())
-                                if (at.C5.Equals("V"))
-                                    tv = tv + 1;
-                            if (!at.C6.IsNullOrWhiteSpace())
-                                if (at.C6.Equals("V"))
-                                    tv = tv + 1;
-                            if (!at.C7.IsNullOrWhiteSpace())
-                                if (at.C7.Equals("V"))
-                                    tv = tv + 1;
-                            if (!at.C8.IsNullOrWhiteSpace())
-                                if (at.C8.Equals("V"))
-                                    tv = tv + 1;
-                            if (!at.C9.IsNullOrWhiteSpace())
-                                if (at.C9.Equals("V"))
-                                    tv = tv + 1;
-                            if (!at.C10.IsNullOrWhiteSpace())
-                                if (at.C10.Equals("V"))
-                                    tv = tv + 1;
-                            if (!at.C11.IsNullOrWhiteSpace())
-                                if (at.C11.Equals("V"))
-                                    tv = tv + 1;
-                            if (!at.C12.IsNullOrWhiteSpace())
-                                if (at.C12.Equals("V"))
-                                    tv = tv + 1;
-                            if (!at.C13.IsNullOrWhiteSpace())
-                                if (at.C13.Equals("V"))
-                                    tv = tv + 1;
-                            if (!at.C14.IsNullOrWhiteSpace())
-                                if (at.C14.Equals("V"))
-                                    tv = tv + 1;
-                            if (!at.C15.IsNullOrWhiteSpace())
-                                if (at.C15.Equals("V"))
-                                    tv = tv + 1;
-                            if (!at.C16.IsNullOrWhiteSpace())
-                                if (at.C16.Equals("V"))
-                                    tv = tv + 1;
-                            if (!at.C17.IsNullOrWhiteSpace())
-                                if (at.C17.Equals("V"))
-                                    tv = tv + 1;
-                            if (!at.C18.IsNullOrWhiteSpace())
-                                if (at.C18.Equals("V"))
-                                    tv = tv + 1;
-                            if (!at.C19.IsNullOrWhiteSpace())
-                                if (at.C19.Equals("V"))
-                                    tv = tv + 1;
-                            if (!at.C20.IsNullOrWhiteSpace())
-                                if (at.C20.Equals("V"))
-                                    tv = tv + 1;
-                            if (!at.C21.IsNullOrWhiteSpace())
-                                if (at.C21.Equals("V"))
-                                    tv = tv + 1;
-                            if (!at.C22.IsNullOrWhiteSpace())
-                                if (at.C22.Equals("V"))
-                                    tv = tv + 1;
-                            if (!at.C23.IsNullOrWhiteSpace())
-                                if (at.C23.Equals("V"))
-                                    tv = tv + 1;
-                            if (!at.C24.IsNullOrWhiteSpace())
-                                if (at.C24.Equals("V"))
-                                    tv = tv + 1;
-                            if (!at.C25.IsNullOrWhiteSpace())
-                                if (at.C25.Equals("V"))
-                                    tv = tv + 1;
-                            if (!at.C26.IsNullOrWhiteSpace())
-                                if (at.C26.Equals("V"))
-                                    tv = tv + 1;
-                            if (!at.C27.IsNullOrWhiteSpace())
-                                if (at.C27.Equals("V"))
-                                    tv = tv + 1;
-                            if (!at.C28.IsNullOrWhiteSpace())
-                                if (at.C28.Equals("V"))
-                                    tv = tv + 1;
-                            if (!at.C29.IsNullOrWhiteSpace())
-                                if (at.C29.Equals("V"))
-                                    tv = tv + 1;
-                            if (!at.C30.IsNullOrWhiteSpace())
-                                if (at.C30.Equals("V"))
-                                    tv = tv + 1;
-                            if (!at.C31.IsNullOrWhiteSpace())
-                                if (at.C31.Equals("V"))
-                                    tv = tv + 1;
+                                if (!at.C2.IsNullOrWhiteSpace())
+                                {
+                                    if (at.C2.Equals("S"))
+                                        if (!(fday.Exists(x => x.Equals(2)) || hlistday.Exists(x => x.Equals(2))))
+                                            ts = ts + 1;
+                                    i++;
+                                }
 
-                            at.TotalVL = tv;
-                            this.db.Entry(at).State = EntityState.Modified;
-                            this.db.SaveChanges();
-                            }
-                        {
-                            at.TotalAbsent = 0;
-                            long tv = 0;
-                            if (!at.C1.IsNullOrWhiteSpace())
-                                if (at.C1.Equals("A"))
-                                    tv = tv + 1;
-                            if (!at.C2.IsNullOrWhiteSpace())
-                                if (at.C2.Equals("A"))
-                                    tv = tv + 1;
-                            if (!at.C3.IsNullOrWhiteSpace())
-                                if (at.C3.Equals("A"))
-                                    tv = tv + 1;
-                            if (!at.C4.IsNullOrWhiteSpace())
-                                if (at.C4.Equals("A"))
-                                    tv = tv + 1;
-                            if (!at.C5.IsNullOrWhiteSpace())
-                                if (at.C5.Equals("A"))
-                                    tv = tv + 1;
-                            if (!at.C6.IsNullOrWhiteSpace())
-                                if (at.C6.Equals("A"))
-                                    tv = tv + 1;
-                            if (!at.C7.IsNullOrWhiteSpace())
-                                if (at.C7.Equals("A"))
-                                    tv = tv + 1;
-                            if (!at.C8.IsNullOrWhiteSpace())
-                                if (at.C8.Equals("A"))
-                                    tv = tv + 1;
-                            if (!at.C9.IsNullOrWhiteSpace())
-                                if (at.C9.Equals("A"))
-                                    tv = tv + 1;
-                            if (!at.C10.IsNullOrWhiteSpace())
-                                if (at.C10.Equals("A"))
-                                    tv = tv + 1;
-                            if (!at.C11.IsNullOrWhiteSpace())
-                                if (at.C11.Equals("A"))
-                                    tv = tv + 1;
-                            if (!at.C12.IsNullOrWhiteSpace())
-                                if (at.C12.Equals("A"))
-                                    tv = tv + 1;
-                            if (!at.C13.IsNullOrWhiteSpace())
-                                if (at.C13.Equals("A"))
-                                    tv = tv + 1;
-                            if (!at.C14.IsNullOrWhiteSpace())
-                                if (at.C14.Equals("A"))
-                                    tv = tv + 1;
-                            if (!at.C15.IsNullOrWhiteSpace())
-                                if (at.C15.Equals("A"))
-                                    tv = tv + 1;
-                            if (!at.C16.IsNullOrWhiteSpace())
-                                if (at.C16.Equals("A"))
-                                    tv = tv + 1;
-                            if (!at.C17.IsNullOrWhiteSpace())
-                                if (at.C17.Equals("A"))
-                                    tv = tv + 1;
-                            if (!at.C18.IsNullOrWhiteSpace())
-                                if (at.C18.Equals("A"))
-                                    tv = tv + 1;
-                            if (!at.C19.IsNullOrWhiteSpace())
-                                if (at.C19.Equals("A"))
-                                    tv = tv + 1;
-                            if (!at.C20.IsNullOrWhiteSpace())
-                                if (at.C20.Equals("A"))
-                                    tv = tv + 1;
-                            if (!at.C21.IsNullOrWhiteSpace())
-                                if (at.C21.Equals("A"))
-                                    tv = tv + 1;
-                            if (!at.C22.IsNullOrWhiteSpace())
-                                if (at.C22.Equals("A"))
-                                    tv = tv + 1;
-                            if (!at.C23.IsNullOrWhiteSpace())
-                                if (at.C23.Equals("A"))
-                                    tv = tv + 1;
-                            if (!at.C24.IsNullOrWhiteSpace())
-                                if (at.C24.Equals("A"))
-                                    tv = tv + 1;
-                            if (!at.C25.IsNullOrWhiteSpace())
-                                if (at.C25.Equals("A"))
-                                    tv = tv + 1;
-                            if (!at.C26.IsNullOrWhiteSpace())
-                                if (at.C26.Equals("A"))
-                                    tv = tv + 1;
-                            if (!at.C27.IsNullOrWhiteSpace())
-                                if (at.C27.Equals("A"))
-                                    tv = tv + 1;
-                            if (!at.C28.IsNullOrWhiteSpace())
-                                if (at.C28.Equals("A"))
-                                    tv = tv + 1;
-                            if (!at.C29.IsNullOrWhiteSpace())
-                                if (at.C29.Equals("A"))
-                                    tv = tv + 1;
-                            if (!at.C30.IsNullOrWhiteSpace())
-                                if (at.C30.Equals("A"))
-                                    tv = tv + 1;
-                            if (!at.C31.IsNullOrWhiteSpace())
-                                if (at.C31.Equals("A"))
-                                    tv = tv + 1;
+                                if (!at.C3.IsNullOrWhiteSpace())
+                                {
+                                    if (at.C3.Equals("S"))
+                                        if (!(fday.Exists(x => x.Equals(3)) || hlistday.Exists(x => x.Equals(3))))
+                                            ts = ts + 1;
+                                    i++;
+                                }
 
-                            at.TotalAbsent = tv;
-                            this.db.Entry(at).State = EntityState.Modified;
-                            this.db.SaveChanges();
-                            }
-                        {
-                            at.TotalTransefer = 0;
-                            long tv = 0;
-                            if (!at.C1.IsNullOrWhiteSpace())
-                                if (at.C1.Equals("T"))
-                                    tv = tv + 1;
-                            if (!at.C2.IsNullOrWhiteSpace())
-                                if (at.C2.Equals("T"))
-                                    tv = tv + 1;
-                            if (!at.C3.IsNullOrWhiteSpace())
-                                if (at.C3.Equals("T"))
-                                    tv = tv + 1;
-                            if (!at.C4.IsNullOrWhiteSpace())
-                                if (at.C4.Equals("T"))
-                                    tv = tv + 1;
-                            if (!at.C5.IsNullOrWhiteSpace())
-                                if (at.C5.Equals("T"))
-                                    tv = tv + 1;
-                            if (!at.C6.IsNullOrWhiteSpace())
-                                if (at.C6.Equals("T"))
-                                    tv = tv + 1;
-                            if (!at.C7.IsNullOrWhiteSpace())
-                                if (at.C7.Equals("T"))
-                                    tv = tv + 1;
-                            if (!at.C8.IsNullOrWhiteSpace())
-                                if (at.C8.Equals("T"))
-                                    tv = tv + 1;
-                            if (!at.C9.IsNullOrWhiteSpace())
-                                if (at.C9.Equals("T"))
-                                    tv = tv + 1;
-                            if (!at.C10.IsNullOrWhiteSpace())
-                                if (at.C10.Equals("T"))
-                                    tv = tv + 1;
-                            if (!at.C11.IsNullOrWhiteSpace())
-                                if (at.C11.Equals("T"))
-                                    tv = tv + 1;
-                            if (!at.C12.IsNullOrWhiteSpace())
-                                if (at.C12.Equals("T"))
-                                    tv = tv + 1;
-                            if (!at.C13.IsNullOrWhiteSpace())
-                                if (at.C13.Equals("T"))
-                                    tv = tv + 1;
-                            if (!at.C14.IsNullOrWhiteSpace())
-                                if (at.C14.Equals("T"))
-                                    tv = tv + 1;
-                            if (!at.C15.IsNullOrWhiteSpace())
-                                if (at.C15.Equals("T"))
-                                    tv = tv + 1;
-                            if (!at.C16.IsNullOrWhiteSpace())
-                                if (at.C16.Equals("T"))
-                                    tv = tv + 1;
-                            if (!at.C17.IsNullOrWhiteSpace())
-                                if (at.C17.Equals("T"))
-                                    tv = tv + 1;
-                            if (!at.C18.IsNullOrWhiteSpace())
-                                if (at.C18.Equals("T"))
-                                    tv = tv + 1;
-                            if (!at.C19.IsNullOrWhiteSpace())
-                                if (at.C19.Equals("T"))
-                                    tv = tv + 1;
-                            if (!at.C20.IsNullOrWhiteSpace())
-                                if (at.C20.Equals("T"))
-                                    tv = tv + 1;
-                            if (!at.C21.IsNullOrWhiteSpace())
-                                if (at.C21.Equals("T"))
-                                    tv = tv + 1;
-                            if (!at.C22.IsNullOrWhiteSpace())
-                                if (at.C22.Equals("T"))
-                                    tv = tv + 1;
-                            if (!at.C23.IsNullOrWhiteSpace())
-                                if (at.C23.Equals("T"))
-                                    tv = tv + 1;
-                            if (!at.C24.IsNullOrWhiteSpace())
-                                if (at.C24.Equals("T"))
-                                    tv = tv + 1;
-                            if (!at.C25.IsNullOrWhiteSpace())
-                                if (at.C25.Equals("T"))
-                                    tv = tv + 1;
-                            if (!at.C26.IsNullOrWhiteSpace())
-                                if (at.C26.Equals("T"))
-                                    tv = tv + 1;
-                            if (!at.C27.IsNullOrWhiteSpace())
-                                if (at.C27.Equals("T"))
-                                    tv = tv + 1;
-                            if (!at.C28.IsNullOrWhiteSpace())
-                                if (at.C28.Equals("T"))
-                                    tv = tv + 1;
-                            if (!at.C29.IsNullOrWhiteSpace())
-                                if (at.C29.Equals("T"))
-                                    tv = tv + 1;
-                            if (!at.C30.IsNullOrWhiteSpace())
-                                if (at.C30.Equals("T"))
-                                    tv = tv + 1;
-                            if (!at.C31.IsNullOrWhiteSpace())
-                                if (at.C31.Equals("T"))
-                                    tv = tv + 1;
+                                if (!at.C4.IsNullOrWhiteSpace())
+                                {
+                                    if (at.C4.Equals("S"))
+                                        if (!(fday.Exists(x => x.Equals(4)) || hlistday.Exists(x => x.Equals(4))))
+                                            ts = ts + 1;
+                                    i++;
+                                }
 
-                            at.TotalTransefer = tv;
-                            this.db.Entry(at).State = EntityState.Modified;
-                            this.db.SaveChanges();
+                                if (!at.C5.IsNullOrWhiteSpace())
+                                {
+                                    if (at.C5.Equals("S"))
+                                        if (!(fday.Exists(x => x.Equals(5)) || hlistday.Exists(x => x.Equals(5))))
+                                            ts = ts + 1;
+                                    i++;
+                                }
+
+                                if (!at.C6.IsNullOrWhiteSpace())
+                                {
+                                    if (at.C6.Equals("S"))
+                                        if (!(fday.Exists(x => x.Equals(6)) || hlistday.Exists(x => x.Equals(6))))
+                                            ts = ts + 1;
+                                    i++;
+                                }
+
+                                if (!at.C7.IsNullOrWhiteSpace())
+                                {
+                                    if (at.C7.Equals("S"))
+                                        if (!(fday.Exists(x => x.Equals(7)) || hlistday.Exists(x => x.Equals(7))))
+                                            ts = ts + 1;
+                                    i++;
+                                }
+
+                                if (!at.C8.IsNullOrWhiteSpace())
+                                {
+                                    if (at.C8.Equals("S"))
+                                        if (!(fday.Exists(x => x.Equals(8)) || hlistday.Exists(x => x.Equals(8))))
+                                            ts = ts + 1;
+                                    i++;
+                                }
+
+                                if (!at.C9.IsNullOrWhiteSpace())
+                                {
+                                    if (at.C9.Equals("S"))
+                                        if (!(fday.Exists(x => x.Equals(9)) || hlistday.Exists(x => x.Equals(9))))
+                                            ts = ts + 1;
+                                    i++;
+                                }
+
+                                if (!at.C10.IsNullOrWhiteSpace())
+                                {
+                                    if (at.C10.Equals("S"))
+                                        if (!(fday.Exists(x => x.Equals(10)) || hlistday.Exists(x => x.Equals(10))))
+                                            ts = ts + 1;
+                                    i++;
+                                }
+
+                                if (!at.C11.IsNullOrWhiteSpace())
+                                {
+                                    if (at.C11.Equals("S"))
+                                        if (!(fday.Exists(x => x.Equals(11)) || hlistday.Exists(x => x.Equals(11))))
+                                            ts = ts + 1;
+                                    i++;
+                                }
+
+                                if (!at.C12.IsNullOrWhiteSpace())
+                                {
+                                    if (at.C12.Equals("S"))
+                                        if (!(fday.Exists(x => x.Equals(12)) || hlistday.Exists(x => x.Equals(12))))
+                                            ts = ts + 1;
+                                    i++;
+                                }
+
+                                if (!at.C13.IsNullOrWhiteSpace())
+                                {
+                                    if (at.C13.Equals("S"))
+                                        if (!(fday.Exists(x => x.Equals(13)) || hlistday.Exists(x => x.Equals(13))))
+                                            ts = ts + 1;
+                                    i++;
+                                }
+
+                                if (!at.C14.IsNullOrWhiteSpace())
+                                {
+                                    if (at.C14.Equals("S"))
+                                        if (!(fday.Exists(x => x.Equals(14)) || hlistday.Exists(x => x.Equals(14))))
+                                            ts = ts + 1;
+                                    i++;
+                                }
+
+                                if (!at.C15.IsNullOrWhiteSpace())
+                                {
+                                    if (at.C15.Equals("S"))
+                                        if (!(fday.Exists(x => x.Equals(15)) || hlistday.Exists(x => x.Equals(15))))
+                                            ts = ts + 1;
+                                    i++;
+                                }
+
+                                if (!at.C16.IsNullOrWhiteSpace())
+                                {
+                                    if (at.C16.Equals("S"))
+                                        if (!(fday.Exists(x => x.Equals(16)) || hlistday.Exists(x => x.Equals(16))))
+                                            ts = ts + 1;
+                                    i++;
+                                }
+
+                                if (!at.C17.IsNullOrWhiteSpace())
+                                {
+                                    if (at.C17.Equals("S"))
+                                        if (!(fday.Exists(x => x.Equals(17)) || hlistday.Exists(x => x.Equals(17))))
+                                            ts = ts + 1;
+                                    i++;
+                                }
+
+                                if (!at.C18.IsNullOrWhiteSpace())
+                                {
+                                    if (at.C18.Equals("S"))
+                                        if (!(fday.Exists(x => x.Equals(18)) || hlistday.Exists(x => x.Equals(18))))
+                                            ts = ts + 1;
+                                    i++;
+                                }
+
+                                if (!at.C19.IsNullOrWhiteSpace())
+                                {
+                                    if (at.C19.Equals("S"))
+                                        if (!(fday.Exists(x => x.Equals(19)) || hlistday.Exists(x => x.Equals(19))))
+                                            ts = ts + 1;
+                                    i++;
+                                }
+
+                                if (!at.C20.IsNullOrWhiteSpace())
+                                {
+                                    if (at.C20.Equals("S"))
+                                        if (!(fday.Exists(x => x.Equals(20)) || hlistday.Exists(x => x.Equals(20))))
+                                            ts = ts + 1;
+                                    i++;
+                                }
+
+                                if (!at.C21.IsNullOrWhiteSpace())
+                                {
+                                    if (at.C21.Equals("S"))
+                                        if (!(fday.Exists(x => x.Equals(21)) || hlistday.Exists(x => x.Equals(21))))
+                                            ts = ts + 1;
+                                    i++;
+                                }
+
+                                if (!at.C22.IsNullOrWhiteSpace())
+                                {
+                                    if (at.C22.Equals("S"))
+                                        if (!(fday.Exists(x => x.Equals(22)) || hlistday.Exists(x => x.Equals(22))))
+                                            ts = ts + 1;
+                                    i++;
+                                }
+
+                                if (!at.C23.IsNullOrWhiteSpace())
+                                {
+                                    if (at.C23.Equals("S"))
+                                        if (!(fday.Exists(x => x.Equals(23)) || hlistday.Exists(x => x.Equals(23))))
+                                            ts = ts + 1;
+                                    i++;
+                                }
+
+                                if (!at.C24.IsNullOrWhiteSpace())
+                                {
+                                    if (at.C24.Equals("S"))
+                                        if (!(fday.Exists(x => x.Equals(24)) || hlistday.Exists(x => x.Equals(24))))
+                                            ts = ts + 1;
+                                    i++;
+                                }
+
+                                if (!at.C25.IsNullOrWhiteSpace())
+                                {
+                                    if (at.C25.Equals("S"))
+                                        if (!(fday.Exists(x => x.Equals(25)) || hlistday.Exists(x => x.Equals(25))))
+                                            ts = ts + 1;
+                                    i++;
+                                }
+
+                                if (!at.C26.IsNullOrWhiteSpace())
+                                {
+                                    if (at.C26.Equals("S"))
+                                        if (!(fday.Exists(x => x.Equals(26)) || hlistday.Exists(x => x.Equals(26))))
+                                            ts = ts + 1;
+                                    i++;
+                                }
+
+                                if (!at.C27.IsNullOrWhiteSpace())
+                                {
+                                    if (at.C27.Equals("S"))
+                                        if (!(fday.Exists(x => x.Equals(27)) || hlistday.Exists(x => x.Equals(27))))
+                                            ts = ts + 1;
+                                    i++;
+                                }
+
+                                if (!at.C28.IsNullOrWhiteSpace())
+                                {
+                                    if (at.C28.Equals("S"))
+                                        if (!(fday.Exists(x => x.Equals(28)) || hlistday.Exists(x => x.Equals(29))))
+                                            ts = ts + 1;
+                                    i++;
+                                }
+
+                                if (!at.C29.IsNullOrWhiteSpace())
+                                {
+                                    if (at.C29.Equals("S"))
+                                        if (!(fday.Exists(x => x.Equals(29)) || hlistday.Exists(x => x.Equals(29))))
+                                            ts = ts + 1;
+                                    i++;
+                                }
+
+                                if (!at.C30.IsNullOrWhiteSpace())
+                                {
+                                    if (at.C30.Equals("S"))
+                                        if (!(fday.Exists(x => x.Equals(30)) || hlistday.Exists(x => x.Equals(30))))
+                                            ts = ts + 1;
+                                    i++;
+                                }
+
+                                if (!at.C31.IsNullOrWhiteSpace())
+                                {
+                                    if (at.C31.Equals("S"))
+                                        if (!(fday.Exists(x => x.Equals(31)) || hlistday.Exists(x => x.Equals(31))))
+                                            ts = ts + 1;
+                                    i++;
+                                }
+
+                                at.TotalSickLeave = ts;
+                                this.db.Entry(at).State = EntityState.Modified;
+                                this.db.SaveChanges();
                             }
-                        at.status = "panding";
-                    }
+                            {
+                                var i = 0;
+                                at.TotalVL = 0;
+                                long tv = 0;
+                                if (!at.C1.IsNullOrWhiteSpace())
+                                {
+                                    if (at.C1.Equals("V"))
+
+                                        if (!(fday.Exists(x => x.Equals(1)) || hlistday.Exists(x => x.Equals(11))))
+                                            tv = tv + 1;
+
+                                    i++;
+                                }
+
+                                if (!at.C2.IsNullOrWhiteSpace())
+                                {
+                                    if (at.C2.Equals("V"))
+                                        if (!(fday.Exists(x => x.Equals(2)) || hlistday.Exists(x => x.Equals(2))))
+                                            tv = tv + 1;
+
+                                    i++;
+                                }
+
+                                if (!at.C3.IsNullOrWhiteSpace())
+                                {
+                                    if (at.C3.Equals("V"))
+                                        if (!(fday.Exists(x => x.Equals(3)) || hlistday.Exists(x => x.Equals(3))))
+                                            tv = tv + 1;
+
+                                    i++;
+                                }
+
+                                if (!at.C4.IsNullOrWhiteSpace())
+                                {
+                                    if (at.C4.Equals("V"))
+                                        if (!(fday.Exists(x => x.Equals(4)) || hlistday.Exists(x => x.Equals(4))))
+                                            tv = tv + 1;
+
+                                    i++;
+                                }
+
+                                if (!at.C5.IsNullOrWhiteSpace())
+                                {
+                                    if (at.C5.Equals("V"))
+                                        if (!(fday.Exists(x => x.Equals(5)) || hlistday.Exists(x => x.Equals(5))))
+                                            tv = tv + 1;
+
+                                    i++;
+                                }
+
+                                if (!at.C6.IsNullOrWhiteSpace())
+                                {
+                                    if (at.C6.Equals("V"))
+                                        if (!(fday.Exists(x => x.Equals(6)) || hlistday.Exists(x => x.Equals(6))))
+                                            tv = tv + 1;
+
+                                    i++;
+                                }
+
+                                if (!at.C7.IsNullOrWhiteSpace())
+                                {
+                                    if (at.C7.Equals("V"))
+                                        if (!(fday.Exists(x => x.Equals(7)) || hlistday.Exists(x => x.Equals(7))))
+                                            tv = tv + 1;
+
+                                    i++;
+                                }
+
+                                if (!at.C8.IsNullOrWhiteSpace())
+                                {
+                                    if (at.C8.Equals("V"))
+                                        if (!(fday.Exists(x => x.Equals(8)) || hlistday.Exists(x => x.Equals(8))))
+                                            tv = tv + 1;
+
+                                    i++;
+                                }
+
+                                if (!at.C9.IsNullOrWhiteSpace())
+                                {
+                                    if (at.C9.Equals("V"))
+                                        if (!(fday.Exists(x => x.Equals(9)) || hlistday.Exists(x => x.Equals(9))))
+                                            tv = tv + 1;
+
+                                    i++;
+                                }
+
+                                if (!at.C10.IsNullOrWhiteSpace())
+                                {
+                                    if (at.C10.Equals("V"))
+                                        if (!(fday.Exists(x => x.Equals(10)) || hlistday.Exists(x => x.Equals(10))))
+                                            tv = tv + 1;
+
+                                    i++;
+                                }
+
+                                if (!at.C11.IsNullOrWhiteSpace())
+                                {
+                                    if (at.C11.Equals("V"))
+                                        if (!(fday.Exists(x => x.Equals(11)) || hlistday.Exists(x => x.Equals(11))))
+                                            tv = tv + 1;
+
+                                    i++;
+                                }
+
+                                if (!at.C12.IsNullOrWhiteSpace())
+                                {
+                                    if (at.C12.Equals("V"))
+                                        if (!(fday.Exists(x => x.Equals(12)) || hlistday.Exists(x => x.Equals(12))))
+                                            tv = tv + 1;
+
+                                    i++;
+                                }
+
+                                if (!at.C13.IsNullOrWhiteSpace())
+                                {
+                                    if (at.C13.Equals("V"))
+                                        if (!(fday.Exists(x => x.Equals(13)) || hlistday.Exists(x => x.Equals(13))))
+                                            tv = tv + 1;
+
+                                    i++;
+                                }
+
+                                if (!at.C14.IsNullOrWhiteSpace())
+                                {
+                                    if (at.C14.Equals("V"))
+                                        if (!(fday.Exists(x => x.Equals(14)) || hlistday.Exists(x => x.Equals(14))))
+                                            tv = tv + 1;
+
+                                    i++;
+                                }
+
+                                if (!at.C15.IsNullOrWhiteSpace())
+                                {
+                                    if (at.C15.Equals("V"))
+                                        if (!(fday.Exists(x => x.Equals(15)) || hlistday.Exists(x => x.Equals(15))))
+                                            tv = tv + 1;
+
+                                    i++;
+                                }
+
+                                if (!at.C16.IsNullOrWhiteSpace())
+                                {
+                                    if (at.C16.Equals("V"))
+                                        if (!(fday.Exists(x => x.Equals(16)) || hlistday.Exists(x => x.Equals(16))))
+                                            tv = tv + 1;
+
+                                    i++;
+                                }
+
+                                if (!at.C17.IsNullOrWhiteSpace())
+                                {
+                                    if (at.C17.Equals("V"))
+                                        if (!(fday.Exists(x => x.Equals(17)) || hlistday.Exists(x => x.Equals(17))))
+                                            tv = tv + 1;
+
+                                    i++;
+                                }
+
+                                if (!at.C18.IsNullOrWhiteSpace())
+                                {
+                                    if (at.C18.Equals("V"))
+                                        if (!(fday.Exists(x => x.Equals(18)) || hlistday.Exists(x => x.Equals(18))))
+                                            tv = tv + 1;
+
+                                    i++;
+                                }
+
+                                if (!at.C19.IsNullOrWhiteSpace())
+                                {
+                                    if (at.C19.Equals("V"))
+                                        if (!(fday.Exists(x => x.Equals(19)) || hlistday.Exists(x => x.Equals(19))))
+                                            tv = tv + 1;
+
+                                    i++;
+                                }
+
+                                if (!at.C20.IsNullOrWhiteSpace())
+                                {
+                                    if (at.C20.Equals("V"))
+                                        if (!(fday.Exists(x => x.Equals(20)) || hlistday.Exists(x => x.Equals(20))))
+                                            tv = tv + 1;
+
+                                    i++;
+                                }
+
+                                if (!at.C21.IsNullOrWhiteSpace())
+                                {
+                                    if (at.C21.Equals("V"))
+                                        if (!(fday.Exists(x => x.Equals(21)) || hlistday.Exists(x => x.Equals(21))))
+                                            tv = tv + 1;
+
+                                    i++;
+                                }
+
+                                if (!at.C22.IsNullOrWhiteSpace())
+                                {
+                                    if (at.C22.Equals("V"))
+                                        if (!(fday.Exists(x => x.Equals(22)) || hlistday.Exists(x => x.Equals(22))))
+                                            tv = tv + 1;
+
+                                    i++;
+                                }
+
+                                if (!at.C23.IsNullOrWhiteSpace())
+                                {
+                                    if (at.C23.Equals("V"))
+                                        if (!(fday.Exists(x => x.Equals(23)) || hlistday.Exists(x => x.Equals(23))))
+                                            tv = tv + 1;
+
+                                    i++;
+                                }
+
+                                if (!at.C24.IsNullOrWhiteSpace())
+                                {
+                                    if (at.C24.Equals("V"))
+                                        if (!(fday.Exists(x => x.Equals(24)) || hlistday.Exists(x => x.Equals(24))))
+                                            tv = tv + 1;
+
+                                    i++;
+                                }
+
+                                if (!at.C25.IsNullOrWhiteSpace())
+                                {
+                                    if (at.C25.Equals("V"))
+                                        if (!(fday.Exists(x => x.Equals(25)) || hlistday.Exists(x => x.Equals(25))))
+                                            tv = tv + 1;
+
+                                    i++;
+                                }
+
+                                if (!at.C26.IsNullOrWhiteSpace())
+                                {
+                                    if (at.C26.Equals("V"))
+                                        if (!(fday.Exists(x => x.Equals(26)) || hlistday.Exists(x => x.Equals(26))))
+                                            tv = tv + 1;
+
+                                    i++;
+                                }
+
+                                if (!at.C27.IsNullOrWhiteSpace())
+                                {
+                                    if (at.C27.Equals("V"))
+                                        if (!(fday.Exists(x => x.Equals(27)) || hlistday.Exists(x => x.Equals(27))))
+                                            tv = tv + 1;
+
+                                    i++;
+                                }
+
+                                if (!at.C28.IsNullOrWhiteSpace())
+                                {
+                                    if (at.C28.Equals("V"))
+                                        if (!(fday.Exists(x => x.Equals(28)) || hlistday.Exists(x => x.Equals(28))))
+                                            tv = tv + 1;
+
+                                    i++;
+                                }
+
+                                if (!at.C29.IsNullOrWhiteSpace())
+                                {
+                                    if (at.C29.Equals("V"))
+                                        if (!(fday.Exists(x => x.Equals(29)) || hlistday.Exists(x => x.Equals(29))))
+                                            tv = tv + 1;
+
+                                    i++;
+                                }
+
+                                if (!at.C30.IsNullOrWhiteSpace())
+                                {
+                                    if (at.C30.Equals("V"))
+                                        if (!(fday.Exists(x => x.Equals(30)) || hlistday.Exists(x => x.Equals(30))))
+                                            tv = tv + 1;
+
+                                    i++;
+                                }
+
+                                if (!at.C31.IsNullOrWhiteSpace())
+                                {
+                                    if (at.C31.Equals("V"))
+                                        if (!(fday.Exists(x => x.Equals(31)) || hlistday.Exists(x => x.Equals(31))))
+                                            tv = tv + 1;
+
+                                    i++;
+                                }
+
+                                at.TotalVL = tv;
+                                this.db.Entry(at).State = EntityState.Modified;
+                                this.db.SaveChanges();
+                            }
+                            {
+                                var i = 0;
+                                at.TotalAbsent = 0;
+                                long tv = 0;
+                                if (!at.C1.IsNullOrWhiteSpace())
+                                {
+                                    if (at.C1.Equals("A"))
+                                        if (!(fday.Exists(x => x.Equals(1)) || hlistday.Exists(x => x.Equals(1))))
+                                            tv = tv + 1;
+
+                                    i++;
+                                }
+
+                                if (!at.C2.IsNullOrWhiteSpace())
+                                {
+                                    if (at.C2.Equals("A"))
+                                        if (!(fday.Exists(x => x.Equals(2)) || hlistday.Exists(x => x.Equals(2))))
+                                            tv = tv + 1;
+
+                                    i++;
+                                }
+
+                                if (!at.C3.IsNullOrWhiteSpace())
+                                {
+                                    if (at.C3.Equals("A"))
+                                        if (!(fday.Exists(x => x.Equals(3)) || hlistday.Exists(x => x.Equals(3))))
+                                            tv = tv + 1;
+
+                                    i++;
+                                }
+
+                                if (!at.C4.IsNullOrWhiteSpace())
+                                {
+                                    if (at.C4.Equals("A"))
+                                        if (!(fday.Exists(x => x.Equals(4)) || hlistday.Exists(x => x.Equals(4))))
+                                            tv = tv + 1;
+                                    i++;
+                                }
+
+                                if (!at.C5.IsNullOrWhiteSpace())
+                                {
+                                    if (at.C5.Equals("A"))
+                                        if (!(fday.Exists(x => x.Equals(5)) || hlistday.Exists(x => x.Equals(5))))
+                                            tv = tv + 1;
+
+                                    i++;
+                                }
+
+                                if (!at.C6.IsNullOrWhiteSpace())
+                                {
+                                    if (at.C6.Equals("A"))
+                                        if (!(fday.Exists(x => x.Equals(6)) || hlistday.Exists(x => x.Equals(6))))
+                                            tv = tv + 1;
+
+                                    i++;
+                                }
+
+                                if (!at.C7.IsNullOrWhiteSpace())
+                                {
+                                    if (at.C7.Equals("A"))
+                                        if (!(fday.Exists(x => x.Equals(7)) || hlistday.Exists(x => x.Equals(7))))
+                                            tv = tv + 1;
+
+                                    i++;
+                                }
+
+                                if (!at.C8.IsNullOrWhiteSpace())
+                                {
+                                    if (at.C8.Equals("A"))
+                                        if (!(fday.Exists(x => x.Equals(8)) || hlistday.Exists(x => x.Equals(8))))
+                                            tv = tv + 1;
+
+                                    i++;
+                                }
+
+                                if (!at.C9.IsNullOrWhiteSpace())
+                                {
+                                    if (at.C9.Equals("A"))
+                                        if (!(fday.Exists(x => x.Equals(9)) || hlistday.Exists(x => x.Equals(9))))
+                                            tv = tv + 1;
+
+                                    i++;
+                                }
+
+                                if (!at.C10.IsNullOrWhiteSpace())
+                                {
+                                    if (at.C10.Equals("A"))
+                                        if (!(fday.Exists(x => x.Equals(10)) || hlistday.Exists(x => x.Equals(10))))
+                                            tv = tv + 1;
+
+                                    i++;
+                                }
+
+                                if (!at.C11.IsNullOrWhiteSpace())
+                                {
+                                    if (at.C11.Equals("A"))
+                                        if (!(fday.Exists(x => x.Equals(11)) || hlistday.Exists(x => x.Equals(11))))
+                                            tv = tv + 1;
+
+                                    i++;
+                                }
+
+                                if (!at.C12.IsNullOrWhiteSpace())
+                                {
+                                    if (at.C12.Equals("A"))
+                                        if (!(fday.Exists(x => x.Equals(12)) || hlistday.Exists(x => x.Equals(12))))
+                                            tv = tv + 1;
+
+                                    i++;
+                                }
+
+                                if (!at.C13.IsNullOrWhiteSpace())
+                                {
+                                    if (at.C13.Equals("A"))
+                                        if (!(fday.Exists(x => x.Equals(13)) || hlistday.Exists(x => x.Equals(13))))
+                                            tv = tv + 1;
+
+                                    i++;
+                                }
+
+                                if (!at.C14.IsNullOrWhiteSpace())
+                                {
+                                    if (at.C14.Equals("A"))
+                                        if (!(fday.Exists(x => x.Equals(14)) || hlistday.Exists(x => x.Equals(14))))
+                                            tv = tv + 1;
+
+                                    i++;
+                                }
+
+                                if (!at.C15.IsNullOrWhiteSpace())
+                                {
+                                    if (at.C15.Equals("A"))
+                                        if (!(fday.Exists(x => x.Equals(15)) || hlistday.Exists(x => x.Equals(15))))
+                                            tv = tv + 1;
+
+                                    i++;
+                                }
+
+                                if (!at.C16.IsNullOrWhiteSpace())
+                                {
+                                    if (at.C16.Equals("A"))
+                                        if (!(fday.Exists(x => x.Equals(16)) || hlistday.Exists(x => x.Equals(16))))
+                                            tv = tv + 1;
+
+                                    i++;
+                                }
+
+                                if (!at.C17.IsNullOrWhiteSpace())
+                                {
+                                    if (at.C17.Equals("A"))
+                                        if (!(fday.Exists(x => x.Equals(17)) || hlistday.Exists(x => x.Equals(17))))
+                                            tv = tv + 1;
+
+                                    i++;
+                                }
+
+                                if (!at.C18.IsNullOrWhiteSpace())
+                                {
+                                    if (at.C18.Equals("A"))
+                                        if (!(fday.Exists(x => x.Equals(18)) || hlistday.Exists(x => x.Equals(18))))
+                                            tv = tv + 1;
+
+                                    i++;
+                                }
+
+                                if (!at.C19.IsNullOrWhiteSpace())
+                                {
+                                    if (at.C19.Equals("A"))
+                                        if (!(fday.Exists(x => x.Equals(19)) || hlistday.Exists(x => x.Equals(19))))
+                                            tv = tv + 1;
+
+                                    i++;
+                                }
+
+                                if (!at.C20.IsNullOrWhiteSpace())
+                                {
+                                    if (at.C20.Equals("A"))
+                                        if (!(fday.Exists(x => x.Equals(20)) || hlistday.Exists(x => x.Equals(20))))
+                                            tv = tv + 1;
+
+                                    i++;
+                                }
+
+                                if (!at.C21.IsNullOrWhiteSpace())
+                                {
+                                    if (at.C21.Equals("A"))
+                                        if (!(fday.Exists(x => x.Equals(21)) || hlistday.Exists(x => x.Equals(21))))
+                                            tv = tv + 1;
+
+                                    i++;
+                                }
+
+                                if (!at.C22.IsNullOrWhiteSpace())
+                                {
+                                    if (at.C22.Equals("A"))
+                                        if (!(fday.Exists(x => x.Equals(22)) || hlistday.Exists(x => x.Equals(22))))
+                                            tv = tv + 1;
+
+                                    i++;
+                                }
+
+                                if (!at.C23.IsNullOrWhiteSpace())
+                                {
+                                    if (at.C23.Equals("A"))
+                                        if (!(fday.Exists(x => x.Equals(23)) || hlistday.Exists(x => x.Equals(23))))
+                                            tv = tv + 1;
+
+                                    i++;
+                                }
+
+                                if (!at.C24.IsNullOrWhiteSpace())
+                                {
+                                    if (at.C24.Equals("A"))
+                                        if (!(fday.Exists(x => x.Equals(24)) || hlistday.Exists(x => x.Equals(24))))
+                                            tv = tv + 1;
+
+                                    i++;
+                                }
+
+                                if (!at.C25.IsNullOrWhiteSpace())
+                                {
+                                    if (at.C25.Equals("A"))
+                                        if (!(fday.Exists(x => x.Equals(25)) || hlistday.Exists(x => x.Equals(25))))
+                                            tv = tv + 1;
+
+                                    i++;
+                                }
+
+                                if (!at.C26.IsNullOrWhiteSpace())
+                                {
+                                    if (at.C26.Equals("A"))
+                                        if (!(fday.Exists(x => x.Equals(26)) || hlistday.Exists(x => x.Equals(26))))
+                                            tv = tv + 1;
+
+                                    i++;
+                                }
+
+                                if (!at.C27.IsNullOrWhiteSpace())
+                                {
+                                    if (at.C27.Equals("A"))
+                                        if (!(fday.Exists(x => x.Equals(27)) || hlistday.Exists(x => x.Equals(27))))
+                                            tv = tv + 1;
+
+                                    i++;
+                                }
+
+                                if (!at.C28.IsNullOrWhiteSpace())
+                                {
+                                    if (at.C28.Equals("A"))
+                                        if (!(fday.Exists(x => x.Equals(28)) || hlistday.Exists(x => x.Equals(28))))
+                                            tv = tv + 1;
+
+                                    i++;
+                                }
+
+                                if (!at.C29.IsNullOrWhiteSpace())
+                                {
+                                    if (at.C29.Equals("A"))
+                                        if (!(fday.Exists(x => x.Equals(29)) || hlistday.Exists(x => x.Equals(29))))
+                                            tv = tv + 1;
+
+                                    i++;
+                                }
+
+                                if (!at.C30.IsNullOrWhiteSpace())
+                                {
+                                    if (at.C30.Equals("A"))
+                                        if (!(fday.Exists(x => x.Equals(30)) || hlistday.Exists(x => x.Equals(30))))
+                                            tv = tv + 1;
+
+                                    i++;
+                                }
+
+                                if (!at.C31.IsNullOrWhiteSpace())
+                                {
+                                    if (at.C31.Equals("A"))
+                                        if (!(fday.Exists(x => x.Equals(31)) || hlistday.Exists(x => x.Equals(31))))
+                                            tv = tv + 1;
+
+                                    i++;
+                                }
+
+                                at.TotalAbsent = tv;
+                                this.db.Entry(at).State = EntityState.Modified;
+                                this.db.SaveChanges();
+                            }
+                            {
+                                var i = 0;
+                                at.TotalTransefer = 0;
+                                long tv = 0;
+                                if (!at.C1.IsNullOrWhiteSpace())
+                                {
+                                    if (at.C1.Equals("T"))
+                                        if (!(fday.Exists(x => x.Equals(1)) || hlistday.Exists(x => x.Equals(1))))
+                                            tv = tv + 1;
+
+                                    i++;
+                                }
+
+                                if (!at.C2.IsNullOrWhiteSpace())
+                                {
+                                    if (at.C2.Equals("T"))
+                                        if (!(fday.Exists(x => x.Equals(2)) || hlistday.Exists(x => x.Equals(2))))
+                                            tv = tv + 1;
+
+                                    i++;
+                                }
+
+                                if (!at.C3.IsNullOrWhiteSpace())
+                                {
+                                    if (at.C3.Equals("T"))
+                                        if (!(fday.Exists(x => x.Equals(3)) || hlistday.Exists(x => x.Equals(3))))
+                                            tv = tv + 1;
+
+                                    i++;
+                                }
+
+                                if (!at.C4.IsNullOrWhiteSpace())
+                                {
+                                    if (at.C4.Equals("T"))
+                                        if (!(fday.Exists(x => x.Equals(4)) || hlistday.Exists(x => x.Equals(4))))
+                                            tv = tv + 1;
+
+                                    i++;
+                                }
+
+                                if (!at.C5.IsNullOrWhiteSpace())
+                                {
+                                    if (at.C5.Equals("T"))
+                                        if (!(fday.Exists(x => x.Equals(5)) || hlistday.Exists(x => x.Equals(5))))
+                                            tv = tv + 1;
+
+                                    i++;
+                                }
+
+                                if (!at.C6.IsNullOrWhiteSpace())
+                                {
+                                    if (at.C6.Equals("T"))
+                                        if (!(fday.Exists(x => x.Equals(6)) || hlistday.Exists(x => x.Equals(6))))
+                                            tv = tv + 1;
+
+                                    i++;
+                                }
+
+                                if (!at.C7.IsNullOrWhiteSpace())
+                                {
+                                    if (at.C7.Equals("T"))
+                                        if (!(fday.Exists(x => x.Equals(7)) || hlistday.Exists(x => x.Equals(7))))
+                                            tv = tv + 1;
+
+                                    i++;
+                                }
+
+                                if (!at.C8.IsNullOrWhiteSpace())
+                                {
+                                    if (at.C8.Equals("T"))
+                                        if (!(fday.Exists(x => x.Equals(8)) || hlistday.Exists(x => x.Equals(8))))
+                                            tv = tv + 1;
+
+                                    i++;
+                                }
+
+                                if (!at.C9.IsNullOrWhiteSpace())
+                                {
+                                    if (at.C9.Equals("T"))
+                                        if (!(fday.Exists(x => x.Equals(9)) || hlistday.Exists(x => x.Equals(9))))
+                                            tv = tv + 1;
+
+                                    i++;
+                                }
+
+                                if (!at.C10.IsNullOrWhiteSpace())
+                                {
+                                    if (at.C10.Equals("T"))
+                                        if (!(fday.Exists(x => x.Equals(10)) || hlistday.Exists(x => x.Equals(10))))
+                                            tv = tv + 1;
+
+                                    i++;
+                                }
+
+                                if (!at.C11.IsNullOrWhiteSpace())
+                                {
+                                    if (at.C11.Equals("T"))
+                                        if (!(fday.Exists(x => x.Equals(11)) || hlistday.Exists(x => x.Equals(11))))
+                                            tv = tv + 1;
+
+                                    i++;
+                                }
+
+                                if (!at.C12.IsNullOrWhiteSpace())
+                                {
+                                    if (at.C12.Equals("T"))
+                                        if (!(fday.Exists(x => x.Equals(12)) || hlistday.Exists(x => x.Equals(12))))
+                                            tv = tv + 1;
+
+                                    i++;
+                                }
+
+                                if (!at.C13.IsNullOrWhiteSpace())
+                                {
+                                    if (at.C13.Equals("T"))
+                                        if (!(fday.Exists(x => x.Equals(13)) || hlistday.Exists(x => x.Equals(13))))
+                                            tv = tv + 1;
+
+                                    i++;
+                                }
+
+                                if (!at.C14.IsNullOrWhiteSpace())
+                                {
+                                    if (at.C14.Equals("T"))
+                                        if (!(fday.Exists(x => x.Equals(14)) || hlistday.Exists(x => x.Equals(14))))
+                                            tv = tv + 1;
+
+                                    i++;
+                                }
+
+                                if (!at.C15.IsNullOrWhiteSpace())
+                                {
+                                    if (at.C15.Equals("T"))
+                                        if (!(fday.Exists(x => x.Equals(15)) || hlistday.Exists(x => x.Equals(15))))
+                                            tv = tv + 1;
+
+                                    i++;
+                                }
+
+                                if (!at.C16.IsNullOrWhiteSpace())
+                                {
+                                    if (at.C16.Equals("T"))
+                                        if (!(fday.Exists(x => x.Equals(16)) || hlistday.Exists(x => x.Equals(16))))
+                                            tv = tv + 1;
+
+                                    i++;
+                                }
+
+                                if (!at.C17.IsNullOrWhiteSpace())
+                                {
+                                    if (at.C17.Equals("T"))
+                                        if (!(fday.Exists(x => x.Equals(17)) || hlistday.Exists(x => x.Equals(17))))
+                                            tv = tv + 1;
+
+                                    i++;
+                                }
+
+                                if (!at.C18.IsNullOrWhiteSpace())
+                                {
+                                    if (at.C18.Equals("T"))
+                                        if (!(fday.Exists(x => x.Equals(18)) || hlistday.Exists(x => x.Equals(18))))
+                                            tv = tv + 1;
+
+                                    i++;
+                                }
+
+                                if (!at.C19.IsNullOrWhiteSpace())
+                                {
+                                    if (at.C19.Equals("T"))
+                                        if (!(fday.Exists(x => x.Equals(19)) || hlistday.Exists(x => x.Equals(19))))
+                                            tv = tv + 1;
+
+                                    i++;
+                                }
+
+                                if (!at.C20.IsNullOrWhiteSpace())
+                                {
+                                    if (at.C20.Equals("T"))
+                                        if (!(fday.Exists(x => x.Equals(20)) || hlistday.Exists(x => x.Equals(20))))
+                                            tv = tv + 1;
+
+                                    i++;
+                                }
+
+                                if (!at.C21.IsNullOrWhiteSpace())
+                                {
+                                    if (at.C21.Equals("T"))
+                                        if (!(fday.Exists(x => x.Equals(21)) || hlistday.Exists(x => x.Equals(21))))
+                                            tv = tv + 1;
+
+                                    i++;
+                                }
+
+                                if (!at.C22.IsNullOrWhiteSpace())
+                                {
+                                    if (at.C22.Equals("T"))
+                                        if (!(fday.Exists(x => x.Equals(22)) || hlistday.Exists(x => x.Equals(22))))
+                                            tv = tv + 1;
+
+                                    i++;
+                                }
+
+                                if (!at.C23.IsNullOrWhiteSpace())
+                                {
+                                    if (at.C23.Equals("T"))
+                                        if (!(fday.Exists(x => x.Equals(23)) || hlistday.Exists(x => x.Equals(23))))
+                                            tv = tv + 1;
+
+                                    i++;
+                                }
+
+                                if (!at.C24.IsNullOrWhiteSpace())
+                                {
+                                    if (at.C24.Equals("T"))
+                                        if (!(fday.Exists(x => x.Equals(24)) || hlistday.Exists(x => x.Equals(24))))
+                                            tv = tv + 1;
+
+                                    i++;
+                                }
+
+                                if (!at.C25.IsNullOrWhiteSpace())
+                                {
+                                    if (at.C25.Equals("T"))
+                                        if (!(fday.Exists(x => x.Equals(25)) || hlistday.Exists(x => x.Equals(25))))
+                                            tv = tv + 1;
+
+                                    i++;
+                                }
+
+                                if (!at.C26.IsNullOrWhiteSpace())
+                                {
+                                    if (at.C26.Equals("T"))
+                                        if (!(fday.Exists(x => x.Equals(26)) || hlistday.Exists(x => x.Equals(26))))
+                                            tv = tv + 1;
+
+                                    i++;
+                                }
+
+                                if (!at.C27.IsNullOrWhiteSpace())
+                                {
+                                    if (at.C27.Equals("T"))
+                                        if (!(fday.Exists(x => x.Equals(27)) || hlistday.Exists(x => x.Equals(27))))
+                                            tv = tv + 1;
+
+                                    i++;
+                                }
+
+                                if (!at.C28.IsNullOrWhiteSpace())
+                                {
+                                    if (at.C28.Equals("T"))
+                                        if (!(fday.Exists(x => x.Equals(28)) || hlistday.Exists(x => x.Equals(28))))
+                                            tv = tv + 1;
+
+                                    i++;
+                                }
+
+                                if (!at.C29.IsNullOrWhiteSpace())
+                                {
+                                    if (at.C29.Equals("T"))
+                                        if (!(fday.Exists(x => x.Equals(29)) || hlistday.Exists(x => x.Equals(29))))
+                                            tv = tv + 1;
+
+                                    i++;
+                                }
+
+                                if (!at.C30.IsNullOrWhiteSpace())
+                                {
+                                    if (at.C30.Equals("T"))
+                                        if (!(fday.Exists(x => x.Equals(30)) || hlistday.Exists(x => x.Equals(30))))
+                                            tv = tv + 1;
+
+                                    i++;
+                                }
+
+                                if (!at.C31.IsNullOrWhiteSpace())
+                                {
+                                    if (at.C31.Equals("T"))
+                                        if (!(fday.Exists(x => x.Equals(31)) || hlistday.Exists(x => x.Equals(31))))
+                                            tv = tv + 1;
+
+                                    i++;
+                                }
+
+                                at.TotalTransefer = tv;
+                                this.db.Entry(at).State = EntityState.Modified;
+                                this.db.SaveChanges();
+                            }
+
+                            at.status = "panding";
+                        }
 
                         this.db.Entry(at).State = EntityState.Modified;
                         this.db.SaveChanges();
@@ -3102,6 +3916,7 @@
                     at.EmpID = attendance.EmpID;
                     at.SubMain = attendance.SubMain;
                     long fri1 = 0;
+                    long holi = 0;
                     var date = new DateTime(aa.TMonth.Year, aa.TMonth.Month, 1);
                     for (var i = 0; i < DateTime.DaysInMonth(aa.TMonth.Year, aa.TMonth.Month); i++)
                     {
@@ -3298,279 +4113,2904 @@
 
                         date = date.AddDays(1);
                     }
-                    if (attendance.C1 != "0" && attendance.C1 != null)
+
+                    var hday = this.db.Holidays.ToList();
+                    date = new DateTime(aa.TMonth.Year, aa.TMonth.Month, 1);
+                    for (var i = 0; i < DateTime.DaysInMonth(aa.TMonth.Year, aa.TMonth.Month); i++)
                     {
-                        if (!ap.Exists(x => x.adate == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 1) && !(x.status == null || x.status.Contains("rejected"))))
+                        if (hday.Exists(x => x.Date == date))
                         {
-                            at.C1 = attendance.C1;
+                            if (date.Day == 1)
+                            {
+                                long.TryParse(at.C1, out var tl);
+                                holi = holi + tl;
+                            }
+
+                            if (date.Day == 2)
+                            {
+                                long.TryParse(at.C2, out var tl);
+                                holi = holi + tl;
+                            }
+
+                            if (date.Day == 3)
+                            {
+                                long.TryParse(at.C3, out var tl);
+                                holi = holi + tl;
+                            }
+
+                            if (date.Day == 4)
+                            {
+                                long.TryParse(at.C4, out var tl);
+                                holi = holi + tl;
+                            }
+
+                            if (date.Day == 5)
+                            {
+                                long.TryParse(at.C5, out var tl);
+                                holi = holi + tl;
+                            }
+
+                            if (date.Day == 6)
+                            {
+                                long.TryParse(at.C6, out var tl);
+                                holi = holi + tl;
+                            }
+
+                            if (date.Day == 7)
+                            {
+                                long.TryParse(at.C7, out var tl);
+                                holi = holi + tl;
+                            }
+
+                            if (date.Day == 8)
+                            {
+                                long.TryParse(at.C8, out var tl);
+                                holi = holi + tl;
+                            }
+
+                            if (date.Day == 9)
+                            {
+                                long.TryParse(at.C9, out var tl);
+                                holi = holi + tl;
+                            }
+
+                            if (date.Day == 10)
+                            {
+                                long.TryParse(at.C10, out var tl);
+                                holi = holi + tl;
+                            }
+
+                            if (date.Day == 11)
+                            {
+                                long.TryParse(at.C11, out var tl);
+                                holi = holi + tl;
+                            }
+
+                            if (date.Day == 12)
+                            {
+                                long.TryParse(at.C11, out var tl);
+                                holi = holi + tl;
+                            }
+
+                            if (date.Day == 13)
+                            {
+                                long.TryParse(at.C13, out var tl);
+                                holi = holi + tl;
+                            }
+
+                            if (date.Day == 14)
+                            {
+                                long.TryParse(at.C14, out var tl);
+                                holi = holi + tl;
+                            }
+
+                            if (date.Day == 15)
+                            {
+                                long.TryParse(at.C15, out var tl);
+                                holi = holi + tl;
+                            }
+
+                            if (date.Day == 16)
+                            {
+                                long.TryParse(at.C16, out var tl);
+                                holi = holi + tl;
+                            }
+
+                            if (date.Day == 17)
+                            {
+                                long.TryParse(at.C17, out var tl);
+                                holi = holi + tl;
+                            }
+
+                            if (date.Day == 18)
+                            {
+                                long.TryParse(at.C18, out var tl);
+                                holi = holi + tl;
+                            }
+
+                            if (date.Day == 19)
+                            {
+                                long.TryParse(at.C19, out var tl);
+                                holi = holi + tl;
+                            }
+
+                            if (date.Day == 20)
+                            {
+                                long.TryParse(at.C20, out var tl);
+                                holi = holi + tl;
+                            }
+
+                            if (date.Day == 21)
+                            {
+                                long.TryParse(at.C21, out var tl);
+                                holi = holi + tl;
+                            }
+
+                            if (date.Day == 22)
+                            {
+                                long.TryParse(at.C22, out var tl);
+                                holi = holi + tl;
+                            }
+
+                            if (date.Day == 23)
+                            {
+                                long.TryParse(at.C23, out var tl);
+                                holi = holi + tl;
+                            }
+
+                            if (date.Day == 24)
+                            {
+                                long.TryParse(at.C24, out var tl);
+                                holi = holi + tl;
+                            }
+
+                            if (date.Day == 25)
+                            {
+                                long.TryParse(at.C25, out var tl);
+                                holi = holi + tl;
+                            }
+
+                            if (date.Day == 26)
+                            {
+                                long.TryParse(at.C26, out var tl);
+                                holi = holi + tl;
+                            }
+
+                            if (date.Day == 27)
+                            {
+                                long.TryParse(at.C27, out var tl);
+                                holi = holi + tl;
+                            }
+
+                            if (date.Day == 28)
+                            {
+                                long.TryParse(at.C28, out var tl);
+                                holi = holi + tl;
+                            }
+
+                            if (date.Day == 29)
+                            {
+                                long.TryParse(at.C29, out var tl);
+                                holi = holi + tl;
+                            }
+
+                            if (date.Day == 30)
+                            {
+                                long.TryParse(at.C30, out var tl);
+                                holi = holi + tl;
+                            }
+
+                            if (date.Day == 31)
+                            {
+                                long.TryParse(at.C31, out var tl);
+                                holi = holi + tl;
+                            }
+
+                            at.Holidays = holi;
                         }
+
+                        date = date.AddDays(1);
                     }
+
+                    if (attendance.C1 != "0" && attendance.C1 != null)
+                        if (!ap.Exists(
+                                x => x.adate == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 1)
+                                     && !(x.status == null || x.status.Contains("rejected"))))
+                            at.C1 = attendance.C1;
 
                     if (attendance.C2 != "0" && attendance.C2 != null)
-                    {
-                        if (!ap.Exists(x => x.adate == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 2) && !(x.status == null || x.status.Contains("rejected"))))
-                        {
+                        if (!ap.Exists(
+                                x => x.adate == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 2)
+                                     && !(x.status == null || x.status.Contains("rejected"))))
                             at.C2 = attendance.C2;
-                        }
-                    }
 
                     if (attendance.C3 != "0" && attendance.C3 != null)
-                    {
-                        if (!ap.Exists(x => x.adate == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 3) && !(x.status == null || x.status.Contains("rejected"))))
-                        {
+                        if (!ap.Exists(
+                                x => x.adate == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 3)
+                                     && !(x.status == null || x.status.Contains("rejected"))))
                             at.C3 = attendance.C3;
-                        }
-
-                    }
 
                     if (attendance.C4 != "0" && attendance.C4 != null)
-                    {
-                        if (!ap.Exists(x => x.adate == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 4) && !(x.status == null || x.status.Contains("rejected"))))
-                        {
+                        if (!ap.Exists(
+                                x => x.adate == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 4)
+                                     && !(x.status == null || x.status.Contains("rejected"))))
                             at.C4 = attendance.C4;
-                        }
-
-                    }
 
                     if (attendance.C5 != "0" && attendance.C5 != null)
-                    {
-                        if (!ap.Exists(x => x.adate == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 5) && !(x.status == null || x.status.Contains("rejected"))))
-                        {
+                        if (!ap.Exists(
+                                x => x.adate == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 5)
+                                     && !(x.status == null || x.status.Contains("rejected"))))
                             at.C5 = attendance.C5;
-                        }
-
-                    }
 
                     if (attendance.C6 != "0" && attendance.C6 != null)
-                    {
-                        if (!ap.Exists(x => x.adate == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 6) && !(x.status == null || x.status.Contains("rejected"))))
-                        {
+                        if (!ap.Exists(
+                                x => x.adate == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 6)
+                                     && !(x.status == null || x.status.Contains("rejected"))))
                             at.C6 = attendance.C6;
-                        }
-
-                    }
 
                     if (attendance.C7 != "0" && attendance.C7 != null)
-                    {
-                        if (!ap.Exists(x => x.adate == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 7) && !(x.status == null || x.status.Contains("rejected"))))
-                        {
+                        if (!ap.Exists(
+                                x => x.adate == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 7)
+                                     && !(x.status == null || x.status.Contains("rejected"))))
                             at.C7 = attendance.C7;
-                        }
-
-                    }
 
                     if (attendance.C8 != "0" && attendance.C8 != null)
-                    {
-                        if (!ap.Exists(x => x.adate == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 8) && !(x.status == null || x.status.Contains("rejected"))))
-                        {
+                        if (!ap.Exists(
+                                x => x.adate == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 8)
+                                     && !(x.status == null || x.status.Contains("rejected"))))
                             at.C8 = attendance.C8;
-                        }
-
-                    }
 
                     if (attendance.C9 != "0" && attendance.C9 != null)
-                    {
-                        if (!ap.Exists(x => x.adate == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 9) && !(x.status == null || x.status.Contains("rejected"))))
-                        {
+                        if (!ap.Exists(
+                                x => x.adate == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 9)
+                                     && !(x.status == null || x.status.Contains("rejected"))))
                             at.C9 = attendance.C9;
-                        }
-
-                    }
 
                     if (attendance.C10 != "0" && attendance.C10 != null)
-                    {
-                        if (!ap.Exists(x => x.adate == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 10) && !(x.status == null || x.status.Contains("rejected"))))
-                        {
+                        if (!ap.Exists(
+                                x => x.adate == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 10)
+                                     && !(x.status == null || x.status.Contains("rejected"))))
                             at.C10 = attendance.C10;
-                        }
-
-                    }
 
                     if (attendance.C11 != "0" && attendance.C11 != null)
-                    {
-                        if (!ap.Exists(x => x.adate == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 11) && !(x.status == null || x.status.Contains("rejected"))))
-                        {
+                        if (!ap.Exists(
+                                x => x.adate == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 11)
+                                     && !(x.status == null || x.status.Contains("rejected"))))
                             at.C11 = attendance.C11;
-                        }
-
-                    }
 
                     if (attendance.C12 != "0" && attendance.C12 != null)
-                    {
-                        if (!ap.Exists(x => x.adate == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 12) && !(x.status == null || x.status.Contains("rejected"))))
-                        {
+                        if (!ap.Exists(
+                                x => x.adate == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 12)
+                                     && !(x.status == null || x.status.Contains("rejected"))))
                             at.C12 = attendance.C12;
-                        }
-
-                    }
 
                     if (attendance.C13 != "0" && attendance.C13 != null)
-                    {
-                        if (!ap.Exists(x => x.adate == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 13) && !(x.status == null || x.status.Contains("rejected"))))
-                        {
+                        if (!ap.Exists(
+                                x => x.adate == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 13)
+                                     && !(x.status == null || x.status.Contains("rejected"))))
                             at.C13 = attendance.C13;
-                        }
-
-                    }
 
                     if (attendance.C14 != "0" && attendance.C14 != null)
-                    {
-                        if (!ap.Exists(x => x.adate == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 14) && !(x.status == null || x.status.Contains("rejected"))))
-                        {
+                        if (!ap.Exists(
+                                x => x.adate == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 14)
+                                     && !(x.status == null || x.status.Contains("rejected"))))
                             at.C14 = attendance.C14;
-                        }
-
-                    }
 
                     if (attendance.C15 != "0" && attendance.C15 != null)
-                    {
-                        if (!ap.Exists(x => x.adate == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 15) && !(x.status == null || x.status.Contains("rejected"))))
-                        {
+                        if (!ap.Exists(
+                                x => x.adate == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 15)
+                                     && !(x.status == null || x.status.Contains("rejected"))))
                             at.C15 = attendance.C15;
-                        }
-
-                    }
 
                     if (attendance.C16 != "0" && attendance.C16 != null)
-                    {
-                        if (!ap.Exists(x => x.adate == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 16) && !(x.status == null || x.status.Contains("rejected"))))
-                        {
+                        if (!ap.Exists(
+                                x => x.adate == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 16)
+                                     && !(x.status == null || x.status.Contains("rejected"))))
                             at.C16 = attendance.C16;
-                        }
-
-                    }
 
                     if (attendance.C17 != "0" && attendance.C17 != null)
-                    {
-                        if (!ap.Exists(x => x.adate == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 17) && !(x.status == null || x.status.Contains("rejected"))))
-                        {
+                        if (!ap.Exists(
+                                x => x.adate == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 17)
+                                     && !(x.status == null || x.status.Contains("rejected"))))
                             at.C17 = attendance.C17;
-                        }
-
-                    }
 
                     if (attendance.C18 != "0" && attendance.C18 != null)
-                    {
-                        if (!ap.Exists(x => x.adate == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 18) && !(x.status == null || x.status.Contains("rejected"))))
-                        {
+                        if (!ap.Exists(
+                                x => x.adate == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 18)
+                                     && !(x.status == null || x.status.Contains("rejected"))))
                             at.C18 = attendance.C18;
-                        }
-
-                    }
 
                     if (attendance.C19 != "0" && attendance.C19 != null)
-                    {
-                        if (!ap.Exists(x => x.adate == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 19) && !(x.status == null || x.status.Contains("rejected"))))
-                        {
+                        if (!ap.Exists(
+                                x => x.adate == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 19)
+                                     && !(x.status == null || x.status.Contains("rejected"))))
                             at.C19 = attendance.C19;
-                        }
-
-                    }
 
                     if (attendance.C20 != "0" && attendance.C20 != null)
-                    {
-                        if (!ap.Exists(x => x.adate == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 20) && !(x.status == null || x.status.Contains("rejected"))))
-                        {
+                        if (!ap.Exists(
+                                x => x.adate == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 20)
+                                     && !(x.status == null || x.status.Contains("rejected"))))
                             at.C20 = attendance.C20;
-                        }
-
-                    }
 
                     if (attendance.C21 != "0" && attendance.C21 != null)
-                    {
-                        if (!ap.Exists(x => x.adate == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 21) && !(x.status == null || x.status.Contains("rejected"))))
-                        {
+                        if (!ap.Exists(
+                                x => x.adate == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 21)
+                                     && !(x.status == null || x.status.Contains("rejected"))))
                             at.C21 = attendance.C21;
-                        }
-
-                    }
 
                     if (attendance.C22 != "0" && attendance.C22 != null)
-                    {
-                        if (!ap.Exists(x => x.adate == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 22) && !(x.status == null || x.status.Contains("rejected"))))
-                        {
+                        if (!ap.Exists(
+                                x => x.adate == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 22)
+                                     && !(x.status == null || x.status.Contains("rejected"))))
                             at.C22 = attendance.C22;
-                        }
-
-                    }
 
                     if (attendance.C23 != "0" && attendance.C23 != null)
-                    {
-                        if (!ap.Exists(x => x.adate == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 23) && !(x.status == null || x.status.Contains("rejected"))))
-                        {
+                        if (!ap.Exists(
+                                x => x.adate == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 23)
+                                     && !(x.status == null || x.status.Contains("rejected"))))
                             at.C23 = attendance.C23;
-                        }
-
-                    }
 
                     if (attendance.C24 != "0" && attendance.C24 != null)
-                    {
-                        if (!ap.Exists(x => x.adate == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 24) && !(x.status == null || x.status.Contains("rejected"))))
-                        {
+                        if (!ap.Exists(
+                                x => x.adate == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 24)
+                                     && !(x.status == null || x.status.Contains("rejected"))))
                             at.C24 = attendance.C24;
-                        }
-
-                    }
 
                     if (attendance.C25 != "0" && attendance.C25 != null)
-                    {
-                        if (!ap.Exists(x => x.adate == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 25) && !(x.status == null || x.status.Contains("rejected"))))
-                        {
+                        if (!ap.Exists(
+                                x => x.adate == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 25)
+                                     && !(x.status == null || x.status.Contains("rejected"))))
                             at.C25 = attendance.C25;
-                        }
-
-                    }
 
                     if (attendance.C26 != "0" && attendance.C26 != null)
-                    {
-                        if (!ap.Exists(x => x.adate == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 26) && !(x.status == null || x.status.Contains("rejected"))))
-                        {
+                        if (!ap.Exists(
+                                x => x.adate == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 26)
+                                     && !(x.status == null || x.status.Contains("rejected"))))
                             at.C26 = attendance.C26;
-                        }
-
-                    }
 
                     if (attendance.C27 != "0" && attendance.C27 != null)
-                    {
-                        if (!ap.Exists(x => x.adate == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 27) && !(x.status == null || x.status.Contains("rejected"))))
-                        {
+                        if (!ap.Exists(
+                                x => x.adate == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 27)
+                                     && !(x.status == null || x.status.Contains("rejected"))))
                             at.C27 = attendance.C27;
-                        }
-                    }
 
                     if (attendance.C28 != "0" && attendance.C28 != null)
-                    {
-                        if (!ap.Exists(x => x.adate == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 28) && !(x.status == null || x.status.Contains("rejected"))))
-                        {
+                        if (!ap.Exists(
+                                x => x.adate == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 28)
+                                     && !(x.status == null || x.status.Contains("rejected"))))
                             at.C28 = attendance.C28;
-                        }
-                    }
 
                     if (attendance.C29 != "0" && attendance.C29 != null)
-                    {
-                        if (!ap.Exists(x => x.adate == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 29) && !(x.status == null || x.status.Contains("rejected"))))
-                        {
+                        if (!ap.Exists(
+                                x => x.adate == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 29)
+                                     && !(x.status == null || x.status.Contains("rejected"))))
                             at.C29 = attendance.C29;
-                        }
-                    }
 
                     if (attendance.C30 != "0" && attendance.C30 != null)
-                    {
-                        if (!ap.Exists(x => x.adate == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 30) && !(x.status == null || x.status.Contains("rejected"))))
-                        {
+                        if (!ap.Exists(
+                                x => x.adate == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 30)
+                                     && !(x.status == null || x.status.Contains("rejected"))))
                             at.C30 = attendance.C30;
-                        }
-                    }
 
                     if (attendance.C31 != "0" && attendance.C31 != null)
-                    {
-                        if (!ap.Exists(x => x.adate == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 31) && !(x.status == null || x.status.Contains("rejected"))))
-                        {
+                        if (!ap.Exists(
+                                x => x.adate == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 31)
+                                     && !(x.status == null || x.status.Contains("rejected"))))
                             at.C31 = attendance.C31;
+
+                    if (attendance.TotalHours != 0)
+                    {
+                        at.TotalHours = 0;
+                        long.TryParse(at.C1, out var tl);
+                        long.TryParse(at.C2, out var tl1);
+                        long.TryParse(at.C3, out var tl2);
+                        long.TryParse(at.C4, out var tl3);
+                        long.TryParse(at.C5, out var tl4);
+                        long.TryParse(at.C6, out var tl5);
+                        long.TryParse(at.C7, out var tl6);
+                        long.TryParse(at.C8, out var tl7);
+                        long.TryParse(at.C9, out var tl8);
+                        long.TryParse(at.C10, out var tl9);
+                        long.TryParse(at.C11, out var tl10);
+                        long.TryParse(at.C12, out var tl11);
+                        long.TryParse(at.C13, out var tl12);
+                        long.TryParse(at.C14, out var tl13);
+                        long.TryParse(at.C15, out var tl14);
+                        long.TryParse(at.C16, out var tl15);
+                        long.TryParse(at.C17, out var tl16);
+                        long.TryParse(at.C18, out var tl17);
+                        long.TryParse(at.C19, out var tl18);
+                        long.TryParse(at.C20, out var tl19);
+                        long.TryParse(at.C21, out var tl20);
+                        long.TryParse(at.C22, out var tl21);
+                        long.TryParse(at.C23, out var tl22);
+                        long.TryParse(at.C24, out var tl23);
+                        long.TryParse(at.C25, out var tl24);
+                        long.TryParse(at.C26, out var tl25);
+                        long.TryParse(at.C27, out var tl26);
+                        long.TryParse(at.C28, out var tl27);
+                        long.TryParse(at.C29, out var tl28);
+                        long.TryParse(at.C30, out var tl29);
+                        long.TryParse(at.C31, out var tl30);
+                        long.TryParse(at.TotalHours.ToString(), out var atlg);
+                        at.TotalHours = tl + tl1 + tl2 + tl3 + tl4 + tl5 + tl6 + tl7 + tl8 + tl9 + tl10 + tl11 + tl12
+                                        + tl13 + tl14 + tl15 + tl16 + tl17 + tl18 + tl19 + tl20 + tl21 + tl22 + tl23
+                                        + tl24 + tl25 + tl26 + tl27 + tl28 + tl29 + tl30;
+                        double.TryParse(b.NormalTimeUpto.ToString(), out var tho);
+                        var i = 0;
+                        var fday = this.GetAll(aa.TMonth);
+                        var hlistday = this.GetAllholi(aa.TMonth);
+                        {
+                            var t = new List<long>();
+                            at.TotalOverTime = 0;
+                            t.Add(tl);
+                            t.Add(tl1);
+                            t.Add(tl2);
+                            t.Add(tl3);
+                            t.Add(tl4);
+                            t.Add(tl5);
+                            t.Add(tl6);
+                            t.Add(tl7);
+                            t.Add(tl8);
+                            t.Add(tl9);
+                            t.Add(tl10);
+                            t.Add(tl11);
+                            t.Add(tl12);
+                            t.Add(tl13);
+                            t.Add(tl14);
+                            t.Add(tl15);
+                            t.Add(tl16);
+                            t.Add(tl17);
+                            t.Add(tl18);
+                            t.Add(tl19);
+                            t.Add(tl20);
+                            t.Add(tl21);
+                            t.Add(tl22);
+                            t.Add(tl23);
+                            t.Add(tl24);
+                            t.Add(tl25);
+                            t.Add(tl26);
+                            t.Add(tl27);
+                            t.Add(tl28);
+                            t.Add(tl29);
+                            t.Add(tl30);
+                            long tho1 = 0;
+                            foreach (var l in t)
+                            {
+                                i++;
+                                if (!(fday.Exists(x => x.Equals(i)) || hlistday.Exists(x => x.Equals(i))))
+                                    if (l > tho)
+                                    {
+                                        tho1 += l - (long)tho;
+                                        at.TotalOverTime = tho1;
+                                    }
+                            }
+                        }
+
+                        i = 0;
+                        {
+                            at.TotalSickLeave = 0;
+                            long ts = 0;
+                            if (!at.C1.IsNullOrWhiteSpace())
+                            {
+                                if (at.C1.Equals("S"))
+                                    if (!(fday.Exists(x => x.Equals(1)) || hlistday.Exists(x => x.Equals(1))))
+                                        ts = ts + 1;
+                                i++;
+                            }
+
+                            if (!at.C2.IsNullOrWhiteSpace())
+                            {
+                                if (at.C2.Equals("S"))
+                                    if (!(fday.Exists(x => x.Equals(2)) || hlistday.Exists(x => x.Equals(2))))
+                                        ts = ts + 1;
+                                i++;
+                            }
+
+                            if (!at.C3.IsNullOrWhiteSpace())
+                            {
+                                if (at.C3.Equals("S"))
+                                    if (!(fday.Exists(x => x.Equals(3)) || hlistday.Exists(x => x.Equals(3))))
+                                        ts = ts + 1;
+                                i++;
+                            }
+
+                            if (!at.C4.IsNullOrWhiteSpace())
+                            {
+                                if (at.C4.Equals("S"))
+                                    if (!(fday.Exists(x => x.Equals(4)) || hlistday.Exists(x => x.Equals(4))))
+                                        ts = ts + 1;
+                                i++;
+                            }
+
+                            if (!at.C5.IsNullOrWhiteSpace())
+                            {
+                                if (at.C5.Equals("S"))
+                                    if (!(fday.Exists(x => x.Equals(5)) || hlistday.Exists(x => x.Equals(5))))
+                                        ts = ts + 1;
+                                i++;
+                            }
+
+                            if (!at.C6.IsNullOrWhiteSpace())
+                            {
+                                if (at.C6.Equals("S"))
+                                    if (!(fday.Exists(x => x.Equals(6)) || hlistday.Exists(x => x.Equals(6))))
+                                        ts = ts + 1;
+                                i++;
+                            }
+
+                            if (!at.C7.IsNullOrWhiteSpace())
+                            {
+                                if (at.C7.Equals("S"))
+                                    if (!(fday.Exists(x => x.Equals(7)) || hlistday.Exists(x => x.Equals(7))))
+                                        ts = ts + 1;
+                                i++;
+                            }
+
+                            if (!at.C8.IsNullOrWhiteSpace())
+                            {
+                                if (at.C8.Equals("S"))
+                                    if (!(fday.Exists(x => x.Equals(8)) || hlistday.Exists(x => x.Equals(8))))
+                                        ts = ts + 1;
+                                i++;
+                            }
+
+                            if (!at.C9.IsNullOrWhiteSpace())
+                            {
+                                if (at.C9.Equals("S"))
+                                    if (!(fday.Exists(x => x.Equals(9)) || hlistday.Exists(x => x.Equals(9))))
+                                        ts = ts + 1;
+                                i++;
+                            }
+
+                            if (!at.C10.IsNullOrWhiteSpace())
+                            {
+                                if (at.C10.Equals("S"))
+                                    if (!(fday.Exists(x => x.Equals(10)) || hlistday.Exists(x => x.Equals(10))))
+                                        ts = ts + 1;
+                                i++;
+                            }
+
+                            if (!at.C11.IsNullOrWhiteSpace())
+                            {
+                                if (at.C11.Equals("S"))
+                                    if (!(fday.Exists(x => x.Equals(11)) || hlistday.Exists(x => x.Equals(11))))
+                                        ts = ts + 1;
+                                i++;
+                            }
+
+                            if (!at.C12.IsNullOrWhiteSpace())
+                            {
+                                if (at.C12.Equals("S"))
+                                    if (!(fday.Exists(x => x.Equals(12)) || hlistday.Exists(x => x.Equals(12))))
+                                        ts = ts + 1;
+                                i++;
+                            }
+
+                            if (!at.C13.IsNullOrWhiteSpace())
+                            {
+                                if (at.C13.Equals("S"))
+                                    if (!(fday.Exists(x => x.Equals(13)) || hlistday.Exists(x => x.Equals(13))))
+                                        ts = ts + 1;
+                                i++;
+                            }
+
+                            if (!at.C14.IsNullOrWhiteSpace())
+                            {
+                                if (at.C14.Equals("S"))
+                                    if (!(fday.Exists(x => x.Equals(14)) || hlistday.Exists(x => x.Equals(14))))
+                                        ts = ts + 1;
+                                i++;
+                            }
+
+                            if (!at.C15.IsNullOrWhiteSpace())
+                            {
+                                if (at.C15.Equals("S"))
+                                    if (!(fday.Exists(x => x.Equals(15)) || hlistday.Exists(x => x.Equals(15))))
+                                        ts = ts + 1;
+                                i++;
+                            }
+
+                            if (!at.C16.IsNullOrWhiteSpace())
+                            {
+                                if (at.C16.Equals("S"))
+                                    if (!(fday.Exists(x => x.Equals(16)) || hlistday.Exists(x => x.Equals(16))))
+                                        ts = ts + 1;
+                                i++;
+                            }
+
+                            if (!at.C17.IsNullOrWhiteSpace())
+                            {
+                                if (at.C17.Equals("S"))
+                                    if (!(fday.Exists(x => x.Equals(17)) || hlistday.Exists(x => x.Equals(17))))
+                                        ts = ts + 1;
+                                i++;
+                            }
+
+                            if (!at.C18.IsNullOrWhiteSpace())
+                            {
+                                if (at.C18.Equals("S"))
+                                    if (!(fday.Exists(x => x.Equals(18)) || hlistday.Exists(x => x.Equals(18))))
+                                        ts = ts + 1;
+                                i++;
+                            }
+
+                            if (!at.C19.IsNullOrWhiteSpace())
+                            {
+                                if (at.C19.Equals("S"))
+                                    if (!(fday.Exists(x => x.Equals(19)) || hlistday.Exists(x => x.Equals(19))))
+                                        ts = ts + 1;
+                                i++;
+                            }
+
+                            if (!at.C20.IsNullOrWhiteSpace())
+                            {
+                                if (at.C20.Equals("S"))
+                                    if (!(fday.Exists(x => x.Equals(20)) || hlistday.Exists(x => x.Equals(20))))
+                                        ts = ts + 1;
+                                i++;
+                            }
+
+                            if (!at.C21.IsNullOrWhiteSpace())
+                            {
+                                if (at.C21.Equals("S"))
+                                    if (!(fday.Exists(x => x.Equals(21)) || hlistday.Exists(x => x.Equals(21))))
+                                        ts = ts + 1;
+                                i++;
+                            }
+
+                            if (!at.C22.IsNullOrWhiteSpace())
+                            {
+                                if (at.C22.Equals("S"))
+                                    if (!(fday.Exists(x => x.Equals(22)) || hlistday.Exists(x => x.Equals(22))))
+                                        ts = ts + 1;
+                                i++;
+                            }
+
+                            if (!at.C23.IsNullOrWhiteSpace())
+                            {
+                                if (at.C23.Equals("S"))
+                                    if (!(fday.Exists(x => x.Equals(23)) || hlistday.Exists(x => x.Equals(23))))
+                                        ts = ts + 1;
+                                i++;
+                            }
+
+                            if (!at.C24.IsNullOrWhiteSpace())
+                            {
+                                if (at.C24.Equals("S"))
+                                    if (!(fday.Exists(x => x.Equals(24)) || hlistday.Exists(x => x.Equals(24))))
+                                        ts = ts + 1;
+                                i++;
+                            }
+
+                            if (!at.C25.IsNullOrWhiteSpace())
+                            {
+                                if (at.C25.Equals("S"))
+                                    if (!(fday.Exists(x => x.Equals(25)) || hlistday.Exists(x => x.Equals(25))))
+                                        ts = ts + 1;
+                                i++;
+                            }
+
+                            if (!at.C26.IsNullOrWhiteSpace())
+                            {
+                                if (at.C26.Equals("S"))
+                                    if (!(fday.Exists(x => x.Equals(26)) || hlistday.Exists(x => x.Equals(26))))
+                                        ts = ts + 1;
+                                i++;
+                            }
+
+                            if (!at.C27.IsNullOrWhiteSpace())
+                            {
+                                if (at.C27.Equals("S"))
+                                    if (!(fday.Exists(x => x.Equals(27)) || hlistday.Exists(x => x.Equals(27))))
+                                        ts = ts + 1;
+                                i++;
+                            }
+
+                            if (!at.C28.IsNullOrWhiteSpace())
+                            {
+                                if (at.C28.Equals("S"))
+                                    if (!(fday.Exists(x => x.Equals(28)) || hlistday.Exists(x => x.Equals(28))))
+                                        ts = ts + 1;
+                                i++;
+                            }
+
+                            if (!at.C29.IsNullOrWhiteSpace())
+                            {
+                                if (at.C29.Equals("S"))
+                                    if (!(fday.Exists(x => x.Equals(29)) || hlistday.Exists(x => x.Equals(29))))
+                                        ts = ts + 1;
+                                i++;
+                            }
+
+                            if (!at.C30.IsNullOrWhiteSpace())
+                            {
+                                if (at.C30.Equals("S"))
+                                    if (!(fday.Exists(x => x.Equals(30)) || hlistday.Exists(x => x.Equals(30))))
+                                        ts = ts + 1;
+                                i++;
+                            }
+
+                            if (!at.C31.IsNullOrWhiteSpace())
+                            {
+                                if (at.C31.Equals("S"))
+                                    if (!(fday.Exists(x => x.Equals(31)) || hlistday.Exists(x => x.Equals(31))))
+                                        ts = ts + 1;
+                                i++;
+                            }
+
+                            at.TotalSickLeave = ts;
+                        }
+                        {
+                            i = 0;
+                            at.TotalVL = 0;
+                            long tv = 0;
+                            if (!at.C1.IsNullOrWhiteSpace())
+                            {
+                                if (at.C1.Equals("V"))
+                                    if (!(fday.Exists(x => x.Equals(1)) || hlistday.Exists(x => x.Equals(1))))
+                                        tv = tv + 1;
+
+                                i++;
+                            }
+
+                            if (!at.C2.IsNullOrWhiteSpace())
+                            {
+                                if (at.C2.Equals("V"))
+                                    if (!(fday.Exists(x => x.Equals(2)) || hlistday.Exists(x => x.Equals(2))))
+                                        tv = tv + 1;
+
+                                i++;
+                            }
+
+                            if (!at.C3.IsNullOrWhiteSpace())
+                            {
+                                if (at.C3.Equals("V"))
+                                    if (!(fday.Exists(x => x.Equals(3)) || hlistday.Exists(x => x.Equals(3))))
+                                        tv = tv + 1;
+
+                                i++;
+                            }
+
+                            if (!at.C4.IsNullOrWhiteSpace())
+                            {
+                                if (at.C4.Equals("V"))
+                                    if (!(fday.Exists(x => x.Equals(4)) || hlistday.Exists(x => x.Equals(4))))
+                                        tv = tv + 1;
+
+                                i++;
+                            }
+
+                            if (!at.C5.IsNullOrWhiteSpace())
+                            {
+                                if (at.C5.Equals("V"))
+                                    if (!(fday.Exists(x => x.Equals(5)) || hlistday.Exists(x => x.Equals(5))))
+                                        tv = tv + 1;
+
+                                i++;
+                            }
+
+                            if (!at.C6.IsNullOrWhiteSpace())
+                            {
+                                if (at.C6.Equals("V"))
+                                    if (!(fday.Exists(x => x.Equals(6)) || hlistday.Exists(x => x.Equals(6))))
+                                        tv = tv + 1;
+
+                                i++;
+                            }
+
+                            if (!at.C7.IsNullOrWhiteSpace())
+                            {
+                                if (at.C7.Equals("V"))
+                                    if (!(fday.Exists(x => x.Equals(7)) || hlistday.Exists(x => x.Equals(7))))
+                                        tv = tv + 1;
+
+                                i++;
+                            }
+
+                            if (!at.C8.IsNullOrWhiteSpace())
+                            {
+                                if (at.C8.Equals("V"))
+                                    if (!(fday.Exists(x => x.Equals(8)) || hlistday.Exists(x => x.Equals(8))))
+                                        tv = tv + 1;
+
+                                i++;
+                            }
+
+                            if (!at.C9.IsNullOrWhiteSpace())
+                            {
+                                if (at.C9.Equals("V"))
+                                    if (!(fday.Exists(x => x.Equals(9)) || hlistday.Exists(x => x.Equals(9))))
+                                        tv = tv + 1;
+
+                                i++;
+                            }
+
+                            if (!at.C10.IsNullOrWhiteSpace())
+                            {
+                                if (at.C10.Equals("V"))
+                                    if (!(fday.Exists(x => x.Equals(10)) || hlistday.Exists(x => x.Equals(10))))
+                                        tv = tv + 1;
+
+                                i++;
+                            }
+
+                            if (!at.C11.IsNullOrWhiteSpace())
+                            {
+                                if (at.C11.Equals("V"))
+                                    if (!(fday.Exists(x => x.Equals(11)) || hlistday.Exists(x => x.Equals(11))))
+                                        tv = tv + 1;
+
+                                i++;
+                            }
+
+                            if (!at.C12.IsNullOrWhiteSpace())
+                            {
+                                if (at.C12.Equals("V"))
+                                    if (!(fday.Exists(x => x.Equals(12)) || hlistday.Exists(x => x.Equals(12))))
+                                        tv = tv + 1;
+
+                                i++;
+                            }
+
+                            if (!at.C13.IsNullOrWhiteSpace())
+                            {
+                                if (at.C13.Equals("V"))
+                                    if (!(fday.Exists(x => x.Equals(13)) || hlistday.Exists(x => x.Equals(13))))
+                                        tv = tv + 1;
+
+                                i++;
+                            }
+
+                            if (!at.C14.IsNullOrWhiteSpace())
+                            {
+                                if (at.C14.Equals("V"))
+                                    if (!(fday.Exists(x => x.Equals(14)) || hlistday.Exists(x => x.Equals(14))))
+                                        tv = tv + 1;
+
+                                i++;
+                            }
+
+                            if (!at.C15.IsNullOrWhiteSpace())
+                            {
+                                if (at.C15.Equals("V"))
+                                    if (!(fday.Exists(x => x.Equals(15)) || hlistday.Exists(x => x.Equals(15))))
+                                        tv = tv + 1;
+
+                                i++;
+                            }
+
+                            if (!at.C16.IsNullOrWhiteSpace())
+                            {
+                                if (at.C16.Equals("V"))
+                                    if (!(fday.Exists(x => x.Equals(16)) || hlistday.Exists(x => x.Equals(16))))
+                                        tv = tv + 1;
+
+                                i++;
+                            }
+
+                            if (!at.C17.IsNullOrWhiteSpace())
+                            {
+                                if (at.C17.Equals("V"))
+                                    if (!(fday.Exists(x => x.Equals(17)) || hlistday.Exists(x => x.Equals(17))))
+                                        tv = tv + 1;
+
+                                i++;
+                            }
+
+                            if (!at.C18.IsNullOrWhiteSpace())
+                            {
+                                if (at.C18.Equals("V"))
+                                    if (!(fday.Exists(x => x.Equals(18)) || hlistday.Exists(x => x.Equals(18))))
+                                        tv = tv + 1;
+
+                                i++;
+                            }
+
+                            if (!at.C19.IsNullOrWhiteSpace())
+                            {
+                                if (at.C19.Equals("V"))
+                                    if (!(fday.Exists(x => x.Equals(19)) || hlistday.Exists(x => x.Equals(19))))
+                                        tv = tv + 1;
+
+                                i++;
+                            }
+
+                            if (!at.C20.IsNullOrWhiteSpace())
+                            {
+                                if (at.C20.Equals("V"))
+                                    if (!(fday.Exists(x => x.Equals(20)) || hlistday.Exists(x => x.Equals(20))))
+                                        tv = tv + 1;
+
+                                i++;
+                            }
+
+                            if (!at.C21.IsNullOrWhiteSpace())
+                            {
+                                if (at.C21.Equals("V"))
+                                    if (!(fday.Exists(x => x.Equals(21)) || hlistday.Exists(x => x.Equals(21))))
+                                        tv = tv + 1;
+
+                                i++;
+                            }
+
+                            if (!at.C22.IsNullOrWhiteSpace())
+                            {
+                                if (at.C22.Equals("V"))
+                                    if (!(fday.Exists(x => x.Equals(22)) || hlistday.Exists(x => x.Equals(22))))
+                                        tv = tv + 1;
+
+                                i++;
+                            }
+
+                            if (!at.C23.IsNullOrWhiteSpace())
+                            {
+                                if (at.C23.Equals("V"))
+                                    if (!(fday.Exists(x => x.Equals(23)) || hlistday.Exists(x => x.Equals(23))))
+                                        tv = tv + 1;
+
+                                i++;
+                            }
+
+                            if (!at.C24.IsNullOrWhiteSpace())
+                            {
+                                if (at.C24.Equals("V"))
+                                    if (!(fday.Exists(x => x.Equals(24)) || hlistday.Exists(x => x.Equals(24))))
+                                        tv = tv + 1;
+
+                                i++;
+                            }
+
+                            if (!at.C25.IsNullOrWhiteSpace())
+                            {
+                                if (at.C25.Equals("V"))
+                                    if (!(fday.Exists(x => x.Equals(25)) || hlistday.Exists(x => x.Equals(25))))
+                                        tv = tv + 1;
+
+                                i++;
+                            }
+
+                            if (!at.C26.IsNullOrWhiteSpace())
+                            {
+                                if (at.C26.Equals("V"))
+                                    if (!(fday.Exists(x => x.Equals(26)) || hlistday.Exists(x => x.Equals(26))))
+                                        tv = tv + 1;
+
+                                i++;
+                            }
+
+                            if (!at.C27.IsNullOrWhiteSpace())
+                            {
+                                if (at.C27.Equals("V"))
+                                    if (!(fday.Exists(x => x.Equals(27)) || hlistday.Exists(x => x.Equals(27))))
+                                        tv = tv + 1;
+
+                                i++;
+                            }
+
+                            if (!at.C28.IsNullOrWhiteSpace())
+                            {
+                                if (at.C28.Equals("V"))
+                                    if (!(fday.Exists(x => x.Equals(28)) || hlistday.Exists(x => x.Equals(28))))
+                                        tv = tv + 1;
+
+                                i++;
+                            }
+
+                            if (!at.C29.IsNullOrWhiteSpace())
+                            {
+                                if (at.C29.Equals("V"))
+                                    if (!(fday.Exists(x => x.Equals(29)) || hlistday.Exists(x => x.Equals(29))))
+                                        tv = tv + 1;
+
+                                i++;
+                            }
+
+                            if (!at.C30.IsNullOrWhiteSpace())
+                            {
+                                if (at.C30.Equals("V"))
+                                    if (!(fday.Exists(x => x.Equals(30)) || hlistday.Exists(x => x.Equals(30))))
+                                        tv = tv + 1;
+
+                                i++;
+                            }
+
+                            if (!at.C31.IsNullOrWhiteSpace())
+                            {
+                                if (at.C31.Equals("V"))
+                                    if (!(fday.Exists(x => x.Equals(31)) || hlistday.Exists(x => x.Equals(31))))
+                                        tv = tv + 1;
+
+                                i++;
+                            }
+
+                            at.TotalVL = tv;
+                        }
+                        {
+                            i = 0;
+                            at.TotalAbsent = 0;
+                            long tv = 0;
+                            if (!at.C1.IsNullOrWhiteSpace())
+                            {
+                                if (at.C1.Equals("A"))
+                                    if (!(fday.Exists(x => x.Equals(1)) || hlistday.Exists(x => x.Equals(1))))
+                                        tv = tv + 1;
+
+                                i++;
+                            }
+
+                            if (!at.C2.IsNullOrWhiteSpace())
+                            {
+                                if (at.C2.Equals("A"))
+                                    if (!(fday.Exists(x => x.Equals(2)) || hlistday.Exists(x => x.Equals(2))))
+                                        tv = tv + 1;
+
+                                i++;
+                            }
+
+                            if (!at.C3.IsNullOrWhiteSpace())
+                            {
+                                if (at.C3.Equals("A"))
+                                    if (!(fday.Exists(x => x.Equals(3)) || hlistday.Exists(x => x.Equals(3))))
+                                        tv = tv + 1;
+
+                                i++;
+                            }
+
+                            if (!at.C4.IsNullOrWhiteSpace())
+                            {
+                                if (at.C4.Equals("A"))
+                                    if (!(fday.Exists(x => x.Equals(4)) || hlistday.Exists(x => x.Equals(4))))
+                                        tv = tv + 1;
+
+                                i++;
+                            }
+
+                            if (!at.C5.IsNullOrWhiteSpace())
+                            {
+                                if (at.C5.Equals("A"))
+                                    if (!(fday.Exists(x => x.Equals(5)) || hlistday.Exists(x => x.Equals(5))))
+                                        tv = tv + 1;
+
+                                i++;
+                            }
+
+                            if (!at.C6.IsNullOrWhiteSpace())
+                            {
+                                if (at.C6.Equals("A"))
+                                    if (!(fday.Exists(x => x.Equals(6)) || hlistday.Exists(x => x.Equals(6))))
+                                        tv = tv + 1;
+
+                                i++;
+                            }
+
+                            if (!at.C7.IsNullOrWhiteSpace())
+                            {
+                                if (at.C7.Equals("A"))
+                                    if (!(fday.Exists(x => x.Equals(7)) || hlistday.Exists(x => x.Equals(7))))
+                                        tv = tv + 1;
+
+                                i++;
+                            }
+
+                            if (!at.C8.IsNullOrWhiteSpace())
+                            {
+                                if (at.C8.Equals("A"))
+                                    if (!(fday.Exists(x => x.Equals(8)) || hlistday.Exists(x => x.Equals(8))))
+                                        tv = tv + 1;
+
+                                i++;
+                            }
+
+                            if (!at.C9.IsNullOrWhiteSpace())
+                            {
+                                if (at.C9.Equals("A"))
+                                    if (!(fday.Exists(x => x.Equals(9)) || hlistday.Exists(x => x.Equals(9))))
+                                        tv = tv + 1;
+
+                                i++;
+                            }
+
+                            if (!at.C10.IsNullOrWhiteSpace())
+                            {
+                                if (at.C10.Equals("A"))
+                                    if (!(fday.Exists(x => x.Equals(10)) || hlistday.Exists(x => x.Equals(10))))
+                                        tv = tv + 1;
+
+                                i++;
+                            }
+
+                            if (!at.C11.IsNullOrWhiteSpace())
+                            {
+                                if (at.C11.Equals("A"))
+                                    if (!(fday.Exists(x => x.Equals(11)) || hlistday.Exists(x => x.Equals(11))))
+                                        tv = tv + 1;
+
+                                i++;
+                            }
+
+                            if (!at.C12.IsNullOrWhiteSpace())
+                            {
+                                if (at.C12.Equals("A"))
+                                    if (!(fday.Exists(x => x.Equals(12)) || hlistday.Exists(x => x.Equals(12))))
+                                        tv = tv + 1;
+
+                                i++;
+                            }
+
+                            if (!at.C13.IsNullOrWhiteSpace())
+                            {
+                                if (at.C13.Equals("A"))
+                                    if (!(fday.Exists(x => x.Equals(13)) || hlistday.Exists(x => x.Equals(13))))
+                                        tv = tv + 1;
+
+                                i++;
+                            }
+
+                            if (!at.C14.IsNullOrWhiteSpace())
+                            {
+                                if (at.C14.Equals("A"))
+                                    if (!(fday.Exists(x => x.Equals(14)) || hlistday.Exists(x => x.Equals(14))))
+                                        tv = tv + 1;
+
+                                i++;
+                            }
+
+                            if (!at.C15.IsNullOrWhiteSpace())
+                            {
+                                if (at.C15.Equals("A"))
+                                    if (!(fday.Exists(x => x.Equals(15)) || hlistday.Exists(x => x.Equals(15))))
+                                        tv = tv + 1;
+
+                                i++;
+                            }
+
+                            if (!at.C16.IsNullOrWhiteSpace())
+                            {
+                                if (at.C16.Equals("A"))
+                                    if (!(fday.Exists(x => x.Equals(16)) || hlistday.Exists(x => x.Equals(26))))
+                                        tv = tv + 1;
+
+                                i++;
+                            }
+
+                            if (!at.C17.IsNullOrWhiteSpace())
+                            {
+                                if (at.C17.Equals("A"))
+                                    if (!(fday.Exists(x => x.Equals(17)) || hlistday.Exists(x => x.Equals(17))))
+                                        tv = tv + 1;
+
+                                i++;
+                            }
+
+                            if (!at.C18.IsNullOrWhiteSpace())
+                            {
+                                if (at.C18.Equals("A"))
+                                    if (!(fday.Exists(x => x.Equals(18)) || hlistday.Exists(x => x.Equals(18))))
+                                        tv = tv + 1;
+
+                                i++;
+                            }
+
+                            if (!at.C19.IsNullOrWhiteSpace())
+                            {
+                                if (at.C19.Equals("A"))
+                                    if (!(fday.Exists(x => x.Equals(19)) || hlistday.Exists(x => x.Equals(19))))
+                                        tv = tv + 1;
+
+                                i++;
+                            }
+
+                            if (!at.C20.IsNullOrWhiteSpace())
+                            {
+                                if (at.C20.Equals("A"))
+                                    if (!(fday.Exists(x => x.Equals(20)) || hlistday.Exists(x => x.Equals(20))))
+                                        tv = tv + 1;
+
+                                i++;
+                            }
+
+                            if (!at.C21.IsNullOrWhiteSpace())
+                            {
+                                if (at.C21.Equals("A"))
+                                    if (!(fday.Exists(x => x.Equals(21)) || hlistday.Exists(x => x.Equals(21))))
+                                        tv = tv + 1;
+
+                                i++;
+                            }
+
+                            if (!at.C22.IsNullOrWhiteSpace())
+                            {
+                                if (at.C22.Equals("A"))
+                                    if (!(fday.Exists(x => x.Equals(22)) || hlistday.Exists(x => x.Equals(22))))
+                                        tv = tv + 1;
+
+                                i++;
+                            }
+
+                            if (!at.C23.IsNullOrWhiteSpace())
+                            {
+                                if (at.C23.Equals("A"))
+                                    if (!(fday.Exists(x => x.Equals(23)) || hlistday.Exists(x => x.Equals(23))))
+                                        tv = tv + 1;
+
+                                i++;
+                            }
+
+                            if (!at.C24.IsNullOrWhiteSpace())
+                            {
+                                if (at.C24.Equals("A"))
+                                    if (!(fday.Exists(x => x.Equals(24)) || hlistday.Exists(x => x.Equals(24))))
+                                        tv = tv + 1;
+
+                                i++;
+                            }
+
+                            if (!at.C25.IsNullOrWhiteSpace())
+                            {
+                                if (at.C25.Equals("A"))
+                                    if (!(fday.Exists(x => x.Equals(25)) || hlistday.Exists(x => x.Equals(25))))
+                                        tv = tv + 1;
+
+                                i++;
+                            }
+
+                            if (!at.C26.IsNullOrWhiteSpace())
+                            {
+                                if (at.C26.Equals("A"))
+                                    if (!(fday.Exists(x => x.Equals(26)) || hlistday.Exists(x => x.Equals(26))))
+                                        tv = tv + 1;
+
+                                i++;
+                            }
+
+                            if (!at.C27.IsNullOrWhiteSpace())
+                            {
+                                if (at.C27.Equals("A"))
+                                    if (!(fday.Exists(x => x.Equals(27)) || hlistday.Exists(x => x.Equals(27))))
+                                        tv = tv + 1;
+
+                                i++;
+                            }
+
+                            if (!at.C28.IsNullOrWhiteSpace())
+                            {
+                                if (at.C28.Equals("A"))
+                                    if (!(fday.Exists(x => x.Equals(28)) || hlistday.Exists(x => x.Equals(28))))
+                                        tv = tv + 1;
+
+                                i++;
+                            }
+
+                            if (!at.C29.IsNullOrWhiteSpace())
+                            {
+                                if (at.C29.Equals("A"))
+                                    if (!(fday.Exists(x => x.Equals(29)) || hlistday.Exists(x => x.Equals(29))))
+                                        tv = tv + 1;
+
+                                i++;
+                            }
+
+                            if (!at.C30.IsNullOrWhiteSpace())
+                            {
+                                if (at.C30.Equals("A"))
+                                    if (!(fday.Exists(x => x.Equals(30)) || hlistday.Exists(x => x.Equals(30))))
+                                        tv = tv + 1;
+
+                                i++;
+                            }
+
+                            if (!at.C31.IsNullOrWhiteSpace())
+                            {
+                                if (at.C31.Equals("A"))
+                                    if (!(fday.Exists(x => x.Equals(31)) || hlistday.Exists(x => x.Equals(31))))
+                                        tv = tv + 1;
+
+                                i++;
+                            }
+
+                            at.TotalAbsent = tv;
+                        }
+                        {
+                            i = 0;
+                            at.TotalTransefer = 0;
+                            long tv = 0;
+                            if (!at.C1.IsNullOrWhiteSpace())
+                            {
+                                if (at.C1.Equals("T"))
+                                    if (!(fday.Exists(x => x.Equals(1)) || hlistday.Exists(x => x.Equals(1))))
+                                        tv = tv + 1;
+
+                                i++;
+                            }
+
+                            if (!at.C2.IsNullOrWhiteSpace())
+                            {
+                                if (at.C2.Equals("T"))
+                                    if (!(fday.Exists(x => x.Equals(2)) || hlistday.Exists(x => x.Equals(2))))
+                                        tv = tv + 1;
+
+                                i++;
+                            }
+
+                            if (!at.C3.IsNullOrWhiteSpace())
+                            {
+                                if (at.C3.Equals("T"))
+                                    if (!(fday.Exists(x => x.Equals(3)) || hlistday.Exists(x => x.Equals(3))))
+                                        tv = tv + 1;
+
+                                i++;
+                            }
+
+                            if (!at.C4.IsNullOrWhiteSpace())
+                            {
+                                if (at.C4.Equals("T"))
+                                    if (!(fday.Exists(x => x.Equals(4)) || hlistday.Exists(x => x.Equals(4))))
+                                        tv = tv + 1;
+
+                                i++;
+                            }
+
+                            if (!at.C5.IsNullOrWhiteSpace())
+                            {
+                                if (at.C5.Equals("T"))
+                                    if (!(fday.Exists(x => x.Equals(5)) || hlistday.Exists(x => x.Equals(5))))
+                                        tv = tv + 1;
+
+                                i++;
+                            }
+
+                            if (!at.C6.IsNullOrWhiteSpace())
+                            {
+                                if (at.C6.Equals("T"))
+                                    if (!(fday.Exists(x => x.Equals(6)) || hlistday.Exists(x => x.Equals(6))))
+                                        tv = tv + 1;
+
+                                i++;
+                            }
+
+                            if (!at.C7.IsNullOrWhiteSpace())
+                            {
+                                if (at.C7.Equals("T"))
+                                    if (!(fday.Exists(x => x.Equals(7)) || hlistday.Exists(x => x.Equals(7))))
+                                        tv = tv + 1;
+
+                                i++;
+                            }
+
+                            if (!at.C8.IsNullOrWhiteSpace())
+                            {
+                                if (at.C8.Equals("T"))
+                                    if (!(fday.Exists(x => x.Equals(8)) || hlistday.Exists(x => x.Equals(8))))
+                                        tv = tv + 1;
+
+                                i++;
+                            }
+
+                            if (!at.C9.IsNullOrWhiteSpace())
+                            {
+                                if (at.C9.Equals("T"))
+                                    if (!(fday.Exists(x => x.Equals(9)) || hlistday.Exists(x => x.Equals(9))))
+                                        tv = tv + 1;
+
+                                i++;
+                            }
+
+                            if (!at.C10.IsNullOrWhiteSpace())
+                            {
+                                if (at.C10.Equals("T"))
+                                    if (!(fday.Exists(x => x.Equals(10)) || hlistday.Exists(x => x.Equals(10))))
+                                        tv = tv + 1;
+
+                                i++;
+                            }
+
+                            if (!at.C11.IsNullOrWhiteSpace())
+                            {
+                                if (at.C11.Equals("T"))
+                                    if (!(fday.Exists(x => x.Equals(11)) || hlistday.Exists(x => x.Equals(11))))
+                                        tv = tv + 1;
+
+                                i++;
+                            }
+
+                            if (!at.C12.IsNullOrWhiteSpace())
+                            {
+                                if (at.C12.Equals("T"))
+                                    if (!(fday.Exists(x => x.Equals(12)) || hlistday.Exists(x => x.Equals(12))))
+                                        tv = tv + 1;
+
+                                i++;
+                            }
+
+                            if (!at.C13.IsNullOrWhiteSpace())
+                            {
+                                if (at.C13.Equals("T"))
+                                    if (!(fday.Exists(x => x.Equals(13)) || hlistday.Exists(x => x.Equals(13))))
+                                        tv = tv + 1;
+
+                                i++;
+                            }
+
+                            if (!at.C14.IsNullOrWhiteSpace())
+                            {
+                                if (at.C14.Equals("T"))
+                                    if (!(fday.Exists(x => x.Equals(14)) || hlistday.Exists(x => x.Equals(14))))
+                                        tv = tv + 1;
+
+                                i++;
+                            }
+
+                            if (!at.C15.IsNullOrWhiteSpace())
+                            {
+                                if (at.C15.Equals("T"))
+                                    if (!(fday.Exists(x => x.Equals(15)) || hlistday.Exists(x => x.Equals(15))))
+                                        tv = tv + 1;
+
+                                i++;
+                            }
+
+                            if (!at.C16.IsNullOrWhiteSpace())
+                            {
+                                if (at.C16.Equals("T"))
+                                    if (!(fday.Exists(x => x.Equals(16)) || hlistday.Exists(x => x.Equals(16))))
+                                        tv = tv + 1;
+
+                                i++;
+                            }
+
+                            if (!at.C17.IsNullOrWhiteSpace())
+                            {
+                                if (at.C17.Equals("T"))
+                                    if (!(fday.Exists(x => x.Equals(17)) || hlistday.Exists(x => x.Equals(17))))
+                                        tv = tv + 1;
+
+                                i++;
+                            }
+
+                            if (!at.C18.IsNullOrWhiteSpace())
+                            {
+                                if (at.C18.Equals("T"))
+                                    if (!(fday.Exists(x => x.Equals(18)) || hlistday.Exists(x => x.Equals(18))))
+                                        tv = tv + 1;
+
+                                i++;
+                            }
+
+                            if (!at.C19.IsNullOrWhiteSpace())
+                            {
+                                if (at.C19.Equals("T"))
+                                    if (!(fday.Exists(x => x.Equals(19)) || hlistday.Exists(x => x.Equals(19))))
+                                        tv = tv + 1;
+
+                                i++;
+                            }
+
+                            if (!at.C20.IsNullOrWhiteSpace())
+                            {
+                                if (at.C20.Equals("T"))
+                                    if (!(fday.Exists(x => x.Equals(20)) || hlistday.Exists(x => x.Equals(20))))
+                                        tv = tv + 1;
+
+                                i++;
+                            }
+
+                            if (!at.C21.IsNullOrWhiteSpace())
+                            {
+                                if (at.C21.Equals("T"))
+                                    if (!(fday.Exists(x => x.Equals(21)) || hlistday.Exists(x => x.Equals(21))))
+                                        tv = tv + 1;
+
+                                i++;
+                            }
+
+                            if (!at.C22.IsNullOrWhiteSpace())
+                            {
+                                if (at.C22.Equals("T"))
+                                    if (!(fday.Exists(x => x.Equals(22)) || hlistday.Exists(x => x.Equals(22))))
+                                        tv = tv + 1;
+
+                                i++;
+                            }
+
+                            if (!at.C23.IsNullOrWhiteSpace())
+                            {
+                                if (at.C23.Equals("T"))
+                                    if (!(fday.Exists(x => x.Equals(23)) || hlistday.Exists(x => x.Equals(23))))
+                                        tv = tv + 1;
+
+                                i++;
+                            }
+
+                            if (!at.C24.IsNullOrWhiteSpace())
+                            {
+                                if (at.C24.Equals("T"))
+                                    if (!(fday.Exists(x => x.Equals(24)) || hlistday.Exists(x => x.Equals(24))))
+                                        tv = tv + 1;
+
+                                i++;
+                            }
+
+                            if (!at.C25.IsNullOrWhiteSpace())
+                            {
+                                if (at.C25.Equals("T"))
+                                    if (!(fday.Exists(x => x.Equals(25)) || hlistday.Exists(x => x.Equals(25))))
+                                        tv = tv + 1;
+
+                                i++;
+                            }
+
+                            if (!at.C26.IsNullOrWhiteSpace())
+                            {
+                                if (at.C26.Equals("T"))
+                                    if (!(fday.Exists(x => x.Equals(26)) || hlistday.Exists(x => x.Equals(26))))
+                                        tv = tv + 1;
+
+                                i++;
+                            }
+
+                            if (!at.C27.IsNullOrWhiteSpace())
+                            {
+                                if (at.C27.Equals("T"))
+                                    if (!(fday.Exists(x => x.Equals(27)) || hlistday.Exists(x => x.Equals(27))))
+                                        tv = tv + 1;
+
+                                i++;
+                            }
+
+                            if (!at.C28.IsNullOrWhiteSpace())
+                            {
+                                if (at.C28.Equals("T"))
+                                    if (!(fday.Exists(x => x.Equals(28)) || hlistday.Exists(x => x.Equals(28))))
+                                        tv = tv + 1;
+
+                                i++;
+                            }
+
+                            if (!at.C29.IsNullOrWhiteSpace())
+                            {
+                                if (at.C29.Equals("T"))
+                                    if (!(fday.Exists(x => x.Equals(29)) || hlistday.Exists(x => x.Equals(29))))
+                                        tv = tv + 1;
+
+                                i++;
+                            }
+
+                            if (!at.C30.IsNullOrWhiteSpace())
+                            {
+                                if (at.C30.Equals("T"))
+                                    if (!(fday.Exists(x => x.Equals(30)) || hlistday.Exists(x => x.Equals(30))))
+                                        tv = tv + 1;
+
+                                i++;
+                            }
+
+                            if (!at.C31.IsNullOrWhiteSpace())
+                            {
+                                if (at.C31.Equals("T"))
+                                    if (!(fday.Exists(x => x.Equals(31)) || hlistday.Exists(x => x.Equals(31))))
+                                        tv = tv + 1;
+
+                                i++;
+                            }
+
+                            at.TotalTransefer = tv;
+                        }
+
+                        at.status = "panding";
+                    }
+
+                    this.db.Attendances.Add(at);
+                    this.db.SaveChanges();
+                }
+
+                return this.RedirectToAction("AIndex");
+            }
+
+            model1 = new timesheetViewModel { attendance = attendance };
+            return this.View(model1);
+        }
+
+        [Authorize(Roles = "Admin,Manager")]
+        public ActionResult Asearch(int? page, int? pagesize, string search)
+        {
+            var a = this.db.MainTimeSheets.OrderByDescending(m => m.ID);
+
+            // var aa = a.First();
+            var pageIndex = 1;
+            pageIndex = page.HasValue ? Convert.ToInt32(page) : 1;
+            var defaSize = 100;
+            if (pagesize != 0) defaSize = pagesize ?? 100;
+
+            var list = this.db.Attendances.Include(x => x.LabourMaster).OrderByDescending(m => m.ID)
+                .ToPagedList(pageIndex, defaSize);
+            this.ViewBag.pagesize = defaSize;
+            if (!search.IsNullOrWhiteSpace())
+            {
+                long aid;
+                if (long.TryParse(search, out aid))
+                {
+                    if (aid > 3)
+                    {
+                        var lidf = this.db.LabourMasters.Where(x => x.EMPNO.Equals(aid)).ToList();
+                        if (lidf.Count != 0)
+                        {
+                            var lid = lidf.First();
+                            list = this.db.Attendances.Where(x => x.EmpID.Equals(lid.ID)).Include(x => x.LabourMaster)
+                                .OrderByDescending(m => m.ID).ToPagedList(pageIndex, defaSize);
+                        }
+                    }
+                    else
+                    {
+                        list = this.db.Attendances.OrderByDescending(m => m.ID).Include(x => x.LabourMaster)
+                            .ToPagedList(pageIndex, defaSize);
+                    }
+                }
+            }
+            else
+            {
+                list = this.db.Attendances.OrderByDescending(m => m.ID).ToPagedList(pageIndex, defaSize);
+            }
+
+            return this.View(list);
+        }
+
+        public ActionResult Contact()
+        {
+            this.ViewBag.Message = "Your contact page.";
+
+            return this.View();
+        }
+
+        [Authorize(Roles = "Admin,Manager,Employee")]
+        public ActionResult csearch(DateTime? mtsmonth, long? csmps, string MM)
+        {
+            var ll = new List<Attendance>();
+            DateTime date;
+            if (mtsmonth.HasValue)
+            {
+                DateTime.TryParse(mtsmonth.ToString(), out date);
+                this.ViewBag.dateee = date.ToShortDateString();
+            }
+            else
+            {
+                date = DateTime.Now;
+                this.ViewBag.dateee = date;
+            }
+
+            var uid = this.User.Identity.GetUserId();
+            var uid1 = this.db.AspNetUsers.Find(uid);
+            var t = new List<ProjectList>();
+            if (uid1.csid != 0 && !this.User.IsInRole("Admin"))
+            {
+                var scid = this.db.CsPermissions.Where(x => x.CsUser == uid1.csid).ToList();
+                foreach (var i in scid) t.Add(this.db.ProjectLists.Find(i.Project));
+
+                this.ViewBag.csp = new SelectList(t, "ID", "PROJECT_NAME").OrderBy(x => x.Text);
+            }
+            else
+            {
+                this.ViewBag.csp = new SelectList(this.db.ProjectLists, "ID", "PROJECT_NAME").OrderBy(x => x.Text);
+            }
+
+            this.ViewBag.csmps1 = csmps;
+            this.ViewBag.mtsmonth1 = date;
+            this.db.Database.CommandTimeout = 300;
+            this.ViewBag.MM = MM;
+            this.ViewBag.csmps = new SelectList(this.db.ManPowerSuppliers, "ID", "Supplier");
+            var list = this.db.Attendances.Include(x => x.LabourMaster).ToList();
+            var atlist = new List<Attendance>();
+            if (csmps.HasValue && mtsmonth.HasValue)
+            {
+                DateTime.TryParse(mtsmonth.Value.ToString(), out var dm);
+                long.TryParse(csmps.ToString(), out var lcsmps);
+                var ab = this.db.MainTimeSheets
+                    .Where(
+                        x => x.TMonth.Month.Equals(dm.Month) && x.TMonth.Year.Equals(dm.Year)
+                                                             && x.ManPowerSupplier.Equals(lcsmps)).OrderBy(x => x.ID)
+                    .ToPagedList(1, 1000);
+                if (ab.Count != 0)
+                {
+                    foreach (var abis in ab)
+                        atlist.AddRange(
+                            this.db.Attendances.Where(x => x.SubMain.Equals(abis.ID)).Include(x => x.LabourMaster));
+                    return this.View(
+                        atlist.OrderBy(x => x.MainTimeSheet.Project).ThenBy(x => x.EmpID).ToPagedList(1, 1000));
+                }
+                else
+                {
+                    this.ModelState.AddModelError(string.Empty, "the combination does not exist");
+                    return this.View(ll.OrderByDescending(x => x.ID).ToPagedList(1, 1000));
+                }
+            }
+
+            return this.View(ll.OrderBy(x => x.LabourMaster.EMPNO).ToPagedList(1, 1000));
+        }
+
+        public ActionResult Index()
+        {
+            return this.View();
+        }
+
+        public ActionResult tomcreate(DateTime TMonth, long? ManPowerSupplier, long? Project)
+        {
+            var mts = new MainTimeSheet();
+            mts.TMonth = TMonth;
+            mts.Project = Project.Value;
+            mts.ManPowerSupplier = ManPowerSupplier.Value;
+            return this.RedirectToAction("MCreate", new { mts });
+        }
+
+        [Authorize(Roles = "Admin,Manager,Employee")]
+        public ActionResult MCreate()
+        {
+            var uid = this.User.Identity.GetUserId();
+            var uid1 = this.db.AspNetUsers.Find(uid);
+            if (uid1.csid != 0 && !this.User.IsInRole("Admin"))
+            {
+                var scid = this.db.CsPermissions.Where(x => x.CsUser == uid1.csid).ToList();
+                var t = new List<ProjectList>();
+                foreach (var i in scid) t.Add(this.db.ProjectLists.Find(i.Project));
+                this.ViewBag.Project = new SelectList(t, "ID", "PROJECT_NAME").OrderBy(x => x.Text);
+            }
+            else
+            {
+                this.ViewBag.Project = new SelectList(this.db.ProjectLists, "ID", "PROJECT_NAME").OrderBy(x => x.Text);
+            }
+
+            this.ViewBag.ManPowerSupplier = new SelectList(this.db.ManPowerSuppliers, "ID", "Supplier");
+            return this.View();
+        }
+
+        // POST: MainTimeSheets/Create
+        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
+        // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin,Manager,Employee")]
+        public ActionResult MCreate(
+            [Bind(
+                Include =
+                    "ID,TMonth,ManPowerSupplier,Project,Ref,RefNo,UserName,PCName,SAV,Location,Note,Startit,Encoded_Absolute_URL,Item_Type,Path,URL_Path,Workflow_Instance_ID,File_Type,TMnth")]
+            MainTimeSheet mainTimeSheet)
+        {
+            var uid = this.User.Identity.GetUserId();
+            var uid1 = this.db.AspNetUsers.Find(uid);
+            if (uid1.csid != 0 && !this.User.IsInRole("Admin"))
+            {
+                var scid = this.db.CsPermissions.Where(x => x.CsUser == uid1.csid).ToList();
+                var t = new List<ProjectList>();
+                foreach (var i in scid) t.Add(this.db.ProjectLists.Find(i.Project));
+
+                this.ViewBag.Project = new SelectList(t, "ID", "PROJECT_NAME").OrderBy(x => x.Text);
+            }
+            else
+            {
+                this.ViewBag.Project = new SelectList(this.db.ProjectLists, "ID", "PROJECT_NAME").OrderBy(x => x.Text);
+            }
+
+            this.ViewBag.ManPowerSupplier = new SelectList(this.db.ManPowerSuppliers, "ID", "Supplier");
+            this.Tmonth = mainTimeSheet.TMonth.Date;
+            this.ID = mainTimeSheet.ID;
+            this.manid = mainTimeSheet.ManPowerSupplier;
+            this.pid = mainTimeSheet.Project;
+            var ids = new MainTimeSheet();
+            if (this.ModelState.IsValid)
+            {
+                var apall = this.db.approvals.ToList();
+                if (!apall.Exists(
+                        x => x.MPS_id == mainTimeSheet.ManPowerSupplier && x.P_id == mainTimeSheet.Project
+                                                                        && x.adate == mainTimeSheet.TMonth
+                                                                        && (x.status.Equals("submitted")
+                                                                            || x.status.Equals("approved"))))
+                {
+                    var te = this.db.MainTimeSheets.OrderByDescending(x => x.ID).ToList();
+                    if (te.Exists(
+                        x => x.TMonth.Month == mainTimeSheet.TMonth.Month
+                             && x.TMonth.Year == mainTimeSheet.TMonth.Year))
+                    {
+                        var te1 = te.Find(
+                            x => x.TMonth.Month == mainTimeSheet.TMonth.Month
+                                 && x.TMonth.Year == mainTimeSheet.TMonth.Year);
+                        if (mainTimeSheet.TMonth == te[0].TMonth
+                            && mainTimeSheet.ManPowerSupplier == te[0].ManPowerSupplier
+                            && te[0].Project == mainTimeSheet.Project) goto qw;
+                        te1.TMonth = mainTimeSheet.TMonth;
+                        if (te1.ManPowerSupplier != mainTimeSheet.ManPowerSupplier)
+                        {
+                            this.db.MainTimeSheets.Add(mainTimeSheet);
+                            this.db.SaveChanges();
+                            te = this.db.MainTimeSheets.OrderByDescending(x => x.ID).ToList();
+                            var teall = te.FindAll(
+                                x => x.TMonth.Month == mainTimeSheet.TMonth.Month
+                                     && x.TMonth.Year == mainTimeSheet.TMonth.Year
+                                     && x.ManPowerSupplier == mainTimeSheet.ManPowerSupplier
+                                     && x.Project == mainTimeSheet.Project).OrderBy(x => x.ID);
+                            var atalllist = this.db.Attendances.ToList();
+                            if (teall != null || teall.Count() != 0)
+                            {
+                                var atallfind = new List<Attendance>();
+                                foreach (var sheet in teall)
+                                {
+                                    var zz = atalllist.FindAll(x => x.SubMain == sheet.ID);
+                                    if (zz.Count != 0) atallfind = atalllist.FindAll(x => x.SubMain == sheet.ID);
+                                }
+
+                                foreach (var ql in atallfind)
+                                {
+                                    ql.SubMain = teall.Last().ID;
+                                    this.db.Entry(ql).State = EntityState.Modified;
+                                    this.db.SaveChanges();
+                                }
+                            }
+
+                            ids = te1;
+                            return this.RedirectToAction("AIndex", "Home", ids);
+                        }
+
+                        if (te1.Project != mainTimeSheet.Project)
+                        {
+                            this.db.MainTimeSheets.Add(mainTimeSheet);
+                            this.db.SaveChanges();
+                            te = this.db.MainTimeSheets.OrderByDescending(x => x.ID).ToList();
+                            var teall = te.FindAll(
+                                x => x.TMonth.Month == mainTimeSheet.TMonth.Month
+                                     && x.TMonth.Year == mainTimeSheet.TMonth.Year
+                                     && x.ManPowerSupplier == mainTimeSheet.ManPowerSupplier
+                                     && x.Project == mainTimeSheet.Project).OrderBy(x => x.ID);
+                            var atalllist = this.db.Attendances.ToList();
+                            if (teall != null || teall.Count() != 0)
+                            {
+                                var atallfind = new List<Attendance>();
+                                foreach (var sheet in teall)
+                                {
+                                    var zz = atalllist.FindAll(x => x.SubMain == sheet.ID);
+                                    if (zz.Count != 0) atallfind = atalllist.FindAll(x => x.SubMain == sheet.ID);
+                                }
+
+                                foreach (var ql in atallfind)
+                                {
+                                    ql.SubMain = teall.Last().ID;
+                                    this.db.Entry(ql).State = EntityState.Modified;
+                                    this.db.SaveChanges();
+                                }
+                            }
+
+                            ids = te1;
+                            return this.RedirectToAction("AIndex", "Home", ids);
+                        }
+
+                        if (te1.TMonth.Month != te.First().TMonth.Month)
+                        {
+                            this.db.MainTimeSheets.Add(mainTimeSheet);
+                            this.db.SaveChanges();
+                            te = this.db.MainTimeSheets.OrderByDescending(x => x.ID).ToList();
+                            var teall = te.FindAll(
+                                x => x.TMonth.Month == mainTimeSheet.TMonth.Month
+                                     && x.TMonth.Year == mainTimeSheet.TMonth.Year
+                                     && x.ManPowerSupplier == mainTimeSheet.ManPowerSupplier
+                                     && x.Project == mainTimeSheet.Project).OrderBy(x => x.ID);
+                            var atalllist = this.db.Attendances.ToList();
+                            if (teall != null || teall.Count() != 0)
+                            {
+                                var atallfind = new List<Attendance>();
+                                foreach (var sheet in teall)
+                                {
+                                    var zz = atalllist.FindAll(x => x.SubMain == sheet.ID);
+                                    if (zz.Count != 0) atallfind = atalllist.FindAll(x => x.SubMain == sheet.ID);
+                                }
+
+                                foreach (var ql in atallfind)
+                                {
+                                    ql.SubMain = teall.Last().ID;
+                                    this.db.Entry(ql).State = EntityState.Modified;
+                                    this.db.SaveChanges();
+                                }
+                            }
+
+                            ids = te1;
+                            return this.RedirectToAction("AIndex", "Home", ids);
+                        }
+
+                        this.db.Entry(te1).State = EntityState.Modified;
+                        this.db.SaveChanges();
+                        ids = te1;
+                        return this.RedirectToAction("AIndex", "Home", ids);
+                    }
+                    else
+                    {
+                        this.db.MainTimeSheets.Add(mainTimeSheet);
+                        this.db.SaveChanges();
+                        var te2 = this.db.MainTimeSheets.ToList().Last();
+                        ids = te2;
+                        return this.RedirectToAction("AIndex", "Home", ids);
+                    }
+                }
+                else
+                {
+                    var errr1 = "timesheet already " + apall.Find(
+                                        x => x.MPS_id == mainTimeSheet.ManPowerSupplier
+                                             && x.P_id == mainTimeSheet.Project
+                                             && x.adate == mainTimeSheet.TMonth)
+                                    .status;
+                    this.ModelState.AddModelError(string.Empty, errr1);
+                }
+            }
+
+            return this.View(mainTimeSheet);
+            qw:
+            var te3 = this.db.MainTimeSheets.ToList().Last();
+            ids = te3;
+            return this.RedirectToAction("AIndex", "Home", ids);
+        }
+
+        [Authorize(Roles = "Admin,Manager,Employee")]
+        public ActionResult tests()
+        {
+            var at = new Attendance();
+            var a = this.db.MainTimeSheets.OrderByDescending(m => m.ID);
+            var aa = a.First();
+            this.ViewBag.mid = aa.ID;
+            var b = this.db.ManPowerSuppliers.Find(aa.ManPowerSupplier);
+            var c = this.db.ProjectLists.Find(aa.Project);
+            this.ViewBag.pid = c.PROJECT_NAME;
+            this.ViewBag.mps = b.Supplier;
+            this.ViewBag.mpssh = b.ShortName;
+            this.ViewBag.mdate = aa.TMonth.ToLongDateString();
+            if (b.Supplier == "GROVE") b = this.db.ManPowerSuppliers.Find(1);
+            var d = from LabourMaster in this.db.LabourMasters
+                    where LabourMaster.ManPowerSupply == b.ID
+                    select LabourMaster;
+            this.ViewBag.empno = new SelectList(d.Where(x => x.EMPNO >= 4).OrderBy(m => m.EMPNO), "ID", "EMPNO");
+            this.ViewBag.name = new SelectList(d.Where(x => x.EMPNO >= 4).OrderBy(m => m.EMPNO), "ID", "Person_Name");
+            this.ViewBag.position = new SelectList(d.Where(x => x.EMPNO >= 4).OrderBy(m => m.EMPNO), "ID", "Position");
+
+            var data = new[]
+                           {
+                               new SelectListItem { Text = string.Empty, Value = string.Empty },
+                               new SelectListItem { Text = "1", Value = "1" },
+                               new SelectListItem { Text = "2", Value = "2" },
+                               new SelectListItem { Text = "3", Value = "3" },
+                               new SelectListItem { Text = "4", Value = "4" },
+                               new SelectListItem { Text = "5", Value = "5" },
+                               new SelectListItem { Text = "6", Value = "6" },
+                               new SelectListItem { Text = "7", Value = "7" },
+                               new SelectListItem { Text = "8", Value = "8" },
+                               new SelectListItem { Text = "9", Value = "9" },
+                               new SelectListItem { Text = "10", Value = "10" },
+                               new SelectListItem { Text = "11", Value = "11" },
+                               new SelectListItem { Text = "12", Value = "12" },
+                               new SelectListItem { Text = "13", Value = "13" },
+                               new SelectListItem { Text = "14", Value = "14" },
+                               new SelectListItem { Text = "15", Value = "15" },
+                               new SelectListItem { Text = "16", Value = "16" },
+                               new SelectListItem { Text = "17", Value = "17" },
+                               new SelectListItem { Text = "18", Value = "18" },
+                               new SelectListItem { Text = "19", Value = "19" },
+                               new SelectListItem { Text = "20", Value = "20" },
+                               new SelectListItem { Text = "21", Value = "21" },
+                               new SelectListItem { Text = "22", Value = "22" },
+                               new SelectListItem { Text = "23", Value = "23" },
+                               new SelectListItem { Text = "24", Value = "24" },
+                               new SelectListItem { Text = "S", Value = "S" },
+                               new SelectListItem { Text = "A", Value = "A" },
+                               new SelectListItem { Text = "T", Value = "T" },
+                               new SelectListItem { Text = "V", Value = "V" }
+                           };
+            this.ViewBag.hours = data;
+            return this.View();
+        }
+
+        [SuppressMessage(
+            "StyleCop.CSharp.LayoutRules",
+            "SA1503:CurlyBracketsMustNotBeOmitted",
+            Justification = "Reviewed. Suppression is OK here.")]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin,Manager,Employee")]
+        public ActionResult tests(testlist test)
+        {
+            var at = new Attendance();
+            var a = this.db.MainTimeSheets.OrderByDescending(m => m.ID);
+            var aa = a.First();
+            this.ViewBag.mid = aa.ID;
+            var b = this.db.ManPowerSuppliers.Find(aa.ManPowerSupplier);
+            var c = this.db.ProjectLists.Find(aa.Project);
+            this.ViewBag.pid = c.PROJECT_NAME;
+            this.ViewBag.mps = b.Supplier;
+            this.ViewBag.mpssh = b.ShortName;
+            this.ViewBag.mdate = aa.TMonth.ToLongDateString();
+            if (b.Supplier == "GROVE") b = this.db.ManPowerSuppliers.Find(1);
+            var d = from LabourMaster in this.db.LabourMasters
+                    where LabourMaster.ManPowerSupply == b.ID
+                    select LabourMaster;
+            this.ViewBag.emplist = d.Select(x => x.EMPNO).ToList();
+            this.ViewBag.empno = new SelectList(d.Where(x => x.EMPNO >= 4).OrderBy(m => m.EMPNO), "ID", "EMPNO");
+            this.ViewBag.name = new SelectList(d.Where(x => x.EMPNO >= 4).OrderBy(m => m.EMPNO), "ID", "Person_Name");
+            this.ViewBag.position = new SelectList(d.Where(x => x.EMPNO >= 4).OrderBy(m => m.EMPNO), "ID", "Position");
+
+            var data = new[]
+                           {
+                               new SelectListItem { Text = string.Empty, Value = string.Empty },
+                               new SelectListItem { Text = "1", Value = "1" },
+                               new SelectListItem { Text = "2", Value = "2" },
+                               new SelectListItem { Text = "3", Value = "3" },
+                               new SelectListItem { Text = "4", Value = "4" },
+                               new SelectListItem { Text = "5", Value = "5" },
+                               new SelectListItem { Text = "6", Value = "6" },
+                               new SelectListItem { Text = "7", Value = "7" },
+                               new SelectListItem { Text = "8", Value = "8" },
+                               new SelectListItem { Text = "9", Value = "9" },
+                               new SelectListItem { Text = "10", Value = "10" },
+                               new SelectListItem { Text = "11", Value = "11" },
+                               new SelectListItem { Text = "12", Value = "12" },
+                               new SelectListItem { Text = "13", Value = "13" },
+                               new SelectListItem { Text = "14", Value = "14" },
+                               new SelectListItem { Text = "15", Value = "15" },
+                               new SelectListItem { Text = "16", Value = "16" },
+                               new SelectListItem { Text = "17", Value = "17" },
+                               new SelectListItem { Text = "18", Value = "18" },
+                               new SelectListItem { Text = "19", Value = "19" },
+                               new SelectListItem { Text = "20", Value = "20" },
+                               new SelectListItem { Text = "21", Value = "21" },
+                               new SelectListItem { Text = "22", Value = "22" },
+                               new SelectListItem { Text = "23", Value = "23" },
+                               new SelectListItem { Text = "24", Value = "24" },
+                               new SelectListItem { Text = "S", Value = "S" },
+                               new SelectListItem { Text = "A", Value = "A" },
+                               new SelectListItem { Text = "T", Value = "T" },
+                               new SelectListItem { Text = "V", Value = "V" }
+                           };
+            this.ViewBag.hours = data;
+            var oldmts = new List<MainTimeSheet>();
+            if (this.ModelState.IsValid)
+            {
+                var check = new List<Attendance>();
+                var oldmts1 = new MainTimeSheet();
+                var apall = this.db.approvals.ToList();
+                foreach (var list in test.Tests)
+                {
+                    var trial = list.date = aa.TMonth;
+                    oldmts = this.db.MainTimeSheets
+                        .Where(
+                            x => x.TMonth.Month.Equals(list.date.Month) && x.TMonth.Year.Equals(list.date.Year)
+                                                                        && x.ManPowerSupplier.Equals(
+                                                                            aa.ManPowerSupplier)
+                                                                        && x.Project.Equals(aa.Project))
+                        .OrderByDescending(x => x.ID).ToList();
+
+                    if (oldmts.Count != 0)
+                    {
+                        oldmts1 = oldmts.Last();
+
+                        // First();
+                        check = this.db.Attendances
+                            .Where(z => z.EmpID.Equals(list.empno) && z.SubMain.Equals(oldmts1.ID)).ToList();
+                    }
+                    else
+                    {
+                        check = this.db.Attendances.Where(z => z.EmpID.Equals(list.empno) && z.SubMain.Equals(aa.ID))
+                            .ToList();
+                    }
+                    {
+                        var tb = this.db;
+                        var lo = this.db.MainTimeSheets.Where(
+                            e => e.ManPowerSupplier.Equals(aa.ManPowerSupplier) && e.TMonth.Year.Equals(list.date.Year)
+                                                                                && e.TMonth.Month.Equals(
+                                                                                    list.date.Month)).ToList();
+                        var lo1 = new List<Attendance>();
+                        foreach (var same in lo)
+                        {
+                            var at1 = this.db.Attendances.Where(e => e.SubMain.Equals(same.ID)).ToList();
+                            if (at1 != null)
+                                foreach (var at2 in at1)
+                                    lo1.Add(at2);
+                        }
+
+                        var lo3 = new List<Attendance>();
+                        foreach (var lo2 in lo1)
+                            if (list.empno == lo2.EmpID)
+                                lo3.Add(lo2);
+
+                        long com = 0;
+                        foreach (var at1 in lo3)
+                        {
+                            if (check.Count != 0) at = check.First();
+                            if (!at1.SubMain.Equals(at.SubMain))
+                            {
+                                if (list.date.Day == 1)
+                                {
+                                    long.TryParse(at1.C1, out var k);
+                                    long.TryParse(list.hours, out var l);
+                                    com = k + l;
+                                    if (com > 24)
+                                    {
+                                        var dd = this.db.LabourMasters.Find(list.empno);
+                                        var errorm = "total time of the employee no:" + dd.EMPNO.ToString()
+                                                                                      + " for the day is "
+                                                                                      + com.ToString()
+                                                                                      + "hrs which is greater then 24hrs";
+                                        this.ModelState.AddModelError(string.Empty, errorm);
+                                        return this.View(test);
+                                    }
+                                }
+
+                                if (list.date.Day == 2)
+                                {
+                                    long.TryParse(at1.C2, out var k);
+                                    long.TryParse(list.hours, out var l);
+                                    com = k + l;
+                                    if (com > 24)
+                                    {
+                                        var dd = this.db.LabourMasters.Find(list.empno);
+                                        var errorm = "total time of the employee no:" + dd.EMPNO.ToString()
+                                                                                      + " for the day is "
+                                                                                      + com.ToString()
+                                                                                      + "hrs which is greater then 24hrs";
+                                        this.ModelState.AddModelError(string.Empty, errorm);
+                                        return this.View(test);
+                                    }
+                                }
+
+                                if (list.date.Day == 3)
+                                {
+                                    long.TryParse(at1.C3, out var k);
+                                    long.TryParse(list.hours, out var l);
+                                    com = k + l;
+                                    if (com > 24)
+                                    {
+                                        var dd = this.db.LabourMasters.Find(list.empno);
+                                        var errorm = "total time of the employee no:" + dd.EMPNO.ToString()
+                                                                                      + " for the day is "
+                                                                                      + com.ToString()
+                                                                                      + "hrs which is greater then 24hrs";
+                                        this.ModelState.AddModelError(string.Empty, errorm);
+                                        return this.View(test);
+                                    }
+                                }
+
+                                if (list.date.Day == 4)
+                                {
+                                    long.TryParse(at1.C4, out var k);
+                                    long.TryParse(list.hours, out var l);
+                                    com = k + l;
+                                    if (com > 24)
+                                    {
+                                        var dd = this.db.LabourMasters.Find(list.empno);
+                                        var errorm = "total time of the employee no:" + dd.EMPNO.ToString()
+                                                                                      + " for the day is "
+                                                                                      + com.ToString()
+                                                                                      + "hrs which is greater then 24hrs";
+                                        this.ModelState.AddModelError(string.Empty, errorm);
+                                        return this.View(test);
+                                    }
+                                }
+
+                                if (list.date.Day == 5)
+                                {
+                                    long.TryParse(at1.C5, out var k);
+                                    long.TryParse(list.hours, out var l);
+                                    com = k + l;
+                                    if (com > 24)
+                                    {
+                                        var dd = this.db.LabourMasters.Find(list.empno);
+                                        var errorm = "total time of the employee no:" + dd.EMPNO.ToString()
+                                                                                      + " for the day is "
+                                                                                      + com.ToString()
+                                                                                      + "hrs which is greater then 24hrs";
+                                        this.ModelState.AddModelError(string.Empty, errorm);
+                                        return this.View(test);
+                                    }
+                                }
+
+                                if (list.date.Day == 6)
+                                {
+                                    long.TryParse(at1.C6, out var k);
+                                    long.TryParse(list.hours, out var l);
+                                    com = k + l;
+                                    if (com > 24)
+                                    {
+                                        var dd = this.db.LabourMasters.Find(list.empno);
+                                        var errorm = "total time of the employee no:" + dd.EMPNO.ToString()
+                                                                                      + " for the day is "
+                                                                                      + com.ToString()
+                                                                                      + "hrs which is greater then 24hrs";
+                                        this.ModelState.AddModelError(string.Empty, errorm);
+                                        return this.View(test);
+                                    }
+                                }
+
+                                if (list.date.Day == 7)
+                                {
+                                    long.TryParse(at1.C7, out var k);
+                                    long.TryParse(list.hours, out var l);
+                                    com = k + l;
+                                    if (com > 24)
+                                    {
+                                        var dd = this.db.LabourMasters.Find(list.empno);
+                                        var errorm = "total time of the employee no:" + dd.EMPNO.ToString()
+                                                                                      + " for the day is "
+                                                                                      + com.ToString()
+                                                                                      + "hrs which is greater then 24hrs";
+                                        this.ModelState.AddModelError(string.Empty, errorm);
+                                        return this.View(test);
+                                    }
+                                }
+
+                                if (list.date.Day == 8)
+                                {
+                                    long.TryParse(at1.C8, out var k);
+                                    long.TryParse(list.hours, out var l);
+                                    com = k + l;
+                                    if (com > 24)
+                                    {
+                                        var dd = this.db.LabourMasters.Find(list.empno);
+                                        var errorm = "total time of the employee no:" + dd.EMPNO.ToString()
+                                                                                      + " for the day is "
+                                                                                      + com.ToString()
+                                                                                      + "hrs which is greater then 24hrs";
+                                        this.ModelState.AddModelError(string.Empty, errorm);
+                                        return this.View(test);
+                                    }
+                                }
+
+                                if (list.date.Day == 9)
+                                {
+                                    long.TryParse(at1.C9, out var k);
+                                    long.TryParse(list.hours, out var l);
+                                    com = k + l;
+                                    if (com > 24)
+                                    {
+                                        var dd = this.db.LabourMasters.Find(list.empno);
+                                        var errorm = "total time of the employee no:" + dd.EMPNO.ToString()
+                                                                                      + " for the day is "
+                                                                                      + com.ToString()
+                                                                                      + "hrs which is greater then 24hrs";
+                                        this.ModelState.AddModelError(string.Empty, errorm);
+                                        return this.View(test);
+                                    }
+                                }
+
+                                if (list.date.Day == 10)
+                                {
+                                    long.TryParse(at1.C10, out var k);
+                                    long.TryParse(list.hours, out var l);
+                                    com = k + l;
+                                    if (com > 24)
+                                    {
+                                        var dd = this.db.LabourMasters.Find(list.empno);
+                                        var errorm = "total time of the employee no:" + dd.EMPNO.ToString()
+                                                                                      + " for the day is "
+                                                                                      + com.ToString()
+                                                                                      + "hrs which is greater then 24hrs";
+                                        this.ModelState.AddModelError(string.Empty, errorm);
+                                        return this.View(test);
+                                    }
+                                }
+
+                                if (list.date.Day == 11)
+                                {
+                                    long.TryParse(at1.C11, out var k);
+                                    long.TryParse(list.hours, out var l);
+                                    com = k + l;
+                                    if (com > 24)
+                                    {
+                                        var dd = this.db.LabourMasters.Find(list.empno);
+                                        var errorm = "total time of the employee no:" + dd.EMPNO.ToString()
+                                                                                      + " for the day is "
+                                                                                      + com.ToString()
+                                                                                      + "hrs which is greater then 24hrs";
+                                        this.ModelState.AddModelError(string.Empty, errorm);
+                                        return this.View(test);
+                                    }
+                                }
+
+                                if (list.date.Day == 12)
+                                {
+                                    long.TryParse(at1.C12, out var k);
+                                    long.TryParse(list.hours, out var l);
+                                    com = k + l;
+                                    if (com > 24)
+                                    {
+                                        var dd = this.db.LabourMasters.Find(list.empno);
+                                        var errorm = "total time of the employee no:" + dd.EMPNO.ToString()
+                                                                                      + " for the day is "
+                                                                                      + com.ToString()
+                                                                                      + "hrs which is greater then 24hrs";
+                                        this.ModelState.AddModelError(string.Empty, errorm);
+                                        return this.View(test);
+                                    }
+                                }
+
+                                if (list.date.Day == 13)
+                                {
+                                    long.TryParse(at1.C13, out var k);
+                                    long.TryParse(list.hours, out var l);
+                                    com = k + l;
+                                    if (com > 24)
+                                    {
+                                        var dd = this.db.LabourMasters.Find(list.empno);
+                                        var errorm = "total time of the employee no:" + dd.EMPNO.ToString()
+                                                                                      + " for the day is "
+                                                                                      + com.ToString()
+                                                                                      + "hrs which is greater then 24hrs";
+                                        this.ModelState.AddModelError(string.Empty, errorm);
+                                        return this.View(test);
+                                    }
+                                }
+
+                                if (list.date.Day == 14)
+                                {
+                                    long.TryParse(at1.C14, out var k);
+                                    long.TryParse(list.hours, out var l);
+                                    com = k + l;
+                                    if (com > 24)
+                                    {
+                                        var dd = this.db.LabourMasters.Find(list.empno);
+                                        var errorm = "total time of the employee no:" + dd.EMPNO.ToString()
+                                                                                      + " for the day is "
+                                                                                      + com.ToString()
+                                                                                      + "hrs which is greater then 24hrs";
+                                        this.ModelState.AddModelError(string.Empty, errorm);
+                                        return this.View(test);
+                                    }
+                                }
+
+                                if (list.date.Day == 15)
+                                {
+                                    long.TryParse(at1.C15, out var k);
+                                    long.TryParse(list.hours, out var l);
+                                    com = k + l;
+                                    if (com > 24)
+                                    {
+                                        var dd = this.db.LabourMasters.Find(list.empno);
+                                        var errorm = "total time of the employee no:" + dd.EMPNO.ToString()
+                                                                                      + " for the day is "
+                                                                                      + com.ToString()
+                                                                                      + "hrs which is greater then 24hrs";
+                                        this.ModelState.AddModelError(string.Empty, errorm);
+                                        return this.View(test);
+                                    }
+                                }
+
+                                if (list.date.Day == 16)
+                                {
+                                    long.TryParse(at1.C16, out var k);
+                                    long.TryParse(list.hours, out var l);
+                                    com = k + l;
+                                    if (com > 24)
+                                    {
+                                        var dd = this.db.LabourMasters.Find(list.empno);
+                                        var errorm = "total time of the employee no:" + dd.EMPNO.ToString()
+                                                                                      + " for the day is "
+                                                                                      + com.ToString()
+                                                                                      + "hrs which is greater then 24hrs";
+                                        this.ModelState.AddModelError(string.Empty, errorm);
+                                        return this.View(test);
+                                    }
+                                }
+
+                                if (list.date.Day == 17)
+                                {
+                                    long.TryParse(at1.C17, out var k);
+                                    long.TryParse(list.hours, out var l);
+                                    com = k + l;
+                                    if (com > 24)
+                                    {
+                                        var dd = this.db.LabourMasters.Find(list.empno);
+                                        var errorm = "total time of the employee no:" + dd.EMPNO.ToString()
+                                                                                      + " for the day is "
+                                                                                      + com.ToString()
+                                                                                      + "hrs which is greater then 24hrs";
+                                        this.ModelState.AddModelError(string.Empty, errorm);
+                                        return this.View(test);
+                                    }
+                                }
+
+                                if (list.date.Day == 18)
+                                {
+                                    long.TryParse(at1.C18, out var k);
+                                    long.TryParse(list.hours, out var l);
+                                    com = k + l;
+                                    if (com > 24)
+                                    {
+                                        var dd = this.db.LabourMasters.Find(list.empno);
+                                        var errorm = "total time of the employee no:" + dd.EMPNO.ToString()
+                                                                                      + " for the day is "
+                                                                                      + com.ToString()
+                                                                                      + "hrs which is greater then 24hrs";
+                                        this.ModelState.AddModelError(string.Empty, errorm);
+                                        return this.View(test);
+                                    }
+                                }
+
+                                if (list.date.Day == 19)
+                                {
+                                    long.TryParse(at1.C19, out var k);
+                                    long.TryParse(list.hours, out var l);
+                                    com = k + l;
+                                    if (com > 24)
+                                    {
+                                        var dd = this.db.LabourMasters.Find(list.empno);
+                                        var errorm = "total time of the employee no:" + dd.EMPNO.ToString()
+                                                                                      + " for the day is "
+                                                                                      + com.ToString()
+                                                                                      + "hrs which is greater then 24hrs";
+                                        this.ModelState.AddModelError(string.Empty, errorm);
+                                        return this.View(test);
+                                    }
+                                }
+
+                                if (list.date.Day == 20)
+                                {
+                                    long.TryParse(at1.C20, out var k);
+                                    long.TryParse(list.hours, out var l);
+                                    com = k + l;
+                                    if (com > 24)
+                                    {
+                                        var dd = this.db.LabourMasters.Find(list.empno);
+                                        var errorm = "total time of the employee no:" + dd.EMPNO.ToString()
+                                                                                      + " for the day is "
+                                                                                      + com.ToString()
+                                                                                      + "hrs which is greater then 24hrs";
+                                        this.ModelState.AddModelError(string.Empty, errorm);
+                                        return this.View(test);
+                                    }
+                                }
+
+                                if (list.date.Day == 21)
+                                {
+                                    long.TryParse(at1.C21, out var k);
+                                    long.TryParse(list.hours, out var l);
+                                    com = k + l;
+                                    if (com > 24)
+                                    {
+                                        var dd = this.db.LabourMasters.Find(list.empno);
+                                        var errorm = "total time of the employee no:" + dd.EMPNO.ToString()
+                                                                                      + " for the day is "
+                                                                                      + com.ToString()
+                                                                                      + "hrs which is greater then 24hrs";
+                                        this.ModelState.AddModelError(string.Empty, errorm);
+                                        return this.View(test);
+                                    }
+                                }
+
+                                if (list.date.Day == 22)
+                                {
+                                    long.TryParse(at1.C22, out var k);
+                                    long.TryParse(list.hours, out var l);
+                                    com = k + l;
+                                    if (com > 24)
+                                    {
+                                        var dd = this.db.LabourMasters.Find(list.empno);
+                                        var errorm = "total time of the employee no:" + dd.EMPNO.ToString()
+                                                                                      + " for the day is "
+                                                                                      + com.ToString()
+                                                                                      + "hrs which is greater then 24hrs";
+                                        this.ModelState.AddModelError(string.Empty, errorm);
+                                        return this.View(test);
+                                    }
+                                }
+
+                                if (list.date.Day == 23)
+                                {
+                                    long.TryParse(at1.C23, out var k);
+                                    long.TryParse(list.hours, out var l);
+                                    com = k + l;
+                                    if (com > 24)
+                                    {
+                                        var dd = this.db.LabourMasters.Find(list.empno);
+                                        var errorm = "total time of the employee no:" + dd.EMPNO.ToString()
+                                                                                      + " for the day is "
+                                                                                      + com.ToString()
+                                                                                      + "hrs which is greater then 24hrs";
+                                        this.ModelState.AddModelError(string.Empty, errorm);
+                                        return this.View(test);
+                                    }
+                                }
+
+                                if (list.date.Day == 24)
+                                {
+                                    long.TryParse(at1.C24, out var k);
+                                    long.TryParse(list.hours, out var l);
+                                    com = k + l;
+                                    if (com > 24)
+                                    {
+                                        var dd = this.db.LabourMasters.Find(list.empno);
+                                        var errorm = "total time of the employee no:" + dd.EMPNO.ToString()
+                                                                                      + " for the day is "
+                                                                                      + com.ToString()
+                                                                                      + "hrs which is greater then 24hrs";
+                                        this.ModelState.AddModelError(string.Empty, errorm);
+                                        return this.View(test);
+                                    }
+                                }
+
+                                if (list.date.Day == 25)
+                                {
+                                    long.TryParse(at1.C25, out var k);
+                                    long.TryParse(list.hours, out var l);
+                                    com = k + l;
+                                    if (com > 24)
+                                    {
+                                        var dd = this.db.LabourMasters.Find(list.empno);
+                                        var errorm = "total time of the employee no:" + dd.EMPNO.ToString()
+                                                                                      + " for the day is "
+                                                                                      + com.ToString()
+                                                                                      + "hrs which is greater then 24hrs";
+                                        this.ModelState.AddModelError(string.Empty, errorm);
+                                        return this.View(test);
+                                    }
+                                }
+
+                                if (list.date.Day == 26)
+                                {
+                                    long.TryParse(at1.C26, out var k);
+                                    long.TryParse(list.hours, out var l);
+                                    com = k + l;
+                                    if (com > 24)
+                                    {
+                                        var dd = this.db.LabourMasters.Find(list.empno);
+                                        var errorm = "total time of the employee no:" + dd.EMPNO.ToString()
+                                                                                      + " for the day is "
+                                                                                      + com.ToString()
+                                                                                      + "hrs which is greater then 24hrs";
+                                        this.ModelState.AddModelError(string.Empty, errorm);
+                                        return this.View(test);
+                                    }
+                                }
+
+                                if (list.date.Day == 27)
+                                {
+                                    long.TryParse(at1.C27, out var k);
+                                    long.TryParse(list.hours, out var l);
+                                    com = k + l;
+                                    if (com > 24)
+                                    {
+                                        var dd = this.db.LabourMasters.Find(list.empno);
+                                        var errorm = "total time of the employee no:" + dd.EMPNO.ToString()
+                                                                                      + " for the day is "
+                                                                                      + com.ToString()
+                                                                                      + "hrs which is greater then 24hrs";
+                                        this.ModelState.AddModelError(string.Empty, errorm);
+                                        return this.View(test);
+                                    }
+                                }
+
+                                if (list.date.Day == 28)
+                                {
+                                    long.TryParse(at1.C28, out var k);
+                                    long.TryParse(list.hours, out var l);
+                                    com = k + l;
+                                    if (com > 24)
+                                    {
+                                        var dd = this.db.LabourMasters.Find(list.empno);
+                                        var errorm = "total time of the employee no:" + dd.EMPNO.ToString()
+                                                                                      + " for the day is "
+                                                                                      + com.ToString()
+                                                                                      + "hrs which is greater then 24hrs";
+                                        this.ModelState.AddModelError(string.Empty, errorm);
+                                        return this.View(test);
+                                    }
+                                }
+
+                                if (list.date.Day == 29)
+                                {
+                                    long.TryParse(at1.C29, out var k);
+                                    long.TryParse(list.hours, out var l);
+                                    com = k + l;
+                                    if (com > 24)
+                                    {
+                                        var dd = this.db.LabourMasters.Find(list.empno);
+                                        var errorm = "total time of the employee no:" + dd.EMPNO.ToString()
+                                                                                      + " for the day is "
+                                                                                      + com.ToString()
+                                                                                      + "hrs which is greater then 24hrs";
+                                        this.ModelState.AddModelError(string.Empty, errorm);
+                                        return this.View(test);
+                                    }
+                                }
+
+                                if (list.date.Day == 30)
+                                {
+                                    long.TryParse(at1.C30, out var k);
+                                    long.TryParse(list.hours, out var l);
+                                    com = k + l;
+                                    if (com > 24)
+                                    {
+                                        var dd = this.db.LabourMasters.Find(list.empno);
+                                        var errorm = "total time of the employee no:" + dd.EMPNO.ToString()
+                                                                                      + " for the day is "
+                                                                                      + com.ToString()
+                                                                                      + "hrs which is greater then 24hrs";
+                                        this.ModelState.AddModelError(string.Empty, errorm);
+                                        return this.View(test);
+                                    }
+                                }
+
+                                if (list.date.Day == 31)
+                                {
+                                    long.TryParse(at1.C31, out var k);
+                                    long.TryParse(list.hours, out var l);
+                                    com = k + l;
+                                    if (com > 24)
+                                    {
+                                        var dd = this.db.LabourMasters.Find(list.empno);
+                                        var errorm = "total time of the employee no:" + dd.EMPNO.ToString()
+                                                                                      + " for the day is "
+                                                                                      + com.ToString()
+                                                                                      + "hrs which is greater then 24hrs";
+                                        this.ModelState.AddModelError(string.Empty, errorm);
+                                        return this.View(test);
+                                    }
+                                }
+                            }
                         }
                     }
 
-                    if (attendance.TotalHours != 0)
+                    if (check.Count != 0) at = check.First();
+                    else at.SubMain = oldmts1.ID;
+                    at.EmpID = list.empno;
+                    list.date = aa.TMonth;
+                    {
+                        if (list.date.Day == 1) at.C1 = list.hours;
+                        if (list.date.Day == 2) at.C2 = list.hours;
+                        if (list.date.Day == 3) at.C3 = list.hours;
+                        if (list.date.Day == 4) at.C4 = list.hours;
+                        if (list.date.Day == 5) at.C5 = list.hours;
+                        if (list.date.Day == 6) at.C6 = list.hours;
+                        if (list.date.Day == 7) at.C7 = list.hours;
+                        if (list.date.Day == 8) at.C8 = list.hours;
+                        if (list.date.Day == 9) at.C9 = list.hours;
+                        if (list.date.Day == 10) at.C10 = list.hours;
+                        if (list.date.Day == 11) at.C11 = list.hours;
+                        if (list.date.Day == 12) at.C12 = list.hours;
+                        if (list.date.Day == 13) at.C13 = list.hours;
+                        if (list.date.Day == 14) at.C14 = list.hours;
+                        if (list.date.Day == 15) at.C15 = list.hours;
+                        if (list.date.Day == 16) at.C16 = list.hours;
+                        if (list.date.Day == 17) at.C17 = list.hours;
+                        if (list.date.Day == 18) at.C18 = list.hours;
+                        if (list.date.Day == 19) at.C19 = list.hours;
+                        if (list.date.Day == 20) at.C20 = list.hours;
+                        if (list.date.Day == 21) at.C21 = list.hours;
+                        if (list.date.Day == 22) at.C22 = list.hours;
+                        if (list.date.Day == 23) at.C23 = list.hours;
+                        if (list.date.Day == 24) at.C24 = list.hours;
+                        if (list.date.Day == 25) at.C25 = list.hours;
+                        if (list.date.Day == 26) at.C26 = list.hours;
+                        if (list.date.Day == 27) at.C27 = list.hours;
+                        if (list.date.Day == 28) at.C28 = list.hours;
+                        if (list.date.Day == 29) at.C29 = list.hours;
+                        if (list.date.Day == 30) at.C30 = list.hours;
+                        if (list.date.Day == 31) at.C31 = list.hours;
+                    }
+
+                    if (check.Count != 0)
+                    {
+                        this.db.Entry(at).State = EntityState.Modified;
+                        this.db.SaveChanges();
+                    }
+                    else
+                    {
+                        this.db.Attendances.Add(at);
+                        this.db.SaveChanges();
+                    }
+
+                    if (oldmts.Count != 0)
+                    {
+                        oldmts1 = oldmts.Last();
+
+                        // First();
+                        check = this.db.Attendances
+                            .Where(z => z.EmpID.Equals(list.empno) && z.SubMain.Equals(oldmts1.ID)).ToList();
+                    }
+                    else
+                    {
+                        check = this.db.Attendances.Where(z => z.EmpID.Equals(list.empno) && z.SubMain.Equals(aa.ID))
+                            .ToList();
+                    }
+
+                    if (check.Count != 0) at = check.First();
+                    else at.SubMain = oldmts1.ID;
+                    long fri1 = 0;
+                    var date = new DateTime(list.date.Year, list.date.Month, 1);
+                    for (var i = 0; i < DateTime.DaysInMonth(list.date.Year, list.date.Month); i++)
+                    {
+                        if (date.DayOfWeek.Equals(DayOfWeek.Friday))
+                        {
+                            if (date.Day == 1)
+                            {
+                                long.TryParse(at.C1, out var tl);
+                                fri1 = fri1 + tl;
+                            }
+
+                            if (date.Day == 2)
+                            {
+                                long.TryParse(at.C2, out var tl);
+                                fri1 = fri1 + tl;
+                            }
+
+                            if (date.Day == 3)
+                            {
+                                long.TryParse(at.C3, out var tl);
+                                fri1 = fri1 + tl;
+                            }
+
+                            if (date.Day == 4)
+                            {
+                                long.TryParse(at.C4, out var tl);
+                                fri1 = fri1 + tl;
+                            }
+
+                            if (date.Day == 5)
+                            {
+                                long.TryParse(at.C5, out var tl);
+                                fri1 = fri1 + tl;
+                            }
+
+                            if (date.Day == 6)
+                            {
+                                long.TryParse(at.C6, out var tl);
+                                fri1 = fri1 + tl;
+                            }
+
+                            if (date.Day == 7)
+                            {
+                                long.TryParse(at.C7, out var tl);
+                                fri1 = fri1 + tl;
+                            }
+
+                            if (date.Day == 8)
+                            {
+                                long.TryParse(at.C8, out var tl);
+                                fri1 = fri1 + tl;
+                            }
+
+                            if (date.Day == 9)
+                            {
+                                long.TryParse(at.C9, out var tl);
+                                fri1 = fri1 + tl;
+                            }
+
+                            if (date.Day == 10)
+                            {
+                                long.TryParse(at.C10, out var tl);
+                                fri1 = fri1 + tl;
+                            }
+
+                            if (date.Day == 11)
+                            {
+                                long.TryParse(at.C11, out var tl);
+                                fri1 = fri1 + tl;
+                            }
+
+                            if (date.Day == 12)
+                            {
+                                long.TryParse(at.C11, out var tl);
+                                fri1 = fri1 + tl;
+                            }
+
+                            if (date.Day == 13)
+                            {
+                                long.TryParse(at.C13, out var tl);
+                                fri1 = fri1 + tl;
+                            }
+
+                            if (date.Day == 14)
+                            {
+                                long.TryParse(at.C14, out var tl);
+                                fri1 = fri1 + tl;
+                            }
+
+                            if (date.Day == 15)
+                            {
+                                long.TryParse(at.C15, out var tl);
+                                fri1 = fri1 + tl;
+                            }
+
+                            if (date.Day == 16)
+                            {
+                                long.TryParse(at.C16, out var tl);
+                                fri1 = fri1 + tl;
+                            }
+
+                            if (date.Day == 17)
+                            {
+                                long.TryParse(at.C17, out var tl);
+                                fri1 = fri1 + tl;
+                            }
+
+                            if (date.Day == 18)
+                            {
+                                long.TryParse(at.C18, out var tl);
+                                fri1 = fri1 + tl;
+                            }
+
+                            if (date.Day == 19)
+                            {
+                                long.TryParse(at.C19, out var tl);
+                                fri1 = fri1 + tl;
+                            }
+
+                            if (date.Day == 20)
+                            {
+                                long.TryParse(at.C20, out var tl);
+                                fri1 = fri1 + tl;
+                            }
+
+                            if (date.Day == 21)
+                            {
+                                long.TryParse(at.C21, out var tl);
+                                fri1 = fri1 + tl;
+                            }
+
+                            if (date.Day == 22)
+                            {
+                                long.TryParse(at.C22, out var tl);
+                                fri1 = fri1 + tl;
+                            }
+
+                            if (date.Day == 23)
+                            {
+                                long.TryParse(at.C23, out var tl);
+                                fri1 = fri1 + tl;
+                            }
+
+                            if (date.Day == 24)
+                            {
+                                long.TryParse(at.C24, out var tl);
+                                fri1 = fri1 + tl;
+                            }
+
+                            if (date.Day == 25)
+                            {
+                                long.TryParse(at.C25, out var tl);
+                                fri1 = fri1 + tl;
+                            }
+
+                            if (date.Day == 26)
+                            {
+                                long.TryParse(at.C26, out var tl);
+                                fri1 = fri1 + tl;
+                            }
+
+                            if (date.Day == 27)
+                            {
+                                long.TryParse(at.C27, out var tl);
+                                fri1 = fri1 + tl;
+                            }
+
+                            if (date.Day == 28)
+                            {
+                                long.TryParse(at.C28, out var tl);
+                                fri1 = fri1 + tl;
+                            }
+
+                            if (date.Day == 29)
+                            {
+                                long.TryParse(at.C29, out var tl);
+                                fri1 = fri1 + tl;
+                            }
+
+                            if (date.Day == 30)
+                            {
+                                long.TryParse(at.C30, out var tl);
+                                fri1 = fri1 + tl;
+                            }
+
+                            if (date.Day == 31)
+                            {
+                                long.TryParse(at.C31, out var tl);
+                                fri1 = fri1 + tl;
+                            }
+
+                            long.TryParse(list.hours, out var fri);
+                            at.FridayHours = fri1;
+                        }
+
+                        date = date.AddDays(1);
+                    }
                     {
                         at.TotalHours = 0;
                         long.TryParse(at.C1, out var tl);
@@ -3651,2226 +7091,420 @@
                                     at.TotalOverTime = tho1;
                                 }
                         }
-
-                        {
-                            at.TotalSickLeave = 0;
-                            long ts = 0;
-                            if (!at.C1.IsNullOrWhiteSpace())
-                                if (at.C1.Equals("S"))
-                                    ts = ts + 1;
-                            if (!at.C2.IsNullOrWhiteSpace())
-                                if (at.C2.Equals("S"))
-                                    ts = ts + 1;
-                            if (!at.C3.IsNullOrWhiteSpace())
-                                if (at.C3.Equals("S"))
-                                    ts = ts + 1;
-                            if (!at.C4.IsNullOrWhiteSpace())
-                                if (at.C4.Equals("S"))
-                                    ts = ts + 1;
-                            if (!at.C5.IsNullOrWhiteSpace())
-                                if (at.C5.Equals("S"))
-                                    ts = ts + 1;
-                            if (!at.C6.IsNullOrWhiteSpace())
-                                if (at.C6.Equals("S"))
-                                    ts = ts + 1;
-                            if (!at.C7.IsNullOrWhiteSpace())
-                                if (at.C7.Equals("S"))
-                                    ts = ts + 1;
-                            if (!at.C8.IsNullOrWhiteSpace())
-                                if (at.C8.Equals("S"))
-                                    ts = ts + 1;
-                            if (!at.C9.IsNullOrWhiteSpace())
-                                if (at.C9.Equals("S"))
-                                    ts = ts + 1;
-                            if (!at.C10.IsNullOrWhiteSpace())
-                                if (at.C10.Equals("S"))
-                                    ts = ts + 1;
-                            if (!at.C11.IsNullOrWhiteSpace())
-                                if (at.C11.Equals("S"))
-                                    ts = ts + 1;
-                            if (!at.C12.IsNullOrWhiteSpace())
-                                if (at.C12.Equals("S"))
-                                    ts = ts + 1;
-                            if (!at.C13.IsNullOrWhiteSpace())
-                                if (at.C13.Equals("S"))
-                                    ts = ts + 1;
-                            if (!at.C14.IsNullOrWhiteSpace())
-                                if (at.C14.Equals("S"))
-                                    ts = ts + 1;
-                            if (!at.C15.IsNullOrWhiteSpace())
-                                if (at.C15.Equals("S"))
-                                    ts = ts + 1;
-                            if (!at.C16.IsNullOrWhiteSpace())
-                                if (at.C16.Equals("S"))
-                                    ts = ts + 1;
-                            if (!at.C17.IsNullOrWhiteSpace())
-                                if (at.C17.Equals("S"))
-                                    ts = ts + 1;
-                            if (!at.C18.IsNullOrWhiteSpace())
-                                if (at.C18.Equals("S"))
-                                    ts = ts + 1;
-                            if (!at.C19.IsNullOrWhiteSpace())
-                                if (at.C19.Equals("S"))
-                                    ts = ts + 1;
-                            if (!at.C20.IsNullOrWhiteSpace())
-                                if (at.C20.Equals("S"))
-                                    ts = ts + 1;
-                            if (!at.C21.IsNullOrWhiteSpace())
-                                if (at.C21.Equals("S"))
-                                    ts = ts + 1;
-                            if (!at.C22.IsNullOrWhiteSpace())
-                                if (at.C22.Equals("S"))
-                                    ts = ts + 1;
-                            if (!at.C23.IsNullOrWhiteSpace())
-                                if (at.C23.Equals("S"))
-                                    ts = ts + 1;
-                            if (!at.C24.IsNullOrWhiteSpace())
-                                if (at.C24.Equals("S"))
-                                    ts = ts + 1;
-                            if (!at.C25.IsNullOrWhiteSpace())
-                                if (at.C25.Equals("S"))
-                                    ts = ts + 1;
-                            if (!at.C26.IsNullOrWhiteSpace())
-                                if (at.C26.Equals("S"))
-                                    ts = ts + 1;
-                            if (!at.C27.IsNullOrWhiteSpace())
-                                if (at.C27.Equals("S"))
-                                    ts = ts + 1;
-                            if (!at.C28.IsNullOrWhiteSpace())
-                                if (at.C28.Equals("S"))
-                                    ts = ts + 1;
-                            if (!at.C29.IsNullOrWhiteSpace())
-                                if (at.C29.Equals("S"))
-                                    ts = ts + 1;
-                            if (!at.C30.IsNullOrWhiteSpace())
-                                if (at.C30.Equals("S"))
-                                    ts = ts + 1;
-                            if (!at.C31.IsNullOrWhiteSpace())
-                                if (at.C31.Equals("S"))
-                                    ts = ts + 1;
-
-                            at.TotalSickLeave = ts;
-                        }
-                        {
-                            at.TotalVL = 0;
-                            long tv = 0;
-                            if (!at.C1.IsNullOrWhiteSpace())
-                                if (at.C1.Equals("V"))
-                                    tv = tv + 1;
-                            if (!at.C2.IsNullOrWhiteSpace())
-                                if (at.C2.Equals("V"))
-                                    tv = tv + 1;
-                            if (!at.C3.IsNullOrWhiteSpace())
-                                if (at.C3.Equals("V"))
-                                    tv = tv + 1;
-                            if (!at.C4.IsNullOrWhiteSpace())
-                                if (at.C4.Equals("V"))
-                                    tv = tv + 1;
-                            if (!at.C5.IsNullOrWhiteSpace())
-                                if (at.C5.Equals("V"))
-                                    tv = tv + 1;
-                            if (!at.C6.IsNullOrWhiteSpace())
-                                if (at.C6.Equals("V"))
-                                    tv = tv + 1;
-                            if (!at.C7.IsNullOrWhiteSpace())
-                                if (at.C7.Equals("V"))
-                                    tv = tv + 1;
-                            if (!at.C8.IsNullOrWhiteSpace())
-                                if (at.C8.Equals("V"))
-                                    tv = tv + 1;
-                            if (!at.C9.IsNullOrWhiteSpace())
-                                if (at.C9.Equals("V"))
-                                    tv = tv + 1;
-                            if (!at.C10.IsNullOrWhiteSpace())
-                                if (at.C10.Equals("V"))
-                                    tv = tv + 1;
-                            if (!at.C11.IsNullOrWhiteSpace())
-                                if (at.C11.Equals("V"))
-                                    tv = tv + 1;
-                            if (!at.C12.IsNullOrWhiteSpace())
-                                if (at.C12.Equals("V"))
-                                    tv = tv + 1;
-                            if (!at.C13.IsNullOrWhiteSpace())
-                                if (at.C13.Equals("V"))
-                                    tv = tv + 1;
-                            if (!at.C14.IsNullOrWhiteSpace())
-                                if (at.C14.Equals("V"))
-                                    tv = tv + 1;
-                            if (!at.C15.IsNullOrWhiteSpace())
-                                if (at.C15.Equals("V"))
-                                    tv = tv + 1;
-                            if (!at.C16.IsNullOrWhiteSpace())
-                                if (at.C16.Equals("V"))
-                                    tv = tv + 1;
-                            if (!at.C17.IsNullOrWhiteSpace())
-                                if (at.C17.Equals("V"))
-                                    tv = tv + 1;
-                            if (!at.C18.IsNullOrWhiteSpace())
-                                if (at.C18.Equals("V"))
-                                    tv = tv + 1;
-                            if (!at.C19.IsNullOrWhiteSpace())
-                                if (at.C19.Equals("V"))
-                                    tv = tv + 1;
-                            if (!at.C20.IsNullOrWhiteSpace())
-                                if (at.C20.Equals("V"))
-                                    tv = tv + 1;
-                            if (!at.C21.IsNullOrWhiteSpace())
-                                if (at.C21.Equals("V"))
-                                    tv = tv + 1;
-                            if (!at.C22.IsNullOrWhiteSpace())
-                                if (at.C22.Equals("V"))
-                                    tv = tv + 1;
-                            if (!at.C23.IsNullOrWhiteSpace())
-                                if (at.C23.Equals("V"))
-                                    tv = tv + 1;
-                            if (!at.C24.IsNullOrWhiteSpace())
-                                if (at.C24.Equals("V"))
-                                    tv = tv + 1;
-                            if (!at.C25.IsNullOrWhiteSpace())
-                                if (at.C25.Equals("V"))
-                                    tv = tv + 1;
-                            if (!at.C26.IsNullOrWhiteSpace())
-                                if (at.C26.Equals("V"))
-                                    tv = tv + 1;
-                            if (!at.C27.IsNullOrWhiteSpace())
-                                if (at.C27.Equals("V"))
-                                    tv = tv + 1;
-                            if (!at.C28.IsNullOrWhiteSpace())
-                                if (at.C28.Equals("V"))
-                                    tv = tv + 1;
-                            if (!at.C29.IsNullOrWhiteSpace())
-                                if (at.C29.Equals("V"))
-                                    tv = tv + 1;
-                            if (!at.C30.IsNullOrWhiteSpace())
-                                if (at.C30.Equals("V"))
-                                    tv = tv + 1;
-                            if (!at.C31.IsNullOrWhiteSpace())
-                                if (at.C31.Equals("V"))
-                                    tv = tv + 1;
-
-                            at.TotalVL = tv;
-                        }
-                        {
-                            at.TotalAbsent = 0;
-                            long tv = 0;
-                            if (!at.C1.IsNullOrWhiteSpace())
-                                if (at.C1.Equals("A"))
-                                    tv = tv + 1;
-                            if (!at.C2.IsNullOrWhiteSpace())
-                                if (at.C2.Equals("A"))
-                                    tv = tv + 1;
-                            if (!at.C3.IsNullOrWhiteSpace())
-                                if (at.C3.Equals("A"))
-                                    tv = tv + 1;
-                            if (!at.C4.IsNullOrWhiteSpace())
-                                if (at.C4.Equals("A"))
-                                    tv = tv + 1;
-                            if (!at.C5.IsNullOrWhiteSpace())
-                                if (at.C5.Equals("A"))
-                                    tv = tv + 1;
-                            if (!at.C6.IsNullOrWhiteSpace())
-                                if (at.C6.Equals("A"))
-                                    tv = tv + 1;
-                            if (!at.C7.IsNullOrWhiteSpace())
-                                if (at.C7.Equals("A"))
-                                    tv = tv + 1;
-                            if (!at.C8.IsNullOrWhiteSpace())
-                                if (at.C8.Equals("A"))
-                                    tv = tv + 1;
-                            if (!at.C9.IsNullOrWhiteSpace())
-                                if (at.C9.Equals("A"))
-                                    tv = tv + 1;
-                            if (!at.C10.IsNullOrWhiteSpace())
-                                if (at.C10.Equals("A"))
-                                    tv = tv + 1;
-                            if (!at.C11.IsNullOrWhiteSpace())
-                                if (at.C11.Equals("A"))
-                                    tv = tv + 1;
-                            if (!at.C12.IsNullOrWhiteSpace())
-                                if (at.C12.Equals("A"))
-                                    tv = tv + 1;
-                            if (!at.C13.IsNullOrWhiteSpace())
-                                if (at.C13.Equals("A"))
-                                    tv = tv + 1;
-                            if (!at.C14.IsNullOrWhiteSpace())
-                                if (at.C14.Equals("A"))
-                                    tv = tv + 1;
-                            if (!at.C15.IsNullOrWhiteSpace())
-                                if (at.C15.Equals("A"))
-                                    tv = tv + 1;
-                            if (!at.C16.IsNullOrWhiteSpace())
-                                if (at.C16.Equals("A"))
-                                    tv = tv + 1;
-                            if (!at.C17.IsNullOrWhiteSpace())
-                                if (at.C17.Equals("A"))
-                                    tv = tv + 1;
-                            if (!at.C18.IsNullOrWhiteSpace())
-                                if (at.C18.Equals("A"))
-                                    tv = tv + 1;
-                            if (!at.C19.IsNullOrWhiteSpace())
-                                if (at.C19.Equals("A"))
-                                    tv = tv + 1;
-                            if (!at.C20.IsNullOrWhiteSpace())
-                                if (at.C20.Equals("A"))
-                                    tv = tv + 1;
-                            if (!at.C21.IsNullOrWhiteSpace())
-                                if (at.C21.Equals("A"))
-                                    tv = tv + 1;
-                            if (!at.C22.IsNullOrWhiteSpace())
-                                if (at.C22.Equals("A"))
-                                    tv = tv + 1;
-                            if (!at.C23.IsNullOrWhiteSpace())
-                                if (at.C23.Equals("A"))
-                                    tv = tv + 1;
-                            if (!at.C24.IsNullOrWhiteSpace())
-                                if (at.C24.Equals("A"))
-                                    tv = tv + 1;
-                            if (!at.C25.IsNullOrWhiteSpace())
-                                if (at.C25.Equals("A"))
-                                    tv = tv + 1;
-                            if (!at.C26.IsNullOrWhiteSpace())
-                                if (at.C26.Equals("A"))
-                                    tv = tv + 1;
-                            if (!at.C27.IsNullOrWhiteSpace())
-                                if (at.C27.Equals("A"))
-                                    tv = tv + 1;
-                            if (!at.C28.IsNullOrWhiteSpace())
-                                if (at.C28.Equals("A"))
-                                    tv = tv + 1;
-                            if (!at.C29.IsNullOrWhiteSpace())
-                                if (at.C29.Equals("A"))
-                                    tv = tv + 1;
-                            if (!at.C30.IsNullOrWhiteSpace())
-                                if (at.C30.Equals("A"))
-                                    tv = tv + 1;
-                            if (!at.C31.IsNullOrWhiteSpace())
-                                if (at.C31.Equals("A"))
-                                    tv = tv + 1;
-
-                            at.TotalAbsent = tv;
-                        }
-                        {
-                            at.TotalTransefer = 0;
-                            long tv = 0;
-                            if (!at.C1.IsNullOrWhiteSpace())
-                                if (at.C1.Equals("T"))
-                                    tv = tv + 1;
-                            if (!at.C2.IsNullOrWhiteSpace())
-                                if (at.C2.Equals("T"))
-                                    tv = tv + 1;
-                            if (!at.C3.IsNullOrWhiteSpace())
-                                if (at.C3.Equals("T"))
-                                    tv = tv + 1;
-                            if (!at.C4.IsNullOrWhiteSpace())
-                                if (at.C4.Equals("T"))
-                                    tv = tv + 1;
-                            if (!at.C5.IsNullOrWhiteSpace())
-                                if (at.C5.Equals("T"))
-                                    tv = tv + 1;
-                            if (!at.C6.IsNullOrWhiteSpace())
-                                if (at.C6.Equals("T"))
-                                    tv = tv + 1;
-                            if (!at.C7.IsNullOrWhiteSpace())
-                                if (at.C7.Equals("T"))
-                                    tv = tv + 1;
-                            if (!at.C8.IsNullOrWhiteSpace())
-                                if (at.C8.Equals("T"))
-                                    tv = tv + 1;
-                            if (!at.C9.IsNullOrWhiteSpace())
-                                if (at.C9.Equals("T"))
-                                    tv = tv + 1;
-                            if (!at.C10.IsNullOrWhiteSpace())
-                                if (at.C10.Equals("T"))
-                                    tv = tv + 1;
-                            if (!at.C11.IsNullOrWhiteSpace())
-                                if (at.C11.Equals("T"))
-                                    tv = tv + 1;
-                            if (!at.C12.IsNullOrWhiteSpace())
-                                if (at.C12.Equals("T"))
-                                    tv = tv + 1;
-                            if (!at.C13.IsNullOrWhiteSpace())
-                                if (at.C13.Equals("T"))
-                                    tv = tv + 1;
-                            if (!at.C14.IsNullOrWhiteSpace())
-                                if (at.C14.Equals("T"))
-                                    tv = tv + 1;
-                            if (!at.C15.IsNullOrWhiteSpace())
-                                if (at.C15.Equals("T"))
-                                    tv = tv + 1;
-                            if (!at.C16.IsNullOrWhiteSpace())
-                                if (at.C16.Equals("T"))
-                                    tv = tv + 1;
-                            if (!at.C17.IsNullOrWhiteSpace())
-                                if (at.C17.Equals("T"))
-                                    tv = tv + 1;
-                            if (!at.C18.IsNullOrWhiteSpace())
-                                if (at.C18.Equals("T"))
-                                    tv = tv + 1;
-                            if (!at.C19.IsNullOrWhiteSpace())
-                                if (at.C19.Equals("T"))
-                                    tv = tv + 1;
-                            if (!at.C20.IsNullOrWhiteSpace())
-                                if (at.C20.Equals("T"))
-                                    tv = tv + 1;
-                            if (!at.C21.IsNullOrWhiteSpace())
-                                if (at.C21.Equals("T"))
-                                    tv = tv + 1;
-                            if (!at.C22.IsNullOrWhiteSpace())
-                                if (at.C22.Equals("T"))
-                                    tv = tv + 1;
-                            if (!at.C23.IsNullOrWhiteSpace())
-                                if (at.C23.Equals("T"))
-                                    tv = tv + 1;
-                            if (!at.C24.IsNullOrWhiteSpace())
-                                if (at.C24.Equals("T"))
-                                    tv = tv + 1;
-                            if (!at.C25.IsNullOrWhiteSpace())
-                                if (at.C25.Equals("T"))
-                                    tv = tv + 1;
-                            if (!at.C26.IsNullOrWhiteSpace())
-                                if (at.C26.Equals("T"))
-                                    tv = tv + 1;
-                            if (!at.C27.IsNullOrWhiteSpace())
-                                if (at.C27.Equals("T"))
-                                    tv = tv + 1;
-                            if (!at.C28.IsNullOrWhiteSpace())
-                                if (at.C28.Equals("T"))
-                                    tv = tv + 1;
-                            if (!at.C29.IsNullOrWhiteSpace())
-                                if (at.C29.Equals("T"))
-                                    tv = tv + 1;
-                            if (!at.C30.IsNullOrWhiteSpace())
-                                if (at.C30.Equals("T"))
-                                    tv = tv + 1;
-                            if (!at.C31.IsNullOrWhiteSpace())
-                                if (at.C31.Equals("T"))
-                                    tv = tv + 1;
-
-                            at.TotalTransefer = tv;
-                        }
-                        at.status = "panding";
                     }
-                    this.db.Attendances.Add(at);
-                    this.db.SaveChanges();
-                }
-                
-
-                return this.RedirectToAction("AIndex");
-            }
-
-            model1 = new timesheetViewModel { attendance = attendance };
-            return this.View(model1);
-        }
-
-        [Authorize(Roles = "Admin,Manager")]
-        public ActionResult Asearch(int? page, int? pagesize, string search)
-        {
-            var a = this.db.MainTimeSheets.OrderByDescending(m => m.ID);
-            //var aa = a.First();
-            var pageIndex = 1;
-            pageIndex = page.HasValue ? Convert.ToInt32(page) : 1;
-            var defaSize = 100;
-            if (pagesize != 0) defaSize = pagesize ?? 100;
-
-            var list = this.db.Attendances.Include(x => x.LabourMaster).OrderByDescending(m => m.ID)
-                .ToPagedList(pageIndex, defaSize);
-            this.ViewBag.pagesize = defaSize;
-            if (!search.IsNullOrWhiteSpace())
-            {
-                long aid;
-                if (long.TryParse(search, out aid))
-                {
-                    if (aid > 3)
                     {
-                        var lidf = this.db.LabourMasters.Where(x => x.EMPNO.Equals(aid)).ToList();
-                        if (lidf.Count != 0)
-                        {
-                            var lid = lidf.First();
-                            list = this.db.Attendances.Where(x => x.EmpID.Equals(lid.ID)).Include(x => x.LabourMaster)
-                                .OrderByDescending(m => m.ID).ToPagedList(pageIndex, defaSize);
-                        }
+                        at.TotalSickLeave = 0;
+                        long ts = 0;
+                        if (!at.C1.IsNullOrWhiteSpace())
+                            if (at.C1.Equals("S"))
+                                ts = ts + 1;
+                        if (!at.C2.IsNullOrWhiteSpace())
+                            if (at.C2.Equals("S"))
+                                ts = ts + 1;
+                        if (!at.C3.IsNullOrWhiteSpace())
+                            if (at.C3.Equals("S"))
+                                ts = ts + 1;
+                        if (!at.C4.IsNullOrWhiteSpace())
+                            if (at.C4.Equals("S"))
+                                ts = ts + 1;
+                        if (!at.C5.IsNullOrWhiteSpace())
+                            if (at.C5.Equals("S"))
+                                ts = ts + 1;
+                        if (!at.C6.IsNullOrWhiteSpace())
+                            if (at.C6.Equals("S"))
+                                ts = ts + 1;
+                        if (!at.C7.IsNullOrWhiteSpace())
+                            if (at.C7.Equals("S"))
+                                ts = ts + 1;
+                        if (!at.C8.IsNullOrWhiteSpace())
+                            if (at.C8.Equals("S"))
+                                ts = ts + 1;
+                        if (!at.C9.IsNullOrWhiteSpace())
+                            if (at.C9.Equals("S"))
+                                ts = ts + 1;
+                        if (!at.C10.IsNullOrWhiteSpace())
+                            if (at.C10.Equals("S"))
+                                ts = ts + 1;
+                        if (!at.C11.IsNullOrWhiteSpace())
+                            if (at.C11.Equals("S"))
+                                ts = ts + 1;
+                        if (!at.C12.IsNullOrWhiteSpace())
+                            if (at.C12.Equals("S"))
+                                ts = ts + 1;
+                        if (!at.C13.IsNullOrWhiteSpace())
+                            if (at.C13.Equals("S"))
+                                ts = ts + 1;
+                        if (!at.C14.IsNullOrWhiteSpace())
+                            if (at.C14.Equals("S"))
+                                ts = ts + 1;
+                        if (!at.C15.IsNullOrWhiteSpace())
+                            if (at.C15.Equals("S"))
+                                ts = ts + 1;
+                        if (!at.C16.IsNullOrWhiteSpace())
+                            if (at.C16.Equals("S"))
+                                ts = ts + 1;
+                        if (!at.C17.IsNullOrWhiteSpace())
+                            if (at.C17.Equals("S"))
+                                ts = ts + 1;
+                        if (!at.C18.IsNullOrWhiteSpace())
+                            if (at.C18.Equals("S"))
+                                ts = ts + 1;
+                        if (!at.C19.IsNullOrWhiteSpace())
+                            if (at.C19.Equals("S"))
+                                ts = ts + 1;
+                        if (!at.C20.IsNullOrWhiteSpace())
+                            if (at.C20.Equals("S"))
+                                ts = ts + 1;
+                        if (!at.C21.IsNullOrWhiteSpace())
+                            if (at.C21.Equals("S"))
+                                ts = ts + 1;
+                        if (!at.C22.IsNullOrWhiteSpace())
+                            if (at.C22.Equals("S"))
+                                ts = ts + 1;
+                        if (!at.C23.IsNullOrWhiteSpace())
+                            if (at.C23.Equals("S"))
+                                ts = ts + 1;
+                        if (!at.C24.IsNullOrWhiteSpace())
+                            if (at.C24.Equals("S"))
+                                ts = ts + 1;
+                        if (!at.C25.IsNullOrWhiteSpace())
+                            if (at.C25.Equals("S"))
+                                ts = ts + 1;
+                        if (!at.C26.IsNullOrWhiteSpace())
+                            if (at.C26.Equals("S"))
+                                ts = ts + 1;
+                        if (!at.C27.IsNullOrWhiteSpace())
+                            if (at.C27.Equals("S"))
+                                ts = ts + 1;
+                        if (!at.C28.IsNullOrWhiteSpace())
+                            if (at.C28.Equals("S"))
+                                ts = ts + 1;
+                        if (!at.C29.IsNullOrWhiteSpace())
+                            if (at.C29.Equals("S"))
+                                ts = ts + 1;
+                        if (!at.C30.IsNullOrWhiteSpace())
+                            if (at.C30.Equals("S"))
+                                ts = ts + 1;
+                        if (!at.C31.IsNullOrWhiteSpace())
+                            if (at.C31.Equals("S"))
+                                ts = ts + 1;
+
+                        at.TotalSickLeave = ts;
+                    }
+                    {
+                        at.TotalVL = 0;
+                        long tv = 0;
+                        if (!at.C1.IsNullOrWhiteSpace())
+                            if (at.C1.Equals("V"))
+                                tv = tv + 1;
+                        if (!at.C2.IsNullOrWhiteSpace())
+                            if (at.C2.Equals("V"))
+                                tv = tv + 1;
+                        if (!at.C3.IsNullOrWhiteSpace())
+                            if (at.C3.Equals("V"))
+                                tv = tv + 1;
+                        if (!at.C4.IsNullOrWhiteSpace())
+                            if (at.C4.Equals("V"))
+                                tv = tv + 1;
+                        if (!at.C5.IsNullOrWhiteSpace())
+                            if (at.C5.Equals("V"))
+                                tv = tv + 1;
+                        if (!at.C6.IsNullOrWhiteSpace())
+                            if (at.C6.Equals("V"))
+                                tv = tv + 1;
+                        if (!at.C7.IsNullOrWhiteSpace())
+                            if (at.C7.Equals("V"))
+                                tv = tv + 1;
+                        if (!at.C8.IsNullOrWhiteSpace())
+                            if (at.C8.Equals("V"))
+                                tv = tv + 1;
+                        if (!at.C9.IsNullOrWhiteSpace())
+                            if (at.C9.Equals("V"))
+                                tv = tv + 1;
+                        if (!at.C10.IsNullOrWhiteSpace())
+                            if (at.C10.Equals("V"))
+                                tv = tv + 1;
+                        if (!at.C11.IsNullOrWhiteSpace())
+                            if (at.C11.Equals("V"))
+                                tv = tv + 1;
+                        if (!at.C12.IsNullOrWhiteSpace())
+                            if (at.C12.Equals("V"))
+                                tv = tv + 1;
+                        if (!at.C13.IsNullOrWhiteSpace())
+                            if (at.C13.Equals("V"))
+                                tv = tv + 1;
+                        if (!at.C14.IsNullOrWhiteSpace())
+                            if (at.C14.Equals("V"))
+                                tv = tv + 1;
+                        if (!at.C15.IsNullOrWhiteSpace())
+                            if (at.C15.Equals("V"))
+                                tv = tv + 1;
+                        if (!at.C16.IsNullOrWhiteSpace())
+                            if (at.C16.Equals("V"))
+                                tv = tv + 1;
+                        if (!at.C17.IsNullOrWhiteSpace())
+                            if (at.C17.Equals("V"))
+                                tv = tv + 1;
+                        if (!at.C18.IsNullOrWhiteSpace())
+                            if (at.C18.Equals("V"))
+                                tv = tv + 1;
+                        if (!at.C19.IsNullOrWhiteSpace())
+                            if (at.C19.Equals("V"))
+                                tv = tv + 1;
+                        if (!at.C20.IsNullOrWhiteSpace())
+                            if (at.C20.Equals("V"))
+                                tv = tv + 1;
+                        if (!at.C21.IsNullOrWhiteSpace())
+                            if (at.C21.Equals("V"))
+                                tv = tv + 1;
+                        if (!at.C22.IsNullOrWhiteSpace())
+                            if (at.C22.Equals("V"))
+                                tv = tv + 1;
+                        if (!at.C23.IsNullOrWhiteSpace())
+                            if (at.C23.Equals("V"))
+                                tv = tv + 1;
+                        if (!at.C24.IsNullOrWhiteSpace())
+                            if (at.C24.Equals("V"))
+                                tv = tv + 1;
+                        if (!at.C25.IsNullOrWhiteSpace())
+                            if (at.C25.Equals("V"))
+                                tv = tv + 1;
+                        if (!at.C26.IsNullOrWhiteSpace())
+                            if (at.C26.Equals("V"))
+                                tv = tv + 1;
+                        if (!at.C27.IsNullOrWhiteSpace())
+                            if (at.C27.Equals("V"))
+                                tv = tv + 1;
+                        if (!at.C28.IsNullOrWhiteSpace())
+                            if (at.C28.Equals("V"))
+                                tv = tv + 1;
+                        if (!at.C29.IsNullOrWhiteSpace())
+                            if (at.C29.Equals("V"))
+                                tv = tv + 1;
+                        if (!at.C30.IsNullOrWhiteSpace())
+                            if (at.C30.Equals("V"))
+                                tv = tv + 1;
+                        if (!at.C31.IsNullOrWhiteSpace())
+                            if (at.C31.Equals("V"))
+                                tv = tv + 1;
+
+                        at.TotalVL = tv;
+                    }
+                    {
+                        at.TotalAbsent = 0;
+                        long tv = 0;
+                        if (!at.C1.IsNullOrWhiteSpace())
+                            if (at.C1.Equals("A"))
+                                tv = tv + 1;
+                        if (!at.C2.IsNullOrWhiteSpace())
+                            if (at.C2.Equals("A"))
+                                tv = tv + 1;
+                        if (!at.C3.IsNullOrWhiteSpace())
+                            if (at.C3.Equals("A"))
+                                tv = tv + 1;
+                        if (!at.C4.IsNullOrWhiteSpace())
+                            if (at.C4.Equals("A"))
+                                tv = tv + 1;
+                        if (!at.C5.IsNullOrWhiteSpace())
+                            if (at.C5.Equals("A"))
+                                tv = tv + 1;
+                        if (!at.C6.IsNullOrWhiteSpace())
+                            if (at.C6.Equals("A"))
+                                tv = tv + 1;
+                        if (!at.C7.IsNullOrWhiteSpace())
+                            if (at.C7.Equals("A"))
+                                tv = tv + 1;
+                        if (!at.C8.IsNullOrWhiteSpace())
+                            if (at.C8.Equals("A"))
+                                tv = tv + 1;
+                        if (!at.C9.IsNullOrWhiteSpace())
+                            if (at.C9.Equals("A"))
+                                tv = tv + 1;
+                        if (!at.C10.IsNullOrWhiteSpace())
+                            if (at.C10.Equals("A"))
+                                tv = tv + 1;
+                        if (!at.C11.IsNullOrWhiteSpace())
+                            if (at.C11.Equals("A"))
+                                tv = tv + 1;
+                        if (!at.C12.IsNullOrWhiteSpace())
+                            if (at.C12.Equals("A"))
+                                tv = tv + 1;
+                        if (!at.C13.IsNullOrWhiteSpace())
+                            if (at.C13.Equals("A"))
+                                tv = tv + 1;
+                        if (!at.C14.IsNullOrWhiteSpace())
+                            if (at.C14.Equals("A"))
+                                tv = tv + 1;
+                        if (!at.C15.IsNullOrWhiteSpace())
+                            if (at.C15.Equals("A"))
+                                tv = tv + 1;
+                        if (!at.C16.IsNullOrWhiteSpace())
+                            if (at.C16.Equals("A"))
+                                tv = tv + 1;
+                        if (!at.C17.IsNullOrWhiteSpace())
+                            if (at.C17.Equals("A"))
+                                tv = tv + 1;
+                        if (!at.C18.IsNullOrWhiteSpace())
+                            if (at.C18.Equals("A"))
+                                tv = tv + 1;
+                        if (!at.C19.IsNullOrWhiteSpace())
+                            if (at.C19.Equals("A"))
+                                tv = tv + 1;
+                        if (!at.C20.IsNullOrWhiteSpace())
+                            if (at.C20.Equals("A"))
+                                tv = tv + 1;
+                        if (!at.C21.IsNullOrWhiteSpace())
+                            if (at.C21.Equals("A"))
+                                tv = tv + 1;
+                        if (!at.C22.IsNullOrWhiteSpace())
+                            if (at.C22.Equals("A"))
+                                tv = tv + 1;
+                        if (!at.C23.IsNullOrWhiteSpace())
+                            if (at.C23.Equals("A"))
+                                tv = tv + 1;
+                        if (!at.C24.IsNullOrWhiteSpace())
+                            if (at.C24.Equals("A"))
+                                tv = tv + 1;
+                        if (!at.C25.IsNullOrWhiteSpace())
+                            if (at.C25.Equals("A"))
+                                tv = tv + 1;
+                        if (!at.C26.IsNullOrWhiteSpace())
+                            if (at.C26.Equals("A"))
+                                tv = tv + 1;
+                        if (!at.C27.IsNullOrWhiteSpace())
+                            if (at.C27.Equals("A"))
+                                tv = tv + 1;
+                        if (!at.C28.IsNullOrWhiteSpace())
+                            if (at.C28.Equals("A"))
+                                tv = tv + 1;
+                        if (!at.C29.IsNullOrWhiteSpace())
+                            if (at.C29.Equals("A"))
+                                tv = tv + 1;
+                        if (!at.C30.IsNullOrWhiteSpace())
+                            if (at.C30.Equals("A"))
+                                tv = tv + 1;
+                        if (!at.C31.IsNullOrWhiteSpace())
+                            if (at.C31.Equals("A"))
+                                tv = tv + 1;
+
+                        at.TotalAbsent = tv;
+                    }
+                    {
+                        at.TotalTransefer = 0;
+                        long tv = 0;
+                        if (!at.C1.IsNullOrWhiteSpace())
+                            if (at.C1.Equals("T"))
+                                tv = tv + 1;
+                        if (!at.C2.IsNullOrWhiteSpace())
+                            if (at.C2.Equals("T"))
+                                tv = tv + 1;
+                        if (!at.C3.IsNullOrWhiteSpace())
+                            if (at.C3.Equals("T"))
+                                tv = tv + 1;
+                        if (!at.C4.IsNullOrWhiteSpace())
+                            if (at.C4.Equals("T"))
+                                tv = tv + 1;
+                        if (!at.C5.IsNullOrWhiteSpace())
+                            if (at.C5.Equals("T"))
+                                tv = tv + 1;
+                        if (!at.C6.IsNullOrWhiteSpace())
+                            if (at.C6.Equals("T"))
+                                tv = tv + 1;
+                        if (!at.C7.IsNullOrWhiteSpace())
+                            if (at.C7.Equals("T"))
+                                tv = tv + 1;
+                        if (!at.C8.IsNullOrWhiteSpace())
+                            if (at.C8.Equals("T"))
+                                tv = tv + 1;
+                        if (!at.C9.IsNullOrWhiteSpace())
+                            if (at.C9.Equals("T"))
+                                tv = tv + 1;
+                        if (!at.C10.IsNullOrWhiteSpace())
+                            if (at.C10.Equals("T"))
+                                tv = tv + 1;
+                        if (!at.C11.IsNullOrWhiteSpace())
+                            if (at.C11.Equals("T"))
+                                tv = tv + 1;
+                        if (!at.C12.IsNullOrWhiteSpace())
+                            if (at.C12.Equals("T"))
+                                tv = tv + 1;
+                        if (!at.C13.IsNullOrWhiteSpace())
+                            if (at.C13.Equals("T"))
+                                tv = tv + 1;
+                        if (!at.C14.IsNullOrWhiteSpace())
+                            if (at.C14.Equals("T"))
+                                tv = tv + 1;
+                        if (!at.C15.IsNullOrWhiteSpace())
+                            if (at.C15.Equals("T"))
+                                tv = tv + 1;
+                        if (!at.C16.IsNullOrWhiteSpace())
+                            if (at.C16.Equals("T"))
+                                tv = tv + 1;
+                        if (!at.C17.IsNullOrWhiteSpace())
+                            if (at.C17.Equals("T"))
+                                tv = tv + 1;
+                        if (!at.C18.IsNullOrWhiteSpace())
+                            if (at.C18.Equals("T"))
+                                tv = tv + 1;
+                        if (!at.C19.IsNullOrWhiteSpace())
+                            if (at.C19.Equals("T"))
+                                tv = tv + 1;
+                        if (!at.C20.IsNullOrWhiteSpace())
+                            if (at.C20.Equals("T"))
+                                tv = tv + 1;
+                        if (!at.C21.IsNullOrWhiteSpace())
+                            if (at.C21.Equals("T"))
+                                tv = tv + 1;
+                        if (!at.C22.IsNullOrWhiteSpace())
+                            if (at.C22.Equals("T"))
+                                tv = tv + 1;
+                        if (!at.C23.IsNullOrWhiteSpace())
+                            if (at.C23.Equals("T"))
+                                tv = tv + 1;
+                        if (!at.C24.IsNullOrWhiteSpace())
+                            if (at.C24.Equals("T"))
+                                tv = tv + 1;
+                        if (!at.C25.IsNullOrWhiteSpace())
+                            if (at.C25.Equals("T"))
+                                tv = tv + 1;
+                        if (!at.C26.IsNullOrWhiteSpace())
+                            if (at.C26.Equals("T"))
+                                tv = tv + 1;
+                        if (!at.C27.IsNullOrWhiteSpace())
+                            if (at.C27.Equals("T"))
+                                tv = tv + 1;
+                        if (!at.C28.IsNullOrWhiteSpace())
+                            if (at.C28.Equals("T"))
+                                tv = tv + 1;
+                        if (!at.C29.IsNullOrWhiteSpace())
+                            if (at.C29.Equals("T"))
+                                tv = tv + 1;
+                        if (!at.C30.IsNullOrWhiteSpace())
+                            if (at.C30.Equals("T"))
+                                tv = tv + 1;
+                        if (!at.C31.IsNullOrWhiteSpace())
+                            if (at.C31.Equals("T"))
+                                tv = tv + 1;
+
+                        at.TotalTransefer = tv;
+                    }
+
+                    at.status = "panding";
+                    if (check.Count != 0)
+                    {
+                        this.db.Entry(at).State = EntityState.Modified;
+                        this.db.SaveChanges();
                     }
                     else
                     {
-                        list = this.db.Attendances.OrderByDescending(m => m.ID).Include(x => x.LabourMaster)
-                            .ToPagedList(pageIndex, defaSize);
-                    }
-                }
-            }
-            else
-            {
-                list = this.db.Attendances.OrderByDescending(m => m.ID).ToPagedList(pageIndex, defaSize);
-            }
-
-            return this.View(list);
-        }
-
-        public ActionResult Contact()
-        {
-            this.ViewBag.Message = "Your contact page.";
-
-            return this.View();
-        }
-        [Authorize(Roles = "Admin,Manager,Employee")]
-        public ActionResult csearch(DateTime? mtsmonth, long? csmps, string MM)
-        {
-            var ll = new List<Attendance>();
-            DateTime date;
-            if (mtsmonth.HasValue)
-            {
-                DateTime.TryParse(mtsmonth.ToString(), out date);
-                ViewBag.dateee = date.ToShortDateString();
-            }
-            else
-            {
-                date = DateTime.Now;
-                ViewBag.dateee = date;
-            }
-
-            var uid = User.Identity.GetUserId();
-            var uid1 = this.db.AspNetUsers.Find(uid);
-            var t = new List<ProjectList>();
-            if (uid1.csid != 0 && !User.IsInRole("Admin"))
-            {
-                var scid = this.db.CsPermissions.Where(x => x.CsUser == uid1.csid).ToList();
-                foreach (var i in scid)
-                {
-                    t.Add(this.db.ProjectLists.Find(i.Project));
-                }
-
-                this.ViewBag.csp = new SelectList(t, "ID", "PROJECT_NAME").OrderBy(x => x.Text);
-
-            }
-            else
-            {
-                this.ViewBag.csp = new SelectList(this.db.ProjectLists, "ID", "PROJECT_NAME").OrderBy(x => x.Text);
-
-
-            }
-            this.ViewBag.csmps1 = csmps;
-            this.ViewBag.mtsmonth1 = date;
-            this.db.Database.CommandTimeout = 300;
-            ViewBag.MM = MM;
-            this.ViewBag.csmps = new SelectList(this.db.ManPowerSuppliers, "ID", "Supplier");
-            var list = this.db.Attendances.Include(x => x.LabourMaster).ToList();
-            var atlist = new List<Attendance>();
-            if (csmps.HasValue  && mtsmonth.HasValue)
-            {
-                DateTime.TryParse(mtsmonth.Value.ToString(), out var dm);
-                long.TryParse(csmps.ToString(), out var lcsmps);
-                var ab = this.db.MainTimeSheets
-                    .Where(
-                        x => x.TMonth.Month.Equals(dm.Month) && x.TMonth.Year.Equals(dm.Year)
-                                                             && x.ManPowerSupplier.Equals(lcsmps)).OrderBy(x => x.ID)
-                    .ToPagedList(1, 1000);
-                if (ab.Count != 0)
-                {
-                    foreach (var abis in ab)
-                    {
-                        atlist.AddRange(this.db.Attendances.Where(x => x.SubMain.Equals(abis.ID)).Include(x => x.LabourMaster));
-                    }
-                    return this.View(atlist.OrderBy(x => x.MainTimeSheet.Project).ThenBy(x=>x.EmpID)
-                            .ToPagedList(1, 1000));
-                }
-                else
-                {
-
-                    ModelState.AddModelError(string.Empty, "the combination does not exist");
-                    return this.View(ll.OrderByDescending(x => x.ID).ToPagedList(1, 1000));
-                }
-            }
-
-
-            return this.View(ll.OrderBy(x => x.LabourMaster.EMPNO).ToPagedList(1, 1000));
-        }
-
-        public ActionResult Index()
-        {
-            return this.View();
-        }
-
-        public ActionResult tomcreate(DateTime TMonth, long? ManPowerSupplier, long? Project)
-        {
-            var mts = new MainTimeSheet();
-            mts.TMonth = TMonth;
-            mts.Project = Project.Value;
-            mts.ManPowerSupplier = ManPowerSupplier.Value;
-            return RedirectToAction("MCreate", new { mts });
-        }
-
-        [Authorize(Roles = "Admin,Manager,Employee")]
-        public ActionResult MCreate()
-        {
-            var uid = User.Identity.GetUserId();
-            var uid1 = this.db.AspNetUsers.Find(uid);
-            if (uid1.csid != 0 && !User.IsInRole("Admin"))
-            {
-                var scid = this.db.CsPermissions.Where(x => x.CsUser == uid1.csid).ToList();
-                var t = new List<ProjectList>();
-                foreach (var i in scid)
-                {
-                    t.Add(this.db.ProjectLists.Find(i.Project));
-                }
-                this.ViewBag.Project = new SelectList(t, "ID", "PROJECT_NAME").OrderBy(x => x.Text);
-
-            }
-            else
-            {
-                this.ViewBag.Project = new SelectList(this.db.ProjectLists, "ID", "PROJECT_NAME").OrderBy(x => x.Text);
-
-
-            }
-            this.ViewBag.ManPowerSupplier = new SelectList(this.db.ManPowerSuppliers, "ID", "Supplier");
-            return this.View();
-        }
-
-        // POST: MainTimeSheets/Create
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        [Authorize(Roles = "Admin,Manager,Employee")]
-        public ActionResult MCreate(
-            [Bind(
-                Include =
-                    "ID,TMonth,ManPowerSupplier,Project,Ref,RefNo,UserName,PCName,SAV,Location,Note,Startit,Encoded_Absolute_URL,Item_Type,Path,URL_Path,Workflow_Instance_ID,File_Type,TMnth")]
-            MainTimeSheet mainTimeSheet)
-        {
-            var uid = User.Identity.GetUserId();
-            var uid1 = this.db.AspNetUsers.Find(uid);
-            if (uid1.csid != 0 && !User.IsInRole("Admin"))
-            {
-                var scid = this.db.CsPermissions.Where(x => x.CsUser == uid1.csid).ToList();
-                var t = new List<ProjectList>();
-                foreach (var i in scid)
-                {
-                    t.Add(this.db.ProjectLists.Find(i.Project));
-                }
-
-                this.ViewBag.Project = new SelectList(t, "ID", "PROJECT_NAME").OrderBy(x => x.Text);
-
-            }
-            else
-            {
-                this.ViewBag.Project = new SelectList(this.db.ProjectLists, "ID", "PROJECT_NAME").OrderBy(x => x.Text);
-
-
-            }
-            this.ViewBag.ManPowerSupplier = new SelectList(this.db.ManPowerSuppliers, "ID", "Supplier");
-            this.Tmonth = mainTimeSheet.TMonth.Date;
-            this.ID = mainTimeSheet.ID;
-            this.manid = mainTimeSheet.ManPowerSupplier;
-            this.pid = mainTimeSheet.Project;
-            if (this.ModelState.IsValid)
-            {
-
-                var apall = this.db.approvals.ToList();
-                if (!apall.Exists(
-                        x => x.MPS_id == mainTimeSheet.ManPowerSupplier && x.P_id == mainTimeSheet.Project
-                                                                        && x.adate == mainTimeSheet.TMonth
-                                                                        && (x.status.Equals("submitted") || x.status.Equals("approved"))))
-                {
-                    var te = db.MainTimeSheets.OrderByDescending(x=>x.ID).ToList();
-                    if (te.Exists(x => x.TMonth.Month == mainTimeSheet.TMonth.Month && x.TMonth.Year == mainTimeSheet.TMonth.Year))
-                    {
-                        var te1 = te.Find(
-                            x => x.TMonth.Month == mainTimeSheet.TMonth.Month
-                                 && x.TMonth.Year == mainTimeSheet.TMonth.Year);
-                        if (mainTimeSheet.TMonth == te[0].TMonth && mainTimeSheet.ManPowerSupplier == te[0].ManPowerSupplier && te[0].Project == mainTimeSheet.Project)
-                        {
-                            goto qw;
-                        } 
-                        te1.TMonth = mainTimeSheet.TMonth;
-                        if (te1.ManPowerSupplier != mainTimeSheet.ManPowerSupplier )
-                        {
-                            this.db.MainTimeSheets.Add(mainTimeSheet);
-                            this.db.SaveChanges();
-                            te = db.MainTimeSheets.OrderByDescending(x => x.ID).ToList();
-                            var teall = te.FindAll(
-                                x => x.TMonth.Month == mainTimeSheet.TMonth.Month
-                                     && x.TMonth.Year == mainTimeSheet.TMonth.Year
-                                     && x.ManPowerSupplier == mainTimeSheet.ManPowerSupplier
-                                     && x.Project == mainTimeSheet.Project).OrderBy(x => x.ID);
-                            var atalllist = this.db.Attendances.ToList();
-                            if (teall != null || teall.Count() != 0)
-                            {
-                                var atallfind = new List<Attendance>();
-                                foreach (var sheet in teall)
-                                {
-                                    var zz = atalllist.FindAll(x => x.SubMain == sheet.ID);
-                                    if (zz.Count != 0)
-                                    {
-                                        atallfind = atalllist.FindAll(x => x.SubMain == sheet.ID);
-                                    }
-                                }
-
-                                foreach (var ql in atallfind)
-                                {
-                                    ql.SubMain = teall.Last().ID;
-                                    this.db.Entry(ql).State = EntityState.Modified;
-                                    this.db.SaveChanges();
-                                }
-                            }
-                            
-                            return this.RedirectToAction("AIndex");
-                        }
-                        if (te1.Project != mainTimeSheet.Project )
-                        {
-                            this.db.MainTimeSheets.Add(mainTimeSheet);
-                            this.db.SaveChanges();
-                            te = db.MainTimeSheets.OrderByDescending(x => x.ID).ToList();
-                            var teall = te.FindAll(
-                                x => x.TMonth.Month == mainTimeSheet.TMonth.Month
-                                     && x.TMonth.Year == mainTimeSheet.TMonth.Year
-                                     && x.ManPowerSupplier == mainTimeSheet.ManPowerSupplier
-                                     && x.Project == mainTimeSheet.Project).OrderBy(x => x.ID);
-                            var atalllist = this.db.Attendances.ToList();
-                            if (teall != null || teall.Count() != 0)
-                            {
-                                var atallfind = new List<Attendance>();
-                                foreach (var sheet in teall)
-                                {
-                                    var zz = atalllist.FindAll(x => x.SubMain == sheet.ID);
-                                    if (zz.Count != 0)
-                                    {
-                                        atallfind = atalllist.FindAll(x => x.SubMain == sheet.ID);
-                                    }
-                                }
-
-                                foreach (var ql in atallfind)
-                                {
-                                    ql.SubMain = teall.Last().ID;
-                                    this.db.Entry(ql).State = EntityState.Modified;
-                                    this.db.SaveChanges();
-                                }
-                            }
-
-                            return this.RedirectToAction("AIndex");
-                        }
-                        if ( te1.TMonth.Month != te.First().TMonth.Month)
-                        {
-                            this.db.MainTimeSheets.Add(mainTimeSheet);
-                            this.db.SaveChanges();
-                             te = db.MainTimeSheets.OrderByDescending(x => x.ID).ToList();
-                            var teall = te.FindAll(
-                                x => x.TMonth.Month == mainTimeSheet.TMonth.Month
-                                     && x.TMonth.Year == mainTimeSheet.TMonth.Year && x.ManPowerSupplier == mainTimeSheet.ManPowerSupplier && x.Project == mainTimeSheet.Project).OrderBy(x=>x.ID);
-                            var atalllist = this.db.Attendances.ToList();
-                            if (teall != null || teall.Count() != 0)
-                            {
-                                var atallfind= new List<Attendance>();
-                                foreach (var sheet in teall)
-                                {
-                                    var zz = atalllist.FindAll(x => x.SubMain == sheet.ID);
-                                    if (zz.Count !=0)
-                                    {
-                                        atallfind = atalllist.FindAll(x => x.SubMain == sheet.ID);
-                                    }
-                                }
-                                
-                                foreach (var ql in atallfind)
-                                {
-                                    ql.SubMain = teall.Last().ID;
-                                    this.db.Entry(ql).State = EntityState.Modified;
-                                    this.db.SaveChanges();
-                                }
-                            }
-                            return this.RedirectToAction("AIndex");
-                        }
-                        this.db.Entry(te1).State = EntityState.Modified;
+                        this.db.Attendances.Add(at);
                         this.db.SaveChanges();
-                        return this.RedirectToAction("AIndex");
-                    }
-                    else
-                    {
-                        this.db.MainTimeSheets.Add(mainTimeSheet);
-                        this.db.SaveChanges();
-                        return this.RedirectToAction("AIndex");
                     }
                 }
-                else
-                {
-                    string errr1 = "timesheet already " + apall.Find(
-                                               x => x.MPS_id == mainTimeSheet.ManPowerSupplier
-                                                    && x.P_id == mainTimeSheet.Project
-                                                    && x.adate == mainTimeSheet.TMonth)
-                                           .status;
-                    ModelState.AddModelError(string.Empty, errr1);
-                }
 
-            }
-            return this.View(mainTimeSheet);
-            qw:
-            return this.RedirectToAction("AIndex");
-        }
-
-        [Authorize(Roles = "Admin,Manager,Employee")]
-        public ActionResult tests()
-        {
-            var at = new Attendance();
-            var a = this.db.MainTimeSheets.OrderByDescending(m => m.ID);
-            var aa = a.First();
-            this.ViewBag.mid = aa.ID;
-            var b = this.db.ManPowerSuppliers.Find(aa.ManPowerSupplier);
-            var c = this.db.ProjectLists.Find(aa.Project);
-            this.ViewBag.pid = c.PROJECT_NAME;
-            this.ViewBag.mps = b.Supplier;
-            this.ViewBag.mpssh = b.ShortName;
-            this.ViewBag.mdate = aa.TMonth.ToLongDateString();
-            if (b.Supplier == "GROVE")
-            {
-                b = this.db.ManPowerSuppliers.Find(1);
-            }
-            var d = from LabourMaster in this.db.LabourMasters
-                    where LabourMaster.ManPowerSupply == b.ID
-                    select LabourMaster;
-            this.ViewBag.empno = new SelectList(d.Where(x => x.EMPNO >= 4).OrderBy(m => m.EMPNO), "ID", "EMPNO");
-            this.ViewBag.name = new SelectList(d.Where(x => x.EMPNO >= 4).OrderBy(m => m.EMPNO), "ID", "Person_Name");
-            this.ViewBag.position = new SelectList(d.Where(x => x.EMPNO >= 4).OrderBy(m => m.EMPNO), "ID", "Position");
-            
-            var data = new[]
-                           {
-                               new SelectListItem { Text = "", Value = "" },
-                               new SelectListItem { Text = "1", Value = "1" },
-                               new SelectListItem { Text = "2", Value = "2" },
-                               new SelectListItem { Text = "3", Value = "3" },
-                               new SelectListItem { Text = "4", Value = "4" },
-                               new SelectListItem { Text = "5", Value = "5" },
-                               new SelectListItem { Text = "6", Value = "6" },
-                               new SelectListItem { Text = "7", Value = "7" },
-                               new SelectListItem { Text = "8", Value = "8" },
-                               new SelectListItem { Text = "9", Value = "9" },
-                               new SelectListItem { Text = "10", Value = "10" },
-                               new SelectListItem { Text = "11", Value = "11" },
-                               new SelectListItem { Text = "12", Value = "12" },
-                               new SelectListItem { Text = "13", Value = "13" },
-                               new SelectListItem { Text = "14", Value = "14" },
-                               new SelectListItem { Text = "15", Value = "15" },
-                               new SelectListItem { Text = "16", Value = "16" },
-                               new SelectListItem { Text = "17", Value = "17" },
-                               new SelectListItem { Text = "18", Value = "18" },
-                               new SelectListItem { Text = "19", Value = "19" },
-                               new SelectListItem { Text = "20", Value = "20" },
-                               new SelectListItem { Text = "21", Value = "21" },
-                               new SelectListItem { Text = "22", Value = "22" },
-                               new SelectListItem { Text = "23", Value = "23" },
-                               new SelectListItem { Text = "24", Value = "24" },
-                               new SelectListItem { Text = "S", Value = "S" },
-                               new SelectListItem { Text = "A", Value = "A" },
-                               new SelectListItem { Text = "T", Value = "T" },
-                               new SelectListItem { Text = "V", Value = "V" }
-                           };
-            this.ViewBag.hours = data;
-            return this.View();
-        }
-        [SuppressMessage(
-            "StyleCop.CSharp.LayoutRules",
-            "SA1503:CurlyBracketsMustNotBeOmitted",
-            Justification = "Reviewed. Suppression is OK here.")]
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        [Authorize(Roles = "Admin,Manager,Employee")]
-        public ActionResult tests(testlist test)
-        {
-            var at = new Attendance();
-            var a = this.db.MainTimeSheets.OrderByDescending(m => m.ID);
-            var aa = a.First();
-            this.ViewBag.mid = aa.ID;
-            var b = this.db.ManPowerSuppliers.Find(aa.ManPowerSupplier);
-            var c = this.db.ProjectLists.Find(aa.Project);
-            this.ViewBag.pid = c.PROJECT_NAME;
-            this.ViewBag.mps = b.Supplier;
-            this.ViewBag.mpssh = b.ShortName;
-            this.ViewBag.mdate = aa.TMonth.ToLongDateString();
-            if (b.Supplier == "GROVE")
-            {
-                b = this.db.ManPowerSuppliers.Find(1);
-            }
-            var d = from LabourMaster in this.db.LabourMasters
-                    where LabourMaster.ManPowerSupply == b.ID
-                    select LabourMaster;
-            this.ViewBag.emplist = d.Select(x => x.EMPNO).ToList();
-            this.ViewBag.empno = new SelectList(d.Where(x => x.EMPNO >= 4).OrderBy(m => m.EMPNO), "ID", "EMPNO");
-            this.ViewBag.name = new SelectList(d.Where(x => x.EMPNO >= 4).OrderBy(m => m.EMPNO), "ID", "Person_Name");
-            this.ViewBag.position = new SelectList(d.Where(x => x.EMPNO >= 4).OrderBy(m => m.EMPNO), "ID", "Position");
-            
-            var data = new[]
-                           {
-                               new SelectListItem { Text = "", Value = "" },
-                               new SelectListItem { Text = "1", Value = "1" },
-                               new SelectListItem { Text = "2", Value = "2" },
-                               new SelectListItem { Text = "3", Value = "3" },
-                               new SelectListItem { Text = "4", Value = "4" },
-                               new SelectListItem { Text = "5", Value = "5" },
-                               new SelectListItem { Text = "6", Value = "6" },
-                               new SelectListItem { Text = "7", Value = "7" },
-                               new SelectListItem { Text = "8", Value = "8" },
-                               new SelectListItem { Text = "9", Value = "9" },
-                               new SelectListItem { Text = "10", Value = "10" },
-                               new SelectListItem { Text = "11", Value = "11" },
-                               new SelectListItem { Text = "12", Value = "12" },
-                               new SelectListItem { Text = "13", Value = "13" },
-                               new SelectListItem { Text = "14", Value = "14" },
-                               new SelectListItem { Text = "15", Value = "15" },
-                               new SelectListItem { Text = "16", Value = "16" },
-                               new SelectListItem { Text = "17", Value = "17" },
-                               new SelectListItem { Text = "18", Value = "18" },
-                               new SelectListItem { Text = "19", Value = "19" },
-                               new SelectListItem { Text = "20", Value = "20" },
-                               new SelectListItem { Text = "21", Value = "21" },
-                               new SelectListItem { Text = "22", Value = "22" },
-                               new SelectListItem { Text = "23", Value = "23" },
-                               new SelectListItem { Text = "24", Value = "24" },
-                               new SelectListItem { Text = "S", Value = "S" },
-                               new SelectListItem { Text = "A", Value = "A" },
-                               new SelectListItem { Text = "T", Value = "T" },
-                               new SelectListItem { Text = "V", Value = "V" }
-                           };
-            this.ViewBag.hours = data;
-            var oldmts = new List<MainTimeSheet>();
-            if (this.ModelState.IsValid)
-            {
-                var check = new List<Attendance>();
-                var oldmts1 = new MainTimeSheet();
-                var apall = this.db.approvals.ToList();
-                foreach (var list in test.Tests)
-                {
-                    var trial = list.date = aa.TMonth;
-                    oldmts = this.db.MainTimeSheets
-                        .Where(x => x.TMonth.Month.Equals(list.date.Month) && x.TMonth.Year.Equals(list.date.Year)&& x.ManPowerSupplier.Equals(aa.ManPowerSupplier)&& x.Project.Equals(aa.Project)).OrderByDescending(x => x.ID).ToList();
-
-                        if (oldmts.Count != 0)
-                        {
-                            oldmts1 = oldmts.Last();
-
-                            // First();
-                            check = this.db.Attendances
-                                .Where(z => z.EmpID.Equals(list.empno) && z.SubMain.Equals(oldmts1.ID)).ToList();
-                        }
-                        else
-                        {
-                            check = this.db.Attendances.Where(z => z.EmpID.Equals(list.empno) && z.SubMain.Equals(aa.ID))
-                                .ToList();
-                        }
-
-                        {
-                            var tb = this.db;
-                            var lo = this.db.MainTimeSheets.Where(
-                                e => e.ManPowerSupplier.Equals(aa.ManPowerSupplier) && e.TMonth.Year.Equals(list.date.Year)
-                                                                                    && e.TMonth.Month.Equals(
-                                                                                        list.date.Month)).ToList();
-                            List<Attendance> lo1 = new List<Attendance>();
-                            foreach (var same in lo)
-                            {
-                                var at1 = this.db.Attendances.Where(e => e.SubMain.Equals(same.ID)).ToList();
-                                if (at1 != null)
-                                {
-                                    foreach (var at2 in at1)
-                                    {
-                                        lo1.Add(at2);
-                                    }
-                                }
-                            }
-
-                            List<Attendance> lo3 = new List<Attendance>();
-                            foreach (var lo2 in lo1)
-                            {
-                                if (list.empno == lo2.EmpID)
-                                {
-                                    lo3.Add(lo2);
-                                }
-                            }
-
-                            long com = 0;
-                            foreach (var at1 in lo3)
-                            {
-                                if (check.Count != 0) at = check.First();
-                                if (!at1.SubMain.Equals(at.SubMain))
-                                {
-
-
-                                    if (list.date.Day == 1)
-                                    {
-                                        long.TryParse(at1.C1, out long k);
-                                        long.TryParse(list.hours, out long l);
-                                        com = k + l;
-                                        if (com > 24)
-                                        {
-                                            var dd = this.db.LabourMasters.Find(list.empno);
-                                            string errorm = "total time of the employee no:" + dd.EMPNO.ToString()
-                                                                                             + " for the day is "
-                                                                                             + com.ToString()
-                                                                                             + "hrs which is greater then 24hrs";
-                                            ModelState.AddModelError(string.Empty, errorm);
-                                            return View(test);
-                                        }
-                                    }
-
-                                    if (list.date.Day == 2)
-                                    {
-                                        long.TryParse(at1.C2, out long k);
-                                        long.TryParse(list.hours, out long l);
-                                        com = k + l;
-                                        if (com > 24)
-                                        {
-                                            var dd = this.db.LabourMasters.Find(list.empno);
-                                            string errorm = "total time of the employee no:" + dd.EMPNO.ToString()
-                                                                                             + " for the day is "
-                                                                                             + com.ToString()
-                                                                                             + "hrs which is greater then 24hrs";
-                                            ModelState.AddModelError(string.Empty, errorm);
-                                            return View(test);
-                                        }
-                                    }
-
-                                    if (list.date.Day == 3)
-                                    {
-                                        long.TryParse(at1.C3, out long k);
-                                        long.TryParse(list.hours, out long l);
-                                        com = k + l;
-                                        if (com > 24)
-                                        {
-                                            var dd = this.db.LabourMasters.Find(list.empno);
-                                            string errorm = "total time of the employee no:" + dd.EMPNO.ToString()
-                                                                                             + " for the day is "
-                                                                                             + com.ToString()
-                                                                                             + "hrs which is greater then 24hrs";
-                                            ModelState.AddModelError(string.Empty, errorm);
-                                            return View(test);
-                                        }
-                                    }
-
-                                    if (list.date.Day == 4)
-                                    {
-                                        long.TryParse(at1.C4, out long k);
-                                        long.TryParse(list.hours, out long l);
-                                        com = k + l;
-                                        if (com > 24)
-                                        {
-                                            var dd = this.db.LabourMasters.Find(list.empno);
-                                            string errorm = "total time of the employee no:" + dd.EMPNO.ToString()
-                                                                                             + " for the day is "
-                                                                                             + com.ToString()
-                                                                                             + "hrs which is greater then 24hrs";
-                                            ModelState.AddModelError(string.Empty, errorm);
-                                            return View(test);
-                                        }
-                                    }
-
-                                    if (list.date.Day == 5)
-                                    {
-                                        long.TryParse(at1.C5, out long k);
-                                        long.TryParse(list.hours, out long l);
-                                        com = k + l;
-                                        if (com > 24)
-                                        {
-                                            var dd = this.db.LabourMasters.Find(list.empno);
-                                            string errorm = "total time of the employee no:" + dd.EMPNO.ToString()
-                                                                                             + " for the day is "
-                                                                                             + com.ToString()
-                                                                                             + "hrs which is greater then 24hrs";
-                                            ModelState.AddModelError(string.Empty, errorm);
-                                            return View(test);
-                                        }
-                                    }
-
-                                    if (list.date.Day == 6)
-                                    {
-                                        long.TryParse(at1.C6, out long k);
-                                        long.TryParse(list.hours, out long l);
-                                        com = k + l;
-                                        if (com > 24)
-                                        {
-                                            var dd = this.db.LabourMasters.Find(list.empno);
-                                            string errorm = "total time of the employee no:" + dd.EMPNO.ToString()
-                                                                                             + " for the day is "
-                                                                                             + com.ToString()
-                                                                                             + "hrs which is greater then 24hrs";
-                                            ModelState.AddModelError(string.Empty, errorm);
-                                            return View(test);
-                                        }
-                                    }
-
-                                    if (list.date.Day == 7)
-                                    {
-                                        long.TryParse(at1.C7, out long k);
-                                        long.TryParse(list.hours, out long l);
-                                        com = k + l;
-                                        if (com > 24)
-                                        {
-                                            var dd = this.db.LabourMasters.Find(list.empno);
-                                            string errorm = "total time of the employee no:" + dd.EMPNO.ToString()
-                                                                                             + " for the day is "
-                                                                                             + com.ToString()
-                                                                                             + "hrs which is greater then 24hrs";
-                                            ModelState.AddModelError(string.Empty, errorm);
-                                            return View(test);
-                                        }
-                                    }
-
-                                    if (list.date.Day == 8)
-                                    {
-                                        long.TryParse(at1.C8, out long k);
-                                        long.TryParse(list.hours, out long l);
-                                        com = k + l;
-                                        if (com > 24)
-                                        {
-                                            var dd = this.db.LabourMasters.Find(list.empno);
-                                            string errorm = "total time of the employee no:" + dd.EMPNO.ToString()
-                                                                                             + " for the day is "
-                                                                                             + com.ToString()
-                                                                                             + "hrs which is greater then 24hrs";
-                                            ModelState.AddModelError(string.Empty, errorm);
-                                            return View(test);
-                                        }
-
-                                    }
-                                    if (list.date.Day == 9)
-                                    {
-                                        long.TryParse(at1.C9, out long k);
-                                        long.TryParse(list.hours, out long l);
-                                        com = k + l;
-                                        if (com > 24)
-                                        {
-                                            var dd = this.db.LabourMasters.Find(list.empno);
-                                            string errorm = "total time of the employee no:" + dd.EMPNO.ToString()
-                                                                                             + " for the day is "
-                                                                                             + com.ToString()
-                                                                                             + "hrs which is greater then 24hrs";
-                                            ModelState.AddModelError(string.Empty, errorm);
-                                            return View(test);
-                                        }
-                                    }
-                                    if (list.date.Day == 10)
-                                    {
-                                        long.TryParse(at1.C10, out long k);
-                                        long.TryParse(list.hours, out long l);
-                                        com = k + l;
-                                        if (com > 24)
-                                        {
-                                            var dd = this.db.LabourMasters.Find(list.empno);
-                                            string errorm = "total time of the employee no:" + dd.EMPNO.ToString()
-                                                                                             + " for the day is "
-                                                                                             + com.ToString()
-                                                                                             + "hrs which is greater then 24hrs";
-                                            ModelState.AddModelError(string.Empty, errorm);
-                                            return View(test);
-                                        }
-                                    }
-
-                                    if (list.date.Day == 11)
-                                    {
-                                        long.TryParse(at1.C11, out long k);
-                                        long.TryParse(list.hours, out long l);
-                                        com = k + l;
-                                        if (com > 24)
-                                        {
-                                            var dd = this.db.LabourMasters.Find(list.empno);
-                                            string errorm = "total time of the employee no:" + dd.EMPNO.ToString()
-                                                                                             + " for the day is "
-                                                                                             + com.ToString()
-                                                                                             + "hrs which is greater then 24hrs";
-                                            ModelState.AddModelError(string.Empty, errorm);
-                                            return View(test);
-                                        }
-                                    }
-
-                                    if (list.date.Day == 12)
-                                    {
-                                        long.TryParse(at1.C12, out long k);
-                                        long.TryParse(list.hours, out long l);
-                                        com = k + l;
-                                        if (com > 24)
-                                        {
-                                            var dd = this.db.LabourMasters.Find(list.empno);
-                                            string errorm = "total time of the employee no:" + dd.EMPNO.ToString()
-                                                                                             + " for the day is "
-                                                                                             + com.ToString()
-                                                                                             + "hrs which is greater then 24hrs";
-                                            ModelState.AddModelError(string.Empty, errorm);
-                                            return View(test);
-                                        }
-                                    }
-
-                                    if (list.date.Day == 13)
-                                    {
-                                        long.TryParse(at1.C13, out long k);
-                                        long.TryParse(list.hours, out long l);
-                                        com = k + l;
-                                        if (com > 24)
-                                        {
-                                            var dd = this.db.LabourMasters.Find(list.empno);
-                                            string errorm = "total time of the employee no:" + dd.EMPNO.ToString()
-                                                                                             + " for the day is "
-                                                                                             + com.ToString()
-                                                                                             + "hrs which is greater then 24hrs";
-                                            ModelState.AddModelError(string.Empty, errorm);
-                                            return View(test);
-                                        }
-                                    }
-
-                                    if (list.date.Day == 14)
-                                    {
-                                        long.TryParse(at1.C14, out long k);
-                                        long.TryParse(list.hours, out long l);
-                                        com = k + l;
-                                        if (com > 24)
-                                        {
-                                            var dd = this.db.LabourMasters.Find(list.empno);
-                                            string errorm = "total time of the employee no:" + dd.EMPNO.ToString()
-                                                                                             + " for the day is "
-                                                                                             + com.ToString()
-                                                                                             + "hrs which is greater then 24hrs";
-                                            ModelState.AddModelError(string.Empty, errorm);
-                                            return View(test);
-                                        }
-                                    }
-
-                                    if (list.date.Day == 15)
-                                    {
-                                        long.TryParse(at1.C15, out long k);
-                                        long.TryParse(list.hours, out long l);
-                                        com = k + l;
-                                        if (com > 24)
-                                        {
-                                            var dd = this.db.LabourMasters.Find(list.empno);
-                                            string errorm = "total time of the employee no:" + dd.EMPNO.ToString()
-                                                                                             + " for the day is "
-                                                                                             + com.ToString()
-                                                                                             + "hrs which is greater then 24hrs";
-                                            ModelState.AddModelError(string.Empty, errorm);
-                                            return View(test);
-                                        }
-                                    }
-
-                                    if (list.date.Day == 16)
-                                    {
-                                        long.TryParse(at1.C16, out long k);
-                                        long.TryParse(list.hours, out long l);
-                                        com = k + l;
-                                        if (com > 24)
-                                        {
-                                            var dd = this.db.LabourMasters.Find(list.empno);
-                                            string errorm = "total time of the employee no:" + dd.EMPNO.ToString()
-                                                                                             + " for the day is "
-                                                                                             + com.ToString()
-                                                                                             + "hrs which is greater then 24hrs";
-                                            ModelState.AddModelError(string.Empty, errorm);
-                                            return View(test);
-                                        }
-                                    }
-
-                                    if (list.date.Day == 17)
-                                    {
-                                        long.TryParse(at1.C17, out long k);
-                                        long.TryParse(list.hours, out long l);
-                                        com = k + l;
-                                        if (com > 24)
-                                        {
-                                            var dd = this.db.LabourMasters.Find(list.empno);
-                                            string errorm = "total time of the employee no:" + dd.EMPNO.ToString()
-                                                                                             + " for the day is "
-                                                                                             + com.ToString()
-                                                                                             + "hrs which is greater then 24hrs";
-                                            ModelState.AddModelError(string.Empty, errorm);
-                                            return View(test);
-                                        }
-                                    }
-
-                                    if (list.date.Day == 18)
-                                    {
-                                        long.TryParse(at1.C18, out long k);
-                                        long.TryParse(list.hours, out long l);
-                                        com = k + l;
-                                        if (com > 24)
-                                        {
-                                            var dd = this.db.LabourMasters.Find(list.empno);
-                                            string errorm = "total time of the employee no:" + dd.EMPNO.ToString()
-                                                                                             + " for the day is "
-                                                                                             + com.ToString()
-                                                                                             + "hrs which is greater then 24hrs";
-                                            ModelState.AddModelError(string.Empty, errorm);
-                                            return View(test);
-                                        }
-                                    }
-
-                                    if (list.date.Day == 19)
-                                    {
-                                        long.TryParse(at1.C19, out long k);
-                                        long.TryParse(list.hours, out long l);
-                                        com = k + l;
-                                        if (com > 24)
-                                        {
-                                            var dd = this.db.LabourMasters.Find(list.empno);
-                                            string errorm = "total time of the employee no:" + dd.EMPNO.ToString()
-                                                                                             + " for the day is "
-                                                                                             + com.ToString()
-                                                                                             + "hrs which is greater then 24hrs";
-                                            ModelState.AddModelError(string.Empty, errorm);
-                                            return View(test);
-                                        }
-                                    }
-
-                                    if (list.date.Day == 20)
-                                    {
-                                        long.TryParse(at1.C20, out long k);
-                                        long.TryParse(list.hours, out long l);
-                                        com = k + l;
-                                        if (com > 24)
-                                        {
-                                            var dd = this.db.LabourMasters.Find(list.empno);
-                                            string errorm = "total time of the employee no:" + dd.EMPNO.ToString()
-                                                                                             + " for the day is "
-                                                                                             + com.ToString()
-                                                                                             + "hrs which is greater then 24hrs";
-                                            ModelState.AddModelError(string.Empty, errorm);
-                                            return View(test);
-                                        }
-                                    }
-
-                                    if (list.date.Day == 21)
-                                    {
-                                        long.TryParse(at1.C21, out long k);
-                                        long.TryParse(list.hours, out long l);
-                                        com = k + l;
-                                        if (com > 24)
-                                        {
-                                            var dd = this.db.LabourMasters.Find(list.empno);
-                                            string errorm = "total time of the employee no:" + dd.EMPNO.ToString()
-                                                                                             + " for the day is "
-                                                                                             + com.ToString()
-                                                                                             + "hrs which is greater then 24hrs";
-                                            ModelState.AddModelError(string.Empty, errorm);
-                                            return View(test);
-                                        }
-                                    }
-
-                                    if (list.date.Day == 22)
-                                    {
-                                        long.TryParse(at1.C22, out long k);
-                                        long.TryParse(list.hours, out long l);
-                                        com = k + l;
-                                        if (com > 24)
-                                        {
-                                            var dd = this.db.LabourMasters.Find(list.empno);
-                                            string errorm = "total time of the employee no:" + dd.EMPNO.ToString()
-                                                                                             + " for the day is "
-                                                                                             + com.ToString()
-                                                                                             + "hrs which is greater then 24hrs";
-                                            ModelState.AddModelError(string.Empty, errorm);
-                                            return View(test);
-                                        }
-                                    }
-
-                                    if (list.date.Day == 23)
-                                    {
-                                        long.TryParse(at1.C23, out long k);
-                                        long.TryParse(list.hours, out long l);
-                                        com = k + l;
-                                        if (com > 24)
-                                        {
-                                            var dd = this.db.LabourMasters.Find(list.empno);
-                                            string errorm = "total time of the employee no:" + dd.EMPNO.ToString()
-                                                                                             + " for the day is "
-                                                                                             + com.ToString()
-                                                                                             + "hrs which is greater then 24hrs";
-                                            ModelState.AddModelError(string.Empty, errorm);
-                                            return View(test);
-                                        }
-                                    }
-
-                                    if (list.date.Day == 24)
-                                    {
-                                        long.TryParse(at1.C24, out long k);
-                                        long.TryParse(list.hours, out long l);
-                                        com = k + l;
-                                        if (com > 24)
-                                        {
-                                            var dd = this.db.LabourMasters.Find(list.empno);
-                                            string errorm = "total time of the employee no:" + dd.EMPNO.ToString()
-                                                                                             + " for the day is "
-                                                                                             + com.ToString()
-                                                                                             + "hrs which is greater then 24hrs";
-                                            ModelState.AddModelError(string.Empty, errorm);
-                                            return View(test);
-                                        }
-                                    }
-
-                                    if (list.date.Day == 25)
-                                    {
-                                        long.TryParse(at1.C25, out long k);
-                                        long.TryParse(list.hours, out long l);
-                                        com = k + l;
-                                        if (com > 24)
-                                        {
-                                            var dd = this.db.LabourMasters.Find(list.empno);
-                                            string errorm = "total time of the employee no:" + dd.EMPNO.ToString()
-                                                                                             + " for the day is "
-                                                                                             + com.ToString()
-                                                                                             + "hrs which is greater then 24hrs";
-                                            ModelState.AddModelError(string.Empty, errorm);
-                                            return View(test);
-                                        }
-                                    }
-
-                                    if (list.date.Day == 26)
-                                    {
-                                        long.TryParse(at1.C26, out long k);
-                                        long.TryParse(list.hours, out long l);
-                                        com = k + l;
-                                        if (com > 24)
-                                        {
-                                            var dd = this.db.LabourMasters.Find(list.empno);
-                                            string errorm = "total time of the employee no:" + dd.EMPNO.ToString()
-                                                                                             + " for the day is "
-                                                                                             + com.ToString()
-                                                                                             + "hrs which is greater then 24hrs";
-                                            ModelState.AddModelError(string.Empty, errorm);
-                                            return View(test);
-                                        }
-                                    }
-
-                                    if (list.date.Day == 27)
-                                    {
-                                        long.TryParse(at1.C27, out long k);
-                                        long.TryParse(list.hours, out long l);
-                                        com = k + l;
-                                        if (com > 24)
-                                        {
-                                            var dd = this.db.LabourMasters.Find(list.empno);
-                                            string errorm = "total time of the employee no:" + dd.EMPNO.ToString()
-                                                                                             + " for the day is "
-                                                                                             + com.ToString()
-                                                                                             + "hrs which is greater then 24hrs";
-                                            ModelState.AddModelError(string.Empty, errorm);
-                                            return View(test);
-                                        }
-                                    }
-
-                                    if (list.date.Day == 28)
-                                    {
-                                        long.TryParse(at1.C28, out long k);
-                                        long.TryParse(list.hours, out long l);
-                                        com = k + l;
-                                        if (com > 24)
-                                        {
-                                            var dd = this.db.LabourMasters.Find(list.empno);
-                                            string errorm = "total time of the employee no:" + dd.EMPNO.ToString()
-                                                                                             + " for the day is "
-                                                                                             + com.ToString()
-                                                                                             + "hrs which is greater then 24hrs";
-                                            ModelState.AddModelError(string.Empty, errorm);
-                                            return View(test);
-                                        }
-                                    }
-
-                                    if (list.date.Day == 29)
-                                    {
-                                        long.TryParse(at1.C29, out long k);
-                                        long.TryParse(list.hours, out long l);
-                                        com = k + l;
-                                        if (com > 24)
-                                        {
-                                            var dd = this.db.LabourMasters.Find(list.empno);
-                                            string errorm = "total time of the employee no:" + dd.EMPNO.ToString()
-                                                                                             + " for the day is "
-                                                                                             + com.ToString()
-                                                                                             + "hrs which is greater then 24hrs";
-                                            ModelState.AddModelError(string.Empty, errorm);
-                                            return View(test);
-                                        }
-                                    }
-
-                                    if (list.date.Day == 30)
-                                    {
-                                        long.TryParse(at1.C30, out long k);
-                                        long.TryParse(list.hours, out long l);
-                                        com = k + l;
-                                        if (com > 24)
-                                        {
-                                            var dd = this.db.LabourMasters.Find(list.empno);
-                                            string errorm = "total time of the employee no:" + dd.EMPNO.ToString()
-                                                                                             + " for the day is "
-                                                                                             + com.ToString()
-                                                                                             + "hrs which is greater then 24hrs";
-                                            ModelState.AddModelError(string.Empty, errorm);
-                                            return View(test);
-                                        }
-                                    }
-
-                                    if (list.date.Day == 31)
-                                    {
-                                        long.TryParse(at1.C31, out long k);
-                                        long.TryParse(list.hours, out long l);
-                                        com = k + l;
-                                        if (com > 24)
-                                        {
-                                            var dd = this.db.LabourMasters.Find(list.empno);
-                                            string errorm = "total time of the employee no:" + dd.EMPNO.ToString()
-                                                                                             + " for the day is "
-                                                                                             + com.ToString()
-                                                                                             + "hrs which is greater then 24hrs";
-                                            ModelState.AddModelError(string.Empty, errorm);
-                                            return View(test);
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                        if (check.Count != 0) at = check.First();
-                        else at.SubMain = oldmts1.ID;
-                        at.EmpID = list.empno;
-                        list.date = aa.TMonth;
-                        {
-                            if (list.date.Day == 1) at.C1 = list.hours;
-                            if (list.date.Day == 2) at.C2 = list.hours;
-                            if (list.date.Day == 3) at.C3 = list.hours;
-                            if (list.date.Day == 4) at.C4 = list.hours;
-                            if (list.date.Day == 5) at.C5 = list.hours;
-                            if (list.date.Day == 6) at.C6 = list.hours;
-                            if (list.date.Day == 7) at.C7 = list.hours;
-                            if (list.date.Day == 8) at.C8 = list.hours;
-                            if (list.date.Day == 9) at.C9 = list.hours;
-                            if (list.date.Day == 10) at.C10 = list.hours;
-                            if (list.date.Day == 11) at.C11 = list.hours;
-                            if (list.date.Day == 12) at.C12 = list.hours;
-                            if (list.date.Day == 13) at.C13 = list.hours;
-                            if (list.date.Day == 14) at.C14 = list.hours;
-                            if (list.date.Day == 15) at.C15 = list.hours;
-                            if (list.date.Day == 16) at.C16 = list.hours;
-                            if (list.date.Day == 17) at.C17 = list.hours;
-                            if (list.date.Day == 18) at.C18 = list.hours;
-                            if (list.date.Day == 19) at.C19 = list.hours;
-                            if (list.date.Day == 20) at.C20 = list.hours;
-                            if (list.date.Day == 21) at.C21 = list.hours;
-                            if (list.date.Day == 22) at.C22 = list.hours;
-                            if (list.date.Day == 23) at.C23 = list.hours;
-                            if (list.date.Day == 24) at.C24 = list.hours;
-                            if (list.date.Day == 25) at.C25 = list.hours;
-                            if (list.date.Day == 26) at.C26 = list.hours;
-                            if (list.date.Day == 27) at.C27 = list.hours;
-                            if (list.date.Day == 28) at.C28 = list.hours;
-                            if (list.date.Day == 29) at.C29 = list.hours;
-                            if (list.date.Day == 30) at.C30 = list.hours;
-                            if (list.date.Day == 31) at.C31 = list.hours;
-                        }
-                        if (check.Count != 0)
-                        {
-                            this.db.Entry(at).State = EntityState.Modified;
-                            this.db.SaveChanges();
-                        }
-                        else
-                        {
-                            this.db.Attendances.Add(at);
-                            this.db.SaveChanges();
-                        }
-
-                        if (oldmts.Count != 0)
-                        {
-                            oldmts1 = oldmts.Last();
-
-                            // First();
-                            check = this.db.Attendances
-                                .Where(z => z.EmpID.Equals(list.empno) && z.SubMain.Equals(oldmts1.ID)).ToList();
-                        }
-                        else
-                        {
-                            check = this.db.Attendances.Where(z => z.EmpID.Equals(list.empno) && z.SubMain.Equals(aa.ID))
-                                .ToList();
-                        }
-
-                        if (check.Count != 0) at = check.First();
-                        else at.SubMain = oldmts1.ID;
-                        long fri1 = 0;
-                        var date = new DateTime(list.date.Year, list.date.Month, 1);
-                        for (var i = 0; i < DateTime.DaysInMonth(list.date.Year, list.date.Month); i++)
-                        {
-                            if (date.DayOfWeek.Equals(DayOfWeek.Friday))
-                            {
-                                if (date.Day == 1)
-                                {
-                                    long.TryParse(at.C1, out var tl);
-                                    fri1 = fri1 + tl;
-                                }
-
-                                if (date.Day == 2)
-                                {
-                                    long.TryParse(at.C2, out var tl);
-                                    fri1 = fri1 + tl;
-                                }
-
-                                if (date.Day == 3)
-                                {
-                                    long.TryParse(at.C3, out var tl);
-                                    fri1 = fri1 + tl;
-                                }
-
-                                if (date.Day == 4)
-                                {
-                                    long.TryParse(at.C4, out var tl);
-                                    fri1 = fri1 + tl;
-                                }
-
-                                if (date.Day == 5)
-                                {
-                                    long.TryParse(at.C5, out var tl);
-                                    fri1 = fri1 + tl;
-                                }
-
-                                if (date.Day == 6)
-                                {
-                                    long.TryParse(at.C6, out var tl);
-                                    fri1 = fri1 + tl;
-                                }
-
-                                if (date.Day == 7)
-                                {
-                                    long.TryParse(at.C7, out var tl);
-                                    fri1 = fri1 + tl;
-                                }
-
-                                if (date.Day == 8)
-                                {
-                                    long.TryParse(at.C8, out var tl);
-                                    fri1 = fri1 + tl;
-                                }
-
-                                if (date.Day == 9)
-                                {
-                                    long.TryParse(at.C9, out var tl);
-                                    fri1 = fri1 + tl;
-                                }
-
-                                if (date.Day == 10)
-                                {
-                                    long.TryParse(at.C10, out var tl);
-                                    fri1 = fri1 + tl;
-                                }
-
-                                if (date.Day == 11)
-                                {
-                                    long.TryParse(at.C11, out var tl);
-                                    fri1 = fri1 + tl;
-                                }
-
-                                if (date.Day == 12)
-                                {
-                                    long.TryParse(at.C11, out var tl);
-                                    fri1 = fri1 + tl;
-                                }
-
-                                if (date.Day == 13)
-                                {
-                                    long.TryParse(at.C13, out var tl);
-                                    fri1 = fri1 + tl;
-                                }
-
-                                if (date.Day == 14)
-                                {
-                                    long.TryParse(at.C14, out var tl);
-                                    fri1 = fri1 + tl;
-                                }
-
-                                if (date.Day == 15)
-                                {
-                                    long.TryParse(at.C15, out var tl);
-                                    fri1 = fri1 + tl;
-                                }
-
-                                if (date.Day == 16)
-                                {
-                                    long.TryParse(at.C16, out var tl);
-                                    fri1 = fri1 + tl;
-                                }
-
-                                if (date.Day == 17)
-                                {
-                                    long.TryParse(at.C17, out var tl);
-                                    fri1 = fri1 + tl;
-                                }
-
-                                if (date.Day == 18)
-                                {
-                                    long.TryParse(at.C18, out var tl);
-                                    fri1 = fri1 + tl;
-                                }
-
-                                if (date.Day == 19)
-                                {
-                                    long.TryParse(at.C19, out var tl);
-                                    fri1 = fri1 + tl;
-                                }
-
-                                if (date.Day == 20)
-                                {
-                                    long.TryParse(at.C20, out var tl);
-                                    fri1 = fri1 + tl;
-                                }
-
-                                if (date.Day == 21)
-                                {
-                                    long.TryParse(at.C21, out var tl);
-                                    fri1 = fri1 + tl;
-                                }
-
-                                if (date.Day == 22)
-                                {
-                                    long.TryParse(at.C22, out var tl);
-                                    fri1 = fri1 + tl;
-                                }
-
-                                if (date.Day == 23)
-                                {
-                                    long.TryParse(at.C23, out var tl);
-                                    fri1 = fri1 + tl;
-                                }
-
-                                if (date.Day == 24)
-                                {
-                                    long.TryParse(at.C24, out var tl);
-                                    fri1 = fri1 + tl;
-                                }
-
-                                if (date.Day == 25)
-                                {
-                                    long.TryParse(at.C25, out var tl);
-                                    fri1 = fri1 + tl;
-                                }
-
-                                if (date.Day == 26)
-                                {
-                                    long.TryParse(at.C26, out var tl);
-                                    fri1 = fri1 + tl;
-                                }
-
-                                if (date.Day == 27)
-                                {
-                                    long.TryParse(at.C27, out var tl);
-                                    fri1 = fri1 + tl;
-                                }
-
-                                if (date.Day == 28)
-                                {
-                                    long.TryParse(at.C28, out var tl);
-                                    fri1 = fri1 + tl;
-                                }
-
-                                if (date.Day == 29)
-                                {
-                                    long.TryParse(at.C29, out var tl);
-                                    fri1 = fri1 + tl;
-                                }
-
-                                if (date.Day == 30)
-                                {
-                                    long.TryParse(at.C30, out var tl);
-                                    fri1 = fri1 + tl;
-                                }
-
-                                if (date.Day == 31)
-                                {
-                                    long.TryParse(at.C31, out var tl);
-                                    fri1 = fri1 + tl;
-                                }
-
-                                long.TryParse(list.hours, out var fri);
-                                at.FridayHours = fri1;
-                            }
-
-                            date = date.AddDays(1);
-                        }
-
-                        {
-                            at.TotalHours = 0;
-                            long.TryParse(at.C1, out var tl);
-                            long.TryParse(at.C2, out var tl1);
-                            long.TryParse(at.C3, out var tl2);
-                            long.TryParse(at.C4, out var tl3);
-                            long.TryParse(at.C5, out var tl4);
-                            long.TryParse(at.C6, out var tl5);
-                            long.TryParse(at.C7, out var tl6);
-                            long.TryParse(at.C8, out var tl7);
-                            long.TryParse(at.C9, out var tl8);
-                            long.TryParse(at.C10, out var tl9);
-                            long.TryParse(at.C11, out var tl10);
-                            long.TryParse(at.C12, out var tl11);
-                            long.TryParse(at.C13, out var tl12);
-                            long.TryParse(at.C14, out var tl13);
-                            long.TryParse(at.C15, out var tl14);
-                            long.TryParse(at.C16, out var tl15);
-                            long.TryParse(at.C17, out var tl16);
-                            long.TryParse(at.C18, out var tl17);
-                            long.TryParse(at.C19, out var tl18);
-                            long.TryParse(at.C20, out var tl19);
-                            long.TryParse(at.C21, out var tl20);
-                            long.TryParse(at.C22, out var tl21);
-                            long.TryParse(at.C23, out var tl22);
-                            long.TryParse(at.C24, out var tl23);
-                            long.TryParse(at.C25, out var tl24);
-                            long.TryParse(at.C26, out var tl25);
-                            long.TryParse(at.C27, out var tl26);
-                            long.TryParse(at.C28, out var tl27);
-                            long.TryParse(at.C29, out var tl28);
-                            long.TryParse(at.C30, out var tl29);
-                            long.TryParse(at.C31, out var tl30);
-                            long.TryParse(at.TotalHours.ToString(), out var atlg);
-                            at.TotalHours = tl + tl1 + tl2 + tl3 + tl4 + tl5 + tl6 + tl7 + tl8 + tl9 + tl10 + tl11 + tl12
-                                            + tl13 + tl14 + tl15 + tl16 + tl17 + tl18 + tl19 + tl20 + tl21 + tl22 + tl23
-                                            + tl24 + tl25 + tl26 + tl27 + tl28 + tl29 + tl30;
-                            double.TryParse(b.NormalTimeUpto.ToString(), out var tho);
-                            {
-                                var t = new List<long>();
-                                at.TotalOverTime = 0;
-                                t.Add(tl);
-                                t.Add(tl1);
-                                t.Add(tl2);
-                                t.Add(tl3);
-                                t.Add(tl4);
-                                t.Add(tl5);
-                                t.Add(tl6);
-                                t.Add(tl7);
-                                t.Add(tl8);
-                                t.Add(tl9);
-                                t.Add(tl10);
-                                t.Add(tl11);
-                                t.Add(tl12);
-                                t.Add(tl13);
-                                t.Add(tl14);
-                                t.Add(tl15);
-                                t.Add(tl16);
-                                t.Add(tl17);
-                                t.Add(tl18);
-                                t.Add(tl19);
-                                t.Add(tl20);
-                                t.Add(tl21);
-                                t.Add(tl22);
-                                t.Add(tl23);
-                                t.Add(tl24);
-                                t.Add(tl25);
-                                t.Add(tl26);
-                                t.Add(tl27);
-                                t.Add(tl28);
-                                t.Add(tl29);
-                                t.Add(tl30);
-                                long tho1 = 0;
-                                foreach (var l in t)
-                                    if (l > tho)
-                                    {
-                                        tho1 += l - (long)tho;
-                                        at.TotalOverTime = tho1;
-                                    }
-                            }
-                        }
-                        {
-                            at.TotalSickLeave = 0;
-                            long ts = 0;
-                            if (!at.C1.IsNullOrWhiteSpace())
-                                if (at.C1.Equals("S"))
-                                    ts = ts + 1;
-                            if (!at.C2.IsNullOrWhiteSpace())
-                                if (at.C2.Equals("S"))
-                                    ts = ts + 1;
-                            if (!at.C3.IsNullOrWhiteSpace())
-                                if (at.C3.Equals("S"))
-                                    ts = ts + 1;
-                            if (!at.C4.IsNullOrWhiteSpace())
-                                if (at.C4.Equals("S"))
-                                    ts = ts + 1;
-                            if (!at.C5.IsNullOrWhiteSpace())
-                                if (at.C5.Equals("S"))
-                                    ts = ts + 1;
-                            if (!at.C6.IsNullOrWhiteSpace())
-                                if (at.C6.Equals("S"))
-                                    ts = ts + 1;
-                            if (!at.C7.IsNullOrWhiteSpace())
-                                if (at.C7.Equals("S"))
-                                    ts = ts + 1;
-                            if (!at.C8.IsNullOrWhiteSpace())
-                                if (at.C8.Equals("S"))
-                                    ts = ts + 1;
-                            if (!at.C9.IsNullOrWhiteSpace())
-                                if (at.C9.Equals("S"))
-                                    ts = ts + 1;
-                            if (!at.C10.IsNullOrWhiteSpace())
-                                if (at.C10.Equals("S"))
-                                    ts = ts + 1;
-                            if (!at.C11.IsNullOrWhiteSpace())
-                                if (at.C11.Equals("S"))
-                                    ts = ts + 1;
-                            if (!at.C12.IsNullOrWhiteSpace())
-                                if (at.C12.Equals("S"))
-                                    ts = ts + 1;
-                            if (!at.C13.IsNullOrWhiteSpace())
-                                if (at.C13.Equals("S"))
-                                    ts = ts + 1;
-                            if (!at.C14.IsNullOrWhiteSpace())
-                                if (at.C14.Equals("S"))
-                                    ts = ts + 1;
-                            if (!at.C15.IsNullOrWhiteSpace())
-                                if (at.C15.Equals("S"))
-                                    ts = ts + 1;
-                            if (!at.C16.IsNullOrWhiteSpace())
-                                if (at.C16.Equals("S"))
-                                    ts = ts + 1;
-                            if (!at.C17.IsNullOrWhiteSpace())
-                                if (at.C17.Equals("S"))
-                                    ts = ts + 1;
-                            if (!at.C18.IsNullOrWhiteSpace())
-                                if (at.C18.Equals("S"))
-                                    ts = ts + 1;
-                            if (!at.C19.IsNullOrWhiteSpace())
-                                if (at.C19.Equals("S"))
-                                    ts = ts + 1;
-                            if (!at.C20.IsNullOrWhiteSpace())
-                                if (at.C20.Equals("S"))
-                                    ts = ts + 1;
-                            if (!at.C21.IsNullOrWhiteSpace())
-                                if (at.C21.Equals("S"))
-                                    ts = ts + 1;
-                            if (!at.C22.IsNullOrWhiteSpace())
-                                if (at.C22.Equals("S"))
-                                    ts = ts + 1;
-                            if (!at.C23.IsNullOrWhiteSpace())
-                                if (at.C23.Equals("S"))
-                                    ts = ts + 1;
-                            if (!at.C24.IsNullOrWhiteSpace())
-                                if (at.C24.Equals("S"))
-                                    ts = ts + 1;
-                            if (!at.C25.IsNullOrWhiteSpace())
-                                if (at.C25.Equals("S"))
-                                    ts = ts + 1;
-                            if (!at.C26.IsNullOrWhiteSpace())
-                                if (at.C26.Equals("S"))
-                                    ts = ts + 1;
-                            if (!at.C27.IsNullOrWhiteSpace())
-                                if (at.C27.Equals("S"))
-                                    ts = ts + 1;
-                            if (!at.C28.IsNullOrWhiteSpace())
-                                if (at.C28.Equals("S"))
-                                    ts = ts + 1;
-                            if (!at.C29.IsNullOrWhiteSpace())
-                                if (at.C29.Equals("S"))
-                                    ts = ts + 1;
-                            if (!at.C30.IsNullOrWhiteSpace())
-                                if (at.C30.Equals("S"))
-                                    ts = ts + 1;
-                            if (!at.C31.IsNullOrWhiteSpace())
-                                if (at.C31.Equals("S"))
-                                    ts = ts + 1;
-
-                            at.TotalSickLeave = ts;
-                        }
-                        {
-                            at.TotalVL = 0;
-                            long tv = 0;
-                            if (!at.C1.IsNullOrWhiteSpace())
-                                if (at.C1.Equals("V"))
-                                    tv = tv + 1;
-                            if (!at.C2.IsNullOrWhiteSpace())
-                                if (at.C2.Equals("V"))
-                                    tv = tv + 1;
-                            if (!at.C3.IsNullOrWhiteSpace())
-                                if (at.C3.Equals("V"))
-                                    tv = tv + 1;
-                            if (!at.C4.IsNullOrWhiteSpace())
-                                if (at.C4.Equals("V"))
-                                    tv = tv + 1;
-                            if (!at.C5.IsNullOrWhiteSpace())
-                                if (at.C5.Equals("V"))
-                                    tv = tv + 1;
-                            if (!at.C6.IsNullOrWhiteSpace())
-                                if (at.C6.Equals("V"))
-                                    tv = tv + 1;
-                            if (!at.C7.IsNullOrWhiteSpace())
-                                if (at.C7.Equals("V"))
-                                    tv = tv + 1;
-                            if (!at.C8.IsNullOrWhiteSpace())
-                                if (at.C8.Equals("V"))
-                                    tv = tv + 1;
-                            if (!at.C9.IsNullOrWhiteSpace())
-                                if (at.C9.Equals("V"))
-                                    tv = tv + 1;
-                            if (!at.C10.IsNullOrWhiteSpace())
-                                if (at.C10.Equals("V"))
-                                    tv = tv + 1;
-                            if (!at.C11.IsNullOrWhiteSpace())
-                                if (at.C11.Equals("V"))
-                                    tv = tv + 1;
-                            if (!at.C12.IsNullOrWhiteSpace())
-                                if (at.C12.Equals("V"))
-                                    tv = tv + 1;
-                            if (!at.C13.IsNullOrWhiteSpace())
-                                if (at.C13.Equals("V"))
-                                    tv = tv + 1;
-                            if (!at.C14.IsNullOrWhiteSpace())
-                                if (at.C14.Equals("V"))
-                                    tv = tv + 1;
-                            if (!at.C15.IsNullOrWhiteSpace())
-                                if (at.C15.Equals("V"))
-                                    tv = tv + 1;
-                            if (!at.C16.IsNullOrWhiteSpace())
-                                if (at.C16.Equals("V"))
-                                    tv = tv + 1;
-                            if (!at.C17.IsNullOrWhiteSpace())
-                                if (at.C17.Equals("V"))
-                                    tv = tv + 1;
-                            if (!at.C18.IsNullOrWhiteSpace())
-                                if (at.C18.Equals("V"))
-                                    tv = tv + 1;
-                            if (!at.C19.IsNullOrWhiteSpace())
-                                if (at.C19.Equals("V"))
-                                    tv = tv + 1;
-                            if (!at.C20.IsNullOrWhiteSpace())
-                                if (at.C20.Equals("V"))
-                                    tv = tv + 1;
-                            if (!at.C21.IsNullOrWhiteSpace())
-                                if (at.C21.Equals("V"))
-                                    tv = tv + 1;
-                            if (!at.C22.IsNullOrWhiteSpace())
-                                if (at.C22.Equals("V"))
-                                    tv = tv + 1;
-                            if (!at.C23.IsNullOrWhiteSpace())
-                                if (at.C23.Equals("V"))
-                                    tv = tv + 1;
-                            if (!at.C24.IsNullOrWhiteSpace())
-                                if (at.C24.Equals("V"))
-                                    tv = tv + 1;
-                            if (!at.C25.IsNullOrWhiteSpace())
-                                if (at.C25.Equals("V"))
-                                    tv = tv + 1;
-                            if (!at.C26.IsNullOrWhiteSpace())
-                                if (at.C26.Equals("V"))
-                                    tv = tv + 1;
-                            if (!at.C27.IsNullOrWhiteSpace())
-                                if (at.C27.Equals("V"))
-                                    tv = tv + 1;
-                            if (!at.C28.IsNullOrWhiteSpace())
-                                if (at.C28.Equals("V"))
-                                    tv = tv + 1;
-                            if (!at.C29.IsNullOrWhiteSpace())
-                                if (at.C29.Equals("V"))
-                                    tv = tv + 1;
-                            if (!at.C30.IsNullOrWhiteSpace())
-                                if (at.C30.Equals("V"))
-                                    tv = tv + 1;
-                            if (!at.C31.IsNullOrWhiteSpace())
-                                if (at.C31.Equals("V"))
-                                    tv = tv + 1;
-
-                            at.TotalVL = tv;
-                        }
-                        {
-                            at.TotalAbsent = 0;
-                            long tv = 0;
-                            if (!at.C1.IsNullOrWhiteSpace())
-                                if (at.C1.Equals("A"))
-                                    tv = tv + 1;
-                            if (!at.C2.IsNullOrWhiteSpace())
-                                if (at.C2.Equals("A"))
-                                    tv = tv + 1;
-                            if (!at.C3.IsNullOrWhiteSpace())
-                                if (at.C3.Equals("A"))
-                                    tv = tv + 1;
-                            if (!at.C4.IsNullOrWhiteSpace())
-                                if (at.C4.Equals("A"))
-                                    tv = tv + 1;
-                            if (!at.C5.IsNullOrWhiteSpace())
-                                if (at.C5.Equals("A"))
-                                    tv = tv + 1;
-                            if (!at.C6.IsNullOrWhiteSpace())
-                                if (at.C6.Equals("A"))
-                                    tv = tv + 1;
-                            if (!at.C7.IsNullOrWhiteSpace())
-                                if (at.C7.Equals("A"))
-                                    tv = tv + 1;
-                            if (!at.C8.IsNullOrWhiteSpace())
-                                if (at.C8.Equals("A"))
-                                    tv = tv + 1;
-                            if (!at.C9.IsNullOrWhiteSpace())
-                                if (at.C9.Equals("A"))
-                                    tv = tv + 1;
-                            if (!at.C10.IsNullOrWhiteSpace())
-                                if (at.C10.Equals("A"))
-                                    tv = tv + 1;
-                            if (!at.C11.IsNullOrWhiteSpace())
-                                if (at.C11.Equals("A"))
-                                    tv = tv + 1;
-                            if (!at.C12.IsNullOrWhiteSpace())
-                                if (at.C12.Equals("A"))
-                                    tv = tv + 1;
-                            if (!at.C13.IsNullOrWhiteSpace())
-                                if (at.C13.Equals("A"))
-                                    tv = tv + 1;
-                            if (!at.C14.IsNullOrWhiteSpace())
-                                if (at.C14.Equals("A"))
-                                    tv = tv + 1;
-                            if (!at.C15.IsNullOrWhiteSpace())
-                                if (at.C15.Equals("A"))
-                                    tv = tv + 1;
-                            if (!at.C16.IsNullOrWhiteSpace())
-                                if (at.C16.Equals("A"))
-                                    tv = tv + 1;
-                            if (!at.C17.IsNullOrWhiteSpace())
-                                if (at.C17.Equals("A"))
-                                    tv = tv + 1;
-                            if (!at.C18.IsNullOrWhiteSpace())
-                                if (at.C18.Equals("A"))
-                                    tv = tv + 1;
-                            if (!at.C19.IsNullOrWhiteSpace())
-                                if (at.C19.Equals("A"))
-                                    tv = tv + 1;
-                            if (!at.C20.IsNullOrWhiteSpace())
-                                if (at.C20.Equals("A"))
-                                    tv = tv + 1;
-                            if (!at.C21.IsNullOrWhiteSpace())
-                                if (at.C21.Equals("A"))
-                                    tv = tv + 1;
-                            if (!at.C22.IsNullOrWhiteSpace())
-                                if (at.C22.Equals("A"))
-                                    tv = tv + 1;
-                            if (!at.C23.IsNullOrWhiteSpace())
-                                if (at.C23.Equals("A"))
-                                    tv = tv + 1;
-                            if (!at.C24.IsNullOrWhiteSpace())
-                                if (at.C24.Equals("A"))
-                                    tv = tv + 1;
-                            if (!at.C25.IsNullOrWhiteSpace())
-                                if (at.C25.Equals("A"))
-                                    tv = tv + 1;
-                            if (!at.C26.IsNullOrWhiteSpace())
-                                if (at.C26.Equals("A"))
-                                    tv = tv + 1;
-                            if (!at.C27.IsNullOrWhiteSpace())
-                                if (at.C27.Equals("A"))
-                                    tv = tv + 1;
-                            if (!at.C28.IsNullOrWhiteSpace())
-                                if (at.C28.Equals("A"))
-                                    tv = tv + 1;
-                            if (!at.C29.IsNullOrWhiteSpace())
-                                if (at.C29.Equals("A"))
-                                    tv = tv + 1;
-                            if (!at.C30.IsNullOrWhiteSpace())
-                                if (at.C30.Equals("A"))
-                                    tv = tv + 1;
-                            if (!at.C31.IsNullOrWhiteSpace())
-                                if (at.C31.Equals("A"))
-                                    tv = tv + 1;
-
-                            at.TotalAbsent = tv;
-                        }
-                        {
-                            at.TotalTransefer = 0;
-                            long tv = 0;
-                            if (!at.C1.IsNullOrWhiteSpace())
-                                if (at.C1.Equals("T"))
-                                    tv = tv + 1;
-                            if (!at.C2.IsNullOrWhiteSpace())
-                                if (at.C2.Equals("T"))
-                                    tv = tv + 1;
-                            if (!at.C3.IsNullOrWhiteSpace())
-                                if (at.C3.Equals("T"))
-                                    tv = tv + 1;
-                            if (!at.C4.IsNullOrWhiteSpace())
-                                if (at.C4.Equals("T"))
-                                    tv = tv + 1;
-                            if (!at.C5.IsNullOrWhiteSpace())
-                                if (at.C5.Equals("T"))
-                                    tv = tv + 1;
-                            if (!at.C6.IsNullOrWhiteSpace())
-                                if (at.C6.Equals("T"))
-                                    tv = tv + 1;
-                            if (!at.C7.IsNullOrWhiteSpace())
-                                if (at.C7.Equals("T"))
-                                    tv = tv + 1;
-                            if (!at.C8.IsNullOrWhiteSpace())
-                                if (at.C8.Equals("T"))
-                                    tv = tv + 1;
-                            if (!at.C9.IsNullOrWhiteSpace())
-                                if (at.C9.Equals("T"))
-                                    tv = tv + 1;
-                            if (!at.C10.IsNullOrWhiteSpace())
-                                if (at.C10.Equals("T"))
-                                    tv = tv + 1;
-                            if (!at.C11.IsNullOrWhiteSpace())
-                                if (at.C11.Equals("T"))
-                                    tv = tv + 1;
-                            if (!at.C12.IsNullOrWhiteSpace())
-                                if (at.C12.Equals("T"))
-                                    tv = tv + 1;
-                            if (!at.C13.IsNullOrWhiteSpace())
-                                if (at.C13.Equals("T"))
-                                    tv = tv + 1;
-                            if (!at.C14.IsNullOrWhiteSpace())
-                                if (at.C14.Equals("T"))
-                                    tv = tv + 1;
-                            if (!at.C15.IsNullOrWhiteSpace())
-                                if (at.C15.Equals("T"))
-                                    tv = tv + 1;
-                            if (!at.C16.IsNullOrWhiteSpace())
-                                if (at.C16.Equals("T"))
-                                    tv = tv + 1;
-                            if (!at.C17.IsNullOrWhiteSpace())
-                                if (at.C17.Equals("T"))
-                                    tv = tv + 1;
-                            if (!at.C18.IsNullOrWhiteSpace())
-                                if (at.C18.Equals("T"))
-                                    tv = tv + 1;
-                            if (!at.C19.IsNullOrWhiteSpace())
-                                if (at.C19.Equals("T"))
-                                    tv = tv + 1;
-                            if (!at.C20.IsNullOrWhiteSpace())
-                                if (at.C20.Equals("T"))
-                                    tv = tv + 1;
-                            if (!at.C21.IsNullOrWhiteSpace())
-                                if (at.C21.Equals("T"))
-                                    tv = tv + 1;
-                            if (!at.C22.IsNullOrWhiteSpace())
-                                if (at.C22.Equals("T"))
-                                    tv = tv + 1;
-                            if (!at.C23.IsNullOrWhiteSpace())
-                                if (at.C23.Equals("T"))
-                                    tv = tv + 1;
-                            if (!at.C24.IsNullOrWhiteSpace())
-                                if (at.C24.Equals("T"))
-                                    tv = tv + 1;
-                            if (!at.C25.IsNullOrWhiteSpace())
-                                if (at.C25.Equals("T"))
-                                    tv = tv + 1;
-                            if (!at.C26.IsNullOrWhiteSpace())
-                                if (at.C26.Equals("T"))
-                                    tv = tv + 1;
-                            if (!at.C27.IsNullOrWhiteSpace())
-                                if (at.C27.Equals("T"))
-                                    tv = tv + 1;
-                            if (!at.C28.IsNullOrWhiteSpace())
-                                if (at.C28.Equals("T"))
-                                    tv = tv + 1;
-                            if (!at.C29.IsNullOrWhiteSpace())
-                                if (at.C29.Equals("T"))
-                                    tv = tv + 1;
-                            if (!at.C30.IsNullOrWhiteSpace())
-                                if (at.C30.Equals("T"))
-                                    tv = tv + 1;
-                            if (!at.C31.IsNullOrWhiteSpace())
-                                if (at.C31.Equals("T"))
-                                    tv = tv + 1;
-
-                            at.TotalTransefer = tv;
-                        }
-                        at.status = "panding";
-                        if (check.Count != 0)
-                        {
-                            this.db.Entry(at).State = EntityState.Modified;
-                            this.db.SaveChanges();
-                        }
-                        else
-                        {
-                            this.db.Attendances.Add(at);
-                            this.db.SaveChanges();
-                        }
-                }
                 return this.RedirectToAction("tests");
             }
+
             return this.View(test);
         }
 
@@ -5884,38 +7518,34 @@
             if (mtsmonth2.HasValue)
             {
                 DateTime.TryParse(mtsmonth2.ToString(), out date);
-                ViewBag.dateee = date.ToShortDateString();
+                this.ViewBag.dateee = date.ToShortDateString();
             }
             else
             {
                 date = DateTime.Now;
-                ViewBag.dateee = date.ToShortDateString();
+                this.ViewBag.dateee = date.ToShortDateString();
             }
+
             var apall = this.db.approvals.ToList();
             this.ViewBag.csp1 = csp2;
             this.ViewBag.csmps1 = csmps2;
             this.ViewBag.mtsmonth1 = date;
             this.db.Database.CommandTimeout = 300;
-            var uid = User.Identity.GetUserId();
+            var uid = this.User.Identity.GetUserId();
             var uid1 = this.db.AspNetUsers.Find(uid);
             var t = new List<ProjectList>();
-            if (uid1.csid != 0 && !User.IsInRole("Admin"))
+            if (uid1.csid != 0 && !this.User.IsInRole("Admin"))
             {
                 var scid = this.db.CsPermissions.Where(x => x.CsUser == uid1.csid).ToList();
-                foreach (var i in scid)
-                {
-                    t.Add(this.db.ProjectLists.Find(i.Project));
-                }
+                foreach (var i in scid) t.Add(this.db.ProjectLists.Find(i.Project));
 
                 this.ViewBag.csp = new SelectList(t, "ID", "PROJECT_NAME").OrderBy(x => x.Text);
-
             }
             else
             {
                 this.ViewBag.csp = new SelectList(this.db.ProjectLists, "ID", "PROJECT_NAME").OrderBy(x => x.Text);
-
-
             }
+
             this.ViewBag.csmps = new SelectList(this.db.ManPowerSuppliers, "ID", "Supplier");
             var list = this.db.Attendances.Include(x => x.LabourMaster).ToList();
             if (csmps2.HasValue && csp2.HasValue && mtsmonth2.HasValue)
@@ -5924,21 +7554,21 @@
                 long.TryParse(csp2.ToString(), out var lcsp);
                 long.TryParse(csmps2.ToString(), out var lcsmps);
                 var ab = this.db.MainTimeSheets
-                    .Where(x => x.TMonth.Month.Equals(dm.Month) && x.TMonth.Year.Equals(dm.Year) && x.ManPowerSupplier.Equals(lcsmps) && x.Project.Equals(lcsp))
-                    .OrderBy(x => x.ID).ToList();
-
+                    .Where(
+                        x => x.TMonth.Month.Equals(dm.Month) && x.TMonth.Year.Equals(dm.Year)
+                                                             && x.ManPowerSupplier.Equals(lcsmps)
+                                                             && x.Project.Equals(lcsp)).OrderBy(x => x.ID).ToList();
 
                 foreach (var abis in ab)
                 {
-                    var ass = this.db.Attendances.Where(x => x.SubMain.Equals(abis.ID)).Include(x => x.LabourMaster).ToList();
-                    /**/
+                    var ass = this.db.Attendances.Where(x => x.SubMain.Equals(abis.ID)).Include(x => x.LabourMaster)
+                        .ToList();
                     foreach (var attendance in ass)
                     {
                         var et = new test();
                         var epno = this.db.LabourMasters.Find(attendance.EmpID);
                         et.empno = epno.EMPNO;
                         if (apall.Exists(x => x.A_id == attendance.ID && x.adate == dm))
-                        {
                             if (apall.Exists(x => x.status != "submitted" && x.A_id == attendance.ID && x.adate == dm))
                             {
                                 et.approved_by = apall.Find(
@@ -5948,7 +7578,6 @@
                                 et.submitted_by = apall.Find(
                                     x => x.status != "submitted" && x.A_id == attendance.ID && x.adate == dm).Susername;
                             }
-                        }
 
                         if (date.Day == 1) et.hours = attendance.C1;
 
@@ -6013,71 +7642,56 @@
                         if (date.Day == 31) et.hours = attendance.C31;
 
                         if (!final1.Exists(x => x.empno.Equals(et.empno)))
-                        {
                             if (et.hours != null)
-                            {
                                 final1.Add(et);
-                            }
-                        }
-
                     }
                 }
+
                 return this.View(final1.OrderBy(x => x.empno).ToPagedList(1, 100));
-
             }
-            return this.View(final1.OrderBy(x => x.empno).ToPagedList(1, 100));
 
+            return this.View(final1.OrderBy(x => x.empno).ToPagedList(1, 100));
         }
 
-        public void SendMail( string sup,string prop,DateTime da, string na)
+        public void SendMail(string sup, string prop, DateTime da, string na)
         {
             var man = this.db.AspNetUsers.ToList();
             var context = new ApplicationDbContext();
-            var users = context.Users.Where(x => x.Roles.Select(y => y.RoleId).Contains("6023f0a5-8d24-45d3-9641-b3c2e39aa763")).ToList();
-            var asa= new List<AspNetUser>();
+            var users = context.Users
+                .Where(x => x.Roles.Select(y => y.RoleId).Contains("6023f0a5-8d24-45d3-9641-b3c2e39aa763")).ToList();
+            var asa = new List<AspNetUser>();
             var cper = this.db.CsPermissions.ToList();
-            foreach (var user1 in users)
-            {
-                asa.Add(man.Find(x => x.Id == user1.Id));
-            }
-            
+            foreach (var user1 in users) asa.Add(man.Find(x => x.Id == user1.Id));
 
             var pname = this.db.ProjectLists.ToList();
             var pname1 = pname.Find(x => x.PROJECT_NAME == prop);
             var fuser1 = new List<CsPermission>();
             foreach (var netUser in asa)
-            {
                 if (cper.Exists(x => x.CsUser == netUser.csid && x.Project == pname1.ID))
-                {
-                        fuser1.Add(cper.Find(x => x.CsUser == netUser.csid && x.Project == pname1.ID));
-                }
-            }
+                    fuser1.Add(cper.Find(x => x.CsUser == netUser.csid && x.Project == pname1.ID));
             var pno = fuser1.FindAll(x => x.Project == pname1.ID);
-            var pasa=new List<AspNetUser>();
-            foreach (var permission in pno)
-            {
-                pasa.Add(asa.Find(x => x.csid == permission.CsUser));
-            }
-            SmtpMail oMail = new SmtpMail("TryIt");
+            var pasa = new List<AspNetUser>();
+            foreach (var permission in pno) pasa.Add(asa.Find(x => x.csid == permission.CsUser));
+            var oMail = new SmtpMail("TryIt");
             var ccstring = "mkhairy@citiscapegroup.com,efathy@citiscapegroup.com,zNader@citiscapegroup.com";
             oMail.From = "sdiniz@citiscapegroup.com";
             oMail.To = pasa.First().Email;
             pasa.Remove(pasa.First());
-            foreach (var ccpasa in pasa)
-            {
-                ccstring += "," + ccpasa.Email;
-            }
+            foreach (var ccpasa in pasa) ccstring += "," + ccpasa.Email;
             oMail.Cc = ccstring;
             oMail.Subject = "A NEW TIMESHEET SUBMITTED";
-            oMail.TextBody = "Dear Sir,\n\n Please note that I have sent a new Time-Sheet for the date "+ da.ToShortDateString() + ", ManPowerSupplier: " + sup + " and Project name: " + prop + " for your approval / reject\n\nBest regards\n"+na+"\n\n\n\n";
-            SmtpServer oServer = new SmtpServer("outlook.office365.com");
+            oMail.TextBody = "Dear Sir,\n\n Please note that I have sent a new Time-Sheet for the date "
+                             + da.ToShortDateString() + ", ManPowerSupplier: " + sup + " and Project name: " + prop
+                             + " for your approval / reject\n\nBest regards\n" + na + "\n\n\n\n";
+            var oServer = new SmtpServer("outlook.office365.com");
             oServer.Protocol = ServerProtocol.ExchangeEWS;
             oServer.User = "sdiniz@citiscapegroup.com";
             oServer.Password = "Xay59626";
             oServer.ConnectType = SmtpConnectType.ConnectSSLAuto;
-            SmtpClient oSmtp = new SmtpClient();
+            var oSmtp = new SmtpClient();
             oSmtp.SendMail(oServer, oMail);
         }
+
         [Authorize(Roles = "Employee")]
         public ActionResult approval(DateTime? mtsmonth2, long? csp2, long? csmps2)
         {
@@ -6097,13 +7711,11 @@
                 {
                     var ass = this.db.Attendances.Where(x => x.SubMain.Equals(abis.ID)).Include(x => x.LabourMaster)
                         .ToList();
-                    /**/
-                    var i=0;
+                    var i = 0;
                     foreach (var attendance in ass)
-                    {
-                        if (!apall.Exists(x => x.A_id == attendance.ID && x.adate==dm))
+                        if (!apall.Exists(x => x.A_id == attendance.ID && x.adate == dm))
                         {
-                            if (User.IsInRole("Employee"))
+                            if (this.User.IsInRole("Employee"))
                             {
                                 i++;
                                 attendance.status = "submitted for " + dm.Day;
@@ -6115,13 +7727,15 @@
                                 ap.adate = dm;
                                 ap.status = "submitted";
                                 ap.A_id = attendance.ID;
-                                ap.Susername = User.Identity.Name;
+                                ap.Susername = this.User.Identity.Name;
                                 ap.Empno = attendance.LabourMaster.EMPNO;
                                 this.db.approvals.Add(ap);
                                 if (i == 1)
-                                {
-                                    this.SendMail(attendance.MainTimeSheet.ManPowerSupplier1.Supplier, attendance.MainTimeSheet.ProjectList.PROJECT_NAME,dm,User.Identity.Name);
-                                }
+                                    this.SendMail(
+                                        attendance.MainTimeSheet.ManPowerSupplier1.Supplier,
+                                        attendance.MainTimeSheet.ProjectList.PROJECT_NAME,
+                                        dm,
+                                        this.User.Identity.Name);
                                 this.db.SaveChanges();
                             }
                         }
@@ -6131,40 +7745,37 @@
                             foreach (var aa1 in aaa)
                             {
                                 if (aa1.status == "submitted" && aa1.adate == dm)
-                            {
-                                this.errorm =  "\n already submitted;";
-                                this.ModelState.AddModelError(string.Empty, this.errorm);
-                                TempData["mydata"] = this.errorm;
-                            }
-                            if (aa1.status.Contains("rejected")  && aa1.adate == dm)
-                            {
-                                if (User.IsInRole("Employee"))
                                 {
-                                    attendance.status = "submitted for " + dm.Day;
-                                    this.db.Entry(attendance).State = EntityState.Modified;
-                                    this.db.SaveChanges();
-                                    aa1.status = "submitted";
-                                    this.db.Entry(aa1).State = EntityState.Modified;
-                                    if (i==1)
+                                    this.errorm = "\n already submitted;";
+                                    this.ModelState.AddModelError(string.Empty, this.errorm);
+                                    this.TempData["mydata"] = this.errorm;
+                                }
+
+                                if (aa1.status.Contains("rejected") && aa1.adate == dm)
+                                    if (this.User.IsInRole("Employee"))
                                     {
-                                        this.SendMail(
-                                        attendance.MainTimeSheet.ManPowerSupplier1.Supplier,
-                                        attendance.MainTimeSheet.ProjectList.PROJECT_NAME,
-                                        dm,
-                                        User.Identity.Name);
+                                        attendance.status = "submitted for " + dm.Day;
+                                        this.db.Entry(attendance).State = EntityState.Modified;
+                                        this.db.SaveChanges();
+                                        aa1.status = "submitted";
+                                        this.db.Entry(aa1).State = EntityState.Modified;
+                                        if (i == 1)
+                                            this.SendMail(
+                                                attendance.MainTimeSheet.ManPowerSupplier1.Supplier,
+                                                attendance.MainTimeSheet.ProjectList.PROJECT_NAME,
+                                                dm,
+                                                this.User.Identity.Name);
+                                        this.db.SaveChanges();
                                     }
-                                    this.db.SaveChanges();
+
+                                if (aa1.status == "approved" && aa1.adate == dm)
+                                {
+                                    this.errorm = "\n already approved;";
+                                    this.ModelState.AddModelError(string.Empty, this.errorm);
+                                    this.TempData["mydata"] = this.errorm;
                                 }
                             }
-                            if (aa1.status == "approved" && aa1.adate == dm)
-                            {
-                                this.errorm = "\n already approved;";
-                                this.ModelState.AddModelError(string.Empty, this.errorm);
-                                TempData["mydata"] = this.errorm;
-                            }
-                            }
                         }
-                    }
                 }
             }
 
@@ -7060,6 +8671,7 @@
             this.Response.BinaryWrite(Ep.GetAsByteArray());
             this.Response.End();
         }
+
         public void DownloadExcelfull(DateTime? mtsmonth1, long? csmps1)
         {
             List<Attendance> passexel;
@@ -7115,244 +8727,113 @@
             Sheet.Cells["AO3"].Value = "PROJECT NAME";
             long.TryParse(csmps1.ToString(), out var mcs);
             var Msum = this.db.MainTimeSheets.Where(
-                y =>y.ManPowerSupplier == mcs && y.TMonth.Month == date.Month
-                     && y.TMonth.Year == date.Year).ToList();
+                y => y.ManPowerSupplier == mcs && y.TMonth.Month == date.Month && y.TMonth.Year == date.Year).ToList();
             foreach (var sum in Msum)
             {
                 passexel = this.db.Attendances.Where(x => x.SubMain.Equals(sum.ID)).OrderByDescending(x => x.ID)
                     .ToList();
                 for (var i = 0; i < passexel.Count; i++)
                 {
-                    DateTime days = new DateTime(date.Year,date.Month,1);
-                    for (int j = 1; j < 32; j++)
+                    var days = new DateTime(date.Year, date.Month, 1);
+                    for (var j = 1; j < 32; j++)
                     {
                         date = days;
                         Sheet.Cells[string.Format("A{0}", row)].Value = passexel[i].LabourMaster.EMPNO;
-                    if (date.Day == 1)
-                    {
-                        Sheet.Cells[string.Format("B{0}", row)].Value = passexel[i].C1;
+                        if (date.Day == 1) Sheet.Cells[string.Format("B{0}", row)].Value = passexel[i].C1;
 
-                    }
+                        if (date.Day == 2) Sheet.Cells[string.Format("C{0}", row)].Value = passexel[i].C2;
 
-                    if (date.Day == 2)
-                    {
+                        if (date.Day == 3) Sheet.Cells[string.Format("D{0}", row)].Value = passexel[i].C3;
 
-                        Sheet.Cells[string.Format("C{0}", row)].Value = passexel[i].C2;
+                        if (date.Day == 4) Sheet.Cells[string.Format("E{0}", row)].Value = passexel[i].C4;
 
-                    }
+                        if (date.Day == 5) Sheet.Cells[string.Format("F{0}", row)].Value = passexel[i].C5;
 
-                    if (date.Day == 3)
-                    {
+                        if (date.Day == 6) Sheet.Cells[string.Format("G{0}", row)].Value = passexel[i].C6;
 
-                        Sheet.Cells[string.Format("D{0}", row)].Value = passexel[i].C3;
+                        if (date.Day == 7) Sheet.Cells[string.Format("H{0}", row)].Value = passexel[i].C7;
 
-                    }
+                        if (date.Day == 8) Sheet.Cells[string.Format("I{0}", row)].Value = passexel[i].C8;
 
-                    if (date.Day == 4)
-                    {
+                        if (date.Day == 9) Sheet.Cells[string.Format("J{0}", row)].Value = passexel[i].C9;
 
-                        Sheet.Cells[string.Format("E{0}", row)].Value = passexel[i].C4;
+                        if (date.Day == 10) Sheet.Cells[string.Format("K{0}", row)].Value = passexel[i].C10;
 
-                    }
+                        if (date.Day == 11) Sheet.Cells[string.Format("L{0}", row)].Value = passexel[i].C11;
 
-                    if (date.Day == 5)
-                    {
+                        if (date.Day == 12) Sheet.Cells[string.Format("M{0}", row)].Value = passexel[i].C12;
 
-                        Sheet.Cells[string.Format("F{0}", row)].Value = passexel[i].C5;
-                    }
+                        if (date.Day == 13) Sheet.Cells[string.Format("N{0}", row)].Value = passexel[i].C13;
 
-                    if (date.Day == 6)
-                    {
+                        if (date.Day == 14) Sheet.Cells[string.Format("O{0}", row)].Value = passexel[i].C14;
 
-                        Sheet.Cells[string.Format("G{0}", row)].Value = passexel[i].C6;
-                    }
+                        if (date.Day == 15) Sheet.Cells[string.Format("P{0}", row)].Value = passexel[i].C15;
 
-                    if (date.Day == 7)
-                    {
+                        if (date.Day == 16) Sheet.Cells[string.Format("Q{0}", row)].Value = passexel[i].C16;
 
-                        Sheet.Cells[string.Format("H{0}", row)].Value = passexel[i].C7;
-                    }
+                        if (date.Day == 17) Sheet.Cells[string.Format("R{0}", row)].Value = passexel[i].C17;
 
-                    if (date.Day == 8)
-                    {
+                        if (date.Day == 18) Sheet.Cells[string.Format("S{0}", row)].Value = passexel[i].C18;
 
-                        Sheet.Cells[string.Format("I{0}", row)].Value = passexel[i].C8;
-                    }
+                        if (date.Day == 19) Sheet.Cells[string.Format("T{0}", row)].Value = passexel[i].C19;
 
-                    if (date.Day == 9)
-                    {
+                        if (date.Day == 20) Sheet.Cells[string.Format("U{0}", row)].Value = passexel[i].C20;
 
-                        Sheet.Cells[string.Format("J{0}", row)].Value = passexel[i].C9;
-                    }
+                        if (date.Day == 21) Sheet.Cells[string.Format("V{0}", row)].Value = passexel[i].C21;
 
-                    if (date.Day == 10)
-                    {
+                        if (date.Day == 22) Sheet.Cells[string.Format("W{0}", row)].Value = passexel[i].C22;
 
-                        Sheet.Cells[string.Format("K{0}", row)].Value = passexel[i].C10;
-                    }
+                        if (date.Day == 23) Sheet.Cells[string.Format("X{0}", row)].Value = passexel[i].C23;
 
-                    if (date.Day == 11)
-                    {
+                        if (date.Day == 24) Sheet.Cells[string.Format("Y{0}", row)].Value = passexel[i].C24;
 
-                        Sheet.Cells[string.Format("L{0}", row)].Value = passexel[i].C11;
-                    }
+                        if (date.Day == 25) Sheet.Cells[string.Format("Z{0}", row)].Value = passexel[i].C25;
 
-                    if (date.Day == 12)
-                    {
+                        if (date.Day == 26) Sheet.Cells[string.Format("AA{0}", row)].Value = passexel[i].C26;
 
-                        Sheet.Cells[string.Format("M{0}", row)].Value = passexel[i].C12;
-                    }
+                        if (date.Day == 27) Sheet.Cells[string.Format("AB{0}", row)].Value = passexel[i].C27;
 
-                    if (date.Day == 13)
-                    {
+                        if (date.Day == 28) Sheet.Cells[string.Format("AC{0}", row)].Value = passexel[i].C28;
 
-                        Sheet.Cells[string.Format("N{0}", row)].Value = passexel[i].C13;
-                    }
+                        if (date.Day == 29) Sheet.Cells[string.Format("AD{0}", row)].Value = passexel[i].C29;
 
-                    if (date.Day == 14)
-                    {
+                        if (date.Day == 30) Sheet.Cells[string.Format("AE{0}", row)].Value = passexel[i].C30;
 
-                        Sheet.Cells[string.Format("O{0}", row)].Value = passexel[i].C14;
-                    }
+                        if (date.Day == 31) Sheet.Cells[string.Format("AF{0}", row)].Value = passexel[i].C31;
 
-                    if (date.Day == 15)
-                    {
+                        Sheet.Cells[string.Format("AG{0}", row)].Value = passexel[i].TotalHours;
 
-                        Sheet.Cells[string.Format("P{0}", row)].Value = passexel[i].C15;
-                    }
-
-                    if (date.Day == 16)
-                    {
-
-                        Sheet.Cells[string.Format("Q{0}", row)].Value = passexel[i].C16;
-                    }
-
-                    if (date.Day == 17)
-                    {
-
-                        Sheet.Cells[string.Format("R{0}", row)].Value = passexel[i].C17;
-                    }
-
-                    if (date.Day == 18)
-                    {
-
-                        Sheet.Cells[string.Format("S{0}", row)].Value = passexel[i].C18;
-                    }
-
-                    if (date.Day == 19)
-                    {
-
-                        Sheet.Cells[string.Format("T{0}", row)].Value = passexel[i].C19;
-                    }
-
-                    if (date.Day == 20)
-                    {
-
-                        Sheet.Cells[string.Format("U{0}", row)].Value = passexel[i].C20;
-                    }
-
-                    if (date.Day == 21)
-                    {
-
-                        Sheet.Cells[string.Format("V{0}", row)].Value = passexel[i].C21;
-                    }
-
-                    if (date.Day == 22)
-                    {
-
-                        Sheet.Cells[string.Format("W{0}", row)].Value = passexel[i].C22;
-                    }
-
-                    if (date.Day == 23)
-                    {
-
-                        Sheet.Cells[string.Format("X{0}", row)].Value = passexel[i].C23;
-                    }
-
-                    if (date.Day == 24)
-                    {
-
-                        Sheet.Cells[string.Format("Y{0}", row)].Value = passexel[i].C24;
-                    }
-
-                    if (date.Day == 25)
-                    {
-
-                        Sheet.Cells[string.Format("Z{0}", row)].Value = passexel[i].C25;
-                    }
-
-                    if (date.Day == 26)
-                    {
-
-                        Sheet.Cells[string.Format("AA{0}", row)].Value = passexel[i].C26;
-                    }
-
-                    if (date.Day == 27)
-                    {
-
-                        Sheet.Cells[string.Format("AB{0}", row)].Value = passexel[i].C27;
-                    }
-
-                    if (date.Day == 28)
-                    {
-
-                        Sheet.Cells[string.Format("AC{0}", row)].Value = passexel[i].C28;
-                    }
-
-                    if (date.Day == 29)
-                    {
-
-                        Sheet.Cells[string.Format("AD{0}", row)].Value = passexel[i].C29;
-                    }
-
-                    if (date.Day == 30)
-                    {
-
-                        Sheet.Cells[string.Format("AE{0}", row)].Value = passexel[i].C30;
-                    }
-
-                    if (date.Day == 31)
-                    {
-
-                        Sheet.Cells[string.Format("AF{0}", row)].Value = passexel[i].C31;
-                    }
-
-                    Sheet.Cells[string.Format("AG{0}", row)].Value = passexel[i].TotalHours;
-
-                    var a = passexel[i].TotalHours;
-                    var b = passexel[i].TotalOverTime;
-                    var a_b = new long?();
-                    if (a != null || a != 0)
-                    {
-                        if (b != null || b != 0)
+                        var a = passexel[i].TotalHours;
+                        var b = passexel[i].TotalOverTime;
+                        var a_b = new long?();
+                        if (a != null || a != 0)
                         {
-                            a_b = a - b;
+                            if (b != null || b != 0) a_b = a - b;
+                            else a_b = a;
                         }
                         else
                         {
-                            a_b = a;
+                            a_b = 0;
                         }
-                    }
-                    else
-                    {
-                        a_b = 0;
-                    }
-                    Sheet.Cells[string.Format("AH{0}", row)].Value = a_b;
-                    Sheet.Cells[string.Format("AI{0}", row)].Value = passexel[i].TotalOverTime;
-                    Sheet.Cells[string.Format("AJ{0}", row)].Value = passexel[i].TotalAbsent;
-                    Sheet.Cells[string.Format("AK{0}", row)].Value = passexel[i].TotalVL;
-                    Sheet.Cells[string.Format("AL{0}", row)].Value = passexel[i].TotalTransefer;
-                    Sheet.Cells[string.Format("AM{0}", row)].Value = passexel[i].TotalSickLeave;
-                    Sheet.Cells[string.Format("AN{0}", row)].Value = passexel[i].FridayHours;
-                    Sheet.Cells[string.Format("AO{0}", row)].Value = passexel[i].MainTimeSheet.ProjectList.PROJECT_NAME;
+
+                        Sheet.Cells[string.Format("AH{0}", row)].Value = a_b;
+                        Sheet.Cells[string.Format("AI{0}", row)].Value = passexel[i].TotalOverTime;
+                        Sheet.Cells[string.Format("AJ{0}", row)].Value = passexel[i].TotalAbsent;
+                        Sheet.Cells[string.Format("AK{0}", row)].Value = passexel[i].TotalVL;
+                        Sheet.Cells[string.Format("AL{0}", row)].Value = passexel[i].TotalTransefer;
+                        Sheet.Cells[string.Format("AM{0}", row)].Value = passexel[i].TotalSickLeave;
+                        Sheet.Cells[string.Format("AN{0}", row)].Value = passexel[i].FridayHours;
+                        Sheet.Cells[string.Format("AO{0}", row)].Value =
+                            passexel[i].MainTimeSheet.ProjectList.PROJECT_NAME;
                         days = days.AddDays(1);
                     }
 
-                row++;
+                    row++;
                 }
 
                 pcount = pcount + passexel.Count;
             }
+
             Sheet.Cells["A:AZ"].AutoFitColumns();
             this.Response.Clear();
             this.Response.ContentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
@@ -7361,5 +8842,4 @@
             this.Response.End();
         }
     }
-
 }

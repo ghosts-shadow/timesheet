@@ -171,6 +171,14 @@
           <Property Name="Remark" Type="nvarchar(max)" />
         </EntityType>
         <!--Errors Found During Generation:
+warning 6013: The table/view 'LogisticsSoft.dbo.Citynames' does not have a primary key defined and no valid primary key could be inferred. This table/view has been excluded. To use the entity, you will need to review your schema, add the correct keys, and uncomment it.
+        <EntityType Name="Citynames">
+          <Property Name="English name" Type="nvarchar" MaxLength="255" />
+          <Property Name="Local name" Type="nvarchar" MaxLength="255" />
+          <Property Name="Past English or local names" Type="nvarchar" MaxLength="255" />
+          <Property Name="Country" Type="nvarchar" MaxLength="255" />
+        </EntityType>-->
+        <!--Errors Found During Generation:
 warning 6002: The table/view 'LogisticsSoft.dbo.ControlRoom' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
         <EntityType Name="ControlRoom">
           <Key>
@@ -279,13 +287,11 @@ warning 6002: The table/view 'LogisticsSoft.dbo.EmpPromise' does not have a prim
           <Property Name="RegDate" Type="datetime" />
           <Property Name="RegPC" Type="nvarchar" MaxLength="255" />
         </EntityType>
-        <!--Errors Found During Generation:
-warning 6002: The table/view 'LogisticsSoft.dbo.Holidays' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
         <EntityType Name="Holidays">
           <Key>
             <PropertyRef Name="ID" />
           </Key>
-          <Property Name="ID" Type="int" Nullable="false" />
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="year" Type="float" />
           <Property Name="Comment" Type="nvarchar" MaxLength="255" />
           <Property Name="Date" Type="datetime" />
@@ -298,6 +304,16 @@ warning 6002: The table/view 'LogisticsSoft.dbo.Holidays' does not have a primar
           <Property Name="Workflow Instance ID" Type="nvarchar" MaxLength="255" />
           <Property Name="File Type" Type="nvarchar" MaxLength="255" />
         </EntityType>
+        <!--Errors Found During Generation:
+warning 6013: The table/view 'LogisticsSoft.dbo.Info' does not have a primary key defined and no valid primary key could be inferred. This table/view has been excluded. To use the entity, you will need to review your schema, add the correct keys, and uncomment it.
+        <EntityType Name="Info">
+          <Property Name="Name" Type="nvarchar(max)" />
+          <Property Name="Adress" Type="nvarchar(max)" />
+          <Property Name="Logo" Type="image" />
+          <Property Name="Adress_OLE" Type="image" />
+          <Property Name="Namearab" Type="nvarchar(max)" />
+          <Property Name="EditDate" Type="datetime" />
+        </EntityType>-->
         <EntityType Name="LabourMaster">
           <Key>
             <PropertyRef Name="ID" />
@@ -521,6 +537,15 @@ warning 6002: The table/view 'LogisticsSoft.dbo.Room_Details' does not have a pr
           <Property Name="Camp" Type="int" />
         </EntityType>
         <!--Errors Found During Generation:
+warning 6013: The table/view 'LogisticsSoft.dbo.Segate_Users' does not have a primary key defined and no valid primary key could be inferred. This table/view has been excluded. To use the entity, you will need to review your schema, add the correct keys, and uncomment it.
+        <EntityType Name="Segate_Users">
+          <Property Name="Seagate Username" Type="nvarchar" MaxLength="255" />
+          <Property Name="Password" Type="nvarchar" MaxLength="255" />
+          <Property Name="Link Access 1" Type="nvarchar" MaxLength="255" />
+          <Property Name="Link Access 2" Type="nvarchar" MaxLength="255" />
+          <Property Name="Quote Size" Type="nvarchar" MaxLength="255" />
+        </EntityType>-->
+        <!--Errors Found During Generation:
 warning 6002: The table/view 'LogisticsSoft.dbo.ShiftingFile' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
         <EntityType Name="ShiftingFile">
           <Key>
@@ -658,6 +683,17 @@ warning 6002: The table/view 'LogisticsSoft.dbo.UserInfo' does not have a primar
           <Property Name="full_name" Type="nvarchar(max)" Nullable="false" />
           <Property Name="aspnet_uid" Type="nvarchar" MaxLength="128" Nullable="false" />
         </EntityType>
+        <!--Errors Found During Generation:
+warning 6013: The table/view 'LogisticsSoft.dbo.Users_Email' does not have a primary key defined and no valid primary key could be inferred. This table/view has been excluded. To use the entity, you will need to review your schema, add the correct keys, and uncomment it.
+        <EntityType Name="Users_Email">
+          <Property Name="Display Name" Type="nvarchar" MaxLength="255" />
+          <Property Name="Database" Type="nvarchar" MaxLength="255" />
+          <Property Name="Alias" Type="nvarchar" MaxLength="255" />
+          <Property Name="Organizational Unit" Type="nvarchar" MaxLength="255" />
+          <Property Name="Recipient Type Details" Type="nvarchar" MaxLength="255" />
+          <Property Name="PrimarySMTP_Address" Type="nvarchar" MaxLength="255" />
+          <Property Name="EmpId" Type="float" />
+        </EntityType>-->
         <Association Name="FK_approval_Toattendance">
           <End Role="Attendance" Type="Self.Attendance" Multiplicity="0..1">
             <OnDelete Action="Cascade" />
@@ -862,6 +898,7 @@ warning 6002: The table/view 'LogisticsSoft.dbo.UserInfo' does not have a primar
           <EntitySet Name="AttendanceFreq" EntityType="Self.AttendanceFreq" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Camp_Details" EntityType="Self.Camp_Details" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="CsPermission" EntityType="Self.CsPermission" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Holidays" EntityType="Self.Holidays" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="LabourMaster" EntityType="Self.LabourMaster" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="MainTimeSheet" EntityType="Self.MainTimeSheet" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ManPowerSupplier" EntityType="Self.ManPowerSupplier" Schema="dbo" store:Type="Tables" />
@@ -950,22 +987,6 @@ warning 6002: The table/view 'LogisticsSoft.dbo.UserInfo' does not have a primar
     [EmpPromise].[RegDate] AS [RegDate], 
     [EmpPromise].[RegPC] AS [RegPC]
     FROM [dbo].[EmpPromise] AS [EmpPromise]</DefiningQuery>
-          </EntitySet>
-          <EntitySet Name="Holidays" EntityType="Self.Holidays" store:Type="Tables" store:Schema="dbo">
-            <DefiningQuery>SELECT 
-    [Holidays].[ID] AS [ID], 
-    [Holidays].[year] AS [year], 
-    [Holidays].[Comment] AS [Comment], 
-    [Holidays].[Date] AS [Date], 
-    [Holidays].[Hejri] AS [Hejri], 
-    [Holidays].[Holiday] AS [Holiday], 
-    [Holidays].[Encoded Absolute URL] AS [Encoded Absolute URL], 
-    [Holidays].[Item Type] AS [Item Type], 
-    [Holidays].[Path] AS [Path], 
-    [Holidays].[URL Path] AS [URL Path], 
-    [Holidays].[Workflow Instance ID] AS [Workflow Instance ID], 
-    [Holidays].[File Type] AS [File Type]
-    FROM [dbo].[Holidays] AS [Holidays]</DefiningQuery>
           </EntitySet>
           <EntitySet Name="LogIn" EntityType="Self.LogIn" store:Type="Tables" store:Schema="dbo">
             <DefiningQuery>SELECT 
