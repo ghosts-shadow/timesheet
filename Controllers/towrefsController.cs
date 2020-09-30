@@ -58,13 +58,24 @@ namespace onlygodknows.Controllers
             var checktow = this.db.towrefs.ToList();
             if (checktow.Exists(x=>x.R_no == towref.R_no || x.refe1 == towref.refe1))
             {
+                ModelState.AddModelError("refe1", " already exists");
+                ModelState.AddModelError("R_no", " already exists");
+                if (towref.mp_from == towref.mp_to)
+                {
+                    ModelState.AddModelError("mp_to", "please select different projects");
+                }
+                goto ass;
+            }
+            if (towref.mp_from == towref.mp_to)
+            {
+                ModelState.AddModelError("mp_to", "please select different projects");
                 goto ass;
             }
             if (ModelState.IsValid)
             {
                 db.towrefs.Add(towref);
                 db.SaveChanges();
-
+                if(postedFile != null) { 
                 var postedFileExtension = Path.GetExtension(postedFile.FileName);
                 if (string.Equals(postedFileExtension, ".jpg", StringComparison.OrdinalIgnoreCase)
                     || string.Equals(postedFileExtension, ".png", StringComparison.OrdinalIgnoreCase)
@@ -88,6 +99,8 @@ namespace onlygodknows.Controllers
                     tq.rowref = idlast.Id+1;
                     this.db.trattfiles.Add(tq);
                     this.db.SaveChanges();
+
+                }
                 }
                 var towf = this.db.towrefs.ToList().Last();
                 return RedirectToAction("Create","towemps",towf);

@@ -171,14 +171,6 @@
           <Property Name="Remark" Type="nvarchar(max)" />
         </EntityType>
         <!--Errors Found During Generation:
-warning 6013: The table/view 'LogisticsSoft.dbo.Citynames' does not have a primary key defined and no valid primary key could be inferred. This table/view has been excluded. To use the entity, you will need to review your schema, add the correct keys, and uncomment it.
-        <EntityType Name="Citynames">
-          <Property Name="English name" Type="nvarchar" MaxLength="255" />
-          <Property Name="Local name" Type="nvarchar" MaxLength="255" />
-          <Property Name="Past English or local names" Type="nvarchar" MaxLength="255" />
-          <Property Name="Country" Type="nvarchar" MaxLength="255" />
-        </EntityType>-->
-        <!--Errors Found During Generation:
 warning 6002: The table/view 'LogisticsSoft.dbo.ControlRoom' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
         <EntityType Name="ControlRoom">
           <Key>
@@ -304,16 +296,6 @@ warning 6002: The table/view 'LogisticsSoft.dbo.EmpPromise' does not have a prim
           <Property Name="Workflow Instance ID" Type="nvarchar" MaxLength="255" />
           <Property Name="File Type" Type="nvarchar" MaxLength="255" />
         </EntityType>
-        <!--Errors Found During Generation:
-warning 6013: The table/view 'LogisticsSoft.dbo.Info' does not have a primary key defined and no valid primary key could be inferred. This table/view has been excluded. To use the entity, you will need to review your schema, add the correct keys, and uncomment it.
-        <EntityType Name="Info">
-          <Property Name="Name" Type="nvarchar(max)" />
-          <Property Name="Adress" Type="nvarchar(max)" />
-          <Property Name="Logo" Type="image" />
-          <Property Name="Adress_OLE" Type="image" />
-          <Property Name="Namearab" Type="nvarchar(max)" />
-          <Property Name="EditDate" Type="datetime" />
-        </EntityType>-->
         <EntityType Name="LabourMaster">
           <Key>
             <PropertyRef Name="ID" />
@@ -537,15 +519,6 @@ warning 6002: The table/view 'LogisticsSoft.dbo.Room_Details' does not have a pr
           <Property Name="Camp" Type="int" />
         </EntityType>
         <!--Errors Found During Generation:
-warning 6013: The table/view 'LogisticsSoft.dbo.Segate_Users' does not have a primary key defined and no valid primary key could be inferred. This table/view has been excluded. To use the entity, you will need to review your schema, add the correct keys, and uncomment it.
-        <EntityType Name="Segate_Users">
-          <Property Name="Seagate Username" Type="nvarchar" MaxLength="255" />
-          <Property Name="Password" Type="nvarchar" MaxLength="255" />
-          <Property Name="Link Access 1" Type="nvarchar" MaxLength="255" />
-          <Property Name="Link Access 2" Type="nvarchar" MaxLength="255" />
-          <Property Name="Quote Size" Type="nvarchar" MaxLength="255" />
-        </EntityType>-->
-        <!--Errors Found During Generation:
 warning 6002: The table/view 'LogisticsSoft.dbo.ShiftingFile' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
         <EntityType Name="ShiftingFile">
           <Key>
@@ -629,10 +602,10 @@ warning 6002: The table/view 'LogisticsSoft.dbo.tblUser' does not have a primary
             <PropertyRef Name="Id" />
           </Key>
           <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="refe1" Type="bigint" />
+          <Property Name="refe1" Type="nvarchar(max)" />
           <Property Name="mp_to" Type="bigint" />
           <Property Name="mp_from" Type="bigint" />
-          <Property Name="R_no" Type="bigint" />
+          <Property Name="R_no" Type="nvarchar(max)" />
           <Property Name="mpcdate" Type="date" />
         </EntityType>
         <EntityType Name="trattfile">
@@ -683,17 +656,6 @@ warning 6002: The table/view 'LogisticsSoft.dbo.UserInfo' does not have a primar
           <Property Name="full_name" Type="nvarchar(max)" Nullable="false" />
           <Property Name="aspnet_uid" Type="nvarchar" MaxLength="128" Nullable="false" />
         </EntityType>
-        <!--Errors Found During Generation:
-warning 6013: The table/view 'LogisticsSoft.dbo.Users_Email' does not have a primary key defined and no valid primary key could be inferred. This table/view has been excluded. To use the entity, you will need to review your schema, add the correct keys, and uncomment it.
-        <EntityType Name="Users_Email">
-          <Property Name="Display Name" Type="nvarchar" MaxLength="255" />
-          <Property Name="Database" Type="nvarchar" MaxLength="255" />
-          <Property Name="Alias" Type="nvarchar" MaxLength="255" />
-          <Property Name="Organizational Unit" Type="nvarchar" MaxLength="255" />
-          <Property Name="Recipient Type Details" Type="nvarchar" MaxLength="255" />
-          <Property Name="PrimarySMTP_Address" Type="nvarchar" MaxLength="255" />
-          <Property Name="EmpId" Type="float" />
-        </EntityType>-->
         <Association Name="FK_approval_Toattendance">
           <End Role="Attendance" Type="Self.Attendance" Multiplicity="0..1">
             <OnDelete Action="Cascade" />
@@ -1534,10 +1496,10 @@ warning 6013: The table/view 'LogisticsSoft.dbo.Users_Email' does not have a pri
             <PropertyRef Name="Id" />
           </Key>
           <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="refe1" Type="Int64" />
+          <Property Name="refe1" Type="String" />
           <Property Name="mp_to" Type="Int64" />
           <Property Name="mp_from" Type="Int64" />
-          <Property Name="R_no" Type="Int64" />
+          <Property Name="R_no" Type="String" />
           <Property Name="mpcdate" Type="DateTime" Precision="0" />
           <NavigationProperty Name="ProjectList" Relationship="Self.FK_towref_Topro1" FromRole="towref" ToRole="ProjectList" />
           <NavigationProperty Name="ProjectList1" Relationship="Self.FK_towref_Topro2" FromRole="towref" ToRole="ProjectList" />

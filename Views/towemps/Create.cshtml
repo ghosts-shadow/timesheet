@@ -32,7 +32,13 @@
                     clone.find('#effectivedate' + 0).attr('name', 'towemp[' + number + '].effectivedate');
                     clone.find('#effectivedate' + 0).attr('id', 'effectivedate' + number);
                     clone.find('#lab_no0').attr('name', 'towemp[' + number + '].lab_no');
-                    clone.find('#lab_no0').attr('id', 'lab_no' + number);
+                    clone.find('#lab_no0').attr('id', 'lab_no'+ number);
+                    clone.find('#lab_name0').attr('id', 'lab_name' + number);
+                    clone.find('#lab_position0').attr('id', 'lab_position' + number);
+                    clone.find('#lab_mps0').attr('id', 'lab_mps' + number);
+                    clone.find('#lab_name0_1').attr('id', 'lab_name' + number + '_1');
+                    clone.find('#lab_position0_2').attr('id', 'lab_position' + number + '_2');
+                    clone.find('#lab_mps0_3').attr('id', 'lab_mps' + number + '_3');
                     clone.find('#dd' + 0).attr('id', 'dd' + number);
                     clone.find('#re')
                         .append(" <input type = \"button\" value = \"Remove\" onclick = \"remove(this.id)\"  id=\"" +
@@ -41,6 +47,7 @@
                     container.append(clone).before(clone);
                 }
             }
+            name("lab_no" + number);
             $("#" + (number - 1)).remove();
             createchosen();
         });
@@ -72,14 +79,100 @@
         
     }
 
+    function trial(id) {
+        name(id);
+    }
+
+    function name(id) {
+        var x = $('#' + id).val();
+        var id1 = id.toString();
+        id1 = id1.replace('lab_no', '');
+        $('#lab_name' + id1).val(x).change();
+        $('#lab_position' + id1).val(x).change();
+        $('#lab_mps' + id1).val(x).change();
+        $('#lab_name' + id1 + '_1').val($('#lab_name' + id1 +' :selected').text());
+        $('#lab_position' + id1 + '_2').val($('#lab_position' + id1 + ' :selected').text());
+        var a = parseInt($('#lab_mps' + id1 + ' :selected').text());
+        switch (a) {
+        case 1:
+                $('#lab_mps' + id1 + '_3').val("CITISCAPE")  ;
+            break;
+        case 2:
+                $('#lab_mps' + id1 + '_3').val("CALIBERS") ;
+            break;
+        case 3:
+                $('#lab_mps' + id1 + '_3').val("SAWAEED")  ;
+            break;
+        case 4:
+                $('#lab_mps' + id1 + '_3').val("TAKATOF")  ;
+            break;
+        case 5:
+                $('#lab_mps' + id1 + '_3').val("Shorook")  ;
+            break;
+        case 6:
+                $('#lab_mps' + id1 + '_3').val("ARABTEC")  ;
+            break;
+        case 7:
+                $('#lab_mps' + id1 + '_3').val("Fibrex")  ;
+            break;
+        case 8:
+                $('#lab_mps' + id1 + '_3').val("GROVE")  ;
+            break;
+        }
+
+    }
 </script>
 
+<script>
+    function name1(id) {
+        var x = document.getElementById(id);
+        var id1 = x.id.toString();
+        id1 = id1.replace('lab_no', '');
+        var y = document.getElementById('lab_name' + id1);
+        var z = document.getElementById('lab_position' + id1);
+        var m = document.getElementById('lab_mps' + id1);
+        var y1 = document.getElementById('lab_name' + id1 + '_1');
+        var z1 = document.getElementById('lab_position' + id1 + '_2');
+        var m1 = document.getElementById('lab_mps' + id1 + '_3');
+        y.value = x.value;
+        z.value = x.value;
+        m.value = x.value;
+        y1.value = y.options[y.value].text;
+        z1.value = z.options[z.value].text;
+        var a = parseInt(m.options[m.value].text);
+        switch (a) {
+        case 1:
+            m1.value = "CITISCAPE";
+            break;
+        case 2:
+            m1.value = "CALIBERS";
+            break;
+        case 3:
+            m1.value = "SAWAEED";
+            break;
+        case 4:
+            m1.value = "TAKATOF";
+            break;
+        case 5:
+            m1.value = "Shorook";
+            break;
+        case 6:
+            m1.value = "ARABTEC";
+            break;
+        case 7:
+            m1.value = "Fibrex";
+            break;
+        case 8:
+            m1.value = "GROVE";
+            break;
+        }
+    }
+</script>
 @using (Html.BeginForm())
 {
     @Html.AntiForgeryToken()
 
     <div class="form-horizontal" onclick="createchosen()">
-        <h4>towemp</h4>
         <hr />
         @Html.ValidationSummary(true, "", new { @class = "text-danger" })
 
@@ -89,6 +182,36 @@
             </div>
         </div>
     </div>
+    <table class="table">
+        <tr>
+            <th>
+                form
+            </th>
+            <th>
+                to
+            </th>
+            <th>R no</th>
+            <th>ref</th>
+            <th>date</th>
+        </tr>
+        <tr>
+            <td>
+                @ViewBag.form
+            </td>
+            <td>
+                @ViewBag.to
+            </td>
+            <td>
+                @ViewBag.R_no
+            </td>
+            <td>
+                @ViewBag.refe1
+            </td>
+            <td>
+                @ViewBag.mpcdate
+            </td>
+        </tr>
+    </table>
     <table id="submissionTable" class="table table-bordered" onclick="createchosen()">
         <thead style="text-transform: capitalize">
         <th> employee no</th>
@@ -98,12 +221,18 @@
         <tbody>
             <tr id="tr0">
                 <td>
-                    @Html.DropDownList("towemp[0].lab_no", new List<SelectListItem>(ViewBag.lab_no), htmlAttributes: new { @class = "form-control" ,@id="lab_no0"})
+                    @Html.DropDownList("towemp[0].lab_no", new List<SelectListItem>(ViewBag.lab_no), htmlAttributes: new { @class = "form-control" ,@id="lab_no0", @onchange = "trial(this.id)" })
+                    @Html.DropDownList("a", new List<SelectListItem>(ViewBag.lab_name), htmlAttributes: new { @class = "form-control" ,@id="lab_name0", @style = "display: none" })
+                    @Html.DropDownList("b", new List<SelectListItem>(ViewBag.lab_position), htmlAttributes: new { @class = "form-control" ,@id="lab_position0", @style = "display: none" })
+                    @Html.DropDownList("c", new List<SelectListItem>(ViewBag.lab_mps), htmlAttributes: new { @class = "form-control" ,@id="lab_mps0", @style = "display: none" })
+                    <input type="text" id="lab_name0_1" disabled="disabled"/>
+                    <input type="text" id="lab_position0_2" disabled="disabled"/>
+                    <input type="text" id="lab_mps0_3" disabled="disabled"/>
                     @Html.ValidationMessageFor(model => model.lab_no, "", new { @class = "text-danger" })
                 </td>
                 <td>
-                    <input class="form-control text-box single-line" data-val="true" data-val-date="The field effectivedate must be a date." id="effectivedate0" name="towemp[0].effectivedate" value="" type="datetime">
-                    @Html.ValidationMessageFor(model => model.effectivedate, "", new { @class = "text-danger" })
+                    <input class="form-control "  id="effectivedate0" name="towemp[0].effectivedate" value="" type="text" required="true"  >
+                    @Html.ValidationMessageFor(model => model.effectivedate, "", new { @class = "text-danger"})
                 </td>
                 <td id="re"></td>
             </tr>

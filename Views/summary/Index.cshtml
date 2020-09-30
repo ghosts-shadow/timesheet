@@ -1,0 +1,129 @@
+﻿@model IEnumerable<onlygodknows.Models.Attendance>
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>timesheet summary</h2>
+
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.MainTimeSheet.ProjectList.PROJECT_NAME)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.MainTimeSheet.TMonth.Month)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.MainTimeSheet.TMonth.Year)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.TotalHours)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.TotalOverTime)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.TotalAbsent)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.TotalVL)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.TotalTransefer)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.TotalSickLeave)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.FridayHours)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Holidays)
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (var item in Model) {
+<tr>
+    <td>
+        @Html.DisplayFor(modelItem => item.MainTimeSheet.ProjectList.PROJECT_NAME)
+    </td>
+    <td>
+        @{
+            switch (item.MainTimeSheet.TMonth.Month)
+            {
+                case 1:
+                    <p>January</p>
+                    break;
+                case 2:
+                    <p>February</p>
+                    break;
+                case 3:
+                    <p>March</p>
+                    break;
+                case 4:
+                    <p> April</p>
+                    break;
+                case 5:
+                    <p>May</p>
+                    break;
+                case 6:
+                    <p>June</p>
+                    break;
+                case 7:
+                    <p>July</p>
+                    break;
+                case 8:
+                    <p>August</p>
+                    break;
+                case 9:
+                    <p>September</p>
+                    break;
+                case 10:
+                    <p>October</p>
+                    break;
+                case 11:
+                    <p>November</p>
+                    break;
+                case 12:
+                    <p>December</p>
+                    break;
+            }
+        }
+    </td>
+    <td>
+        @Html.DisplayFor(modelItem => item.MainTimeSheet.TMonth.Year)
+    </td>
+    <td>
+        @Html.DisplayFor(modelItem => item.TotalHours)
+    </td>
+    <td>
+        @Html.DisplayFor(modelItem => item.TotalOverTime)
+    </td>
+    <td>
+        @Html.DisplayFor(modelItem => item.TotalAbsent)
+    </td>
+    <td>
+        @Html.DisplayFor(modelItem => item.TotalVL)
+    </td>
+    <td>
+        @Html.DisplayFor(modelItem => item.TotalTransefer)
+    </td>
+    <td>
+        @Html.DisplayFor(modelItem => item.TotalSickLeave)
+    </td>
+    <td>
+        @Html.DisplayFor(modelItem => item.FridayHours)
+    </td>
+    <td>
+        @Html.DisplayFor(modelItem => item.Holidays)
+    </td>
+    <td>
+        @Html.ActionLink("details", "Details", new { mtsmonth = item.MainTimeSheet.TMonth, csmps = item.MainTimeSheet.Project })
+    </td>
+</tr>
+}
+
+</table>

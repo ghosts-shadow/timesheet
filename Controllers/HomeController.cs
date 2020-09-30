@@ -123,7 +123,8 @@
         {
             var a = this.db.MainTimeSheets.Where(x => x.ID == ids.ID).OrderByDescending(m => m.ID);
             this.TempData["mcreateid"] = ids;
-            var aa = a.First();
+            ViewBag.ids = ids;
+                var aa = a.First();
             this.ViewBag.mid = aa.ID;
             var b = this.db.ManPowerSuppliers.Find(aa.ManPowerSupplier);
             var c = this.db.ProjectLists.Find(aa.Project);
@@ -1738,6 +1739,7 @@
         public ActionResult AIndex1(long? empno)
         {
             var ids = this.TempData["mcreateid"] as MainTimeSheet;
+            ViewBag.ids = ids;
             var a = this.db.MainTimeSheets.Where(x => x.ID == ids.ID).OrderByDescending(m => m.ID);
             var aa = a.First();
             this.ViewBag.mid = aa.ID;

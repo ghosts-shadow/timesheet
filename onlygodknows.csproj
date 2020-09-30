@@ -184,6 +184,7 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\Startup.Auth.cs" />
     <Compile Include="Controllers\AccountController.cs" />
+    <Compile Include="Controllers\summaryController.cs" />
     <Compile Include="Controllers\CSPermissionsController.cs" />
     <Compile Include="Controllers\HolidaysController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
@@ -332,10 +333,32 @@
     <Content Include="Content\chosen\index.html" />
     <Content Include="Content\chosen\index.proto.html" />
     <Content Include="Content\chosen\options.html" />
+    <Content Include="Content\data1\images\142.jpg" />
+    <Content Include="Content\data1\images\232.jpg" />
+    <Content Include="Content\data1\images\331.jpg" />
+    <Content Include="Content\data1\images\753.jpg" />
+    <Content Include="Content\data1\tooltips\142.jpg" />
+    <Content Include="Content\data1\tooltips\232.jpg" />
+    <Content Include="Content\data1\tooltips\331.jpg" />
+    <Content Include="Content\data1\tooltips\753.jpg" />
+    <Content Include="Content\engine1\arrows.png" />
+    <Content Include="Content\engine1\bullet.png" />
+    <Content Include="Content\engine1\fullscreen.svg" />
+    <Content Include="Content\engine1\jquery.js" />
+    <Content Include="Content\engine1\pause.png" />
+    <Content Include="Content\engine1\play.png" />
+    <Content Include="Content\engine1\script.js" />
+    <Content Include="Content\engine1\style.css" />
+    <Content Include="Content\engine1\style.mod.css" />
+    <Content Include="Content\engine1\triangle.png" />
+    <Content Include="Content\engine1\wowslider.js" />
+    <Content Include="Content\engine1\wowslider.mod.js" />
+    <Content Include="Content\engine1\ws-ctrl-convex.svg" />
     <Content Include="Content\note.css" />
     <Content Include="Content\print.css" />
     <Content Include="Content\Style.css" />
     <Content Include="Content\userhelp\a_and_k.mp4" />
+    <Content Include="img\CITI SCAPE LOGO.png" />
     <Content Include="img\iconbell.jpg" />
     <Content Include="img\img_chicago.jpg" />
     <Content Include="img\img_la.jpg" />
@@ -386,6 +409,12 @@
     <Content Include="Models\timesheet.edmx.diagram">
       <DependentUpon>timesheet.edmx</DependentUpon>
     </Content>
+    <Content Include="Content\engine1\fullscreen.eot" />
+    <Content Include="Content\engine1\fullscreen.ttf" />
+    <Content Include="Content\engine1\fullscreen.woff" />
+    <Content Include="Content\engine1\ws-ctrl-convex.eot" />
+    <Content Include="Content\engine1\ws-ctrl-convex.ttf" />
+    <Content Include="Content\engine1\ws-ctrl-convex.woff" />
     <None Include="Properties\PublishProfiles\CustomProfile.pubxml" />
     <Content Include="Views\CSPermissions\project_permissions.cshtml" />
     <Content Include="Views\Home\apnote1.cshtml" />
@@ -394,6 +423,8 @@
     <Content Include="Views\Holidays\Details.cshtml" />
     <Content Include="Views\Holidays\Edit.cshtml" />
     <Content Include="Views\Holidays\Index.cshtml" />
+    <Content Include="Views\summary\Index.cshtml" />
+    <Content Include="Views\summary\Details.cshtml" />
     <None Include="Views\Home\Class1.cshtml" />
     <Content Include="Views\Home\tests.cshtml" />
     <Content Include="Views\Home\csearch.cshtml" />
@@ -471,6 +502,7 @@
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="Content\userhelp\NewFolder1\" />
+    <Folder Include="Views\CustomHtmlHelepers\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff2" />

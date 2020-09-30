@@ -11,11 +11,14 @@ namespace onlygodknows.Models
 {
     using System;
     using System.Collections.Generic;
-    
+    using System.ComponentModel.DataAnnotations;
+
     public partial class towemp
     {
         public int Id { get; set; }
         public Nullable<long> lab_no { get; set; }
+
+        [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}", ApplyFormatInEditMode = true)]
         public Nullable<System.DateTime> effectivedate { get; set; }
         public Nullable<int> rowref { get; set; }
     

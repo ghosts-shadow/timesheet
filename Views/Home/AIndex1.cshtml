@@ -280,7 +280,7 @@
 
         @Html.DropDownList("empno", null, " ", new { @class = "form-control", id = "empno", style = "display:none" })
         <input type="submit" value="search" name="action:AIndex1" class="btn btn-default" id="aaq2" />
-        <a href="@Url.Action("AIndex")" class="btn btn-default">clear search</a>
+        <a href="@Url.Action("AIndex","Home",ViewBag.ids)" class="btn btn-default">clear search</a>
         <table class="table">
             <tr>
                 @if (User.Identity.Name == "sdiniz")
