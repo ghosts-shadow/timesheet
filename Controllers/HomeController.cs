@@ -121,11 +121,11 @@
         [Authorize(Roles = "Employee,Admin")]
         public ActionResult AIndex(MainTimeSheet ids)
         {
-            var a = this.db.MainTimeSheets.Where(x => x.ID == ids.ID).OrderByDescending(m => m.ID);
+            var a = this.db.MainTimeSheets.OrderByDescending(m => m.ID).ToList();
             this.TempData["mcreateid"] = ids;
             ViewBag.ids = ids;
-                var aa = a.First();
-            this.ViewBag.mid = aa.ID;
+                var aa = a.Find(x => x.ID == ids.ID);
+                this.ViewBag.mid = aa.ID;
             var b = this.db.ManPowerSuppliers.Find(aa.ManPowerSupplier);
             var c = this.db.ProjectLists.Find(aa.Project);
             this.ViewBag.pid = c.PROJECT_NAME;
@@ -212,1111 +212,355 @@
 
             var atlist1 = this.db.Attendances.Where(x => x.SubMain.Equals(aa.ID)).Include(x => x.LabourMaster)
                 .OrderByDescending(m => m.ID).ToList();
-
-            /*
-            foreach (var sd in atlist1)
             {
-                var aq = GetAll(sd.MainTimeSheet.TMonth);
-                var sy = sd.MainTimeSheet.TMonth.Day;
-                if (sy != 1)
+                /*
+                foreach (var sd in atlist1)
                 {
-                    sy -= 1;
-                    if (aq.Exists(x => x.Equals(sy)))
+                    var aq = GetAll(sd.MainTimeSheet.TMonth);
+                    var sy = sd.MainTimeSheet.TMonth.Day;
+                    if (sy != 1)
                     {
                         sy -= 1;
-                        if (sy == 1)
+                        if (aq.Exists(x => x.Equals(sy)))
                         {
-                            if (sd.C3 == sd.C1 || sd.C3 == null)
+                            sy -= 1;
+                            if (sy == 1)
                             {
-                                sd.C3 = sd.C1;
-                            }
-                            
-                        }
-                        if (sy == 2)
-                        {
-                            if (sd.C4 == sd.C2 || sd.C4 == null)
-                            {
-                                sd.C4 = sd.C2;
-                            }
-                            
-                        }
-                        if (sy == 3)
-                        {
-                            if (sd.C5 == sd.C3 || sd.C5 == null)
-                            {
-                                sd.C5 = sd.C3;
-                            }
-                            
-                        }
-
-                        if (sy == 4)
-                        {
-                            if (sd.C6 == sd.C4 || sd.C6 == null)
-                            {
-                                sd.C6 = sd.C4;
-                            }
-                            
-                        }
-
-                        if (sy == 5)
-                        {
-                            if (sd.C7 == sd.C5 || sd.C5 == null)
-                            {
-                                sd.C7 = sd.C5;
-                            }
-                            
-                        }
-
-                        if (sy == 6)
-                        {
-                            if (sd.C31 == sd.C29 || sd.C6 == null)
-                            {
-                                sd.C6 = sd.C6;
-                            }
-                            
-                        }
-
-                        if (sy == 7)
-                        {
-                            if (sd.C9 == sd.C7 || sd.C9 == null)
-                            {
-                                sd.C9 = sd.C7;
-                            }
-                        }
-
-                        if (sy == 8)
-                        {
-                            if (sd.C10 == sd.C8 || sd.C10 == null)
-                            {
-                                sd.C10 = sd.C8;
-                            }
-                        }
-
-                        if (sy == 9)
-                        {
-                            if (sd.C11 == sd.C9 || sd.C11 == null)
-                            {
-                                sd.C11 = sd.C9;
-                            }
-                            
-                        }
-
-                        if (sy == 10)
-                        {
-                            if (sd.C12 == sd.C10 || sd.C12 == null)
-                            {
-                                sd.C12 = sd.C10;
-                            }
-                            
-                        }
-
-                        if (sy == 11)
-                        {
-                            if (sd.C13 == sd.C11 || sd.C31 == null)
-                            {
-                                sd.C13 = sd.C11;
-                            }
-                            
-                        }
-
-                        if (sy == 12)
-                        {
-                            if (sd.C14 == sd.C12 || sd.C14 == null)
-                            {
-                                sd.C14 = sd.C12;
-                            }
-                        }
-
-                        if (sy == 13)
-                        {
-                            if (sd.C15 == sd.C13 || sd.C15 == null)
-                            {
-                                sd.C15 = sd.C13;
-                            }
-                        }
-
-                        if (sy == 14)
-                        {
-                            if (sd.C16 == sd.C14 || sd.C16 == null)
-                            {
-                                sd.C16 = sd.C14;
-                            }
-                            
-                        }
-
-                        if (sy == 15)
-                        {
-                            if (sd.C17 == sd.C15 || sd.C17 == null)
-                            {
-                                sd.C17 = sd.C15;
-                            }
-                            ;
-                        }
-
-                        if (sy == 16)
-                        {
-                            if (sd.C18 == sd.C16 || sd.C18 == null)
-                            {
-                                sd.C18 = sd.C16;
-                            }
-                            
-                        }
-
-                        if (sy == 17)
-                        {
-                            if (sd.C19 == sd.C17 || sd.C19 == null)
-                            {
-                                sd.C19 = sd.C17;
-                            }
-                            
-                        }
-
-                        if (sy == 18)
-                        {
-                            if (sd.C20 == sd.C18 || sd.C20 == null)
-                            {
-                                sd.C20 = sd.C18;
-                            }
-                            ;
-                        }
-
-                        if (sy == 19)
-                        {
-                            if (sd.C21 == sd.C19 || sd.C21 == null)
-                            {
-                                sd.C21 = sd.C19;
-                            }
-                            
-                        }
-
-                        if (sy == 20)
-                        {
-                            if (sd.C22 == sd.C20 || sd.C22 == null)
-                            {
-                                sd.C22 = sd.C20;
-                            }
-                        }
-
-                        if (sy == 21)
-                        {
-                            if (sd.C23 == sd.C21 || sd.C23 == null)
-                            {
-                                sd.C23 = sd.C21;
-                            }
-                            ;
-                        }
-
-                        if (sy == 22)
-                        {
-                            if (sd.C24 == sd.C22 || sd.C24 == null)
-                            {
-                                sd.C24 = sd.C22;
-                            }
-                            ;
-                        }
-
-                        if (sy == 23)
-                        {
-                            if (sd.C25 == sd.C23 || sd.C25 == null)
-                            {
-                                sd.C25 = sd.C23;
-                            }
-                            ;
-                        }
-
-                        if (sy == 24)
-                        {
-                            if (sd.C26 == sd.C24 || sd.C26 == null)
-                            {
-                                sd.C26 = sd.C24;
-                            }
-                            ;
-                        }
-
-                        if (sy == 25)
-                        {
-                            if (sd.C27 == sd.C25 || sd.C27 == null)
-                            {
-                                sd.C27 = sd.C25;
-                            }
-                        }
-
-                        if (sy == 26)
-                        {
-                            if (sd.C28 == sd.C26 || sd.C28 == null)
-                            {
-                                sd.C28 = sd.C26;
-                            }
-                        }
-
-                        if (sy == 27)
-                        {
-                            if (sd.C29 == sd.C27 || sd.C29 == null)
-                            {
-                                sd.C29 = sd.C27;
-                            }
-                        }
-
-                        if (sy == 28)
-                        {
-                            if (sd.C31 == sd.C29 || sd.C30 == null)
-                            {
-                                sd.C30 = sd.C28;
-                            }
-                        }
-
-                        if (sy == 29)
-                        {
-                            if (sd.C31 == sd.C29 || sd.C31 == null)
-                            {
-                                sd.C31 = sd.C29;
-                            }
-                            
-                        }
-                        this.db.Entry(sd).State = EntityState.Modified;
-                        this.db.SaveChanges();
-                        sd.TotalHours = 0;
-                        long.TryParse(sd.C1, out var tal);
-                        long.TryParse(sd.C2, out var tal1);
-                        long.TryParse(sd.C3, out var tal2);
-                        long.TryParse(sd.C4, out var tal3);
-                        long.TryParse(sd.C5, out var tal4);
-                        long.TryParse(sd.C6, out var tal5);
-                        long.TryParse(sd.C7, out var tal6);
-                        long.TryParse(sd.C8, out var tal7);
-                        long.TryParse(sd.C9, out var tal8);
-                        long.TryParse(sd.C10, out var tal9);
-                        long.TryParse(sd.C11, out var tal10);
-                        long.TryParse(sd.C12, out var tal11);
-                        long.TryParse(sd.C13, out var tal12);
-                        long.TryParse(sd.C14, out var tal13);
-                        long.TryParse(sd.C15, out var tal14);
-                        long.TryParse(sd.C16, out var tal15);
-                        long.TryParse(sd.C17, out var tal16);
-                        long.TryParse(sd.C18, out var tal17);
-                        long.TryParse(sd.C19, out var tal18);
-                        long.TryParse(sd.C20, out var tal19);
-                        long.TryParse(sd.C21, out var tal20);
-                        long.TryParse(sd.C22, out var tal21);
-                        long.TryParse(sd.C23, out var tal22);
-                        long.TryParse(sd.C24, out var tal23);
-                        long.TryParse(sd.C25, out var tal24);
-                        long.TryParse(sd.C26, out var tal25);
-                        long.TryParse(sd.C27, out var tal26);
-                        long.TryParse(sd.C28, out var tal27);
-                        long.TryParse(sd.C29, out var tal28);
-                        long.TryParse(sd.C30, out var tal29);
-                        long.TryParse(sd.C31, out var tal30);
-                        sd.TotalHours = tal + tal1 + tal2 + tal3 + tal4 + tal5 + tal6 + tal7 + tal8 + tal9 + tal10 + tal11 + tal12
-                                        + tal13 + tal14 + tal15 + tal16 + tal17 + tal18 + tal19 + tal20 + tal21 + tal22 + tal23
-                                        + tal24 + tal25 + tal26 + tal27 + tal28 + tal29 + tal30;
-                        double.TryParse(b.NormalTimeUpto.ToString(), out var tho);
-                        {
-                            var t = new List<long>();
-                            sd.TotalOverTime = 0;
-                            t.Add(tal);
-                            t.Add(tal1);
-                            t.Add(tal2);
-                            t.Add(tal3);
-                            t.Add(tal4);
-                            t.Add(tal5);
-                            t.Add(tal6);
-                            t.Add(tal7);
-                            t.Add(tal8);
-                            t.Add(tal9);
-                            t.Add(tal10);
-                            t.Add(tal11);
-                            t.Add(tal12);
-                            t.Add(tal13);
-                            t.Add(tal14);
-                            t.Add(tal15);
-                            t.Add(tal16);
-                            t.Add(tal17);
-                            t.Add(tal18);
-                            t.Add(tal19);
-                            t.Add(tal20);
-                            t.Add(tal21);
-                            t.Add(tal22);
-                            t.Add(tal23);
-                            t.Add(tal24);
-                            t.Add(tal25);
-                            t.Add(tal26);
-                            t.Add(tal27);
-                            t.Add(tal28);
-                            t.Add(tal29);
-                            t.Add(tal30);
-                            long tho1 = 0;
-                                int i = 0;
-                                foreach (var l in t)
+                                if (sd.C3 == sd.C1 || sd.C3 == null)
                                 {
-                                    i++;
-                                    if (!fday.Exists(x=>x.Equals(i)))
+                                    sd.C3 = sd.C1;
+                                }
+                                
+                            }
+                            if (sy == 2)
+                            {
+                                if (sd.C4 == sd.C2 || sd.C4 == null)
+                                {
+                                    sd.C4 = sd.C2;
+                                }
+                                
+                            }
+                            if (sy == 3)
+                            {
+                                if (sd.C5 == sd.C3 || sd.C5 == null)
+                                {
+                                    sd.C5 = sd.C3;
+                                }
+                                
+                            }
+    
+                            if (sy == 4)
+                            {
+                                if (sd.C6 == sd.C4 || sd.C6 == null)
+                                {
+                                    sd.C6 = sd.C4;
+                                }
+                                
+                            }
+    
+                            if (sy == 5)
+                            {
+                                if (sd.C7 == sd.C5 || sd.C5 == null)
+                                {
+                                    sd.C7 = sd.C5;
+                                }
+                                
+                            }
+    
+                            if (sy == 6)
+                            {
+                                if (sd.C31 == sd.C29 || sd.C6 == null)
+                                {
+                                    sd.C6 = sd.C6;
+                                }
+                                
+                            }
+    
+                            if (sy == 7)
+                            {
+                                if (sd.C9 == sd.C7 || sd.C9 == null)
+                                {
+                                    sd.C9 = sd.C7;
+                                }
+                            }
+    
+                            if (sy == 8)
+                            {
+                                if (sd.C10 == sd.C8 || sd.C10 == null)
+                                {
+                                    sd.C10 = sd.C8;
+                                }
+                            }
+    
+                            if (sy == 9)
+                            {
+                                if (sd.C11 == sd.C9 || sd.C11 == null)
+                                {
+                                    sd.C11 = sd.C9;
+                                }
+                                
+                            }
+    
+                            if (sy == 10)
+                            {
+                                if (sd.C12 == sd.C10 || sd.C12 == null)
+                                {
+                                    sd.C12 = sd.C10;
+                                }
+                                
+                            }
+    
+                            if (sy == 11)
+                            {
+                                if (sd.C13 == sd.C11 || sd.C31 == null)
+                                {
+                                    sd.C13 = sd.C11;
+                                }
+                                
+                            }
+    
+                            if (sy == 12)
+                            {
+                                if (sd.C14 == sd.C12 || sd.C14 == null)
+                                {
+                                    sd.C14 = sd.C12;
+                                }
+                            }
+    
+                            if (sy == 13)
+                            {
+                                if (sd.C15 == sd.C13 || sd.C15 == null)
+                                {
+                                    sd.C15 = sd.C13;
+                                }
+                            }
+    
+                            if (sy == 14)
+                            {
+                                if (sd.C16 == sd.C14 || sd.C16 == null)
+                                {
+                                    sd.C16 = sd.C14;
+                                }
+                                
+                            }
+    
+                            if (sy == 15)
+                            {
+                                if (sd.C17 == sd.C15 || sd.C17 == null)
+                                {
+                                    sd.C17 = sd.C15;
+                                }
+                                ;
+                            }
+    
+                            if (sy == 16)
+                            {
+                                if (sd.C18 == sd.C16 || sd.C18 == null)
+                                {
+                                    sd.C18 = sd.C16;
+                                }
+                                
+                            }
+    
+                            if (sy == 17)
+                            {
+                                if (sd.C19 == sd.C17 || sd.C19 == null)
+                                {
+                                    sd.C19 = sd.C17;
+                                }
+                                
+                            }
+    
+                            if (sy == 18)
+                            {
+                                if (sd.C20 == sd.C18 || sd.C20 == null)
+                                {
+                                    sd.C20 = sd.C18;
+                                }
+                                ;
+                            }
+    
+                            if (sy == 19)
+                            {
+                                if (sd.C21 == sd.C19 || sd.C21 == null)
+                                {
+                                    sd.C21 = sd.C19;
+                                }
+                                
+                            }
+    
+                            if (sy == 20)
+                            {
+                                if (sd.C22 == sd.C20 || sd.C22 == null)
+                                {
+                                    sd.C22 = sd.C20;
+                                }
+                            }
+    
+                            if (sy == 21)
+                            {
+                                if (sd.C23 == sd.C21 || sd.C23 == null)
+                                {
+                                    sd.C23 = sd.C21;
+                                }
+                                ;
+                            }
+    
+                            if (sy == 22)
+                            {
+                                if (sd.C24 == sd.C22 || sd.C24 == null)
+                                {
+                                    sd.C24 = sd.C22;
+                                }
+                                ;
+                            }
+    
+                            if (sy == 23)
+                            {
+                                if (sd.C25 == sd.C23 || sd.C25 == null)
+                                {
+                                    sd.C25 = sd.C23;
+                                }
+                                ;
+                            }
+    
+                            if (sy == 24)
+                            {
+                                if (sd.C26 == sd.C24 || sd.C26 == null)
+                                {
+                                    sd.C26 = sd.C24;
+                                }
+                                ;
+                            }
+    
+                            if (sy == 25)
+                            {
+                                if (sd.C27 == sd.C25 || sd.C27 == null)
+                                {
+                                    sd.C27 = sd.C25;
+                                }
+                            }
+    
+                            if (sy == 26)
+                            {
+                                if (sd.C28 == sd.C26 || sd.C28 == null)
+                                {
+                                    sd.C28 = sd.C26;
+                                }
+                            }
+    
+                            if (sy == 27)
+                            {
+                                if (sd.C29 == sd.C27 || sd.C29 == null)
+                                {
+                                    sd.C29 = sd.C27;
+                                }
+                            }
+    
+                            if (sy == 28)
+                            {
+                                if (sd.C31 == sd.C29 || sd.C30 == null)
+                                {
+                                    sd.C30 = sd.C28;
+                                }
+                            }
+    
+                            if (sy == 29)
+                            {
+                                if (sd.C31 == sd.C29 || sd.C31 == null)
+                                {
+                                    sd.C31 = sd.C29;
+                                }
+                                
+                            }
+                            this.db.Entry(sd).State = EntityState.Modified;
+                            this.db.SaveChanges();
+                            sd.TotalHours = 0;
+                            long.TryParse(sd.C1, out var tal);
+                            long.TryParse(sd.C2, out var tal1);
+                            long.TryParse(sd.C3, out var tal2);
+                            long.TryParse(sd.C4, out var tal3);
+                            long.TryParse(sd.C5, out var tal4);
+                            long.TryParse(sd.C6, out var tal5);
+                            long.TryParse(sd.C7, out var tal6);
+                            long.TryParse(sd.C8, out var tal7);
+                            long.TryParse(sd.C9, out var tal8);
+                            long.TryParse(sd.C10, out var tal9);
+                            long.TryParse(sd.C11, out var tal10);
+                            long.TryParse(sd.C12, out var tal11);
+                            long.TryParse(sd.C13, out var tal12);
+                            long.TryParse(sd.C14, out var tal13);
+                            long.TryParse(sd.C15, out var tal14);
+                            long.TryParse(sd.C16, out var tal15);
+                            long.TryParse(sd.C17, out var tal16);
+                            long.TryParse(sd.C18, out var tal17);
+                            long.TryParse(sd.C19, out var tal18);
+                            long.TryParse(sd.C20, out var tal19);
+                            long.TryParse(sd.C21, out var tal20);
+                            long.TryParse(sd.C22, out var tal21);
+                            long.TryParse(sd.C23, out var tal22);
+                            long.TryParse(sd.C24, out var tal23);
+                            long.TryParse(sd.C25, out var tal24);
+                            long.TryParse(sd.C26, out var tal25);
+                            long.TryParse(sd.C27, out var tal26);
+                            long.TryParse(sd.C28, out var tal27);
+                            long.TryParse(sd.C29, out var tal28);
+                            long.TryParse(sd.C30, out var tal29);
+                            long.TryParse(sd.C31, out var tal30);
+                            sd.TotalHours = tal + tal1 + tal2 + tal3 + tal4 + tal5 + tal6 + tal7 + tal8 + tal9 + tal10 + tal11 + tal12
+                                            + tal13 + tal14 + tal15 + tal16 + tal17 + tal18 + tal19 + tal20 + tal21 + tal22 + tal23
+                                            + tal24 + tal25 + tal26 + tal27 + tal28 + tal29 + tal30;
+                            double.TryParse(b.NormalTimeUpto.ToString(), out var tho);
+                            {
+                                var t = new List<long>();
+                                sd.TotalOverTime = 0;
+                                t.Add(tal);
+                                t.Add(tal1);
+                                t.Add(tal2);
+                                t.Add(tal3);
+                                t.Add(tal4);
+                                t.Add(tal5);
+                                t.Add(tal6);
+                                t.Add(tal7);
+                                t.Add(tal8);
+                                t.Add(tal9);
+                                t.Add(tal10);
+                                t.Add(tal11);
+                                t.Add(tal12);
+                                t.Add(tal13);
+                                t.Add(tal14);
+                                t.Add(tal15);
+                                t.Add(tal16);
+                                t.Add(tal17);
+                                t.Add(tal18);
+                                t.Add(tal19);
+                                t.Add(tal20);
+                                t.Add(tal21);
+                                t.Add(tal22);
+                                t.Add(tal23);
+                                t.Add(tal24);
+                                t.Add(tal25);
+                                t.Add(tal26);
+                                t.Add(tal27);
+                                t.Add(tal28);
+                                t.Add(tal29);
+                                t.Add(tal30);
+                                long tho1 = 0;
+                                    int i = 0;
+                                    foreach (var l in t)
                                     {
-                                        if (l > tho)
+                                        i++;
+                                        if (!fday.Exists(x=>x.Equals(i)))
                                         {
-                                            tho1 += l - (long)tho;
-                                            at.TotalOverTime = tho1;
+                                            if (l > tho)
+                                            {
+                                                tho1 += l - (long)tho;
+                                                at.TotalOverTime = tho1;
+                                            }
                                         }
+                                        
                                     }
-                                    
-                                }
-                        }
-                    {
-                        sd.TotalSickLeave = 0;
-                        long ts = 0;
-                        if (!sd.C1.IsNullOrWhiteSpace())
-                            if (sd.C1.Equals("S"))
-                                ts = ts + 1;
-                        if (!sd.C2.IsNullOrWhiteSpace())
-                            if (sd.C2.Equals("S"))
-                                ts = ts + 1;
-                        if (!sd.C3.IsNullOrWhiteSpace())
-                            if (sd.C3.Equals("S"))
-                                ts = ts + 1;
-                        if (!sd.C4.IsNullOrWhiteSpace())
-                            if (sd.C4.Equals("S"))
-                                ts = ts + 1;
-                        if (!sd.C5.IsNullOrWhiteSpace())
-                            if (sd.C5.Equals("S"))
-                                ts = ts + 1;
-                        if (!sd.C6.IsNullOrWhiteSpace())
-                            if (sd.C6.Equals("S"))
-                                ts = ts + 1;
-                        if (!sd.C7.IsNullOrWhiteSpace())
-                            if (sd.C7.Equals("S"))
-                                ts = ts + 1;
-                        if (!sd.C8.IsNullOrWhiteSpace())
-                            if (sd.C8.Equals("S"))
-                                ts = ts + 1;
-                        if (!sd.C9.IsNullOrWhiteSpace())
-                            if (sd.C9.Equals("S"))
-                                ts = ts + 1;
-                        if (!sd.C10.IsNullOrWhiteSpace())
-                            if (sd.C10.Equals("S"))
-                                ts = ts + 1;
-                        if (!sd.C11.IsNullOrWhiteSpace())
-                            if (sd.C11.Equals("S"))
-                                ts = ts + 1;
-                        if (!sd.C12.IsNullOrWhiteSpace())
-                            if (sd.C12.Equals("S"))
-                                ts = ts + 1;
-                        if (!sd.C13.IsNullOrWhiteSpace())
-                            if (sd.C13.Equals("S"))
-                                ts = ts + 1;
-                        if (!sd.C14.IsNullOrWhiteSpace())
-                            if (sd.C14.Equals("S"))
-                                ts = ts + 1;
-                        if (!sd.C15.IsNullOrWhiteSpace())
-                            if (sd.C15.Equals("S"))
-                                ts = ts + 1;
-                        if (!sd.C16.IsNullOrWhiteSpace())
-                            if (sd.C16.Equals("S"))
-                                ts = ts + 1;
-                        if (!sd.C17.IsNullOrWhiteSpace())
-                            if (sd.C17.Equals("S"))
-                                ts = ts + 1;
-                        if (!sd.C18.IsNullOrWhiteSpace())
-                            if (sd.C18.Equals("S"))
-                                ts = ts + 1;
-                        if (!sd.C19.IsNullOrWhiteSpace())
-                            if (sd.C19.Equals("S"))
-                                ts = ts + 1;
-                        if (!sd.C20.IsNullOrWhiteSpace())
-                            if (sd.C20.Equals("S"))
-                                ts = ts + 1;
-                        if (!sd.C21.IsNullOrWhiteSpace())
-                            if (sd.C21.Equals("S"))
-                                ts = ts + 1;
-                        if (!sd.C22.IsNullOrWhiteSpace())
-                            if (sd.C22.Equals("S"))
-                                ts = ts + 1;
-                        if (!sd.C23.IsNullOrWhiteSpace())
-                            if (sd.C23.Equals("S"))
-                                ts = ts + 1;
-                        if (!sd.C24.IsNullOrWhiteSpace())
-                            if (sd.C24.Equals("S"))
-                                ts = ts + 1;
-                        if (!sd.C25.IsNullOrWhiteSpace())
-                            if (sd.C25.Equals("S"))
-                                ts = ts + 1;
-                        if (!sd.C26.IsNullOrWhiteSpace())
-                            if (sd.C26.Equals("S"))
-                                ts = ts + 1;
-                        if (!sd.C27.IsNullOrWhiteSpace())
-                            if (sd.C27.Equals("S"))
-                                ts = ts + 1;
-                        if (!sd.C28.IsNullOrWhiteSpace())
-                            if (sd.C28.Equals("S"))
-                                ts = ts + 1;
-                        if (!sd.C29.IsNullOrWhiteSpace())
-                            if (sd.C29.Equals("S"))
-                                ts = ts + 1;
-                        if (!sd.C30.IsNullOrWhiteSpace())
-                            if (sd.C30.Equals("S"))
-                                ts = ts + 1;
-                        if (!sd.C31.IsNullOrWhiteSpace())
-                            if (sd.C31.Equals("S"))
-                                ts = ts + 1;
-
-                        sd.TotalSickLeave = ts;
-                    }
-                    {
-                        sd.TotalVL = 0;
-                        long tv = 0;
-                        if (!sd.C1.IsNullOrWhiteSpace())
-                            if (sd.C1.Equals("V"))
-                                tv = tv + 1;
-                        if (!sd.C2.IsNullOrWhiteSpace())
-                            if (sd.C2.Equals("V"))
-                                tv = tv + 1;
-                        if (!sd.C3.IsNullOrWhiteSpace())
-                            if (sd.C3.Equals("V"))
-                                tv = tv + 1;
-                        if (!sd.C4.IsNullOrWhiteSpace())
-                            if (sd.C4.Equals("V"))
-                                tv = tv + 1;
-                        if (!sd.C5.IsNullOrWhiteSpace())
-                            if (sd.C5.Equals("V"))
-                                tv = tv + 1;
-                        if (!sd.C6.IsNullOrWhiteSpace())
-                            if (sd.C6.Equals("V"))
-                                tv = tv + 1;
-                        if (!sd.C7.IsNullOrWhiteSpace())
-                            if (sd.C7.Equals("V"))
-                                tv = tv + 1;
-                        if (!sd.C8.IsNullOrWhiteSpace())
-                            if (sd.C8.Equals("V"))
-                                tv = tv + 1;
-                        if (!sd.C9.IsNullOrWhiteSpace())
-                            if (sd.C9.Equals("V"))
-                                tv = tv + 1;
-                        if (!sd.C10.IsNullOrWhiteSpace())
-                            if (sd.C10.Equals("V"))
-                                tv = tv + 1;
-                        if (!sd.C11.IsNullOrWhiteSpace())
-                            if (sd.C11.Equals("V"))
-                                tv = tv + 1;
-                        if (!sd.C12.IsNullOrWhiteSpace())
-                            if (sd.C12.Equals("V"))
-                                tv = tv + 1;
-                        if (!sd.C13.IsNullOrWhiteSpace())
-                            if (sd.C13.Equals("V"))
-                                tv = tv + 1;
-                        if (!sd.C14.IsNullOrWhiteSpace())
-                            if (sd.C14.Equals("V"))
-                                tv = tv + 1;
-                        if (!sd.C15.IsNullOrWhiteSpace())
-                            if (sd.C15.Equals("V"))
-                                tv = tv + 1;
-                        if (!sd.C16.IsNullOrWhiteSpace())
-                            if (sd.C16.Equals("V"))
-                                tv = tv + 1;
-                        if (!sd.C17.IsNullOrWhiteSpace())
-                            if (sd.C17.Equals("V"))
-                                tv = tv + 1;
-                        if (!sd.C18.IsNullOrWhiteSpace())
-                            if (sd.C18.Equals("V"))
-                                tv = tv + 1;
-                        if (!sd.C19.IsNullOrWhiteSpace())
-                            if (sd.C19.Equals("V"))
-                                tv = tv + 1;
-                        if (!sd.C20.IsNullOrWhiteSpace())
-                            if (sd.C20.Equals("V"))
-                                tv = tv + 1;
-                        if (!sd.C21.IsNullOrWhiteSpace())
-                            if (sd.C21.Equals("V"))
-                                tv = tv + 1;
-                        if (!sd.C22.IsNullOrWhiteSpace())
-                            if (sd.C22.Equals("V"))
-                                tv = tv + 1;
-                        if (!sd.C23.IsNullOrWhiteSpace())
-                            if (sd.C23.Equals("V"))
-                                tv = tv + 1;
-                        if (!sd.C24.IsNullOrWhiteSpace())
-                            if (sd.C24.Equals("V"))
-                                tv = tv + 1;
-                        if (!sd.C25.IsNullOrWhiteSpace())
-                            if (sd.C25.Equals("V"))
-                                tv = tv + 1;
-                        if (!sd.C26.IsNullOrWhiteSpace())
-                            if (sd.C26.Equals("V"))
-                                tv = tv + 1;
-                        if (!sd.C27.IsNullOrWhiteSpace())
-                            if (sd.C27.Equals("V"))
-                                tv = tv + 1;
-                        if (!sd.C28.IsNullOrWhiteSpace())
-                            if (sd.C28.Equals("V"))
-                                tv = tv + 1;
-                        if (!sd.C29.IsNullOrWhiteSpace())
-                            if (sd.C29.Equals("V"))
-                                tv = tv + 1;
-                        if (!sd.C30.IsNullOrWhiteSpace())
-                            if (sd.C30.Equals("V"))
-                                tv = tv + 1;
-                        if (!sd.C31.IsNullOrWhiteSpace())
-                            if (sd.C31.Equals("V"))
-                                tv = tv + 1;
-
-                        sd.TotalVL = tv;
-                    }
-                    {
-                        sd.TotalAbsent = 0;
-                        long tv = 0;
-                        if (!sd.C1.IsNullOrWhiteSpace())
-                            if (sd.C1.Equals("A"))
-                                tv = tv + 1;
-                        if (!sd.C2.IsNullOrWhiteSpace())
-                            if (sd.C2.Equals("A"))
-                                tv = tv + 1;
-                        if (!sd.C3.IsNullOrWhiteSpace())
-                            if (sd.C3.Equals("A"))
-                                tv = tv + 1;
-                        if (!sd.C4.IsNullOrWhiteSpace())
-                            if (sd.C4.Equals("A"))
-                                tv = tv + 1;
-                        if (!sd.C5.IsNullOrWhiteSpace())
-                            if (sd.C5.Equals("A"))
-                                tv = tv + 1;
-                        if (!sd.C6.IsNullOrWhiteSpace())
-                            if (sd.C6.Equals("A"))
-                                tv = tv + 1;
-                        if (!sd.C7.IsNullOrWhiteSpace())
-                            if (sd.C7.Equals("A"))
-                                tv = tv + 1;
-                        if (!sd.C8.IsNullOrWhiteSpace())
-                            if (sd.C8.Equals("A"))
-                                tv = tv + 1;
-                        if (!sd.C9.IsNullOrWhiteSpace())
-                            if (sd.C9.Equals("A"))
-                                tv = tv + 1;
-                        if (!sd.C10.IsNullOrWhiteSpace())
-                            if (sd.C10.Equals("A"))
-                                tv = tv + 1;
-                        if (!sd.C11.IsNullOrWhiteSpace())
-                            if (sd.C11.Equals("A"))
-                                tv = tv + 1;
-                        if (!sd.C12.IsNullOrWhiteSpace())
-                            if (sd.C12.Equals("A"))
-                                tv = tv + 1;
-                        if (!sd.C13.IsNullOrWhiteSpace())
-                            if (sd.C13.Equals("A"))
-                                tv = tv + 1;
-                        if (!sd.C14.IsNullOrWhiteSpace())
-                            if (sd.C14.Equals("A"))
-                                tv = tv + 1;
-                        if (!sd.C15.IsNullOrWhiteSpace())
-                            if (sd.C15.Equals("A"))
-                                tv = tv + 1;
-                        if (!sd.C16.IsNullOrWhiteSpace())
-                            if (sd.C16.Equals("A"))
-                                tv = tv + 1;
-                        if (!sd.C17.IsNullOrWhiteSpace())
-                            if (sd.C17.Equals("A"))
-                                tv = tv + 1;
-                        if (!sd.C18.IsNullOrWhiteSpace())
-                            if (sd.C18.Equals("A"))
-                                tv = tv + 1;
-                        if (!sd.C19.IsNullOrWhiteSpace())
-                            if (sd.C19.Equals("A"))
-                                tv = tv + 1;
-                        if (!sd.C20.IsNullOrWhiteSpace())
-                            if (sd.C20.Equals("A"))
-                                tv = tv + 1;
-                        if (!sd.C21.IsNullOrWhiteSpace())
-                            if (sd.C21.Equals("A"))
-                                tv = tv + 1;
-                        if (!sd.C22.IsNullOrWhiteSpace())
-                            if (sd.C22.Equals("A"))
-                                tv = tv + 1;
-                        if (!sd.C23.IsNullOrWhiteSpace())
-                            if (sd.C23.Equals("A"))
-                                tv = tv + 1;
-                        if (!sd.C24.IsNullOrWhiteSpace())
-                            if (sd.C24.Equals("A"))
-                                tv = tv + 1;
-                        if (!sd.C25.IsNullOrWhiteSpace())
-                            if (sd.C25.Equals("A"))
-                                tv = tv + 1;
-                        if (!sd.C26.IsNullOrWhiteSpace())
-                            if (sd.C26.Equals("A"))
-                                tv = tv + 1;
-                        if (!sd.C27.IsNullOrWhiteSpace())
-                            if (sd.C27.Equals("A"))
-                                tv = tv + 1;
-                        if (!sd.C28.IsNullOrWhiteSpace())
-                            if (sd.C28.Equals("A"))
-                                tv = tv + 1;
-                        if (!sd.C29.IsNullOrWhiteSpace())
-                            if (sd.C29.Equals("A"))
-                                tv = tv + 1;
-                        if (!sd.C30.IsNullOrWhiteSpace())
-                            if (sd.C30.Equals("A"))
-                                tv = tv + 1;
-                        if (!sd.C31.IsNullOrWhiteSpace())
-                            if (sd.C31.Equals("A"))
-                                tv = tv + 1;
-
-                        sd.TotalAbsent = tv;
-                    }
-                    {
-                        sd.TotalTransefer = 0;
-                        long tv = 0;
-                        if (!sd.C1.IsNullOrWhiteSpace())
-                            if (sd.C1.Equals("T"))
-                                tv = tv + 1;
-                        if (!sd.C2.IsNullOrWhiteSpace())
-                            if (sd.C2.Equals("T"))
-                                tv = tv + 1;
-                        if (!sd.C3.IsNullOrWhiteSpace())
-                            if (sd.C3.Equals("T"))
-                                tv = tv + 1;
-                        if (!sd.C4.IsNullOrWhiteSpace())
-                            if (sd.C4.Equals("T"))
-                                tv = tv + 1;
-                        if (!sd.C5.IsNullOrWhiteSpace())
-                            if (sd.C5.Equals("T"))
-                                tv = tv + 1;
-                        if (!sd.C6.IsNullOrWhiteSpace())
-                            if (sd.C6.Equals("T"))
-                                tv = tv + 1;
-                        if (!sd.C7.IsNullOrWhiteSpace())
-                            if (sd.C7.Equals("T"))
-                                tv = tv + 1;
-                        if (!sd.C8.IsNullOrWhiteSpace())
-                            if (sd.C8.Equals("T"))
-                                tv = tv + 1;
-                        if (!sd.C9.IsNullOrWhiteSpace())
-                            if (sd.C9.Equals("T"))
-                                tv = tv + 1;
-                        if (!sd.C10.IsNullOrWhiteSpace())
-                            if (sd.C10.Equals("T"))
-                                tv = tv + 1;
-                        if (!sd.C11.IsNullOrWhiteSpace())
-                            if (sd.C11.Equals("T"))
-                                tv = tv + 1;
-                        if (!sd.C12.IsNullOrWhiteSpace())
-                            if (sd.C12.Equals("T"))
-                                tv = tv + 1;
-                        if (!sd.C13.IsNullOrWhiteSpace())
-                            if (sd.C13.Equals("T"))
-                                tv = tv + 1;
-                        if (!sd.C14.IsNullOrWhiteSpace())
-                            if (sd.C14.Equals("T"))
-                                tv = tv + 1;
-                        if (!sd.C15.IsNullOrWhiteSpace())
-                            if (sd.C15.Equals("T"))
-                                tv = tv + 1;
-                        if (!sd.C16.IsNullOrWhiteSpace())
-                            if (sd.C16.Equals("T"))
-                                tv = tv + 1;
-                        if (!sd.C17.IsNullOrWhiteSpace())
-                            if (sd.C17.Equals("T"))
-                                tv = tv + 1;
-                        if (!sd.C18.IsNullOrWhiteSpace())
-                            if (sd.C18.Equals("T"))
-                                tv = tv + 1;
-                        if (!sd.C19.IsNullOrWhiteSpace())
-                            if (sd.C19.Equals("T"))
-                                tv = tv + 1;
-                        if (!sd.C20.IsNullOrWhiteSpace())
-                            if (sd.C20.Equals("T"))
-                                tv = tv + 1;
-                        if (!sd.C21.IsNullOrWhiteSpace())
-                            if (sd.C21.Equals("T"))
-                                tv = tv + 1;
-                        if (!sd.C22.IsNullOrWhiteSpace())
-                            if (sd.C22.Equals("T"))
-                                tv = tv + 1;
-                        if (!sd.C23.IsNullOrWhiteSpace())
-                            if (sd.C23.Equals("T"))
-                                tv = tv + 1;
-                        if (!sd.C24.IsNullOrWhiteSpace())
-                            if (sd.C24.Equals("T"))
-                                tv = tv + 1;
-                        if (!sd.C25.IsNullOrWhiteSpace())
-                            if (sd.C25.Equals("T"))
-                                tv = tv + 1;
-                        if (!sd.C26.IsNullOrWhiteSpace())
-                            if (sd.C26.Equals("T"))
-                                tv = tv + 1;
-                        if (!sd.C27.IsNullOrWhiteSpace())
-                            if (sd.C27.Equals("T"))
-                                tv = tv + 1;
-                        if (!sd.C28.IsNullOrWhiteSpace())
-                            if (sd.C28.Equals("T"))
-                                tv = tv + 1;
-                        if (!sd.C29.IsNullOrWhiteSpace())
-                            if (sd.C29.Equals("T"))
-                                tv = tv + 1;
-                        if (!sd.C30.IsNullOrWhiteSpace())
-                            if (sd.C30.Equals("T"))
-                                tv = tv + 1;
-                        if (!sd.C31.IsNullOrWhiteSpace())
-                            if (sd.C31.Equals("T"))
-                                tv = tv + 1;
-
-                        sd.TotalTransefer = tv;
-                    }
-                    sd.status = "panding";
-                    this.db.Entry(sd).State = EntityState.Modified;
-                        this.db.SaveChanges();
-                        goto fi;
-                    }
-                    if (aq.Exists(x => x.Equals(sy + 1)))
-                    {
-                        goto fi;
-                    }
-                    if (sy == 1)
-                    {
-                        if (sd.C2 == sd.C1 || sd.C2 == null)
-                        {
-                            sd.C2 = sd.C1;
-                        }
-
-                    }
-
-                    if (sy == 2)
-                    {
-                        if (sd.C3 == sd.C2 || sd.C3 == null)
-                        {
-                            sd.C3 = sd.C2;
-                        }
-
-                    }
-
-                    if (sy == 3)
-                    {
-                        if (sd.C4 == sd.C3 || sd.C4 == null)
-                        {
-                            sd.C4 = sd.C3;
-                        }
-
-                    }
-
-                    if (sy == 4)
-                    {
-                        if (sd.C5 == sd.C4 || sd.C5 == null)
-                        {
-                            sd.C5 = sd.C4;
-                        }
-
-                    }
-
-                    if (sy == 5)
-                    {
-                        if (sd.C6 == sd.C5 || sd.C6 == null)
-                        {
-                            sd.C6 = sd.C5;
-                        }
-
-                    }
-
-                    if (sy == 6)
-                    {
-                        if (sd.C7 == sd.C6 || sd.C7 == null)
-                        {
-                            sd.C7 = sd.C6;
-                        }
-
-                    }
-
-                    if (sy == 7)
-                    {
-                        if (sd.C8 == sd.C7 || sd.C8 == null)
-                        {
-                            sd.C8 = sd.C7;
-                        }
-
-                    }
-
-                    if (sy == 8)
-                    {
-                        if (sd.C9 == sd.C8 || sd.C9 == null)
-                        {
-                            sd.C9 = sd.C8;
-                        }
-
-                    }
-
-                    if (sy == 9)
-                    {
-                        if (sd.C10 == sd.C9 || sd.C10 == null)
-                        {
-                            sd.C10 = sd.C9;
-                        }
-
-                    }
-
-                    if (sy == 10)
-                    {
-                        if (sd.C11 == sd.C10 || sd.C11 == null)
-                        {
-                            sd.C11 = sd.C10;
-                        }
-
-                    }
-
-                    if (sy == 11)
-                    {
-                        if (sd.C12 == sd.C11 || sd.C12 == null)
-                        {
-                            sd.C12 = sd.C11;
-                        }
-
-                    }
-
-                    if (sy == 12)
-                    {
-                        if (sd.C13 == sd.C12 || sd.C13 == null)
-                        {
-                            sd.C13 = sd.C12;
-                        }
-
-                    }
-
-                    if (sy == 13)
-                    {
-                        if (sd.C14 == sd.C13 || sd.C14 == null)
-                        {
-                            sd.C14 = sd.C13;
-                        }
-
-                    }
-
-                    if (sy == 14)
-                    {
-                        if (sd.C15 == sd.C14 || sd.C15 == null)
-                        {
-                            sd.C15 = sd.C14;
-                        }
-
-                    }
-
-                    if (sy == 15)
-                    {
-                        if (sd.C16 == sd.C15 || sd.C16 == null)
-                        {
-                            sd.C16 = sd.C15;
-                        }
-
-                    }
-
-                    if (sy == 16)
-                    {
-                        if (sd.C17 == sd.C16 || sd.C17 == null)
-                        {
-                            sd.C17 = sd.C16;
-                        }
-
-                    }
-
-                    if (sy == 17)
-                    {
-                        if (sd.C18 == sd.C17 || sd.C18 == null)
-                        {
-                            sd.C18 = sd.C17;
-                        }
-
-                    }
-
-                    if (sy == 18)
-                    {
-                        if (sd.C19 == sd.C18 || sd.C19 == null)
-                        {
-                            sd.C19 = sd.C18;
-                        }
-
-                    }
-
-                    if (sy == 19)
-                    {
-                        if (sd.C20 == sd.C19 || sd.C20 == null)
-                        {
-                            sd.C20 = sd.C19;
-                        }
-                    }
-
-                    if (sy == 20)
-                    {
-                        if (sd.C21 == sd.C20 || sd.C21 == null)
-                        {
-                            sd.C21 = sd.C20;
-                        }
-
-                    }
-
-                    if (sy == 21)
-                    {
-                        if (sd.C22 == sd.C21 || sd.C22 == null)
-                        {
-                            sd.C22 = sd.C21;
-                        }
-
-                    }
-
-                    if (sy == 22)
-                    {
-                        if (sd.C23 == sd.C22 || sd.C23 == null)
-                        {
-                            sd.C23 = sd.C22;
-                        }
-
-                    }
-
-                    if (sy == 23)
-                    {
-                        if (sd.C24 == sd.C23 || sd.C24 == null)
-                        {
-                            sd.C24 = sd.C23;
-                        }
-
-                    }
-
-                    if (sy == 24)
-                    {
-                        if (sd.C25 == sd.C24 || sd.C25 == null)
-                        {
-                            sd.C25 = sd.C24;
-                        }
-
-                    }
-
-                    if (sy == 25)
-                    {
-                        if (sd.C26 == sd.C25 || sd.C26 == null)
-                        {
-                            sd.C26 = sd.C25;
-                        }
-                    }
-
-                    if (sy == 26)
-                    {
-                        if (sd.C27 == sd.C26 || sd.C27 == null)
-                        {
-                            sd.C27 = sd.C26;
-
-                        }
-                    }
-
-                    if (sy == 27)
-                    {
-                        if (sd.C28 == sd.C27 || sd.C28 == null)
-                        {
-                            sd.C28 = sd.C27;
-                        }
-
-                    }
-
-                    if (sy == 28)
-                    {
-                        if (sd.C29 == sd.C28 || sd.C29 == null)
-                        {
-                            sd.C29 = sd.C28;
-
-                        }
-                    }
-
-                    if (sy == 29)
-                    {
-                        if (sd.C30 == sd.C29 || sd.C30 == null)
-                        {
-                            sd.C30 = sd.C29;
-                        }
-
-                    }
-
-                    if (sy == 30)
-                    {
-                        if (sd.C31 == sd.C30 || sd.C31 == null)
-                        {
-                            sd.C31 = sd.C30;
-                        }
-
-                    }
-
-
-                    this.db.Entry(sd).State = EntityState.Modified;
-                    this.db.SaveChanges();
-                    sd.TotalHours = 0;
-                    {
-                        long.TryParse(sd.C1, out var tl);
-                        long.TryParse(sd.C2, out var tl1);
-                        long.TryParse(sd.C3, out var tl2);
-                        long.TryParse(sd.C4, out var tl3);
-                        long.TryParse(sd.C5, out var tl4);
-                        long.TryParse(sd.C6, out var tl5);
-                        long.TryParse(sd.C7, out var tl6);
-                        long.TryParse(sd.C8, out var tl7);
-                        long.TryParse(sd.C9, out var tl8);
-                        long.TryParse(sd.C10, out var tl9);
-                        long.TryParse(sd.C11, out var tl10);
-                        long.TryParse(sd.C12, out var tl11);
-                        long.TryParse(sd.C13, out var tl12);
-                        long.TryParse(sd.C14, out var tl13);
-                        long.TryParse(sd.C15, out var tl14);
-                        long.TryParse(sd.C16, out var tl15);
-                        long.TryParse(sd.C17, out var tl16);
-                        long.TryParse(sd.C18, out var tl17);
-                        long.TryParse(sd.C19, out var tl18);
-                        long.TryParse(sd.C20, out var tl19);
-                        long.TryParse(sd.C21, out var tl20);
-                        long.TryParse(sd.C22, out var tl21);
-                        long.TryParse(sd.C23, out var tl22);
-                        long.TryParse(sd.C24, out var tl23);
-                        long.TryParse(sd.C25, out var tl24);
-                        long.TryParse(sd.C26, out var tl25);
-                        long.TryParse(sd.C27, out var tl26);
-                        long.TryParse(sd.C28, out var tl27);
-                        long.TryParse(sd.C29, out var tl28);
-                        long.TryParse(sd.C30, out var tl29);
-                        long.TryParse(sd.C31, out var tl30);
-                        long.TryParse(sd.TotalHours.ToString(), out var sdlg);
-                        sd.TotalHours = tl + tl1 + tl2 + tl3 + tl4 + tl5 + tl6 + tl7 + tl8 + tl9 + tl10 + tl11 + tl12 + tl13
-                                        + tl14 + tl15 + tl16 + tl17 + tl18 + tl19 + tl20 + tl21 + tl22 + tl23 + tl24 + tl25
-                                        + tl26 + tl27 + tl28 + tl29 + tl30;
-                        double.TryParse(b.NormalTimeUpto.ToString(), out var tho);
-                        {
-                            var t = new List<long>();
-                            sd.TotalOverTime = 0;
-                            t.Add(tl);
-                            t.Add(tl1);
-                            t.Add(tl2);
-                            t.Add(tl3);
-                            t.Add(tl4);
-                            t.Add(tl5);
-                            t.Add(tl6);
-                            t.Add(tl7);
-                            t.Add(tl8);
-                            t.Add(tl9);
-                            t.Add(tl10);
-                            t.Add(tl11);
-                            t.Add(tl12);
-                            t.Add(tl13);
-                            t.Add(tl14);
-                            t.Add(tl15);
-                            t.Add(tl16);
-                            t.Add(tl17);
-                            t.Add(tl18);
-                            t.Add(tl19);
-                            t.Add(tl20);
-                            t.Add(tl21);
-                            t.Add(tl22);
-                            t.Add(tl23);
-                            t.Add(tl24);
-                            t.Add(tl25);
-                            t.Add(tl26);
-                            t.Add(tl27);
-                            t.Add(tl28);
-                            t.Add(tl29);
-                            t.Add(tl30);
-                            long tho1 = 0;
-                            foreach (var l in t)
-                                if (l > tho)
-                                {
-                                    tho1 += l - (long)tho;
-                                    sd.TotalOverTime = tho1;
-                                }
-                        }
+                            }
                         {
                             sd.TotalSickLeave = 0;
                             long ts = 0;
@@ -1413,7 +657,7 @@
                             if (!sd.C31.IsNullOrWhiteSpace())
                                 if (sd.C31.Equals("S"))
                                     ts = ts + 1;
-
+    
                             sd.TotalSickLeave = ts;
                         }
                         {
@@ -1512,7 +756,7 @@
                             if (!sd.C31.IsNullOrWhiteSpace())
                                 if (sd.C31.Equals("V"))
                                     tv = tv + 1;
-
+    
                             sd.TotalVL = tv;
                         }
                         {
@@ -1611,7 +855,7 @@
                             if (!sd.C31.IsNullOrWhiteSpace())
                                 if (sd.C31.Equals("A"))
                                     tv = tv + 1;
-
+    
                             sd.TotalAbsent = tv;
                         }
                         {
@@ -1710,24 +954,792 @@
                             if (!sd.C31.IsNullOrWhiteSpace())
                                 if (sd.C31.Equals("T"))
                                     tv = tv + 1;
-
+    
                             sd.TotalTransefer = tv;
                         }
                         sd.status = "panding";
+                        this.db.Entry(sd).State = EntityState.Modified;
+                            this.db.SaveChanges();
+                            goto fi;
+                        }
+                        if (aq.Exists(x => x.Equals(sy + 1)))
+                        {
+                            goto fi;
+                        }
+                        if (sy == 1)
+                        {
+                            if (sd.C2 == sd.C1 || sd.C2 == null)
+                            {
+                                sd.C2 = sd.C1;
+                            }
+    
+                        }
+    
+                        if (sy == 2)
+                        {
+                            if (sd.C3 == sd.C2 || sd.C3 == null)
+                            {
+                                sd.C3 = sd.C2;
+                            }
+    
+                        }
+    
+                        if (sy == 3)
+                        {
+                            if (sd.C4 == sd.C3 || sd.C4 == null)
+                            {
+                                sd.C4 = sd.C3;
+                            }
+    
+                        }
+    
+                        if (sy == 4)
+                        {
+                            if (sd.C5 == sd.C4 || sd.C5 == null)
+                            {
+                                sd.C5 = sd.C4;
+                            }
+    
+                        }
+    
+                        if (sy == 5)
+                        {
+                            if (sd.C6 == sd.C5 || sd.C6 == null)
+                            {
+                                sd.C6 = sd.C5;
+                            }
+    
+                        }
+    
+                        if (sy == 6)
+                        {
+                            if (sd.C7 == sd.C6 || sd.C7 == null)
+                            {
+                                sd.C7 = sd.C6;
+                            }
+    
+                        }
+    
+                        if (sy == 7)
+                        {
+                            if (sd.C8 == sd.C7 || sd.C8 == null)
+                            {
+                                sd.C8 = sd.C7;
+                            }
+    
+                        }
+    
+                        if (sy == 8)
+                        {
+                            if (sd.C9 == sd.C8 || sd.C9 == null)
+                            {
+                                sd.C9 = sd.C8;
+                            }
+    
+                        }
+    
+                        if (sy == 9)
+                        {
+                            if (sd.C10 == sd.C9 || sd.C10 == null)
+                            {
+                                sd.C10 = sd.C9;
+                            }
+    
+                        }
+    
+                        if (sy == 10)
+                        {
+                            if (sd.C11 == sd.C10 || sd.C11 == null)
+                            {
+                                sd.C11 = sd.C10;
+                            }
+    
+                        }
+    
+                        if (sy == 11)
+                        {
+                            if (sd.C12 == sd.C11 || sd.C12 == null)
+                            {
+                                sd.C12 = sd.C11;
+                            }
+    
+                        }
+    
+                        if (sy == 12)
+                        {
+                            if (sd.C13 == sd.C12 || sd.C13 == null)
+                            {
+                                sd.C13 = sd.C12;
+                            }
+    
+                        }
+    
+                        if (sy == 13)
+                        {
+                            if (sd.C14 == sd.C13 || sd.C14 == null)
+                            {
+                                sd.C14 = sd.C13;
+                            }
+    
+                        }
+    
+                        if (sy == 14)
+                        {
+                            if (sd.C15 == sd.C14 || sd.C15 == null)
+                            {
+                                sd.C15 = sd.C14;
+                            }
+    
+                        }
+    
+                        if (sy == 15)
+                        {
+                            if (sd.C16 == sd.C15 || sd.C16 == null)
+                            {
+                                sd.C16 = sd.C15;
+                            }
+    
+                        }
+    
+                        if (sy == 16)
+                        {
+                            if (sd.C17 == sd.C16 || sd.C17 == null)
+                            {
+                                sd.C17 = sd.C16;
+                            }
+    
+                        }
+    
+                        if (sy == 17)
+                        {
+                            if (sd.C18 == sd.C17 || sd.C18 == null)
+                            {
+                                sd.C18 = sd.C17;
+                            }
+    
+                        }
+    
+                        if (sy == 18)
+                        {
+                            if (sd.C19 == sd.C18 || sd.C19 == null)
+                            {
+                                sd.C19 = sd.C18;
+                            }
+    
+                        }
+    
+                        if (sy == 19)
+                        {
+                            if (sd.C20 == sd.C19 || sd.C20 == null)
+                            {
+                                sd.C20 = sd.C19;
+                            }
+                        }
+    
+                        if (sy == 20)
+                        {
+                            if (sd.C21 == sd.C20 || sd.C21 == null)
+                            {
+                                sd.C21 = sd.C20;
+                            }
+    
+                        }
+    
+                        if (sy == 21)
+                        {
+                            if (sd.C22 == sd.C21 || sd.C22 == null)
+                            {
+                                sd.C22 = sd.C21;
+                            }
+    
+                        }
+    
+                        if (sy == 22)
+                        {
+                            if (sd.C23 == sd.C22 || sd.C23 == null)
+                            {
+                                sd.C23 = sd.C22;
+                            }
+    
+                        }
+    
+                        if (sy == 23)
+                        {
+                            if (sd.C24 == sd.C23 || sd.C24 == null)
+                            {
+                                sd.C24 = sd.C23;
+                            }
+    
+                        }
+    
+                        if (sy == 24)
+                        {
+                            if (sd.C25 == sd.C24 || sd.C25 == null)
+                            {
+                                sd.C25 = sd.C24;
+                            }
+    
+                        }
+    
+                        if (sy == 25)
+                        {
+                            if (sd.C26 == sd.C25 || sd.C26 == null)
+                            {
+                                sd.C26 = sd.C25;
+                            }
+                        }
+    
+                        if (sy == 26)
+                        {
+                            if (sd.C27 == sd.C26 || sd.C27 == null)
+                            {
+                                sd.C27 = sd.C26;
+    
+                            }
+                        }
+    
+                        if (sy == 27)
+                        {
+                            if (sd.C28 == sd.C27 || sd.C28 == null)
+                            {
+                                sd.C28 = sd.C27;
+                            }
+    
+                        }
+    
+                        if (sy == 28)
+                        {
+                            if (sd.C29 == sd.C28 || sd.C29 == null)
+                            {
+                                sd.C29 = sd.C28;
+    
+                            }
+                        }
+    
+                        if (sy == 29)
+                        {
+                            if (sd.C30 == sd.C29 || sd.C30 == null)
+                            {
+                                sd.C30 = sd.C29;
+                            }
+    
+                        }
+    
+                        if (sy == 30)
+                        {
+                            if (sd.C31 == sd.C30 || sd.C31 == null)
+                            {
+                                sd.C31 = sd.C30;
+                            }
+    
+                        }
+    
+    
+                        this.db.Entry(sd).State = EntityState.Modified;
+                        this.db.SaveChanges();
+                        sd.TotalHours = 0;
+                        {
+                            long.TryParse(sd.C1, out var tl);
+                            long.TryParse(sd.C2, out var tl1);
+                            long.TryParse(sd.C3, out var tl2);
+                            long.TryParse(sd.C4, out var tl3);
+                            long.TryParse(sd.C5, out var tl4);
+                            long.TryParse(sd.C6, out var tl5);
+                            long.TryParse(sd.C7, out var tl6);
+                            long.TryParse(sd.C8, out var tl7);
+                            long.TryParse(sd.C9, out var tl8);
+                            long.TryParse(sd.C10, out var tl9);
+                            long.TryParse(sd.C11, out var tl10);
+                            long.TryParse(sd.C12, out var tl11);
+                            long.TryParse(sd.C13, out var tl12);
+                            long.TryParse(sd.C14, out var tl13);
+                            long.TryParse(sd.C15, out var tl14);
+                            long.TryParse(sd.C16, out var tl15);
+                            long.TryParse(sd.C17, out var tl16);
+                            long.TryParse(sd.C18, out var tl17);
+                            long.TryParse(sd.C19, out var tl18);
+                            long.TryParse(sd.C20, out var tl19);
+                            long.TryParse(sd.C21, out var tl20);
+                            long.TryParse(sd.C22, out var tl21);
+                            long.TryParse(sd.C23, out var tl22);
+                            long.TryParse(sd.C24, out var tl23);
+                            long.TryParse(sd.C25, out var tl24);
+                            long.TryParse(sd.C26, out var tl25);
+                            long.TryParse(sd.C27, out var tl26);
+                            long.TryParse(sd.C28, out var tl27);
+                            long.TryParse(sd.C29, out var tl28);
+                            long.TryParse(sd.C30, out var tl29);
+                            long.TryParse(sd.C31, out var tl30);
+                            long.TryParse(sd.TotalHours.ToString(), out var sdlg);
+                            sd.TotalHours = tl + tl1 + tl2 + tl3 + tl4 + tl5 + tl6 + tl7 + tl8 + tl9 + tl10 + tl11 + tl12 + tl13
+                                            + tl14 + tl15 + tl16 + tl17 + tl18 + tl19 + tl20 + tl21 + tl22 + tl23 + tl24 + tl25
+                                            + tl26 + tl27 + tl28 + tl29 + tl30;
+                            double.TryParse(b.NormalTimeUpto.ToString(), out var tho);
+                            {
+                                var t = new List<long>();
+                                sd.TotalOverTime = 0;
+                                t.Add(tl);
+                                t.Add(tl1);
+                                t.Add(tl2);
+                                t.Add(tl3);
+                                t.Add(tl4);
+                                t.Add(tl5);
+                                t.Add(tl6);
+                                t.Add(tl7);
+                                t.Add(tl8);
+                                t.Add(tl9);
+                                t.Add(tl10);
+                                t.Add(tl11);
+                                t.Add(tl12);
+                                t.Add(tl13);
+                                t.Add(tl14);
+                                t.Add(tl15);
+                                t.Add(tl16);
+                                t.Add(tl17);
+                                t.Add(tl18);
+                                t.Add(tl19);
+                                t.Add(tl20);
+                                t.Add(tl21);
+                                t.Add(tl22);
+                                t.Add(tl23);
+                                t.Add(tl24);
+                                t.Add(tl25);
+                                t.Add(tl26);
+                                t.Add(tl27);
+                                t.Add(tl28);
+                                t.Add(tl29);
+                                t.Add(tl30);
+                                long tho1 = 0;
+                                foreach (var l in t)
+                                    if (l > tho)
+                                    {
+                                        tho1 += l - (long)tho;
+                                        sd.TotalOverTime = tho1;
+                                    }
+                            }
+                            {
+                                sd.TotalSickLeave = 0;
+                                long ts = 0;
+                                if (!sd.C1.IsNullOrWhiteSpace())
+                                    if (sd.C1.Equals("S"))
+                                        ts = ts + 1;
+                                if (!sd.C2.IsNullOrWhiteSpace())
+                                    if (sd.C2.Equals("S"))
+                                        ts = ts + 1;
+                                if (!sd.C3.IsNullOrWhiteSpace())
+                                    if (sd.C3.Equals("S"))
+                                        ts = ts + 1;
+                                if (!sd.C4.IsNullOrWhiteSpace())
+                                    if (sd.C4.Equals("S"))
+                                        ts = ts + 1;
+                                if (!sd.C5.IsNullOrWhiteSpace())
+                                    if (sd.C5.Equals("S"))
+                                        ts = ts + 1;
+                                if (!sd.C6.IsNullOrWhiteSpace())
+                                    if (sd.C6.Equals("S"))
+                                        ts = ts + 1;
+                                if (!sd.C7.IsNullOrWhiteSpace())
+                                    if (sd.C7.Equals("S"))
+                                        ts = ts + 1;
+                                if (!sd.C8.IsNullOrWhiteSpace())
+                                    if (sd.C8.Equals("S"))
+                                        ts = ts + 1;
+                                if (!sd.C9.IsNullOrWhiteSpace())
+                                    if (sd.C9.Equals("S"))
+                                        ts = ts + 1;
+                                if (!sd.C10.IsNullOrWhiteSpace())
+                                    if (sd.C10.Equals("S"))
+                                        ts = ts + 1;
+                                if (!sd.C11.IsNullOrWhiteSpace())
+                                    if (sd.C11.Equals("S"))
+                                        ts = ts + 1;
+                                if (!sd.C12.IsNullOrWhiteSpace())
+                                    if (sd.C12.Equals("S"))
+                                        ts = ts + 1;
+                                if (!sd.C13.IsNullOrWhiteSpace())
+                                    if (sd.C13.Equals("S"))
+                                        ts = ts + 1;
+                                if (!sd.C14.IsNullOrWhiteSpace())
+                                    if (sd.C14.Equals("S"))
+                                        ts = ts + 1;
+                                if (!sd.C15.IsNullOrWhiteSpace())
+                                    if (sd.C15.Equals("S"))
+                                        ts = ts + 1;
+                                if (!sd.C16.IsNullOrWhiteSpace())
+                                    if (sd.C16.Equals("S"))
+                                        ts = ts + 1;
+                                if (!sd.C17.IsNullOrWhiteSpace())
+                                    if (sd.C17.Equals("S"))
+                                        ts = ts + 1;
+                                if (!sd.C18.IsNullOrWhiteSpace())
+                                    if (sd.C18.Equals("S"))
+                                        ts = ts + 1;
+                                if (!sd.C19.IsNullOrWhiteSpace())
+                                    if (sd.C19.Equals("S"))
+                                        ts = ts + 1;
+                                if (!sd.C20.IsNullOrWhiteSpace())
+                                    if (sd.C20.Equals("S"))
+                                        ts = ts + 1;
+                                if (!sd.C21.IsNullOrWhiteSpace())
+                                    if (sd.C21.Equals("S"))
+                                        ts = ts + 1;
+                                if (!sd.C22.IsNullOrWhiteSpace())
+                                    if (sd.C22.Equals("S"))
+                                        ts = ts + 1;
+                                if (!sd.C23.IsNullOrWhiteSpace())
+                                    if (sd.C23.Equals("S"))
+                                        ts = ts + 1;
+                                if (!sd.C24.IsNullOrWhiteSpace())
+                                    if (sd.C24.Equals("S"))
+                                        ts = ts + 1;
+                                if (!sd.C25.IsNullOrWhiteSpace())
+                                    if (sd.C25.Equals("S"))
+                                        ts = ts + 1;
+                                if (!sd.C26.IsNullOrWhiteSpace())
+                                    if (sd.C26.Equals("S"))
+                                        ts = ts + 1;
+                                if (!sd.C27.IsNullOrWhiteSpace())
+                                    if (sd.C27.Equals("S"))
+                                        ts = ts + 1;
+                                if (!sd.C28.IsNullOrWhiteSpace())
+                                    if (sd.C28.Equals("S"))
+                                        ts = ts + 1;
+                                if (!sd.C29.IsNullOrWhiteSpace())
+                                    if (sd.C29.Equals("S"))
+                                        ts = ts + 1;
+                                if (!sd.C30.IsNullOrWhiteSpace())
+                                    if (sd.C30.Equals("S"))
+                                        ts = ts + 1;
+                                if (!sd.C31.IsNullOrWhiteSpace())
+                                    if (sd.C31.Equals("S"))
+                                        ts = ts + 1;
+    
+                                sd.TotalSickLeave = ts;
+                            }
+                            {
+                                sd.TotalVL = 0;
+                                long tv = 0;
+                                if (!sd.C1.IsNullOrWhiteSpace())
+                                    if (sd.C1.Equals("V"))
+                                        tv = tv + 1;
+                                if (!sd.C2.IsNullOrWhiteSpace())
+                                    if (sd.C2.Equals("V"))
+                                        tv = tv + 1;
+                                if (!sd.C3.IsNullOrWhiteSpace())
+                                    if (sd.C3.Equals("V"))
+                                        tv = tv + 1;
+                                if (!sd.C4.IsNullOrWhiteSpace())
+                                    if (sd.C4.Equals("V"))
+                                        tv = tv + 1;
+                                if (!sd.C5.IsNullOrWhiteSpace())
+                                    if (sd.C5.Equals("V"))
+                                        tv = tv + 1;
+                                if (!sd.C6.IsNullOrWhiteSpace())
+                                    if (sd.C6.Equals("V"))
+                                        tv = tv + 1;
+                                if (!sd.C7.IsNullOrWhiteSpace())
+                                    if (sd.C7.Equals("V"))
+                                        tv = tv + 1;
+                                if (!sd.C8.IsNullOrWhiteSpace())
+                                    if (sd.C8.Equals("V"))
+                                        tv = tv + 1;
+                                if (!sd.C9.IsNullOrWhiteSpace())
+                                    if (sd.C9.Equals("V"))
+                                        tv = tv + 1;
+                                if (!sd.C10.IsNullOrWhiteSpace())
+                                    if (sd.C10.Equals("V"))
+                                        tv = tv + 1;
+                                if (!sd.C11.IsNullOrWhiteSpace())
+                                    if (sd.C11.Equals("V"))
+                                        tv = tv + 1;
+                                if (!sd.C12.IsNullOrWhiteSpace())
+                                    if (sd.C12.Equals("V"))
+                                        tv = tv + 1;
+                                if (!sd.C13.IsNullOrWhiteSpace())
+                                    if (sd.C13.Equals("V"))
+                                        tv = tv + 1;
+                                if (!sd.C14.IsNullOrWhiteSpace())
+                                    if (sd.C14.Equals("V"))
+                                        tv = tv + 1;
+                                if (!sd.C15.IsNullOrWhiteSpace())
+                                    if (sd.C15.Equals("V"))
+                                        tv = tv + 1;
+                                if (!sd.C16.IsNullOrWhiteSpace())
+                                    if (sd.C16.Equals("V"))
+                                        tv = tv + 1;
+                                if (!sd.C17.IsNullOrWhiteSpace())
+                                    if (sd.C17.Equals("V"))
+                                        tv = tv + 1;
+                                if (!sd.C18.IsNullOrWhiteSpace())
+                                    if (sd.C18.Equals("V"))
+                                        tv = tv + 1;
+                                if (!sd.C19.IsNullOrWhiteSpace())
+                                    if (sd.C19.Equals("V"))
+                                        tv = tv + 1;
+                                if (!sd.C20.IsNullOrWhiteSpace())
+                                    if (sd.C20.Equals("V"))
+                                        tv = tv + 1;
+                                if (!sd.C21.IsNullOrWhiteSpace())
+                                    if (sd.C21.Equals("V"))
+                                        tv = tv + 1;
+                                if (!sd.C22.IsNullOrWhiteSpace())
+                                    if (sd.C22.Equals("V"))
+                                        tv = tv + 1;
+                                if (!sd.C23.IsNullOrWhiteSpace())
+                                    if (sd.C23.Equals("V"))
+                                        tv = tv + 1;
+                                if (!sd.C24.IsNullOrWhiteSpace())
+                                    if (sd.C24.Equals("V"))
+                                        tv = tv + 1;
+                                if (!sd.C25.IsNullOrWhiteSpace())
+                                    if (sd.C25.Equals("V"))
+                                        tv = tv + 1;
+                                if (!sd.C26.IsNullOrWhiteSpace())
+                                    if (sd.C26.Equals("V"))
+                                        tv = tv + 1;
+                                if (!sd.C27.IsNullOrWhiteSpace())
+                                    if (sd.C27.Equals("V"))
+                                        tv = tv + 1;
+                                if (!sd.C28.IsNullOrWhiteSpace())
+                                    if (sd.C28.Equals("V"))
+                                        tv = tv + 1;
+                                if (!sd.C29.IsNullOrWhiteSpace())
+                                    if (sd.C29.Equals("V"))
+                                        tv = tv + 1;
+                                if (!sd.C30.IsNullOrWhiteSpace())
+                                    if (sd.C30.Equals("V"))
+                                        tv = tv + 1;
+                                if (!sd.C31.IsNullOrWhiteSpace())
+                                    if (sd.C31.Equals("V"))
+                                        tv = tv + 1;
+    
+                                sd.TotalVL = tv;
+                            }
+                            {
+                                sd.TotalAbsent = 0;
+                                long tv = 0;
+                                if (!sd.C1.IsNullOrWhiteSpace())
+                                    if (sd.C1.Equals("A"))
+                                        tv = tv + 1;
+                                if (!sd.C2.IsNullOrWhiteSpace())
+                                    if (sd.C2.Equals("A"))
+                                        tv = tv + 1;
+                                if (!sd.C3.IsNullOrWhiteSpace())
+                                    if (sd.C3.Equals("A"))
+                                        tv = tv + 1;
+                                if (!sd.C4.IsNullOrWhiteSpace())
+                                    if (sd.C4.Equals("A"))
+                                        tv = tv + 1;
+                                if (!sd.C5.IsNullOrWhiteSpace())
+                                    if (sd.C5.Equals("A"))
+                                        tv = tv + 1;
+                                if (!sd.C6.IsNullOrWhiteSpace())
+                                    if (sd.C6.Equals("A"))
+                                        tv = tv + 1;
+                                if (!sd.C7.IsNullOrWhiteSpace())
+                                    if (sd.C7.Equals("A"))
+                                        tv = tv + 1;
+                                if (!sd.C8.IsNullOrWhiteSpace())
+                                    if (sd.C8.Equals("A"))
+                                        tv = tv + 1;
+                                if (!sd.C9.IsNullOrWhiteSpace())
+                                    if (sd.C9.Equals("A"))
+                                        tv = tv + 1;
+                                if (!sd.C10.IsNullOrWhiteSpace())
+                                    if (sd.C10.Equals("A"))
+                                        tv = tv + 1;
+                                if (!sd.C11.IsNullOrWhiteSpace())
+                                    if (sd.C11.Equals("A"))
+                                        tv = tv + 1;
+                                if (!sd.C12.IsNullOrWhiteSpace())
+                                    if (sd.C12.Equals("A"))
+                                        tv = tv + 1;
+                                if (!sd.C13.IsNullOrWhiteSpace())
+                                    if (sd.C13.Equals("A"))
+                                        tv = tv + 1;
+                                if (!sd.C14.IsNullOrWhiteSpace())
+                                    if (sd.C14.Equals("A"))
+                                        tv = tv + 1;
+                                if (!sd.C15.IsNullOrWhiteSpace())
+                                    if (sd.C15.Equals("A"))
+                                        tv = tv + 1;
+                                if (!sd.C16.IsNullOrWhiteSpace())
+                                    if (sd.C16.Equals("A"))
+                                        tv = tv + 1;
+                                if (!sd.C17.IsNullOrWhiteSpace())
+                                    if (sd.C17.Equals("A"))
+                                        tv = tv + 1;
+                                if (!sd.C18.IsNullOrWhiteSpace())
+                                    if (sd.C18.Equals("A"))
+                                        tv = tv + 1;
+                                if (!sd.C19.IsNullOrWhiteSpace())
+                                    if (sd.C19.Equals("A"))
+                                        tv = tv + 1;
+                                if (!sd.C20.IsNullOrWhiteSpace())
+                                    if (sd.C20.Equals("A"))
+                                        tv = tv + 1;
+                                if (!sd.C21.IsNullOrWhiteSpace())
+                                    if (sd.C21.Equals("A"))
+                                        tv = tv + 1;
+                                if (!sd.C22.IsNullOrWhiteSpace())
+                                    if (sd.C22.Equals("A"))
+                                        tv = tv + 1;
+                                if (!sd.C23.IsNullOrWhiteSpace())
+                                    if (sd.C23.Equals("A"))
+                                        tv = tv + 1;
+                                if (!sd.C24.IsNullOrWhiteSpace())
+                                    if (sd.C24.Equals("A"))
+                                        tv = tv + 1;
+                                if (!sd.C25.IsNullOrWhiteSpace())
+                                    if (sd.C25.Equals("A"))
+                                        tv = tv + 1;
+                                if (!sd.C26.IsNullOrWhiteSpace())
+                                    if (sd.C26.Equals("A"))
+                                        tv = tv + 1;
+                                if (!sd.C27.IsNullOrWhiteSpace())
+                                    if (sd.C27.Equals("A"))
+                                        tv = tv + 1;
+                                if (!sd.C28.IsNullOrWhiteSpace())
+                                    if (sd.C28.Equals("A"))
+                                        tv = tv + 1;
+                                if (!sd.C29.IsNullOrWhiteSpace())
+                                    if (sd.C29.Equals("A"))
+                                        tv = tv + 1;
+                                if (!sd.C30.IsNullOrWhiteSpace())
+                                    if (sd.C30.Equals("A"))
+                                        tv = tv + 1;
+                                if (!sd.C31.IsNullOrWhiteSpace())
+                                    if (sd.C31.Equals("A"))
+                                        tv = tv + 1;
+    
+                                sd.TotalAbsent = tv;
+                            }
+                            {
+                                sd.TotalTransefer = 0;
+                                long tv = 0;
+                                if (!sd.C1.IsNullOrWhiteSpace())
+                                    if (sd.C1.Equals("T"))
+                                        tv = tv + 1;
+                                if (!sd.C2.IsNullOrWhiteSpace())
+                                    if (sd.C2.Equals("T"))
+                                        tv = tv + 1;
+                                if (!sd.C3.IsNullOrWhiteSpace())
+                                    if (sd.C3.Equals("T"))
+                                        tv = tv + 1;
+                                if (!sd.C4.IsNullOrWhiteSpace())
+                                    if (sd.C4.Equals("T"))
+                                        tv = tv + 1;
+                                if (!sd.C5.IsNullOrWhiteSpace())
+                                    if (sd.C5.Equals("T"))
+                                        tv = tv + 1;
+                                if (!sd.C6.IsNullOrWhiteSpace())
+                                    if (sd.C6.Equals("T"))
+                                        tv = tv + 1;
+                                if (!sd.C7.IsNullOrWhiteSpace())
+                                    if (sd.C7.Equals("T"))
+                                        tv = tv + 1;
+                                if (!sd.C8.IsNullOrWhiteSpace())
+                                    if (sd.C8.Equals("T"))
+                                        tv = tv + 1;
+                                if (!sd.C9.IsNullOrWhiteSpace())
+                                    if (sd.C9.Equals("T"))
+                                        tv = tv + 1;
+                                if (!sd.C10.IsNullOrWhiteSpace())
+                                    if (sd.C10.Equals("T"))
+                                        tv = tv + 1;
+                                if (!sd.C11.IsNullOrWhiteSpace())
+                                    if (sd.C11.Equals("T"))
+                                        tv = tv + 1;
+                                if (!sd.C12.IsNullOrWhiteSpace())
+                                    if (sd.C12.Equals("T"))
+                                        tv = tv + 1;
+                                if (!sd.C13.IsNullOrWhiteSpace())
+                                    if (sd.C13.Equals("T"))
+                                        tv = tv + 1;
+                                if (!sd.C14.IsNullOrWhiteSpace())
+                                    if (sd.C14.Equals("T"))
+                                        tv = tv + 1;
+                                if (!sd.C15.IsNullOrWhiteSpace())
+                                    if (sd.C15.Equals("T"))
+                                        tv = tv + 1;
+                                if (!sd.C16.IsNullOrWhiteSpace())
+                                    if (sd.C16.Equals("T"))
+                                        tv = tv + 1;
+                                if (!sd.C17.IsNullOrWhiteSpace())
+                                    if (sd.C17.Equals("T"))
+                                        tv = tv + 1;
+                                if (!sd.C18.IsNullOrWhiteSpace())
+                                    if (sd.C18.Equals("T"))
+                                        tv = tv + 1;
+                                if (!sd.C19.IsNullOrWhiteSpace())
+                                    if (sd.C19.Equals("T"))
+                                        tv = tv + 1;
+                                if (!sd.C20.IsNullOrWhiteSpace())
+                                    if (sd.C20.Equals("T"))
+                                        tv = tv + 1;
+                                if (!sd.C21.IsNullOrWhiteSpace())
+                                    if (sd.C21.Equals("T"))
+                                        tv = tv + 1;
+                                if (!sd.C22.IsNullOrWhiteSpace())
+                                    if (sd.C22.Equals("T"))
+                                        tv = tv + 1;
+                                if (!sd.C23.IsNullOrWhiteSpace())
+                                    if (sd.C23.Equals("T"))
+                                        tv = tv + 1;
+                                if (!sd.C24.IsNullOrWhiteSpace())
+                                    if (sd.C24.Equals("T"))
+                                        tv = tv + 1;
+                                if (!sd.C25.IsNullOrWhiteSpace())
+                                    if (sd.C25.Equals("T"))
+                                        tv = tv + 1;
+                                if (!sd.C26.IsNullOrWhiteSpace())
+                                    if (sd.C26.Equals("T"))
+                                        tv = tv + 1;
+                                if (!sd.C27.IsNullOrWhiteSpace())
+                                    if (sd.C27.Equals("T"))
+                                        tv = tv + 1;
+                                if (!sd.C28.IsNullOrWhiteSpace())
+                                    if (sd.C28.Equals("T"))
+                                        tv = tv + 1;
+                                if (!sd.C29.IsNullOrWhiteSpace())
+                                    if (sd.C29.Equals("T"))
+                                        tv = tv + 1;
+                                if (!sd.C30.IsNullOrWhiteSpace())
+                                    if (sd.C30.Equals("T"))
+                                        tv = tv + 1;
+                                if (!sd.C31.IsNullOrWhiteSpace())
+                                    if (sd.C31.Equals("T"))
+                                        tv = tv + 1;
+    
+                                sd.TotalTransefer = tv;
+                            }
+                            sd.status = "panding";
+                        }
+                        this.db.Entry(sd).State = EntityState.Modified;
+                        this.db.SaveChanges();
                     }
-                    this.db.Entry(sd).State = EntityState.Modified;
-                    this.db.SaveChanges();
+    
+                    
+                    fi:;
+    
                 }
-
-                
-                fi:;
-
+                */
             }
-            */
+            var as1 = this.db.Attendances.Where(x => x.SubMain.Equals(aa.ID)).Include(x => x.LabourMaster)
+                .OrderByDescending(m => m.EmpID);
+            var listat = new List<Attendance>();
+            foreach (var VA in as1.OrderBy(x => x.ID))
+            {
+                if (!listat.Exists(
+                        x => x.MainTimeSheet.ProjectList.PROJECT_NAME == VA.MainTimeSheet.ProjectList.PROJECT_NAME
+                             && x.EmpID == VA.EmpID))
+                {
+                    listat.Add(VA);
+                }
+            }
             var model1 = new timesheetViewModel
                              {
-                                 Attendancecollection = this.db.Attendances.Where(x => x.SubMain.Equals(aa.ID))
-                                     .Include(x => x.LabourMaster).OrderByDescending(m => m.ID)
+                                 Attendancecollection = listat
                              };
 
             return this.View(model1);
@@ -1875,7 +1887,7 @@
 
         public List<int> GetAllholi(DateTime date)
         {
-            var holilist = this.db.Holidays.Where(x => x.Date.Value.Month == date.Month).ToList();
+            var holilist = this.db.Holidays.Where(x => x.Date.Value.Month == date.Month && x.Date.Value.Year == date.Year).ToList();
             var array = new List<int>();
             foreach (var ho in holilist) array.Add(ho.Date.Value.Day);
 
@@ -2299,8 +2311,8 @@
                                 at.C31 = attendance.C31;
 
                         this.db.Entry(at).State = EntityState.Modified;
-                        this.db.SaveChanges();
-
+                        this.db.SaveChanges(); 
+                        date = new DateTime(aa.TMonth.Year, aa.TMonth.Month, 1);
                         for (var i = 0; i < DateTime.DaysInMonth(aa.TMonth.Year, aa.TMonth.Month); i++)
                         {
                             if (date.DayOfWeek.Equals(DayOfWeek.Friday))
@@ -2497,6 +2509,8 @@
                             date = date.AddDays(1);
                         }
 
+                        this.db.Entry(at).State = EntityState.Modified;
+                        this.db.SaveChanges();
                         var hday = this.db.Holidays.ToList();
                         date = new DateTime(aa.TMonth.Year, aa.TMonth.Month, 1);
                         for (var i = 0; i < DateTime.DaysInMonth(aa.TMonth.Year, aa.TMonth.Month); i++)
@@ -2694,6 +2708,9 @@
 
                             date = date.AddDays(1);
                         }
+
+                        this.db.Entry(at).State = EntityState.Modified;
+                        this.db.SaveChanges();
                         {
                             at = this.db.Attendances.Find(check.First().ID);
                             at.TotalHours = 0;
@@ -3914,7 +3931,7 @@
                 }
                 else
                 {
-                    var at = new Attendance();
+                    var at = attendance;
                     at.EmpID = attendance.EmpID;
                     at.SubMain = attendance.SubMain;
                     long fri1 = 0;
@@ -5270,7 +5287,7 @@
                             if (!at.C16.IsNullOrWhiteSpace())
                             {
                                 if (at.C16.Equals("A"))
-                                    if (!(fday.Exists(x => x.Equals(16)) || hlistday.Exists(x => x.Equals(26))))
+                                    if (!(fday.Exists(x => x.Equals(16)) || hlistday.Exists(x => x.Equals(16))))
                                         tv = tv + 1;
 
                                 i++;
@@ -5816,8 +5833,16 @@
                     foreach (var abis in ab)
                         atlist.AddRange(
                             this.db.Attendances.Where(x => x.SubMain.Equals(abis.ID)).Include(x => x.LabourMaster));
+                    var listat = new List<Attendance>();
+                    foreach (var VA in atlist.OrderBy(x=>x.ID))
+                    {
+                        if (!listat.Exists(x=>x.MainTimeSheet.ProjectList.PROJECT_NAME == VA.MainTimeSheet.ProjectList.PROJECT_NAME && x.EmpID == VA.EmpID))
+                        {
+                            listat.Add(VA);
+                        }
+                    }
                     return this.View(
-                        atlist.OrderBy(x => x.MainTimeSheet.Project).ThenBy(x => x.EmpID).ToPagedList(1, 1000));
+                        listat.OrderBy(x => x.MainTimeSheet.Project).ThenBy(x=>x.ID).ToPagedList(1, 1000));
                 }
                 else
                 {
@@ -5907,123 +5932,53 @@
                                                                             || x.status.Equals("approved"))))
                 {
                     var te = this.db.MainTimeSheets.OrderByDescending(x => x.ID).ToList();
-                    if (te.Exists(
-                        x => x.TMonth.Month == mainTimeSheet.TMonth.Month
-                             && x.TMonth.Year == mainTimeSheet.TMonth.Year))
+                    if (te.Exists(x=>x.TMonth.Month == mainTimeSheet.TMonth.Month && x.TMonth.Year == mainTimeSheet.TMonth.Year &&  x.Project == mainTimeSheet.Project &&  x.ManPowerSupplier == mainTimeSheet.ManPowerSupplier))
                     {
-                        var te1 = te.Find(
-                            x => x.TMonth.Month == mainTimeSheet.TMonth.Month
-                                 && x.TMonth.Year == mainTimeSheet.TMonth.Year);
-                        if (mainTimeSheet.TMonth == te[0].TMonth
+                        var te1 = te.Find(x =>
+                            x.TMonth.Month == mainTimeSheet.TMonth.Month && x.TMonth.Year == mainTimeSheet.TMonth.Year
+                                                                         && x.Project == mainTimeSheet.Project
+                                                                         && x.ManPowerSupplier
+                                                                         == mainTimeSheet.ManPowerSupplier);
+                        if (mainTimeSheet.TMonth.Month == te[0].TMonth.Month
+                            && mainTimeSheet.TMonth.Year == te[0].TMonth.Year
                             && mainTimeSheet.ManPowerSupplier == te[0].ManPowerSupplier
                             && te[0].Project == mainTimeSheet.Project) goto qw;
                         te1.TMonth = mainTimeSheet.TMonth;
-                        if (te1.ManPowerSupplier != mainTimeSheet.ManPowerSupplier)
-                        {
-                            this.db.MainTimeSheets.Add(mainTimeSheet);
-                            this.db.SaveChanges();
-                            te = this.db.MainTimeSheets.OrderByDescending(x => x.ID).ToList();
-                            var teall = te.FindAll(
-                                x => x.TMonth.Month == mainTimeSheet.TMonth.Month
-                                     && x.TMonth.Year == mainTimeSheet.TMonth.Year
-                                     && x.ManPowerSupplier == mainTimeSheet.ManPowerSupplier
-                                     && x.Project == mainTimeSheet.Project).OrderBy(x => x.ID);
-                            var atalllist = this.db.Attendances.ToList();
-                            if (teall != null || teall.Count() != 0)
-                            {
-                                var atallfind = new List<Attendance>();
-                                foreach (var sheet in teall)
-                                {
-                                    var zz = atalllist.FindAll(x => x.SubMain == sheet.ID);
-                                    if (zz.Count != 0) atallfind = atalllist.FindAll(x => x.SubMain == sheet.ID);
-                                }
-
-                                foreach (var ql in atallfind)
-                                {
-                                    ql.SubMain = teall.Last().ID;
-                                    this.db.Entry(ql).State = EntityState.Modified;
-                                    this.db.SaveChanges();
-                                }
-                            }
-
-                            ids = te1;
-                            return this.RedirectToAction("AIndex", "Home", ids);
-                        }
-
-                        if (te1.Project != mainTimeSheet.Project)
-                        {
-                            this.db.MainTimeSheets.Add(mainTimeSheet);
-                            this.db.SaveChanges();
-                            te = this.db.MainTimeSheets.OrderByDescending(x => x.ID).ToList();
-                            var teall = te.FindAll(
-                                x => x.TMonth.Month == mainTimeSheet.TMonth.Month
-                                     && x.TMonth.Year == mainTimeSheet.TMonth.Year
-                                     && x.ManPowerSupplier == mainTimeSheet.ManPowerSupplier
-                                     && x.Project == mainTimeSheet.Project).OrderBy(x => x.ID);
-                            var atalllist = this.db.Attendances.ToList();
-                            if (teall != null || teall.Count() != 0)
-                            {
-                                var atallfind = new List<Attendance>();
-                                foreach (var sheet in teall)
-                                {
-                                    var zz = atalllist.FindAll(x => x.SubMain == sheet.ID);
-                                    if (zz.Count != 0) atallfind = atalllist.FindAll(x => x.SubMain == sheet.ID);
-                                }
-
-                                foreach (var ql in atallfind)
-                                {
-                                    ql.SubMain = teall.Last().ID;
-                                    this.db.Entry(ql).State = EntityState.Modified;
-                                    this.db.SaveChanges();
-                                }
-                            }
-
-                            ids = te1;
-                            return this.RedirectToAction("AIndex", "Home", ids);
-                        }
-
-                        if (te1.TMonth.Month != te.First().TMonth.Month)
-                        {
-                            this.db.MainTimeSheets.Add(mainTimeSheet);
-                            this.db.SaveChanges();
-                            te = this.db.MainTimeSheets.OrderByDescending(x => x.ID).ToList();
-                            var teall = te.FindAll(
-                                x => x.TMonth.Month == mainTimeSheet.TMonth.Month
-                                     && x.TMonth.Year == mainTimeSheet.TMonth.Year
-                                     && x.ManPowerSupplier == mainTimeSheet.ManPowerSupplier
-                                     && x.Project == mainTimeSheet.Project).OrderBy(x => x.ID);
-                            var atalllist = this.db.Attendances.ToList();
-                            if (teall != null || teall.Count() != 0)
-                            {
-                                var atallfind = new List<Attendance>();
-                                foreach (var sheet in teall)
-                                {
-                                    var zz = atalllist.FindAll(x => x.SubMain == sheet.ID);
-                                    if (zz.Count != 0) atallfind = atalllist.FindAll(x => x.SubMain == sheet.ID);
-                                }
-
-                                foreach (var ql in atallfind)
-                                {
-                                    ql.SubMain = teall.Last().ID;
-                                    this.db.Entry(ql).State = EntityState.Modified;
-                                    this.db.SaveChanges();
-                                }
-                            }
-
-                            ids = te1;
-                            return this.RedirectToAction("AIndex", "Home", ids);
-                        }
-
-                        this.db.Entry(te1).State = EntityState.Modified;
+                        this.db.MainTimeSheets.Add(mainTimeSheet);
                         this.db.SaveChanges();
-                        ids = te1;
+                        te = this.db.MainTimeSheets.OrderByDescending(x => x.ID).ToList();
+                        var teall = te.FindAll(
+                            x => x.TMonth.Month == mainTimeSheet.TMonth.Month
+                                 && x.TMonth.Year == mainTimeSheet.TMonth.Year
+                                 && x.ManPowerSupplier == mainTimeSheet.ManPowerSupplier
+                                 && x.Project == mainTimeSheet.Project).OrderBy(x => x.ID);
+                        var atalllist = this.db.Attendances.ToList();
+                        if (teall != null || teall.Count() != 0)
+                        {
+                            var atallfind = new List<Attendance>();
+                            foreach (var sheet in teall)
+                            {
+                                var zz = atalllist.FindAll(x => x.SubMain == sheet.ID);
+                                if (zz.Count != 0) atallfind = atalllist.FindAll(x => x.SubMain == sheet.ID);
+                            }
+
+                            foreach (var ql in atallfind)
+                            {
+                                ql.SubMain = teall.Last().ID;
+                                this.db.Entry(ql).State = EntityState.Modified;
+                                this.db.SaveChanges();
+                            }
+                        }
+
+                        ids = teall.Last();
                         return this.RedirectToAction("AIndex", "Home", ids);
+
                     }
                     else
                     {
                         this.db.MainTimeSheets.Add(mainTimeSheet);
                         this.db.SaveChanges();
-                        var te2 = this.db.MainTimeSheets.ToList().Last();
+                        var te2 = this.db.MainTimeSheets.ToList().OrderBy(x => x.ID).Last();
                         ids = te2;
                         return this.RedirectToAction("AIndex", "Home", ids);
                     }
@@ -6041,7 +5996,7 @@
 
             return this.View(mainTimeSheet);
             qw:
-            var te3 = this.db.MainTimeSheets.ToList().Last();
+            var te3 = this.db.MainTimeSheets.ToList().OrderBy(x => x.ID).Last();
             ids = te3;
             return this.RedirectToAction("AIndex", "Home", ids);
         }
@@ -7013,6 +6968,9 @@
 
                         date = date.AddDays(1);
                     }
+
+                    this.db.Entry(at).State = EntityState.Modified;
+                    this.db.SaveChanges();
                     {
                         at.TotalHours = 0;
                         long.TryParse(at.C1, out var tl);
@@ -7675,8 +7633,8 @@
             var pasa = new List<AspNetUser>();
             foreach (var permission in pno) pasa.Add(asa.Find(x => x.csid == permission.CsUser));
             var oMail = new SmtpMail("TryIt");
-            var ccstring = "mkhairy@citiscapegroup.com,efathy@citiscapegroup.com,zNader@citiscapegroup.com";
-            oMail.From = "sdiniz@citiscapegroup.com";
+            var ccstring = "mkhairy@citiscapegroup.com,efathy@citiscapegroup.com,zNader@citiscapegroup.com,amohamed@itiscapegroup.com";
+            oMail.From = "timekeeper@citiscapegroup.com";
             oMail.To = pasa.First().Email;
             pasa.Remove(pasa.First());
             foreach (var ccpasa in pasa) ccstring += "," + ccpasa.Email;
@@ -7687,8 +7645,8 @@
                              + " for your approval / reject\n\nBest regards\n" + na + "\n\n\n\n";
             var oServer = new SmtpServer("outlook.office365.com");
             oServer.Protocol = ServerProtocol.ExchangeEWS;
-            oServer.User = "sdiniz@citiscapegroup.com";
-            oServer.Password = "Xay59626";
+            oServer.User = "timekeeper@citiscapegroup.com";
+            oServer.Password = "Yof87779";
             oServer.ConnectType = SmtpConnectType.ConnectSSLAuto;
             var oSmtp = new SmtpClient();
             oSmtp.SendMail(oServer, oMail);
@@ -8676,7 +8634,7 @@
 
         public void DownloadExcelfull(DateTime? mtsmonth1, long? csmps1)
         {
-            List<Attendance> passexel;
+            List<Attendance> listat;
             var Ep = new ExcelPackage();
             var Sheet = Ep.Workbook.Worksheets.Add("Attendances");
             var row = 4;
@@ -8726,14 +8684,34 @@
             Sheet.Cells["AL3"].Value = "TotalTransefer";
             Sheet.Cells["AM3"].Value = "TotalSickLeave";
             Sheet.Cells["AN3"].Value = "FridayHours";
-            Sheet.Cells["AO3"].Value = "PROJECT NAME";
+            Sheet.Cells["AO3"].Value = "HolidayHours";
+            Sheet.Cells["AP3"].Value = "PROJECT NAME";
             long.TryParse(csmps1.ToString(), out var mcs);
             var Msum = this.db.MainTimeSheets.Where(
                 y => y.ManPowerSupplier == mcs && y.TMonth.Month == date.Month && y.TMonth.Year == date.Year).ToList();
+             var cony = 0;
+                var passexel = new List<Attendance>();
             foreach (var sum in Msum)
             {
-                passexel = this.db.Attendances.Where(x => x.SubMain.Equals(sum.ID)).OrderByDescending(x => x.ID)
+                listat = this.db.Attendances.Where(x => x.SubMain.Equals(sum.ID)).OrderByDescending(x => x.ID)
                     .ToList();
+               
+            foreach (var VA in listat.OrderBy(x => x.ID))
+            {
+                if (!passexel.Exists(
+                        x => x.MainTimeSheet.ProjectList.ID == VA.MainTimeSheet.ProjectList.ID
+                             && x.EmpID == VA.EmpID))
+                {
+                    passexel.Add(VA);
+                }
+                else
+                {
+                    cony++;
+                }
+            }
+
+                pcount = pcount + passexel.Count;
+            }
                 for (var i = 0; i < passexel.Count; i++)
                 {
                     var days = new DateTime(date.Year, date.Month, 1);
@@ -8807,10 +8785,20 @@
 
                         var a = passexel[i].TotalHours;
                         var b = passexel[i].TotalOverTime;
+                        var c = passexel[i].FridayHours;
+                        var d = passexel[i].Holidays;
+                        if (c == null)
+                        {
+                            c = 0;
+                        }
+                        if (d == null)
+                        {
+                            d = 0;
+                        }
                         var a_b = new long?();
                         if (a != null || a != 0)
                         {
-                            if (b != null || b != 0) a_b = a - b;
+                            if (b != null || b != 0) a_b = a - b - c -d;
                             else a_b = a;
                         }
                         else
@@ -8818,6 +8806,34 @@
                             a_b = 0;
                         }
 
+                        if (passexel[i].TotalOverTime == null)
+                        {
+                            passexel[i].TotalOverTime = 0;
+                        }
+                        if (passexel[i].TotalAbsent == null)
+                        {
+                            passexel[i].TotalAbsent = 0;
+                        }
+                        if (passexel[i].TotalVL == null)
+                        {
+                            passexel[i].TotalVL = 0;
+                        }
+                        if (passexel[i].TotalTransefer == null)
+                        {
+                            passexel[i].TotalTransefer = 0;
+                        }
+                        if (passexel[i].TotalSickLeave == null)
+                        {
+                            passexel[i].TotalSickLeave = 0;
+                        }
+                        if (passexel[i].FridayHours == null)
+                        {
+                            passexel[i].FridayHours = 0;
+                        }
+                        if (passexel[i].Holidays == null)
+                        {
+                            passexel[i].Holidays = 0;
+                        }
                         Sheet.Cells[string.Format("AH{0}", row)].Value = a_b;
                         Sheet.Cells[string.Format("AI{0}", row)].Value = passexel[i].TotalOverTime;
                         Sheet.Cells[string.Format("AJ{0}", row)].Value = passexel[i].TotalAbsent;
@@ -8825,16 +8841,14 @@
                         Sheet.Cells[string.Format("AL{0}", row)].Value = passexel[i].TotalTransefer;
                         Sheet.Cells[string.Format("AM{0}", row)].Value = passexel[i].TotalSickLeave;
                         Sheet.Cells[string.Format("AN{0}", row)].Value = passexel[i].FridayHours;
-                        Sheet.Cells[string.Format("AO{0}", row)].Value =
+                        Sheet.Cells[string.Format("AO{0}", row)].Value = passexel[i].Holidays;
+                        Sheet.Cells[string.Format("AP{0}", row)].Value =
                             passexel[i].MainTimeSheet.ProjectList.PROJECT_NAME;
                         days = days.AddDays(1);
                     }
 
                     row++;
                 }
-
-                pcount = pcount + passexel.Count;
-            }
 
             Sheet.Cells["A:AZ"].AutoFitColumns();
             this.Response.Clear();

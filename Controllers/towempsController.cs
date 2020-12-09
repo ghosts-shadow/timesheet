@@ -81,9 +81,10 @@ namespace onlygodknows.Controllers
                         db.towemps.Add(towemp1);
                         db.SaveChanges();
                     }
-                    if (towemp[i].lab_no != towemp1.lab_no)
+                    else if (towemp[i-1].lab_no != towemp1.lab_no)
                     {
-                    db.towemps.Add(towemp1);
+                        towemp1.rowref = tw.Id;
+                        db.towemps.Add(towemp1);
                     db.SaveChanges();
                     }
                     i++;

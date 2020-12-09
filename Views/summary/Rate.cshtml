@@ -1,0 +1,247 @@
+﻿@model IEnumerable<onlygodknows.Models.Attendance>
+@{
+    ViewBag.Title = "Rate";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Rate</h2>
+
+
+<table class="table">
+    <col>
+    <colgroup span="3"></colgroup>
+    <colgroup span="3"></colgroup>
+    <colgroup span="3"></colgroup>
+    <colgroup span="3"></colgroup>
+    <colgroup span="2"></colgroup>
+    <tr>
+        <th rowspan="2">S/N</th>
+        <th rowspan="2">
+            @Html.DisplayNameFor(model => model.MainTimeSheet.ProjectList.PROJECT_NAME)
+        </th>
+        <th rowspan="2">
+            @Html.DisplayNameFor(model => model.Skilled) workers
+        </th>
+        <th rowspan="2">
+            Rate(with/without Accomodation & Transportation)
+        </th>
+        <th colspan="3" scope="colgroup">REGULAR</th>
+        <th colspan="3" scope="colgroup">REGULAR OT</th>
+        <th colspan="3" scope="colgroup">HOLIDAY OT </th>
+        <th colspan="3" scope="colgroup">FRIDAY OT</th>
+        <th colspan="2" scope="colgroup">TOTAL SKILLED</th>
+        <th rowspan="2">
+            @Html.DisplayNameFor(model => model.Unskilled) workers
+        </th>
+        <th colspan="3" scope="colgroup">REGULAR</th>
+        <th colspan="3" scope="colgroup">REGULAR OT</th>
+        <th colspan="3" scope="colgroup">HOLIDAY OT </th>
+        <th colspan="3" scope="colgroup">FRIDAY OT</th>
+        <th colspan="2" scope="colgroup">TOTAL UNSKILLED</th>
+        <th colspan="3" scope="colgroup">GRAND TOTAL</th>
+    </tr>
+    <tr>
+        <th scope="col">Hrs</th>
+        <th scope="col">Rate</th>
+        <th scope="col">Amt</th>
+        <th scope="col">Hrs</th>
+        <th scope="col">Rate</th>
+        <th scope="col">Amt</th>
+        <th scope="col">Hrs</th>
+        <th scope="col">Rate</th>
+        <th scope="col">Amt</th>
+        <th scope="col">Hrs</th>
+        <th scope="col">Rate</th>
+        <th scope="col">Amt</th>
+        <th scope="col">HRs</th>
+        <th scope="col">Amt</th>
+        <th scope="col">Hrs</th>
+        <th scope="col">Rate</th>
+        <th scope="col">Amt</th>
+        <th scope="col">Hrs</th>
+        <th scope="col">Rate</th>
+        <th scope="col">Amt</th>
+        <th scope="col">Hrs</th>
+        <th scope="col">Rate</th>
+        <th scope="col">Amt</th>
+        <th scope="col">Hrs</th>
+        <th scope="col">Rate</th>
+        <th scope="col">Amt</th>
+        <th scope="col">Hrs</th>
+        <th scope="col">Amt</th>
+        <th scope="col">QIT</th>
+        <th scope="col">hrs</th>
+        <th scope="col">Amt</th>
+    </tr>
+    @{
+        var i = 0;
+    }
+    @foreach (var item in Model)
+    {
+<tr>
+    <td>
+
+        @{
+            i++;
+        }
+        @i
+    </td>
+    <td>
+        @Html.DisplayFor(modelItem => item.MainTimeSheet.ProjectList.PROJECT_NAME)
+    </td>
+    <td>
+        @Html.DisplayFor(modelItem => item.Skilled)
+    </td>
+    <td>
+        @{
+            var rate = 0d;
+            var rate1 = 0d;
+            var rot = 1.25;
+            var fot = 1.5;
+            var hot = 2.5;
+            var rot1 = 1.25;
+            var fot1 = 1.5;
+            var hot1 = 2.5;
+            var rwoat = "";
+            if (item.MainTimeSheet.ProjectList.rate_w_wo_at == null)
+            {
+                item.MainTimeSheet.ProjectList.rate_w_wo_at = false;
+                rwoat = "without Accomodation & Transportation";
+            }
+            else
+            {
+                if (item.MainTimeSheet.ProjectList.rate_w_wo_at != false)
+                {
+                    rwoat = "with Accomodation & Transportation";
+                    item.MainTimeSheet.ProjectList.rate_w_wo_at = true;
+                }
+                else
+                {
+                    rwoat = "without Accomodation & Transportation";
+                }
+            }
+            if (item.MainTimeSheet.ProjectList.rate_w_wo_at.Value)
+            {
+                rate = 14.00;
+                rate1 = 11.25;
+                rot *= rate;
+                rot1 *= rate1;
+                fot *= rate;
+                fot1 *= rate1;
+                hot *= rate;
+                hot1 *= rate1;
+
+            }
+            else
+            {
+                rate = 11.50;
+                rate1 = 9;
+                rot *= rate;
+                rot1 *= rate1;
+                fot *= rate;
+                fot1 *= rate1;
+                hot *= rate;
+                hot1 *= rate1;
+            }
+        }
+        @rwoat
+    </td>
+    <td>
+        @Html.DisplayFor(modelItem => item.Skilledhours)
+    </td>
+    <td>@rate</td>
+    <td>@{
+            var sr = rate * item.Skilledhours;
+        }
+        @sr AED
+        </td>
+    <td>
+        @Html.DisplayFor(modelItem => item.Skilledrothours)
+    </td>
+    <td>@{
+            var aq = rot * item.Skilledrothours;
+        }
+        @rot</td>
+    <td>@aq AED</td>
+    <td>
+        @Html.DisplayFor(modelItem => item.Skilledhothours)
+    </td>
+    <td>@{
+            var sw = item.Skilledhothours * hot;
+        }
+        @hot</td>
+    <td>@sw AED</td>
+    <td>
+        @Html.DisplayFor(modelItem => item.Skilledfothours) 
+    </td>
+    <td>@{
+            var de = item.Skilledfothours * fot;
+        }
+    @fot
+        </td>
+    <td>@de AED</td>
+    <td>
+        @Html.DisplayFor(modelItem => item.Skilledthours) 
+    </td>
+    <td>@{
+            var totalsk = sr + aq + sw + de;
+        }
+        @totalsk AED</td>
+    <td>
+        @Html.DisplayFor(modelItem => item.Unskilled)
+    </td>
+    <td>
+        @Html.DisplayFor(modelItem => item.Unskilledhours)
+    </td>
+    <td>@rate1</td>
+    <td>
+        @{
+            var sr1 = rate1 * item.Unskilledhours;
+        }
+        @sr1 AED
+    </td>
+    <td>
+        @Html.DisplayFor(modelItem => item.Unskilledrothours)
+    </td>
+    <td>
+        @{
+            var aq1 = rot1 * item.Unskilledrothours;
+        }
+        @rot1</td>
+    <td>@aq1 AED</td>
+    <td>
+        @Html.DisplayFor(modelItem => item.Unskilledhothours)
+    </td>
+    <td>
+        @{
+            var sw1 = item.Unskilledhothours * hot1;
+        }
+        @hot1</td>
+    <td>@sw1 AED</td>
+    <td>
+        @Html.DisplayFor(modelItem => item.Unskilledfothours)
+    </td>
+    <td>
+        @{
+            var de1 = item.Unskilledfothours * fot1;
+        }
+        @fot1
+    </td>
+    <td>@de1 AED</td>
+    <td>
+        @Html.DisplayFor(modelItem => item.Unskilledthours)
+    </td>
+    <td>
+        @{
+            var totalsk1 = sr1 + aq1 + sw1 + de1;
+        }
+        @totalsk1 AED</td>
+    <td>@Html.DisplayFor(modelItem => item.TotalWorkers)</td>
+    <td>@Html.DisplayFor(modelItem => item.TotalHours)</td>
+    <td>@{
+            var gtol = totalsk1 + totalsk;
+        }@gtol AED</td>
+</tr>
+        }
+
+</table>

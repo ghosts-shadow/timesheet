@@ -143,6 +143,19 @@
           <Property Name="xOT" Type="bigint" />
           <Property Name="nnOT" Type="bigint" />
           <Property Name="status" Type="nvarchar(max)" />
+          <Property Name="Skilled" Type="int" />
+          <Property Name="Unskilled" Type="int" />
+          <Property Name="Skilledhours" Type="int" />
+          <Property Name="Unskilledhours" Type="int" />
+          <Property Name="Skilledrothours" Type="int" />
+          <Property Name="Unskilledrothours" Type="int" />
+          <Property Name="Skilledfothours" Type="int" />
+          <Property Name="Unskilledfothours" Type="int" />
+          <Property Name="Skilledhothours" Type="int" />
+          <Property Name="Unskilledhothours" Type="int" />
+          <Property Name="Skilledthours" Type="int" />
+          <Property Name="Unskilledthours" Type="int" />
+          <Property Name="TotalWorkers" Type="int" />
         </EntityType>
         <EntityType Name="AttendanceFreq">
           <Key>
@@ -494,6 +507,7 @@ warning 6002: The table/view 'LogisticsSoft.dbo.Pprint' does not have a primary 
           <Property Name="project_period" Type="nvarchar(max)" />
           <Property Name="equipment_budget" Type="money" />
           <Property Name="man_power_budget" Type="money" />
+          <Property Name="rate_w_wo_at" Type="bit" />
         </EntityType>
         <!--Errors Found During Generation:
 warning 6002: The table/view 'LogisticsSoft.dbo.RefsList' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
@@ -1322,6 +1336,19 @@ warning 6002: The table/view 'LogisticsSoft.dbo.UserInfo' does not have a primar
           <NavigationProperty Name="approvals" Relationship="Self.FK_approval_Toattendance" FromRole="Attendance" ToRole="approval" />
           <NavigationProperty Name="LabourMaster" Relationship="Self.FK_Attendance_ToLabourMaster" FromRole="Attendance" ToRole="LabourMaster" />
           <NavigationProperty Name="MainTimeSheet" Relationship="Self.FK_Attendance_ToMainTimeSheet" FromRole="Attendance" ToRole="MainTimeSheet" />
+          <Property Name="Skilled" Type="Int32" />
+          <Property Name="Unskilled" Type="Int32" />
+          <Property Name="TotalWorkers" Type="Int32" />
+          <Property Name="Skilledhours" Type="Int32" />
+          <Property Name="Unskilledhours" Type="Int32" />
+          <Property Name="Skilledrothours" Type="Int32" />
+          <Property Name="Unskilledrothours" Type="Int32" />
+          <Property Name="Skilledfothours" Type="Int32" />
+          <Property Name="Unskilledfothours" Type="Int32" />
+          <Property Name="Skilledhothours" Type="Int32" />
+          <Property Name="Unskilledhothours" Type="Int32" />
+          <Property Name="Skilledthours" Type="Int32" />
+          <Property Name="Unskilledthours" Type="Int32" />
         </EntityType>
         <EntityType Name="AttendanceFreq">
           <Key>
@@ -1479,6 +1506,7 @@ warning 6002: The table/view 'LogisticsSoft.dbo.UserInfo' does not have a primar
           <NavigationProperty Name="MainTimeSheets" Relationship="Self.FK_MainTimeSheet_ToTable_1" FromRole="ProjectList" ToRole="MainTimeSheet" />
           <NavigationProperty Name="towrefs" Relationship="Self.FK_towref_Topro1" FromRole="ProjectList" ToRole="towref" />
           <NavigationProperty Name="towrefs1" Relationship="Self.FK_towref_Topro2" FromRole="ProjectList" ToRole="towref" />
+          <Property Name="rate_w_wo_at" Type="Boolean" />
         </EntityType>
         <EntityType Name="towemp">
           <Key>
@@ -1496,10 +1524,10 @@ warning 6002: The table/view 'LogisticsSoft.dbo.UserInfo' does not have a primar
             <PropertyRef Name="Id" />
           </Key>
           <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="refe1" Type="String" />
+          <Property Name="refe1" Type="String" MaxLength="Max" Unicode="true" FixedLength="false" />
           <Property Name="mp_to" Type="Int64" />
           <Property Name="mp_from" Type="Int64" />
-          <Property Name="R_no" Type="String" />
+          <Property Name="R_no" Type="String" MaxLength="Max" Unicode="true" FixedLength="false" />
           <Property Name="mpcdate" Type="DateTime" Precision="0" />
           <NavigationProperty Name="ProjectList" Relationship="Self.FK_towref_Topro1" FromRole="towref" ToRole="ProjectList" />
           <NavigationProperty Name="ProjectList1" Relationship="Self.FK_towref_Topro2" FromRole="towref" ToRole="ProjectList" />
@@ -2152,6 +2180,19 @@ warning 6002: The table/view 'LogisticsSoft.dbo.UserInfo' does not have a primar
           <EntitySetMapping Name="Attendances">
             <EntityTypeMapping TypeName="LogisticsSoftModel.Attendance">
               <MappingFragment StoreEntitySet="Attendance">
+                <ScalarProperty Name="Unskilledthours" ColumnName="Unskilledthours" />
+                <ScalarProperty Name="Skilledthours" ColumnName="Skilledthours" />
+                <ScalarProperty Name="Unskilledhothours" ColumnName="Unskilledhothours" />
+                <ScalarProperty Name="Skilledhothours" ColumnName="Skilledhothours" />
+                <ScalarProperty Name="Unskilledfothours" ColumnName="Unskilledfothours" />
+                <ScalarProperty Name="Skilledfothours" ColumnName="Skilledfothours" />
+                <ScalarProperty Name="Unskilledrothours" ColumnName="Unskilledrothours" />
+                <ScalarProperty Name="Skilledrothours" ColumnName="Skilledrothours" />
+                <ScalarProperty Name="Unskilledhours" ColumnName="Unskilledhours" />
+                <ScalarProperty Name="Skilledhours" ColumnName="Skilledhours" />
+                <ScalarProperty Name="TotalWorkers" ColumnName="TotalWorkers" />
+                <ScalarProperty Name="Unskilled" ColumnName="Unskilled" />
+                <ScalarProperty Name="Skilled" ColumnName="Skilled" />
                 <ScalarProperty Name="ID" ColumnName="ID" />
                 <ScalarProperty Name="EmpID" ColumnName="EmpID" />
                 <ScalarProperty Name="SubMain" ColumnName="SubMain" />
@@ -2334,6 +2375,7 @@ warning 6002: The table/view 'LogisticsSoft.dbo.UserInfo' does not have a primar
           <EntitySetMapping Name="ProjectLists">
             <EntityTypeMapping TypeName="LogisticsSoftModel.ProjectList">
               <MappingFragment StoreEntitySet="ProjectList">
+                <ScalarProperty Name="rate_w_wo_at" ColumnName="rate_w_wo_at" />
                 <ScalarProperty Name="ID" ColumnName="ID" />
                 <ScalarProperty Name="ProjectCode" ColumnName="ProjectCode" />
                 <ScalarProperty Name="STAMP_CODE" ColumnName="STAMP CODE" />

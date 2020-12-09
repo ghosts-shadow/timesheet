@@ -100,6 +100,9 @@ using (Html.BeginForm("csearch", "Home", FormMethod.Get, new { id = "form1" }))
                     <th>
                         @Html.DisplayNameFor(model => model.ID)
                     </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.SubMain)
+                    </th>
                 }
             }
             <th>project name</th>
@@ -260,6 +263,9 @@ using (Html.BeginForm("csearch", "Home", FormMethod.Get, new { id = "form1" }))
                 <td>
                     @Html.DisplayFor(modelItem => item.ID)
                 </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.SubMain)
+                </td>
             }
         }
         <td>
@@ -386,6 +392,18 @@ using (Html.BeginForm("csearch", "Home", FormMethod.Get, new { id = "form1" }))
                 var a_b = new long?();
                 if (a != null || a != 0)
                 {
+                    if (d == null)
+                    {
+                        d = 0;
+                    }
+                    if (b == null)
+                    {
+                        b = 0;
+                    }
+                    if (c == null)
+                    {
+                        c = 0;
+                    }
                     if (b != null || b != 0)
                     {
                         a_b = a - b - c - d;
@@ -405,12 +423,20 @@ using (Html.BeginForm("csearch", "Home", FormMethod.Get, new { id = "form1" }))
         </td>
         <td>
             @{
+                if (item.TotalOverTime == null)
+                {
+                    item.TotalOverTime = 0;
+                }
                 ttot += item.TotalOverTime;
             }
             @Html.DisplayFor(modelItem => item.TotalOverTime)
         </td>
         <td>
             @{
+                if (item.TotalAbsent == null)
+                {
+                    item.TotalAbsent = 0;
+                }
                 tta += item.TotalAbsent;
             }
             @Html.DisplayFor(modelItem => item.TotalAbsent)
@@ -430,30 +456,50 @@ using (Html.BeginForm("csearch", "Home", FormMethod.Get, new { id = "form1" }))
         </td>*@
         <td>
             @{
+                if (item.TotalVL == null)
+                {
+                    item.TotalVL = 0;
+                }
                 ttvl += item.TotalVL;
             }
             @Html.DisplayFor(modelItem => item.TotalVL)
         </td>
         <td>
             @{
+                if (item.TotalTransefer == null)
+                {
+                    item.TotalTransefer = 0;
+                }
                 ttt += item.TotalTransefer;
             }
             @Html.DisplayFor(modelItem => item.TotalTransefer)
         </td>
         <td>
             @{
+                if (item.TotalSickLeave == null)
+                {
+                    item.TotalSickLeave = 0;
+                }
                 ttsl += item.TotalSickLeave;
             }
             @Html.DisplayFor(modelItem => item.TotalSickLeave)
         </td>
         <td>
             @{
+                if (item.FridayHours == null)
+                {
+                    item.FridayHours = 0;
+                }
                 tfh += item.FridayHours;
             }
             @Html.DisplayFor(modelItem => item.FridayHours)
         </td>
         <td>
             @{
+                if (item.Holidays == null)
+                {
+                    item.Holidays = 0;
+                }
                 tho += item.Holidays;
             }
             @Html.DisplayFor(modelItem => item.Holidays)
@@ -465,7 +511,7 @@ using (Html.BeginForm("csearch", "Home", FormMethod.Get, new { id = "form1" }))
         {
             if (User.Identity.Name == "sdiniz")
             {
-                <td colspan="36">total</td>
+                <td colspan="37">total</td>
             }
         }
         else

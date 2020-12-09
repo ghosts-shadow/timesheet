@@ -19,7 +19,7 @@
         <EntityTypeShape EntityType="LogisticsSoftModel.MainTimeSheet" Width="1.5" PointX="3" PointY="8" IsExpanded="true" />
         <EntityTypeShape EntityType="LogisticsSoftModel.ManPowerSupplier" Width="1.5" PointX="0.75" PointY="1.75" IsExpanded="true" />
         <EntityTypeShape EntityType="LogisticsSoftModel.ProjectList" Width="1.5" PointX="0.75" PointY="6.875" IsExpanded="true" />
-        <EntityTypeShape EntityType="LogisticsSoftModel.towemp" Width="1.5" PointX="5.25" PointY="15.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="LogisticsSoftModel.towemp" Width="1.5" PointX="5.25" PointY="17.125" IsExpanded="true" />
         <EntityTypeShape EntityType="LogisticsSoftModel.towref" Width="1.5" PointX="3" PointY="15.25" IsExpanded="true" />
         <EntityTypeShape EntityType="LogisticsSoftModel.username" Width="1.5" PointX="11.75" PointY="11.625" IsExpanded="true" />
         <EntityTypeShape EntityType="LogisticsSoftModel.ControlRoom" Width="1.5" PointX="13.75" PointY="7.625" IsExpanded="true" />
@@ -51,7 +51,7 @@
         <AssociationConnector Association="LogisticsSoftModel.FK_towref_Topro2" ManuallyRouted="false" />
         <AssociationConnector Association="LogisticsSoftModel.FK_towemp_Toref" ManuallyRouted="false" />
         <AssociationConnector Association="LogisticsSoftModel.AspNetUserRoles" ManuallyRouted="false" />
-        <EntityTypeShape EntityType="LogisticsSoftModel.trattfile" Width="1.5" PointX="5.25" PointY="18.625" />
+        <EntityTypeShape EntityType="LogisticsSoftModel.trattfile" Width="1.5" PointX="4.875" PointY="19.5" />
         <AssociationConnector Association="LogisticsSoftModel.FK_towemp_To" />
       </Diagram>
     </edmx:Diagrams>

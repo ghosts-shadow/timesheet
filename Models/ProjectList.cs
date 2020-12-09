@@ -94,7 +94,8 @@ namespace onlygodknows.Models
 
         [Display(Name = "man power budget")]
         public Nullable<decimal> man_power_budget { get; set; }
-
+        public Nullable<bool> rate_w_wo_at { get; set; }
+    
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<MainTimeSheet> MainTimeSheets { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]

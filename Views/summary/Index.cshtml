@@ -19,6 +19,15 @@
             @Html.DisplayNameFor(model => model.MainTimeSheet.TMonth.Year)
         </th>
         <th>
+            @Html.DisplayNameFor(model => model.TotalWorkers)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Skilled)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Unskilled)
+        </th>
+        <th>
             @Html.DisplayNameFor(model => model.TotalHours)
         </th>
         <th>
@@ -95,6 +104,15 @@
     </td>
     <td>
         @Html.DisplayFor(modelItem => item.MainTimeSheet.TMonth.Year)
+    </td>
+    <td>
+        @Html.DisplayFor(modelItem => item.TotalWorkers)
+    </td>
+    <td>
+        @Html.DisplayFor(modelItem => item.Skilled)
+    </td>
+    <td>
+        @Html.DisplayFor(modelItem => item.Unskilled)
     </td>
     <td>
         @Html.DisplayFor(modelItem => item.TotalHours)

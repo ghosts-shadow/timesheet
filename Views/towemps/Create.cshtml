@@ -80,7 +80,11 @@
     }
 
     function trial(id) {
+        if (id == null) {
+            trial("lab_no0");
+        }
         name(id);
+        createchosen();
     }
 
     function name(id) {
@@ -172,7 +176,7 @@
 {
     @Html.AntiForgeryToken()
 
-    <div class="form-horizontal" onclick="createchosen()">
+    <div class="form-horizontal" onclick="trial()">
         <hr />
         @Html.ValidationSummary(true, "", new { @class = "text-danger" })
 
@@ -212,7 +216,7 @@
             </td>
         </tr>
     </table>
-    <table id="submissionTable" class="table table-bordered" onclick="createchosen()">
+    <table id="submissionTable" class="table table-bordered" onclick="trial()">
         <thead style="text-transform: capitalize">
         <th> employee no</th>
         <th>effective date</th>

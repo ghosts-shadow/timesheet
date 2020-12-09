@@ -28,7 +28,16 @@
             @Html.DisplayNameFor(model => model.MainTimeSheet.ProjectList.PROJECT_NAME)
         </th>
         <th>
+            @Html.DisplayNameFor(model => model.LabourMaster.Position)
+        </th>
+        <th>
+            Skilled/Unskilled
+        </th>
+        <th>
             @Html.DisplayNameFor(model => model.TotalHours)
+        </th>
+        <th>
+            @Html.DisplayName("TotalNormalHours")
         </th>
         <th>
             @Html.DisplayNameFor(model => model.TotalOverTime)
@@ -61,150 +70,213 @@
         long tsl = 0;
         long fh = 0;
         long h = 0;
+        long n = 0;
     }
     @foreach (var item in Model)
     {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.LabourMaster.EMPNO)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.LabourMaster.Person_Name)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.MainTimeSheet.ManPowerSupplier1.Supplier)
-            </td>
-            <td>
-                @{
-                    switch (item.MainTimeSheet.TMonth.Month)
-                    {
-                        case 1:
-                                <p>January</p>
-                            break;
-                        case 2:
-            <p>February</p>
-                            break;
-                        case 3:
-            <p>March</p>
-                            break;
-                        case 4:
-            <p> 	April</p>
-                            break;
-                        case 5:
-            <p>May</p>
-                            break;
-                        case 6:
-            <p>June</p>
-                            break;
-                        case 7:
-            <p>July</p>
-                            break;
-                        case 8:
-            <p>August</p>
-                            break;
-                        case 9:
-            <p>September</p>
-                            break;
-                        case 10:
-            <p>October</p>
-                            break;
-                        case 11:
-            <p>November</p>
-                            break;
-                        case 12:
-            <p>December</p>
-                            break;
-                    }
-                }
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.MainTimeSheet.TMonth.Year)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.MainTimeSheet.ProjectList.PROJECT_NAME)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.TotalHours)
-                @{
-                            if (item.TotalHours.HasValue)
-                            {
-                                th += item.TotalHours.Value;
-                            }
-                        }
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.TotalOverTime)
-                @{
-                            if (item.TotalOverTime.HasValue)
-                            {
-                                tot += item.TotalOverTime.Value;
+<tr>
+    <td>
+        @Html.DisplayFor(modelItem => item.LabourMaster.EMPNO)
+    </td>
+    <td>
+        @Html.DisplayFor(modelItem => item.LabourMaster.Person_Name)
+    </td>
+    <td>
+        @Html.DisplayFor(modelItem => item.MainTimeSheet.ManPowerSupplier1.Supplier)
+    </td>
+    <td>
+        @{
+            switch (item.MainTimeSheet.TMonth.Month)
+            {
+                case 1:
+                    <p>January</p>
+                    break;
+                case 2:
+                    <p>February</p>
+                    break;
+                case 3:
+                    <p>March</p>
+                    break;
+                case 4:
+                    <p> 	April</p>
+                    break;
+                case 5:
+                    <p>May</p>
+                    break;
+                case 6:
+                    <p>June</p>
+                    break;
+                case 7:
+                    <p>July</p>
+                    break;
+                case 8:
+                    <p>August</p>
+                    break;
+                case 9:
+                    <p>September</p>
+                    break;
+                case 10:
+                    <p>October</p>
+                    break;
+                case 11:
+                    <p>November</p>
+                    break;
+                case 12:
+                    <p>December</p>
+                    break;
+            }
+        }
+    </td>
+    <td>
+        @Html.DisplayFor(modelItem => item.MainTimeSheet.TMonth.Year)
+    </td>
+    <td>
+        @Html.DisplayFor(modelItem => item.MainTimeSheet.ProjectList.PROJECT_NAME)
+    </td>
+    <td>
+        @Html.DisplayFor(modelItem => item.LabourMaster.Position)
 
-                            }
-                        }
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.TotalAbsent)
-                @{
-                            if (item.TotalAbsent.HasValue)
-                            {
-                                ta += item.TotalAbsent.Value;
+    </td>
+    <td>
+        @{
+            if (item.LabourMaster.Position.ToLower() == "labor".ToLower() || item.LabourMaster.Position.ToLower() == "LABOURER".ToLower() || item.LabourMaster.Position.ToLower() == "helper".ToLower())
+            {
+                <p>Unskilled</p>
+            }
+            else
+            {
+                <p> Skilled</p>
+            }
+        }
+    </td>
+    <td>
+        @Html.DisplayFor(modelItem => item.TotalHours)
+        @{
+            if (item.TotalHours.HasValue)
+            {
+                th += item.TotalHours.Value;
+            }
+        }
+    </td>
+    <td>
+        @{
+            var temp = new long();
+            var temp1 = new long();
+            var temp2 = new long();
+            var temp3 = new long();
+            if (item.TotalHours.HasValue)
+            {
+                temp = item.TotalHours.Value;
+            }
+            else
+            {
+                temp = 0;
+            }
+            if (item.TotalOverTime.HasValue)
+            {
+                temp1 = item.TotalOverTime.Value;
+            }
+            else
+            {
+                temp1 = 0;
+            }
+            if (item.FridayHours.HasValue)
+            {
+                temp2 = item.FridayHours.Value;
+            }
+            else
+            {
+                temp2 = 0;
+            }
+            if (item.Holidays.HasValue)
+            {
+                temp3 = item.Holidays.Value;
+            }
+            else
+            {
+                temp3 = 0;
+            }
+            var aw = temp - temp1 - temp2 - temp3;
+            n += aw;
+        }
+        @aw
+    </td>
+    <td>
+        @Html.DisplayFor(modelItem => item.TotalOverTime)
+        @{
+            if (item.TotalOverTime.HasValue)
+            {
+                tot += item.TotalOverTime.Value;
 
-                            }
-                        }
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.TotalVL)
-                @{
-                            if (item.TotalVL.HasValue)
-                            {
-                                tvl += item.TotalVL.Value;
+            }
+        }
+    </td>
+    <td>
+        @Html.DisplayFor(modelItem => item.TotalAbsent)
+        @{
+            if (item.TotalAbsent.HasValue)
+            {
+                ta += item.TotalAbsent.Value;
 
-                            }
-                        }
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.TotalTransefer)
-                @{
-                            if (item.TotalTransefer.HasValue)
-                            {
-                                tt += item.TotalTransefer.Value;
+            }
+        }
+    </td>
+    <td>
+        @Html.DisplayFor(modelItem => item.TotalVL)
+        @{
+            if (item.TotalVL.HasValue)
+            {
+                tvl += item.TotalVL.Value;
 
-                            }
-                        }
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.TotalSickLeave)
-                @{
-                            if (item.TotalSickLeave.HasValue)
-                            {
-                                tsl += item.TotalSickLeave.Value;
-                            }
-                        }
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.FridayHours)
-                @{
-                            if (item.FridayHours.HasValue)
-                            {
-                                fh += item.FridayHours.Value;
-                            }
-                        }
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Holidays)
-                @{
-                            if (item.Holidays.HasValue)
-                            {
-                                h += item.Holidays.Value;
-                            }
-                        }
-            </td>
-        </tr>
+            }
+        }
+    </td>
+    <td>
+        @Html.DisplayFor(modelItem => item.TotalTransefer)
+        @{
+            if (item.TotalTransefer.HasValue)
+            {
+                tt += item.TotalTransefer.Value;
+
+            }
+        }
+    </td>
+    <td>
+        @Html.DisplayFor(modelItem => item.TotalSickLeave)
+        @{
+            if (item.TotalSickLeave.HasValue)
+            {
+                tsl += item.TotalSickLeave.Value;
+            }
+        }
+    </td>
+    <td>
+        @Html.DisplayFor(modelItem => item.FridayHours)
+        @{
+            if (item.FridayHours.HasValue)
+            {
+                fh += item.FridayHours.Value;
+            }
+        }
+    </td>
+    <td>
+        @Html.DisplayFor(modelItem => item.Holidays)
+        @{
+            if (item.Holidays.HasValue)
+            {
+                h += item.Holidays.Value;
+            }
+        }
+    </td>
+</tr>
     }
     <tr>
-        <td colspan="6">total</td>
+        <td colspan="8">total</td>
         <td>
             @th
+        </td>
+        <td>
+            @n
         </td>
         <td>
             @tot

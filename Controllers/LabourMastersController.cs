@@ -87,7 +87,7 @@ namespace onlygodknows.Controllers
             ViewBag.ManPowerSupply = new SelectList(this.db.ManPowerSuppliers, "ID", "Supplier");
             if (ModelState.IsValid)
             {
-                if (!po.Exists(x=>x.EMPNO == labourMaster.EMPNO))
+                if (!po.Exists(x=>x.EMPNO == labourMaster.EMPNO && x.ManPowerSupply == labourMaster.ManPowerSupply))
                 {
                     labourMaster.ID = po.Last().ID + 1;
                     db.LabourMasters.Add(labourMaster);

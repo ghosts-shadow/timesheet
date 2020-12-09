@@ -12,7 +12,7 @@ namespace onlygodknows.Models
     using System;
     using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
-
+    
     public partial class Attendance
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
@@ -20,7 +20,7 @@ namespace onlygodknows.Models
         {
             this.approvals = new HashSet<approval>();
         }
-
+    
         public long ID { get; set; }
         public long EmpID { get; set; }
         [Display(Name = "MTS ID")]
@@ -111,6 +111,19 @@ namespace onlygodknows.Models
         public Nullable<long> xOT { get; set; }
         public Nullable<long> nnOT { get; set; }
         public string status { get; set; }
+        public Nullable<int> Skilled { get; set; }
+        public Nullable<int> Unskilled { get; set; }
+        public Nullable<int> TotalWorkers { get; set; }
+        public Nullable<int> Skilledhours { get; set; }
+        public Nullable<int> Unskilledhours { get; set; }
+        public Nullable<int> Skilledrothours { get; set; }
+        public Nullable<int> Unskilledrothours { get; set; }
+        public Nullable<int> Skilledfothours { get; set; }
+        public Nullable<int> Unskilledfothours { get; set; }
+        public Nullable<int> Skilledhothours { get; set; }
+        public Nullable<int> Unskilledhothours { get; set; }
+        public Nullable<int> Skilledthours { get; set; }
+        public Nullable<int> Unskilledthours { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<approval> approvals { get; set; }
