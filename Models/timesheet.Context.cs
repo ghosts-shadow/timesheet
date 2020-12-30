@@ -35,17 +35,18 @@ namespace onlygodknows.Models
         public virtual DbSet<AttendanceFreq> AttendanceFreqs { get; set; }
         public virtual DbSet<Camp_Details> Camp_Details { get; set; }
         public virtual DbSet<CsPermission> CsPermissions { get; set; }
+        public virtual DbSet<Holiday> Holidays { get; set; }
         public virtual DbSet<LabourMaster> LabourMasters { get; set; }
         public virtual DbSet<MainTimeSheet> MainTimeSheets { get; set; }
         public virtual DbSet<ManPowerSupplier> ManPowerSuppliers { get; set; }
         public virtual DbSet<ProjectList> ProjectLists { get; set; }
         public virtual DbSet<towemp> towemps { get; set; }
         public virtual DbSet<towref> towrefs { get; set; }
+        public virtual DbSet<trattfile> trattfiles { get; set; }
         public virtual DbSet<username> usernames { get; set; }
         public virtual DbSet<ControlRoom> ControlRooms { get; set; }
         public virtual DbSet<Copy_of_Attendance> Copy_of_Attendances { get; set; }
         public virtual DbSet<EmpPromise> EmpPromises { get; set; }
-        public virtual DbSet<Holiday> Holidays { get; set; }
         public virtual DbSet<LogIn> LogIns { get; set; }
         public virtual DbSet<MainShifting> MainShiftings { get; set; }
         public virtual DbSet<Mnth> Mnths { get; set; }
@@ -59,6 +60,6 @@ namespace onlygodknows.Models
         public virtual DbSet<tblUser> tblUsers { get; set; }
         public virtual DbSet<USER_ROLES> USER_ROLES { get; set; }
         public virtual DbSet<UserInfo> UserInfoes { get; set; }
-        public virtual DbSet<trattfile> trattfiles { get; set; }
+        public virtual DbSet<Manpowerinoutform> Manpowerinoutforms { get; set; }
     }
 }

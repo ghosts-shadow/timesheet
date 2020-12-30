@@ -19,8 +19,8 @@ namespace onlygodknows.Controllers
         // GET: datacorrection
         public ActionResult Index()
         {
-            var sep = new DateTime(2020,9,1);
-           newgo: var atlist = this.db.Attendances.OrderBy(x=>x.ID).ToList();
+            var mon = new DateTime(2020,12,1);
+           newgo: var atlist = this.db.Attendances.Where(x=>x.MainTimeSheet.TMonth.Month == mon.Month && x.MainTimeSheet.TMonth.Year == mon.Year).OrderBy(x=>x.ID).ToList();
             var finallist =new List<Attendance>();
             var finallist1 =new List<Attendance>();
             foreach (var attendance in atlist)
