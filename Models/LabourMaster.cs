@@ -20,6 +20,7 @@ namespace onlygodknows.Models
         {
             this.Attendances = new HashSet<Attendance>();
             this.towemps = new HashSet<towemp>();
+            this.Manpowerinoutforms = new HashSet<Manpowerinoutform>();
         }
     
         public long ID { get; set; }
@@ -51,5 +52,7 @@ namespace onlygodknows.Models
         public virtual ICollection<Attendance> Attendances { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<towemp> towemps { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<Manpowerinoutform> Manpowerinoutforms { get; set; }
     }
 }

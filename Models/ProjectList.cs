@@ -21,6 +21,7 @@ namespace onlygodknows.Models
             this.MainTimeSheets = new HashSet<MainTimeSheet>();
             this.towrefs = new HashSet<towref>();
             this.towrefs1 = new HashSet<towref>();
+            this.Manpowerinoutforms = new HashSet<Manpowerinoutform>();
         }
     
         public long ID { get; set; }
@@ -102,5 +103,7 @@ namespace onlygodknows.Models
         public virtual ICollection<towref> towrefs { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<towref> towrefs1 { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<Manpowerinoutform> Manpowerinoutforms { get; set; }
     }
 }
