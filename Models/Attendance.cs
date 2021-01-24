@@ -113,7 +113,6 @@ namespace onlygodknows.Models
         public string status { get; set; }
         public Nullable<int> Skilled { get; set; }
         public Nullable<int> Unskilled { get; set; }
-        public Nullable<int> TotalWorkers { get; set; }
         public Nullable<int> Skilledhours { get; set; }
         public Nullable<int> Unskilledhours { get; set; }
         public Nullable<int> Skilledrothours { get; set; }
@@ -124,6 +123,8 @@ namespace onlygodknows.Models
         public Nullable<int> Unskilledhothours { get; set; }
         public Nullable<int> Skilledthours { get; set; }
         public Nullable<int> Unskilledthours { get; set; }
+        public Nullable<int> TotalWorkers { get; set; }
+        public Nullable<bool> absapproved_ { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<approval> approvals { get; set; }

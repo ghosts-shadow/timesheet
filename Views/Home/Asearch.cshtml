@@ -151,19 +151,20 @@ using (Html.BeginForm("Asearch", "Home", FormMethod.Get, new { id = "form1" }))
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.FridayHours)
-            </th>@*
+            </th>
             <th>
                 @Html.DisplayNameFor(model => model.Holidays)
             </th>
-            <th>
-                @Html.DisplayNameFor(model => model.TotalWorkingDays)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.AccommodationDeduction)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.FoodDeduction)
-            </th>*@
+            @*
+        <th>
+            @Html.DisplayNameFor(model => model.TotalWorkingDays)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.AccommodationDeduction)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.FoodDeduction)
+        </th>*@
         </tr>
 
     @foreach (var item in Model)
@@ -297,10 +298,11 @@ using (Html.BeginForm("Asearch", "Home", FormMethod.Get, new { id = "form1" }))
         </td>
         <td>
             @Html.DisplayFor(modelItem => item.FridayHours)
-        </td>@*
+        </td>
         <td>
             @Html.DisplayFor(modelItem => item.AccommodationDeduction)
         </td>
+        @*
         <td>
             @Html.DisplayFor(modelItem => item.FoodDeduction)
         </td>

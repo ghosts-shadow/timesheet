@@ -1,0 +1,218 @@
+﻿@using System.Web.UI.WebControls
+@model onlygodknows.Models.Manpowerinoutform
+
+@{
+    ViewBag.Title = "Create";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script>
+    $(function () {
+        $("#date_").datepicker({
+            altField: "#alternate",
+            altFormat: "MM,yy",
+            changeMonth: true,
+            changeYear: true,
+            showOtherMonths: true,
+            selectOtherMonths: true,
+            showButtonPanel: true,
+            dateFormat: "dd M yy"
+        });
+        $("#check_out").datepicker({
+            altField: "#alternate",
+            altFormat: "MM,yy",
+            changeMonth: true,
+            changeYear: true,
+            showOtherMonths: true,
+            selectOtherMonths: true,
+            showButtonPanel: true,
+            dateFormat: "dd M yy"
+        });
+        $("#check_in").datepicker({
+            altField: "#alternate",
+            altFormat: "MM,yy",
+            changeMonth: true,
+            changeYear: true,
+            showOtherMonths: true,
+            selectOtherMonths: true,
+            showButtonPanel: true,
+            dateFormat: "dd M yy"
+        });
+        $("#EmpID").chosen({ no_results_text: "Oops, nothing found!" });
+        $("#camp").chosen({ no_results_text: "Oops, nothing found!" });
+        $("#Project").chosen({ no_results_text: "Oops, nothing found!" });
+        $("#companyName").chosen({ no_results_text: "Oops, nothing found!" });
+
+
+    });
+
+    document.onkeydown = function (e) {
+        if (e.ctrlKey && e.keyCode == 'P'.charCodeAt(0)) {
+            return false;
+        }
+        return true;
+    }
+
+    function onclick1() {
+
+        var aaq = $('#EmpID').val();
+        $('#Empname').val(aaq);
+        $('#Position').val(aaq);
+        $('#Empname1').val($('#Empname option:selected').text());
+        $('#Position1').val($('#Position option:selected').text());
+        if ($('#check_in').val() != '') {
+            $('#check_out').attr("disabled", "disabled");
+        } else {
+            $('#check_out').removeAttr("disabled");
+        }
+        if ($('#check_out').val() != '') {
+            $('#check_in').attr("disabled", "disabled");
+        } else {
+            $('#check_in').removeAttr("disabled");
+        }
+
+    }
+
+</script>
+<script src="~/Scripts/html2canvas/html2canvas.min.js"></script>
+<script>
+    function print() {
+        $("#EmpID").chosen("destroy");
+        $("#camp").chosen("destroy");
+        $("#Project").chosen("destroy");
+        $("#companyName").chosen("destroy");
+        html2canvas(document.getElementById('print1')).then(function (canvas) {
+            var base64image = canvas.toDataURL("image/png");
+            var newWindow = window.open(base64image, "_blank");
+            newWindow.print();
+        });
+        $("#EmpID").chosen({ no_results_text: "Oops, nothing found!" });
+        $("#camp").chosen({ no_results_text: "Oops, nothing found!" });
+        $("#Project").chosen({ no_results_text: "Oops, nothing found!" });
+        $("#companyName").chosen({ no_results_text: "Oops, nothing found!" });
+    }
+</script>
+<style>
+    .container {
+        position: relative;
+        text-align: center;
+        color: black;
+        width: 210mm;
+        height: 297mm;
+        font-size: 10pt !important;
+    }
+
+    .checkbox {
+        -ms-transform: scale(1.5);
+        -webkit-transform: scale(1.5);
+        transform: scale(2);
+    }
+</style>
+@using (Html.BeginForm())
+{
+    <div class=" col-md-10" onclick="onclick1()">
+        <input type="submit" value="Create" class="btn btn-default" />
+        <input type="button" class="btn btn-default" value="print" onclick="print()" />
+    </div>
+    @Html.AntiForgeryToken()
+    <div class="container" onclick="onclick1()" id="print1">
+        <div>
+            <img src="~/img/background1.jpg" width="755.90551181" height="1084.7244094">
+        </div>
+        <p style="position: absolute;top: 163.5px;left: 2.3cm;">Camp:</p>
+        <div style="position: absolute;top: 161.5px;left: 3.5cm;">
+            @Html.DropDownList("camp", new List<SelectListItem>(ViewBag.camp), htmlAttributes: new { @class = "form-control" })
+            @Html.ValidationMessageFor(model => model.camp, "", new { @class = "text-danger" })
+        </div>
+        <div style="position: absolute;top: 161.5px;left: 16.3cm;width: 50px;">
+            @Html.EditorFor(model => model.date_, new { htmlAttributes = new { @Style = "width:125px" } })
+            @Html.ValidationMessageFor(model => model.date_, "", new { @class = "text-danger" })
+        </div>
+        <div style="position: absolute;top: 343px;left: 200px;width: 170px;">
+            @Html.DropDownList("companyName", new List<SelectListItem>(ViewBag.companyName), htmlAttributes: new { @class = "form-control" })
+            @Html.ValidationMessageFor(model => model.companyName, "", new { @class = "text-danger" })
+        </div>
+        <div style="position: absolute;top: 246px;left: 199px;width: 170px;">
+            @Html.DropDownList("EmpID", null, htmlAttributes: new { @class = "form-control", id = "EmpID", @onchange = "onclick1()" })
+            @Html.DropDownList("Empname", null, htmlAttributes: new { @class = "form-control", @style = "display: none", id = "Empname" })
+            @Html.DropDownList("Position", null, htmlAttributes: new { @class = "form-control", @style = "display: none", id = "Position" })
+            @Html.ValidationMessageFor(model => model.EmpID, "", new { @class = "text-danger" })
+        </div>
+        <div style="position: absolute; top: 282px; left: 199px; width: 170px;">
+            <input type="text" readonly="readonly" id="Empname1" onchange="onclick1()" />
+        </div>
+        <div style="position: absolute; top: 312px; left: 199px; width: 170px;">
+            <input type="text" readonly="readonly" id="Position1" onchange="onclick1()" />
+        </div>
+        <div style="position: absolute;top: 248px;left: 488px;">
+            @Html.EditorFor(model => model.mobileNo, new { htmlAttributes = new { @type = "text", @style = "width: 255px;", @id = "mobileNo", pattern = "[+971|00971|0971|0]+[2|3|4|50|51|52|55|56|6|7|9]{9}" } })
+            @Html.ValidationMessageFor(model => model.mobileNo, "", new { @class = "text-danger" })
+        </div>
+        <div style="position: absolute;top: 278px;left: 488px;">
+            @Html.EditorFor(model => model.roomNo, new { htmlAttributes = new { @type = "text", @style = "width: 255px;" } })
+            @Html.ValidationMessageFor(model => model.roomNo, "", new { @class = "text-danger" })
+        </div>
+        <div style="position: absolute;top: 310px;left: 488px;">
+            @Html.DropDownList("Project", null, htmlAttributes: new { @class = "form-control", @style = "width: 255px;" })
+            @Html.ValidationMessageFor(model => model.Project, "", new { @class = "text-danger" })
+        </div>
+        <div class="checkbox" style="position: absolute;top: 418px;left: 253px;">
+            @Html.EditorFor(model => model.SSg)
+            @Html.ValidationMessageFor(model => model.SSg, "", new { @class = "text-danger" })
+        </div>
+        <div class="checkbox" style="position: absolute;top: 433px;left: 470px;">
+            @Html.EditorFor(model => model.SSp)
+            @Html.ValidationMessageFor(model => model.SSp, "", new { @class = "text-danger" })
+        </div>
+        <div class="checkbox" style="position: absolute;top: 433px;left: 614px;">
+            @Html.EditorFor(model => model.blanket)
+            @Html.ValidationMessageFor(model => model.blanket, "", new { @class = "text-danger" })
+        </div>
+        <div class="checkbox" style="position: absolute;top: 433px;left: 754px;">
+            @Html.EditorFor(model => model.bs)
+            @Html.ValidationMessageFor(model => model.bs, "", new { @class = "text-danger" })
+        </div>
+        <div class="checkbox" style="position: absolute;top: 478px;left: 253px;">
+            @Html.EditorFor(model => model.fs)
+            @Html.ValidationMessageFor(model => model.fs, "", new { @class = "text-danger" })
+        </div>
+        <div class="checkbox" style="position: absolute;top: 478px;left: 470px;">
+            @Html.EditorFor(model => model.pillow)
+            @Html.ValidationMessageFor(model => model.pillow, "", new { @class = "text-danger" })
+        </div>
+        <div class="checkbox" style="position: absolute;top: 478px;left: 614px;">
+            @Html.EditorFor(model => model.pc)
+            @Html.ValidationMessageFor(model => model.pc, "", new { @class = "text-danger" })
+        </div>
+        <div class="checkbox" style="position: absolute;top: 478px;left: 754px;">
+            @Html.EditorFor(model => model.ck)
+            @Html.ValidationMessageFor(model => model.ck, "", new { @class = "text-danger" })
+        </div>
+        <div class="checkbox" style="position: absolute;top: 527px;left: 253px;">
+            @Html.EditorFor(model => model.rk)
+            @Html.ValidationMessageFor(model => model.rk, "", new { @class = "text-danger" })
+        </div>
+        <div class="checkbox" style="position: absolute;top: 527px;left: 470px;">
+            @Html.EditorFor(model => model.cic)
+            @Html.ValidationMessageFor(model => model.cic, "", new { @class = "text-danger" })
+        </div>
+        <div class="checkbox" style="position: absolute;top: 527px;left: 614px;">
+            @Html.EditorFor(model => model.copon)
+            @Html.ValidationMessageFor(model => model.copon, "", new { @class = "text-danger" })
+        </div>
+        <div style="position: absolute;top: 393px;left: 200px;">
+            @Html.EditorFor(model => model.check_in, new { htmlAttributes = new { @id = "check_in", @onchange = "onclick1()" } })
+            @Html.ValidationMessageFor(model => model.check_in, "", new { @class = "text-danger" })
+        </div>
+        <div style="position: absolute;top: 393px;left: 548px;">
+            @Html.EditorFor(model => model.check_out, new { htmlAttributes = new { @id = "check_out", @onchange = "onclick1()" } })
+            @Html.ValidationMessageFor(model => model.check_out, "", new { @class = "text-danger" })
+        </div>
+    </div>
+}
+

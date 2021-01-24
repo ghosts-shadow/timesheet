@@ -156,6 +156,7 @@
           <Property Name="Skilledthours" Type="int" />
           <Property Name="Unskilledthours" Type="int" />
           <Property Name="TotalWorkers" Type="int" />
+          <Property Name="absapproved " Type="bit" />
         </EntityType>
         <EntityType Name="AttendanceFreq">
           <Key>
@@ -421,6 +422,9 @@ warning 6002: The table/view 'LogisticsSoft.dbo.MainShifting' does not have a pr
           <Property Name="rk" Type="bit" Nullable="false" />
           <Property Name="cic" Type="bit" Nullable="false" />
           <Property Name="copon" Type="bit" Nullable="false" />
+          <Property Name="check-in" Type="date" />
+          <Property Name="check-out" Type="date" />
+          <Property Name="date_" Type="date" />
         </EntityType>
         <EntityType Name="ManPowerSupplier">
           <Key>
@@ -1409,6 +1413,7 @@ warning 6002: The table/view 'LogisticsSoft.dbo.UserInfo' does not have a primar
           <NavigationProperty Name="approvals" Relationship="Self.FK_approval_Toattendance" FromRole="Attendance" ToRole="approval" />
           <NavigationProperty Name="LabourMaster" Relationship="Self.FK_Attendance_ToLabourMaster" FromRole="Attendance" ToRole="LabourMaster" />
           <NavigationProperty Name="MainTimeSheet" Relationship="Self.FK_Attendance_ToMainTimeSheet" FromRole="Attendance" ToRole="MainTimeSheet" />
+          <Property Name="absapproved_" Type="Boolean" />
         </EntityType>
         <EntityType Name="AttendanceFreq">
           <Key>
@@ -2199,6 +2204,9 @@ warning 6002: The table/view 'LogisticsSoft.dbo.UserInfo' does not have a primar
           <Property Name="copon" Type="Boolean" Nullable="false" />
           <NavigationProperty Name="LabourMaster" Relationship="LogisticsSoftModel.FK_Manpowerinoutform_ToLabourMaster" FromRole="Manpowerinoutform" ToRole="LabourMaster" />
           <NavigationProperty Name="ProjectList" Relationship="LogisticsSoftModel.FK_Manpowerinoutform_ToTable_1" FromRole="Manpowerinoutform" ToRole="ProjectList" />
+          <Property Name="check_in" Type="DateTime" Precision="0" />
+          <Property Name="check_out" Type="DateTime" Precision="0" />
+          <Property Name="date_" Type="DateTime" Precision="0" />
         </EntityType>
         <Association Name="FK_Manpowerinoutform_ToLabourMaster">
           <End Type="LogisticsSoftModel.LabourMaster" Role="LabourMaster" Multiplicity="1">
@@ -2308,6 +2316,7 @@ warning 6002: The table/view 'LogisticsSoft.dbo.UserInfo' does not have a primar
           <EntitySetMapping Name="Attendances">
             <EntityTypeMapping TypeName="LogisticsSoftModel.Attendance">
               <MappingFragment StoreEntitySet="Attendance">
+                <ScalarProperty Name="absapproved_" ColumnName="absapproved " />
                 <ScalarProperty Name="ID" ColumnName="ID" />
                 <ScalarProperty Name="EmpID" ColumnName="EmpID" />
                 <ScalarProperty Name="SubMain" ColumnName="SubMain" />
@@ -2892,6 +2901,9 @@ warning 6002: The table/view 'LogisticsSoft.dbo.UserInfo' does not have a primar
           <EntitySetMapping Name="Manpowerinoutforms">
             <EntityTypeMapping TypeName="LogisticsSoftModel.Manpowerinoutform">
               <MappingFragment StoreEntitySet="Manpowerinoutform">
+                <ScalarProperty Name="date_" ColumnName="date_" />
+                <ScalarProperty Name="check_out" ColumnName="check-out" />
+                <ScalarProperty Name="check_in" ColumnName="check-in" />
                 <ScalarProperty Name="copon" ColumnName="copon" />
                 <ScalarProperty Name="cic" ColumnName="cic" />
                 <ScalarProperty Name="rk" ColumnName="rk" />

@@ -1,0 +1,142 @@
+﻿@model IEnumerable<onlygodknows.Models.Manpowerinoutform>
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Index</h2>
+
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.camp)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.companyName)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.mobileNo)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.roomNo)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.SSg)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.SSp)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.blanket)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.bs)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.fs)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.pillow)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.pc)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.ck)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.rk)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.cic)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.copon)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.check_in)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.check_out)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.LabourMaster.VisaSponser)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.ProjectList.ProjectCode)
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.camp)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.companyName)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.mobileNo)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.roomNo)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.SSg)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.SSp)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.blanket)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.bs)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.fs)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.pillow)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.pc)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.ck)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.rk)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.cic)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.copon)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.check_in)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.check_out)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.LabourMaster.VisaSponser)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.ProjectList.ProjectCode)
+        </td>
+        <td>
+            @Html.ActionLink("Edit", "Edit", new { id=item.Id }) |
+            @Html.ActionLink("Details", "Details", new { id=item.Id }) |
+            @Html.ActionLink("Delete", "Delete", new { id=item.Id })
+        </td>
+    </tr>
+}
+
+</table>

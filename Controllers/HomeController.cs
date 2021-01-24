@@ -133,7 +133,7 @@
             this.ViewBag.mpssh = b.ShortName;
             this.ViewBag.mdate = aa.TMonth.ToLongDateString();
             this.ViewBag.mdate1 = aa.TMonth;
-            if (b.Supplier == "GROVE") b = this.db.ManPowerSuppliers.Find(1);
+            
             var d = from LabourMaster in this.db.LabourMasters
                     where LabourMaster.ManPowerSupply == b.ID
                     select LabourMaster;
@@ -1762,7 +1762,7 @@
             this.ViewBag.mpssh = b.ShortName;
             this.ViewBag.mdate = aa.TMonth.ToLongDateString();
             this.ViewBag.mdate1 = aa.TMonth;
-            if (b.Supplier == "GROVE") b = this.db.ManPowerSuppliers.Find(1);
+            
             var d = from LabourMaster in this.db.LabourMasters
                     where LabourMaster.ManPowerSupply == b.ID
                     select LabourMaster;
@@ -2017,7 +2017,7 @@
             this.ViewBag.mdate = aa.TMonth.ToLongDateString();
             this.ViewBag.mdate1 = aa.TMonth;
             this.ViewBag.exist = string.Empty;
-            if (b.Supplier == "GROVE") b = this.db.ManPowerSuppliers.Find(1);
+            
             var d = from LabourMaster in this.db.LabourMasters
                     where LabourMaster.ManPowerSupply == b.ID
                     select LabourMaster;
@@ -6014,7 +6014,7 @@
             this.ViewBag.mps = b.Supplier;
             this.ViewBag.mpssh = b.ShortName;
             this.ViewBag.mdate = aa.TMonth.ToLongDateString();
-            if (b.Supplier == "GROVE") b = this.db.ManPowerSuppliers.Find(1);
+            
             var d = from LabourMaster in this.db.LabourMasters
                     where LabourMaster.ManPowerSupply == b.ID
                     select LabourMaster;
@@ -6077,7 +6077,7 @@
             this.ViewBag.mps = b.Supplier;
             this.ViewBag.mpssh = b.ShortName;
             this.ViewBag.mdate = aa.TMonth.ToLongDateString();
-            if (b.Supplier == "GROVE") b = this.db.ManPowerSuppliers.Find(1);
+            
             var d = from LabourMaster in this.db.LabourMasters
                     where LabourMaster.ManPowerSupply == b.ID
                     select LabourMaster;

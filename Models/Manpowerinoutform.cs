@@ -32,6 +32,9 @@ namespace onlygodknows.Models
         public bool rk { get; set; }
         public bool cic { get; set; }
         public bool copon { get; set; }
+        public Nullable<System.DateTime> check_in { get; set; }
+        public Nullable<System.DateTime> check_out { get; set; }
+        public Nullable<System.DateTime> date_ { get; set; }
     
         public virtual LabourMaster LabourMaster { get; set; }
         public virtual ProjectList ProjectList { get; set; }
