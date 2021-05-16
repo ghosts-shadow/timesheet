@@ -19,7 +19,7 @@ namespace onlygodknows.Controllers
         // GET: datacorrection
         public ActionResult Index()
         {
-            var mon = new DateTime(2020,12,1);
+            var mon = new DateTime(2021,1,1);
            newgo: var atlist = this.db.Attendances.Where(x=>x.MainTimeSheet.TMonth.Month == mon.Month && x.MainTimeSheet.TMonth.Year == mon.Year).OrderBy(x=>x.ID).ToList();
             var finallist =new List<Attendance>();
             var finallist1 =new List<Attendance>();
@@ -509,8 +509,8 @@ namespace onlygodknows.Controllers
                         {
                             holi = 0;
                         }
-                        attendance.Holidays = holi;
                     }
+                        attendance.Holidays = holi;
 
                     date = date.AddDays(1);
                 }

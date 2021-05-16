@@ -162,12 +162,12 @@
                         <li class="dropdown">
                             @if (User.IsInRole("Admin"))
                             {
-                                <a class="dropdown-toggle" data-toggle="dropdown" href="#">add users/Labors/holidays/clockin</a>
+                                <a class="dropdown-toggle" data-toggle="dropdown" href="#">add users/Labors/holidays/in&out</a>
                                 <ul class="dropdown-menu" style="background-color: #2c6faa; color: white">
                                     <li>@Html.ActionLink("add new user", "Register", "Account")</li>
                                     <li>@Html.ActionLink("add new labor", "Create", "LabourMasters")</li>
                                     <li>@Html.ActionLink("add new holiday", "Create", "Holidays")</li>
-                                    <li>@Html.ActionLink("add new clock in", "Create", "Manpowerinoutforms")</li>
+                                    <li>@Html.ActionLink("add in&out", "Create", "Manpowerinoutforms")</li>
                                 </ul>
                             }
                         </li>

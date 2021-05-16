@@ -116,8 +116,9 @@
 @using (Html.BeginForm())
 {
     <div class=" col-md-10" onclick="onclick1()">
-        <input type="submit" value="Create" class="btn btn-default" />
+        <input type="submit" value="Save" class="btn btn-default" />
         <input type="button" class="btn btn-default" value="print" onclick="print()" />
+        <input type="button" class="btn btn-default" onclick="window.location.href = '@Url.Action("Index")'" value="Index" />
     </div>
     @Html.AntiForgeryToken()
     <div class="container" onclick="onclick1()" id="print1">

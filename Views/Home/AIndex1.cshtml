@@ -390,24 +390,6 @@
                 <th>
                     @Html.DisplayNameFor(model => model.attendance.TotalHours)
                 </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.attendance.TotalOverTime)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.attendance.TotalAbsent)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.attendance.TotalVL)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.attendance.TotalTransefer)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.attendance.TotalSickLeave)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.attendance.FridayHours)
-                </th>
             </tr>
             <tbody id="mytable">
                 @foreach (var item in Model.Attendancecollection)
@@ -524,24 +506,6 @@
                         </td>
                         <td>
                             @Html.DisplayFor(modelItem => item.TotalHours)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.TotalOverTime)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.TotalAbsent)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.TotalVL)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.TotalTransefer)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.TotalSickLeave)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.FridayHours)
                         </td>
                     </tr>
                 }

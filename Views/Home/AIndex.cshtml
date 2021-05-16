@@ -278,7 +278,7 @@
         <p>@ViewBag.exist</p>
         @{
             var ass = new DateTime();
-            ass = ViewBag.mdate1;
+            ass =Convert.ToDateTime(ViewBag.mdate1);
             ass.AddDays(1);
         }
         @Html.DropDownList("empno", null, " ", new { @class = "form-control", id = "empno", style = "display:none" })
@@ -392,27 +392,6 @@
                 </th>
                 <th>
                     @Html.DisplayNameFor(model => model.attendance.TotalHours)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.attendance.TotalOverTime)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.attendance.TotalAbsent)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.attendance.TotalVL)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.attendance.TotalTransefer)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.attendance.TotalSickLeave)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.attendance.FridayHours)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.attendance.Holidays)
                 </th>
             </tr>
         <tbody id="mytable">
@@ -537,27 +516,6 @@
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.TotalHours)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.TotalOverTime)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.TotalAbsent)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.TotalVL)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.TotalTransefer)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.TotalSickLeave)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.FridayHours)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Holidays)
                 </td>
             </tr>
         }
