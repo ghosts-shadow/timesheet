@@ -289,13 +289,13 @@
                 @if (User.Identity.Name == "sdiniz")
                 {
                     <th></th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.attendance.SubMain)
+                    </th>
                 }
                 <th>#SN</th>
                 <th>
                     @Html.DisplayNameFor(model => model.attendance.LabourMaster.EMPNO)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.attendance.SubMain)
                 </th>
                 <th id="d1">
                     @Html.DisplayNameFor(model => model.attendance.C1)
@@ -406,117 +406,120 @@
                     if (User.Identity.Name == "sdiniz")
                     {
                         <td>
-                            @Html.ActionLink("Edit", "AEdit", new { id = item.ID })
+                            @Html.ActionLink("Edit", "AEdit", new { id = item.ID }) |
+                            @Html.ActionLink("delete", "Delete", new { id = item.ID })
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.SubMain)
                         </td>
 
                     }
                 }
-                <td>@{
+                <td>
+                    @{
                         i++;
-                    }
-                    @i</td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.LabourMaster.EMPNO)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.SubMain)
-                </td>
-                <td id="d1_1_@ae">
-                    @Html.DisplayFor(modelItem => item.C1)
-                </td>
-                <td id="d2_1_@ae">
-                    @Html.DisplayFor(modelItem => item.C2)
-                </td>
-                <td id="d3_1_@ae">
-                    @Html.DisplayFor(modelItem => item.C3)
-                </td>
-                <td id="d4_1_@ae">
-                    @Html.DisplayFor(modelItem => item.C4)
-                </td>
-                <td id="d5_1_@ae">
-                    @Html.DisplayFor(modelItem => item.C5)
-                </td>
-                <td id="d6_1_@ae">
-                    @Html.DisplayFor(modelItem => item.C6)
-                </td>
-                <td id="d7_1_@ae">
-                    @Html.DisplayFor(modelItem => item.C7)
-                </td>
-                <td id="d8_1_@ae">
-                    @Html.DisplayFor(modelItem => item.C8)
-                </td>
-                <td id="d9_1_@ae">
-                    @Html.DisplayFor(modelItem => item.C9)
-                </td>
-                <td id="d10_1_@ae">
-                    @Html.DisplayFor(modelItem => item.C10)
-                </td>
-                <td id="d11_1_@ae">
-                    @Html.DisplayFor(modelItem => item.C11)
-                </td>
-                <td id="d12_1_@ae">
-                    @Html.DisplayFor(modelItem => item.C12)
-                </td>
-                <td id="d13_1_@ae">
-                    @Html.DisplayFor(modelItem => item.C13)
-                </td>
-                <td id="d14_1_@ae">
-                    @Html.DisplayFor(modelItem => item.C14)
-                </td>
-                <td id="d15_1_@ae">
-                    @Html.DisplayFor(modelItem => item.C15)
-                </td>
-                <td id="d16_1_@ae">
-                    @Html.DisplayFor(modelItem => item.C16)
-                </td>
-                <td id="d17_1_@ae">
-                    @Html.DisplayFor(modelItem => item.C17)
-                </td>
-                <td id="d18_1_@ae">
-                    @Html.DisplayFor(modelItem => item.C18)
-                </td>
-                <td id="d19_1_@ae">
-                    @Html.DisplayFor(modelItem => item.C19)
-                </td>
-                <td id="d20_1_@ae">
-                    @Html.DisplayFor(modelItem => item.C20)
-                </td>
-                <td id="d21_1_@ae">
-                    @Html.DisplayFor(modelItem => item.C21)
-                </td>
-                <td id="d22_1_@ae">
-                    @Html.DisplayFor(modelItem => item.C22)
-                </td>
-                <td id="d23_1_@ae">
-                    @Html.DisplayFor(modelItem => item.C23)
-                </td>
-                <td id="d24_1_@ae">
-                    @Html.DisplayFor(modelItem => item.C24)
-                </td>
-                <td id="d25_1_@ae">
-                    @Html.DisplayFor(modelItem => item.C25)
-                </td>
-                <td id="d26_1_@ae">
-                    @Html.DisplayFor(modelItem => item.C26)
-                </td>
-                <td id="d27_1_@ae">
-                    @Html.DisplayFor(modelItem => item.C27)
-                </td>
-                <td id="d28_1_@ae">
-                    @Html.DisplayFor(modelItem => item.C28)
-                </td>
-                <td id="ex1_1_@ae">
-                    @Html.DisplayFor(modelItem => item.C29)
-                </td>
-                <td id="ex2_1_@ae">
-                    @Html.DisplayFor(modelItem => item.C30)
-                </td>
-                <td id="ex3_1_@ae">
-                    @Html.DisplayFor(modelItem => item.C31)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.TotalHours)
-                </td>
+                }
+                @i
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.LabourMaster.EMPNO)
+            </td>
+            <td id="d1_1_@ae">
+                @Html.DisplayFor(modelItem => item.C1)
+            </td>
+            <td id="d2_1_@ae">
+                @Html.DisplayFor(modelItem => item.C2)
+            </td>
+            <td id="d3_1_@ae">
+                @Html.DisplayFor(modelItem => item.C3)
+            </td>
+            <td id="d4_1_@ae">
+                @Html.DisplayFor(modelItem => item.C4)
+            </td>
+            <td id="d5_1_@ae">
+                @Html.DisplayFor(modelItem => item.C5)
+            </td>
+            <td id="d6_1_@ae">
+                @Html.DisplayFor(modelItem => item.C6)
+            </td>
+            <td id="d7_1_@ae">
+                @Html.DisplayFor(modelItem => item.C7)
+            </td>
+            <td id="d8_1_@ae">
+                @Html.DisplayFor(modelItem => item.C8)
+            </td>
+            <td id="d9_1_@ae">
+                @Html.DisplayFor(modelItem => item.C9)
+            </td>
+            <td id="d10_1_@ae">
+                @Html.DisplayFor(modelItem => item.C10)
+            </td>
+            <td id="d11_1_@ae">
+                @Html.DisplayFor(modelItem => item.C11)
+            </td>
+            <td id="d12_1_@ae">
+                @Html.DisplayFor(modelItem => item.C12)
+            </td>
+            <td id="d13_1_@ae">
+                @Html.DisplayFor(modelItem => item.C13)
+            </td>
+            <td id="d14_1_@ae">
+                @Html.DisplayFor(modelItem => item.C14)
+            </td>
+            <td id="d15_1_@ae">
+                @Html.DisplayFor(modelItem => item.C15)
+            </td>
+            <td id="d16_1_@ae">
+                @Html.DisplayFor(modelItem => item.C16)
+            </td>
+            <td id="d17_1_@ae">
+                @Html.DisplayFor(modelItem => item.C17)
+            </td>
+            <td id="d18_1_@ae">
+                @Html.DisplayFor(modelItem => item.C18)
+            </td>
+            <td id="d19_1_@ae">
+                @Html.DisplayFor(modelItem => item.C19)
+            </td>
+            <td id="d20_1_@ae">
+                @Html.DisplayFor(modelItem => item.C20)
+            </td>
+            <td id="d21_1_@ae">
+                @Html.DisplayFor(modelItem => item.C21)
+            </td>
+            <td id="d22_1_@ae">
+                @Html.DisplayFor(modelItem => item.C22)
+            </td>
+            <td id="d23_1_@ae">
+                @Html.DisplayFor(modelItem => item.C23)
+            </td>
+            <td id="d24_1_@ae">
+                @Html.DisplayFor(modelItem => item.C24)
+            </td>
+            <td id="d25_1_@ae">
+                @Html.DisplayFor(modelItem => item.C25)
+            </td>
+            <td id="d26_1_@ae">
+                @Html.DisplayFor(modelItem => item.C26)
+            </td>
+            <td id="d27_1_@ae">
+                @Html.DisplayFor(modelItem => item.C27)
+            </td>
+            <td id="d28_1_@ae">
+                @Html.DisplayFor(modelItem => item.C28)
+            </td>
+            <td id="ex1_1_@ae">
+                @Html.DisplayFor(modelItem => item.C29)
+            </td>
+            <td id="ex2_1_@ae">
+                @Html.DisplayFor(modelItem => item.C30)
+            </td>
+            <td id="ex3_1_@ae">
+                @Html.DisplayFor(modelItem => item.C31)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.TotalHours)
+            </td>
             </tr>
         }
         </tbody>
@@ -575,7 +578,7 @@
 
     function onlo() {
 
-        $('select').attr("disabled", false);
+        $('select').attr("disabled", true);
         $('#EmpID').attr("disabled", false);
         var customVal = $("#md1").data("value");
         var aa = new Date(customVal);
@@ -726,8 +729,8 @@
             $('#C20').attr("disabled", false);
         }
         if (aa.getDate() == 21) {
-            $('#C10').attr("disabled", false);
-            $('#C11').attr("disabled", false);
+            $('#C19').attr("disabled", false);
+            $('#C20').attr("disabled", false);
         }
         if (aa.getDate() == 22) {
             $('#C21').attr("disabled", false);

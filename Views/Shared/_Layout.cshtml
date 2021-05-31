@@ -56,7 +56,6 @@
             },
             10000);
         function tt() {
-            alert("hi");
             $('#dummy').css('color', 'red');
             var co = $('#note1').css('color');
             var co1 = $('#dummy').css('color');
@@ -65,7 +64,7 @@
                 var popup = document.getElementById("apnote_1");
                 popup.classList.toggle("show");
             }
-        }
+        } 
 
         function got() {
             location.href = "@Url.Action("appsum", "Projman")";
@@ -201,7 +200,7 @@
                                 @Html.ActionLink("approve timesheet", "appsum", "Projman")
                             </li>
                             <li>@Html.ActionLink("summary", "Index", "summary")</li>
-                            <li style="position: absolute; left: 77%; top: 10px">
+                            <li style="position: absolute; left: 77%; top: 10px; display: none" >
                                 <button class="fa fa-bell fa-2x" onclick="tt()" style="color: #2c6faa; background-color: #2c6faa; border: none" id="note1"></button>
                                 <i style="color: #ff2323; width: 100px; height: 100px;" id="apnote_11" class="popup">
                                     <span id="apnote_1" onclick="got()" style="display: none" class="popuptext">

@@ -606,6 +606,7 @@
     <Content Include="Views\Manpowerinoutforms\Details.cshtml" />
     <Content Include="Views\Manpowerinoutforms\Edit.cshtml" />
     <Content Include="Views\Manpowerinoutforms\Index.cshtml" />
+    <Content Include="Views\Home\Delete.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\bootstrap.css" />

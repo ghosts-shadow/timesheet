@@ -100,7 +100,8 @@
             {
                 this.db.Entry(attendance).State = EntityState.Modified;
                 this.db.SaveChanges();
-                return this.RedirectToAction("AIndex", "Home");
+                var mtsid = this.db.MainTimeSheets.Find(attendance.MainTimeSheet.ID);
+                return this.RedirectToAction("AIndex",mtsid);
             }
 
             return this.View(attendance);
@@ -143,13 +144,18 @@
             this.ViewBag.empno = new SelectList(d.Where(x => x.EMPNO >= 4).OrderBy(m => m.EMPNO), "ID", "EMPNO");
             this.ViewBag.pos = new SelectList(d.Where(x => x.EMPNO >= 4).OrderBy(m => m.EMPNO), "ID", "Position");
             this.ViewBag.name = new SelectList(d.Where(x => x.EMPNO >= 4).OrderBy(m => m.EMPNO), "ID", "Person_name");
-            var atlist = this.db.Attendances.ToList();
+            var atlist = this.db.Attendances.Where(x => x.SubMain.Equals(aa.ID)).ToList();
             var dateat = aa.TMonth;
             if (dateat.Day == 1) this.fillformpremon(aa.ID);
             else
             {
-                filldate(aa.ID);
+                var filleddate = atlist.Find(x=>x.SubMain == aa.ID).Path;
+                if (filleddate.IsNullOrWhiteSpace() || !filleddate.Contains(aa.TMonth.ToString("d")) )
+                {
+                    filldate(aa.ID);
+                }
             }
+
             {
                 var data = new[]
                 {
@@ -215,12 +221,12 @@
                 this.ViewBag.C30 = data;
                 this.ViewBag.C31 = data;
             }
-
-            var atlist1 = this.db.Attendances.Where(x => x.SubMain.Equals(aa.ID)).Include(x => x.LabourMaster)
-                .OrderByDescending(m => m.ID).ToList();
+            
             var as1 = this.db.Attendances.Where(x => x.SubMain.Equals(aa.ID)).Include(x => x.LabourMaster)
                 .OrderByDescending(m => m.EmpID);
             var listat = new List<Attendance>();
+
+            
             foreach (var VA in as1.OrderBy(x => x.ID))
             {
                 if (!listat.Exists(
@@ -233,7 +239,7 @@
 
             var model1 = new timesheetViewModel
             {
-                Attendancecollection = listat
+                Attendancecollection = listat.OrderBy(x=>x.LabourMaster.EMPNO)
             };
 
             return this.View(model1);
@@ -341,7 +347,7 @@
             if (empno != null)
             {
                 var testi = this.db.Attendances.Where(x => x.SubMain.Equals(aa.ID) && x.EmpID == empno)
-                    .Include(x => x.LabourMaster).OrderByDescending(m => m.ID);
+                    .Include(x => x.LabourMaster).OrderByDescending(m => m.LabourMaster.EMPNO);
                 if (testi != null)
                     model1 = new timesheetViewModel {Attendancecollection = testi.ToList()};
             }
@@ -350,11 +356,32 @@
                 model1 = new timesheetViewModel
                 {
                     Attendancecollection = this.db.Attendances.Where(x => x.SubMain.Equals(aa.ID))
-                        .Include(x => x.LabourMaster).OrderByDescending(m => m.ID)
+                        .Include(x => x.LabourMaster).OrderByDescending(m => m.LabourMaster.EMPNO)
                 };
             }
 
             return this.View(model1);
+        }
+
+
+        public ActionResult Delete(int? id)
+        {
+            if (id == null) return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            var attendance = this.db.Attendances.Find(id);
+            if (attendance == null) return this.HttpNotFound();
+            return this.View(attendance);
+        }
+
+        [HttpPost]
+        [ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public ActionResult DeleteConfirmed(int id)
+        {
+            var attendance = this.db.Attendances.Find(id);
+            var mtsid = this.db.MainTimeSheets.Find(attendance.MainTimeSheet.ID);
+            this.db.Attendances.Remove(attendance);
+            this.db.SaveChanges();
+            return this.RedirectToAction("AIndex", mtsid);
         }
 
         public List<int> GetAll(DateTime date)
@@ -397,268 +424,1069 @@
             var atp = at.FindAll(x => x.SubMain == qw.ID);
             var b = this.db.ManPowerSuppliers.Find(qw.ManPowerSupplier);
             var fday = this.GetAll(qw.TMonth);
+            var hday = this.GetAllholi(qw.TMonth);
+            foreach (var i in hday)
+            {
+                if (!fday.Contains(i))
+                {
+                    fday.Add(i);
+                }
+            }
             {
                 foreach (var sd in atp)
                 {
-                    var aq = GetAll(sd.MainTimeSheet.TMonth);
+                    var change = false;
+                    var aq = fday;
                     var sy = sd.MainTimeSheet.TMonth.Day;
                     if (sy != 1)
                     {
                         sy -= 1;
+                        sd.Path = sd.MainTimeSheet.TMonth.ToString("d");
                         if (aq.Exists(x => x.Equals(sy)))
                         {
                             sy -= 1;
                             if (sy == 1)
                             {
-                                if (sd.C3 == sd.C1 || sd.C3 == "0")
+                                if (sd.C3 == sd.C1 || sd.C3 == null || sd.C3 == "0")
                                 {
                                     sd.C3 = sd.C1;
+                                    change = true;
                                 }
-                                
                             }
+
                             if (sy == 2)
                             {
-                                if (sd.C4 == sd.C2 || sd.C4 == "0")
+                                if (sd.C4 == sd.C2 || sd.C4 == null || sd.C4 == "0")
                                 {
                                     sd.C4 = sd.C2;
+                                    change = true;
                                 }
-                                
                             }
+
                             if (sy == 3)
                             {
-                                if (sd.C5 == sd.C3 || sd.C5 == "0")
+                                if (sd.C5 == sd.C3 || sd.C5 == null || sd.C5 == "0")
                                 {
                                     sd.C5 = sd.C3;
+                                    change = true;
                                 }
-                                
                             }
-    
+
                             if (sy == 4)
                             {
-                                if (sd.C6 == sd.C4 || sd.C6 == "0")
+                                if (sd.C6 == sd.C4 || sd.C6 == null || sd.C6 == "0")
                                 {
                                     sd.C6 = sd.C4;
+                                    change = true;
                                 }
-                                
                             }
-    
+
                             if (sy == 5)
                             {
-                                if (sd.C7 == sd.C5 || sd.C5 == "0")
+                                if (sd.C7 == sd.C5 || sd.C5 == null || sd.C5 == "0")
                                 {
                                     sd.C7 = sd.C5;
+                                    change = true;
                                 }
-                                
                             }
-    
+
                             if (sy == 6)
                             {
-                                if (sd.C31 == sd.C29 || sd.C6 == "0")
+                                if (sd.C31 == sd.C29 || sd.C6 == null || sd.C6 == "0")
                                 {
                                     sd.C6 = sd.C6;
+                                    change = true;
                                 }
-                                
                             }
-    
+
                             if (sy == 7)
                             {
-                                if (sd.C9 == sd.C7 || sd.C9 == "0")
+                                if (sd.C9 == sd.C7 || sd.C9 == null || sd.C9 == "0")
                                 {
                                     sd.C9 = sd.C7;
+                                    change = true;
                                 }
                             }
-    
+
                             if (sy == 8)
                             {
-                                if (sd.C10 == sd.C8 || sd.C10 == "0")
+                                if (sd.C10 == sd.C8 || sd.C10 == null || sd.C10 == "0")
                                 {
                                     sd.C10 = sd.C8;
+                                    change = true;
                                 }
                             }
-    
+
                             if (sy == 9)
                             {
-                                if (sd.C11 == sd.C9 || sd.C11 == "0")
+                                if (sd.C11 == sd.C9 || sd.C11 == null || sd.C11 == "0")
                                 {
                                     sd.C11 = sd.C9;
+                                    change = true;
                                 }
-                                
                             }
-    
+
                             if (sy == 10)
                             {
-                                if (sd.C12 == sd.C10 || sd.C12 == "0")
+                                if (sd.C12 == sd.C10 || sd.C12 == null || sd.C12 == "0")
                                 {
                                     sd.C12 = sd.C10;
+                                    change = true;
                                 }
-                                
                             }
-    
+
                             if (sy == 11)
                             {
-                                if (sd.C13 == sd.C11 || sd.C31 == "0")
+                                if (sd.C13 == sd.C11 || sd.C31 == null || sd.C31 == "0")
                                 {
                                     sd.C13 = sd.C11;
+                                    change = true;
                                 }
-                                
                             }
-    
+
                             if (sy == 12)
                             {
-                                if (sd.C14 == sd.C12 || sd.C14 == "0")
+                                if (sd.C14 == sd.C12 || sd.C14 == null || sd.C14 == "0")
                                 {
                                     sd.C14 = sd.C12;
+                                    change = true;
                                 }
                             }
-    
+
                             if (sy == 13)
                             {
-                                if (sd.C15 == sd.C13 || sd.C15 == "0")
+                                if (sd.C15 == sd.C13 || sd.C15 == null || sd.C15 == "0")
                                 {
                                     sd.C15 = sd.C13;
+                                    change = true;
                                 }
                             }
-    
+
                             if (sy == 14)
                             {
-                                if (sd.C16 == sd.C14 || sd.C16 == "0")
+                                if (sd.C16 == sd.C14 || sd.C16 == null || sd.C16 == "0")
                                 {
                                     sd.C16 = sd.C14;
+                                    change = true;
                                 }
-                                
                             }
-    
+
                             if (sy == 15)
                             {
-                                if (sd.C17 == sd.C15 || sd.C17 == "0")
+                                if (sd.C17 == sd.C15 || sd.C17 == null || sd.C17 == "0")
                                 {
                                     sd.C17 = sd.C15;
+                                    change = true;
                                 }
+
                                 ;
                             }
-    
+
                             if (sy == 16)
                             {
-                                if (sd.C18 == sd.C16 || sd.C18 == "0")
+                                if (sd.C18 == sd.C16 || sd.C18 == null || sd.C18 == "0")
                                 {
                                     sd.C18 = sd.C16;
+                                    change = true;
                                 }
-                                
                             }
-    
+
                             if (sy == 17)
                             {
-                                if (sd.C19 == sd.C17 || sd.C19 == "0")
+                                if (sd.C19 == sd.C17 || sd.C19 == null || sd.C19 == "0")
                                 {
                                     sd.C19 = sd.C17;
+                                    change = true;
                                 }
-                                
                             }
-    
+
                             if (sy == 18)
                             {
-                                if (sd.C20 == sd.C18 || sd.C20 == "0")
+                                if (sd.C20 == sd.C18 || sd.C20 == null || sd.C20 == "0")
                                 {
                                     sd.C20 = sd.C18;
+                                    change = true;
                                 }
+
                                 ;
                             }
-    
+
                             if (sy == 19)
                             {
-                                if (sd.C21 == sd.C19 || sd.C21 == "0")
+                                if (sd.C21 == sd.C19 || sd.C21 == null || sd.C21 == "0")
                                 {
                                     sd.C21 = sd.C19;
+                                    change = true;
                                 }
-                                
                             }
-    
+
                             if (sy == 20)
                             {
-                                if (sd.C22 == sd.C20 || sd.C22 == "0")
+                                if (sd.C22 == sd.C20 || sd.C22 == null || sd.C22 == "0")
                                 {
                                     sd.C22 = sd.C20;
+                                    change = true;
                                 }
                             }
-    
+
                             if (sy == 21)
                             {
-                                if (sd.C23 == sd.C21 || sd.C23 == "0")
+                                if (sd.C23 == sd.C21 || sd.C23 == null || sd.C23 == "0")
                                 {
                                     sd.C23 = sd.C21;
+                                    change = true;
                                 }
-                                ;
                             }
-    
+
                             if (sy == 22)
                             {
-                                if (sd.C24 == sd.C22 || sd.C24 == "0")
+                                if (sd.C24 == sd.C22 || sd.C24 == null || sd.C24 == "0")
                                 {
                                     sd.C24 = sd.C22;
+                                    change = true;
                                 }
+
                                 ;
                             }
-    
+
                             if (sy == 23)
                             {
-                                if (sd.C25 == sd.C23 || sd.C25 == "0")
+                                if (sd.C25 == sd.C23 || sd.C25 == null || sd.C25 == "0")
                                 {
                                     sd.C25 = sd.C23;
+                                    change = true;
                                 }
-                                ;
                             }
-    
+
                             if (sy == 24)
                             {
-                                if (sd.C26 == sd.C24 || sd.C26 == "0")
+                                if (sd.C26 == sd.C24 || sd.C26 == null || sd.C26 == "0")
                                 {
                                     sd.C26 = sd.C24;
+                                    change = true;
                                 }
-                                ;
                             }
-    
+
                             if (sy == 25)
                             {
-                                if (sd.C27 == sd.C25 || sd.C27 == "0")
+                                if (sd.C27 == sd.C25 || sd.C27 == null || sd.C27 == "0")
                                 {
                                     sd.C27 = sd.C25;
+                                    change = true;
                                 }
                             }
-    
+
                             if (sy == 26)
                             {
-                                if (sd.C28 == sd.C26 || sd.C28 == "0")
+                                if (sd.C28 == sd.C26 || sd.C28 == null || sd.C28 == "0")
                                 {
                                     sd.C28 = sd.C26;
+                                    change = true;
                                 }
                             }
-    
+
                             if (sy == 27)
                             {
-                                if (sd.C29 == sd.C27 || sd.C29 == "0")
+                                if (sd.C29 == sd.C27 || sd.C29 == null || sd.C29 == "0")
                                 {
                                     sd.C29 = sd.C27;
+                                    change = true;
                                 }
                             }
-    
+
                             if (sy == 28)
                             {
-                                if (sd.C31 == sd.C29 || sd.C30 == "0")
+                                if (sd.C31 == sd.C29 || sd.C30 == null || sd.C30 == "0")
                                 {
                                     sd.C30 = sd.C28;
+                                    change = true;
                                 }
                             }
-    
+
                             if (sy == 29)
                             {
-                                if (sd.C31 == sd.C29 || sd.C31 == "0")
+                                if (sd.C31 == sd.C29 || sd.C31 == null || sd.C31 == "0")
                                 {
                                     sd.C31 = sd.C29;
+                                    change = true;
                                 }
-                                
                             }
+
                             this.db.Entry(sd).State = EntityState.Modified;
                             this.db.SaveChanges();
+                            if (change)
+                            {
+                                sd.TotalHours = 0;
+                                long.TryParse(sd.C1, out var tal);
+                                long.TryParse(sd.C2, out var tal1);
+                                long.TryParse(sd.C3, out var tal2);
+                                long.TryParse(sd.C4, out var tal3);
+                                long.TryParse(sd.C5, out var tal4);
+                                long.TryParse(sd.C6, out var tal5);
+                                long.TryParse(sd.C7, out var tal6);
+                                long.TryParse(sd.C8, out var tal7);
+                                long.TryParse(sd.C9, out var tal8);
+                                long.TryParse(sd.C10, out var tal9);
+                                long.TryParse(sd.C11, out var tal10);
+                                long.TryParse(sd.C12, out var tal11);
+                                long.TryParse(sd.C13, out var tal12);
+                                long.TryParse(sd.C14, out var tal13);
+                                long.TryParse(sd.C15, out var tal14);
+                                long.TryParse(sd.C16, out var tal15);
+                                long.TryParse(sd.C17, out var tal16);
+                                long.TryParse(sd.C18, out var tal17);
+                                long.TryParse(sd.C19, out var tal18);
+                                long.TryParse(sd.C20, out var tal19);
+                                long.TryParse(sd.C21, out var tal20);
+                                long.TryParse(sd.C22, out var tal21);
+                                long.TryParse(sd.C23, out var tal22);
+                                long.TryParse(sd.C24, out var tal23);
+                                long.TryParse(sd.C25, out var tal24);
+                                long.TryParse(sd.C26, out var tal25);
+                                long.TryParse(sd.C27, out var tal26);
+                                long.TryParse(sd.C28, out var tal27);
+                                long.TryParse(sd.C29, out var tal28);
+                                long.TryParse(sd.C30, out var tal29);
+                                long.TryParse(sd.C31, out var tal30);
+                                sd.TotalHours = tal + tal1 + tal2 + tal3 + tal4 + tal5 + tal6 + tal7 + tal8 + tal9 +
+                                                tal10 + tal11 + tal12
+                                                + tal13 + tal14 + tal15 + tal16 + tal17 + tal18 + tal19 + tal20 +
+                                                tal21 + tal22 + tal23
+                                                + tal24 + tal25 + tal26 + tal27 + tal28 + tal29 + tal30;
+                                double.TryParse(b.NormalTimeUpto.ToString(), out var tho);
+                                {
+                                    var t = new List<long>();
+                                    sd.TotalOverTime = 0;
+                                    t.Add(tal);
+                                    t.Add(tal1);
+                                    t.Add(tal2);
+                                    t.Add(tal3);
+                                    t.Add(tal4);
+                                    t.Add(tal5);
+                                    t.Add(tal6);
+                                    t.Add(tal7);
+                                    t.Add(tal8);
+                                    t.Add(tal9);
+                                    t.Add(tal10);
+                                    t.Add(tal11);
+                                    t.Add(tal12);
+                                    t.Add(tal13);
+                                    t.Add(tal14);
+                                    t.Add(tal15);
+                                    t.Add(tal16);
+                                    t.Add(tal17);
+                                    t.Add(tal18);
+                                    t.Add(tal19);
+                                    t.Add(tal20);
+                                    t.Add(tal21);
+                                    t.Add(tal22);
+                                    t.Add(tal23);
+                                    t.Add(tal24);
+                                    t.Add(tal25);
+                                    t.Add(tal26);
+                                    t.Add(tal27);
+                                    t.Add(tal28);
+                                    t.Add(tal29);
+                                    t.Add(tal30);
+                                    long tho1 = 0;
+                                    int i = 0;
+                                    foreach (var l in t)
+                                    {
+                                        i++;
+                                        if (!fday.Exists(x => x.Equals(i)))
+                                        {
+                                            if (l > tho)
+                                            {
+                                                tho1 += l - (long) tho;
+                                                sd.TotalOverTime = tho1;
+                                            }
+                                        }
+                                    }
+                                }
+                                {
+                                    sd.TotalSickLeave = 0;
+                                    long ts = 0;
+                                    if (!sd.C1.IsNullOrWhiteSpace())
+                                        if (sd.C1.Equals("S"))
+                                            ts = ts + 1;
+                                    if (!sd.C2.IsNullOrWhiteSpace())
+                                        if (sd.C2.Equals("S"))
+                                            ts = ts + 1;
+                                    if (!sd.C3.IsNullOrWhiteSpace())
+                                        if (sd.C3.Equals("S"))
+                                            ts = ts + 1;
+                                    if (!sd.C4.IsNullOrWhiteSpace())
+                                        if (sd.C4.Equals("S"))
+                                            ts = ts + 1;
+                                    if (!sd.C5.IsNullOrWhiteSpace())
+                                        if (sd.C5.Equals("S"))
+                                            ts = ts + 1;
+                                    if (!sd.C6.IsNullOrWhiteSpace())
+                                        if (sd.C6.Equals("S"))
+                                            ts = ts + 1;
+                                    if (!sd.C7.IsNullOrWhiteSpace())
+                                        if (sd.C7.Equals("S"))
+                                            ts = ts + 1;
+                                    if (!sd.C8.IsNullOrWhiteSpace())
+                                        if (sd.C8.Equals("S"))
+                                            ts = ts + 1;
+                                    if (!sd.C9.IsNullOrWhiteSpace())
+                                        if (sd.C9.Equals("S"))
+                                            ts = ts + 1;
+                                    if (!sd.C10.IsNullOrWhiteSpace())
+                                        if (sd.C10.Equals("S"))
+                                            ts = ts + 1;
+                                    if (!sd.C11.IsNullOrWhiteSpace())
+                                        if (sd.C11.Equals("S"))
+                                            ts = ts + 1;
+                                    if (!sd.C12.IsNullOrWhiteSpace())
+                                        if (sd.C12.Equals("S"))
+                                            ts = ts + 1;
+                                    if (!sd.C13.IsNullOrWhiteSpace())
+                                        if (sd.C13.Equals("S"))
+                                            ts = ts + 1;
+                                    if (!sd.C14.IsNullOrWhiteSpace())
+                                        if (sd.C14.Equals("S"))
+                                            ts = ts + 1;
+                                    if (!sd.C15.IsNullOrWhiteSpace())
+                                        if (sd.C15.Equals("S"))
+                                            ts = ts + 1;
+                                    if (!sd.C16.IsNullOrWhiteSpace())
+                                        if (sd.C16.Equals("S"))
+                                            ts = ts + 1;
+                                    if (!sd.C17.IsNullOrWhiteSpace())
+                                        if (sd.C17.Equals("S"))
+                                            ts = ts + 1;
+                                    if (!sd.C18.IsNullOrWhiteSpace())
+                                        if (sd.C18.Equals("S"))
+                                            ts = ts + 1;
+                                    if (!sd.C19.IsNullOrWhiteSpace())
+                                        if (sd.C19.Equals("S"))
+                                            ts = ts + 1;
+                                    if (!sd.C20.IsNullOrWhiteSpace())
+                                        if (sd.C20.Equals("S"))
+                                            ts = ts + 1;
+                                    if (!sd.C21.IsNullOrWhiteSpace())
+                                        if (sd.C21.Equals("S"))
+                                            ts = ts + 1;
+                                    if (!sd.C22.IsNullOrWhiteSpace())
+                                        if (sd.C22.Equals("S"))
+                                            ts = ts + 1;
+                                    if (!sd.C23.IsNullOrWhiteSpace())
+                                        if (sd.C23.Equals("S"))
+                                            ts = ts + 1;
+                                    if (!sd.C24.IsNullOrWhiteSpace())
+                                        if (sd.C24.Equals("S"))
+                                            ts = ts + 1;
+                                    if (!sd.C25.IsNullOrWhiteSpace())
+                                        if (sd.C25.Equals("S"))
+                                            ts = ts + 1;
+                                    if (!sd.C26.IsNullOrWhiteSpace())
+                                        if (sd.C26.Equals("S"))
+                                            ts = ts + 1;
+                                    if (!sd.C27.IsNullOrWhiteSpace())
+                                        if (sd.C27.Equals("S"))
+                                            ts = ts + 1;
+                                    if (!sd.C28.IsNullOrWhiteSpace())
+                                        if (sd.C28.Equals("S"))
+                                            ts = ts + 1;
+                                    if (!sd.C29.IsNullOrWhiteSpace())
+                                        if (sd.C29.Equals("S"))
+                                            ts = ts + 1;
+                                    if (!sd.C30.IsNullOrWhiteSpace())
+                                        if (sd.C30.Equals("S"))
+                                            ts = ts + 1;
+                                    if (!sd.C31.IsNullOrWhiteSpace())
+                                        if (sd.C31.Equals("S"))
+                                            ts = ts + 1;
+
+                                    sd.TotalSickLeave = ts;
+                                }
+                                {
+                                    sd.TotalVL = 0;
+                                    long tv = 0;
+                                    if (!sd.C1.IsNullOrWhiteSpace())
+                                        if (sd.C1.Equals("V"))
+                                            tv = tv + 1;
+                                    if (!sd.C2.IsNullOrWhiteSpace())
+                                        if (sd.C2.Equals("V"))
+                                            tv = tv + 1;
+                                    if (!sd.C3.IsNullOrWhiteSpace())
+                                        if (sd.C3.Equals("V"))
+                                            tv = tv + 1;
+                                    if (!sd.C4.IsNullOrWhiteSpace())
+                                        if (sd.C4.Equals("V"))
+                                            tv = tv + 1;
+                                    if (!sd.C5.IsNullOrWhiteSpace())
+                                        if (sd.C5.Equals("V"))
+                                            tv = tv + 1;
+                                    if (!sd.C6.IsNullOrWhiteSpace())
+                                        if (sd.C6.Equals("V"))
+                                            tv = tv + 1;
+                                    if (!sd.C7.IsNullOrWhiteSpace())
+                                        if (sd.C7.Equals("V"))
+                                            tv = tv + 1;
+                                    if (!sd.C8.IsNullOrWhiteSpace())
+                                        if (sd.C8.Equals("V"))
+                                            tv = tv + 1;
+                                    if (!sd.C9.IsNullOrWhiteSpace())
+                                        if (sd.C9.Equals("V"))
+                                            tv = tv + 1;
+                                    if (!sd.C10.IsNullOrWhiteSpace())
+                                        if (sd.C10.Equals("V"))
+                                            tv = tv + 1;
+                                    if (!sd.C11.IsNullOrWhiteSpace())
+                                        if (sd.C11.Equals("V"))
+                                            tv = tv + 1;
+                                    if (!sd.C12.IsNullOrWhiteSpace())
+                                        if (sd.C12.Equals("V"))
+                                            tv = tv + 1;
+                                    if (!sd.C13.IsNullOrWhiteSpace())
+                                        if (sd.C13.Equals("V"))
+                                            tv = tv + 1;
+                                    if (!sd.C14.IsNullOrWhiteSpace())
+                                        if (sd.C14.Equals("V"))
+                                            tv = tv + 1;
+                                    if (!sd.C15.IsNullOrWhiteSpace())
+                                        if (sd.C15.Equals("V"))
+                                            tv = tv + 1;
+                                    if (!sd.C16.IsNullOrWhiteSpace())
+                                        if (sd.C16.Equals("V"))
+                                            tv = tv + 1;
+                                    if (!sd.C17.IsNullOrWhiteSpace())
+                                        if (sd.C17.Equals("V"))
+                                            tv = tv + 1;
+                                    if (!sd.C18.IsNullOrWhiteSpace())
+                                        if (sd.C18.Equals("V"))
+                                            tv = tv + 1;
+                                    if (!sd.C19.IsNullOrWhiteSpace())
+                                        if (sd.C19.Equals("V"))
+                                            tv = tv + 1;
+                                    if (!sd.C20.IsNullOrWhiteSpace())
+                                        if (sd.C20.Equals("V"))
+                                            tv = tv + 1;
+                                    if (!sd.C21.IsNullOrWhiteSpace())
+                                        if (sd.C21.Equals("V"))
+                                            tv = tv + 1;
+                                    if (!sd.C22.IsNullOrWhiteSpace())
+                                        if (sd.C22.Equals("V"))
+                                            tv = tv + 1;
+                                    if (!sd.C23.IsNullOrWhiteSpace())
+                                        if (sd.C23.Equals("V"))
+                                            tv = tv + 1;
+                                    if (!sd.C24.IsNullOrWhiteSpace())
+                                        if (sd.C24.Equals("V"))
+                                            tv = tv + 1;
+                                    if (!sd.C25.IsNullOrWhiteSpace())
+                                        if (sd.C25.Equals("V"))
+                                            tv = tv + 1;
+                                    if (!sd.C26.IsNullOrWhiteSpace())
+                                        if (sd.C26.Equals("V"))
+                                            tv = tv + 1;
+                                    if (!sd.C27.IsNullOrWhiteSpace())
+                                        if (sd.C27.Equals("V"))
+                                            tv = tv + 1;
+                                    if (!sd.C28.IsNullOrWhiteSpace())
+                                        if (sd.C28.Equals("V"))
+                                            tv = tv + 1;
+                                    if (!sd.C29.IsNullOrWhiteSpace())
+                                        if (sd.C29.Equals("V"))
+                                            tv = tv + 1;
+                                    if (!sd.C30.IsNullOrWhiteSpace())
+                                        if (sd.C30.Equals("V"))
+                                            tv = tv + 1;
+                                    if (!sd.C31.IsNullOrWhiteSpace())
+                                        if (sd.C31.Equals("V"))
+                                            tv = tv + 1;
+
+                                    sd.TotalVL = tv;
+                                }
+                                {
+                                    sd.TotalAbsent = 0;
+                                    long tv = 0;
+                                    if (!sd.C1.IsNullOrWhiteSpace())
+                                        if (sd.C1.Equals("A"))
+                                            tv = tv + 1;
+                                    if (!sd.C2.IsNullOrWhiteSpace())
+                                        if (sd.C2.Equals("A"))
+                                            tv = tv + 1;
+                                    if (!sd.C3.IsNullOrWhiteSpace())
+                                        if (sd.C3.Equals("A"))
+                                            tv = tv + 1;
+                                    if (!sd.C4.IsNullOrWhiteSpace())
+                                        if (sd.C4.Equals("A"))
+                                            tv = tv + 1;
+                                    if (!sd.C5.IsNullOrWhiteSpace())
+                                        if (sd.C5.Equals("A"))
+                                            tv = tv + 1;
+                                    if (!sd.C6.IsNullOrWhiteSpace())
+                                        if (sd.C6.Equals("A"))
+                                            tv = tv + 1;
+                                    if (!sd.C7.IsNullOrWhiteSpace())
+                                        if (sd.C7.Equals("A"))
+                                            tv = tv + 1;
+                                    if (!sd.C8.IsNullOrWhiteSpace())
+                                        if (sd.C8.Equals("A"))
+                                            tv = tv + 1;
+                                    if (!sd.C9.IsNullOrWhiteSpace())
+                                        if (sd.C9.Equals("A"))
+                                            tv = tv + 1;
+                                    if (!sd.C10.IsNullOrWhiteSpace())
+                                        if (sd.C10.Equals("A"))
+                                            tv = tv + 1;
+                                    if (!sd.C11.IsNullOrWhiteSpace())
+                                        if (sd.C11.Equals("A"))
+                                            tv = tv + 1;
+                                    if (!sd.C12.IsNullOrWhiteSpace())
+                                        if (sd.C12.Equals("A"))
+                                            tv = tv + 1;
+                                    if (!sd.C13.IsNullOrWhiteSpace())
+                                        if (sd.C13.Equals("A"))
+                                            tv = tv + 1;
+                                    if (!sd.C14.IsNullOrWhiteSpace())
+                                        if (sd.C14.Equals("A"))
+                                            tv = tv + 1;
+                                    if (!sd.C15.IsNullOrWhiteSpace())
+                                        if (sd.C15.Equals("A"))
+                                            tv = tv + 1;
+                                    if (!sd.C16.IsNullOrWhiteSpace())
+                                        if (sd.C16.Equals("A"))
+                                            tv = tv + 1;
+                                    if (!sd.C17.IsNullOrWhiteSpace())
+                                        if (sd.C17.Equals("A"))
+                                            tv = tv + 1;
+                                    if (!sd.C18.IsNullOrWhiteSpace())
+                                        if (sd.C18.Equals("A"))
+                                            tv = tv + 1;
+                                    if (!sd.C19.IsNullOrWhiteSpace())
+                                        if (sd.C19.Equals("A"))
+                                            tv = tv + 1;
+                                    if (!sd.C20.IsNullOrWhiteSpace())
+                                        if (sd.C20.Equals("A"))
+                                            tv = tv + 1;
+                                    if (!sd.C21.IsNullOrWhiteSpace())
+                                        if (sd.C21.Equals("A"))
+                                            tv = tv + 1;
+                                    if (!sd.C22.IsNullOrWhiteSpace())
+                                        if (sd.C22.Equals("A"))
+                                            tv = tv + 1;
+                                    if (!sd.C23.IsNullOrWhiteSpace())
+                                        if (sd.C23.Equals("A"))
+                                            tv = tv + 1;
+                                    if (!sd.C24.IsNullOrWhiteSpace())
+                                        if (sd.C24.Equals("A"))
+                                            tv = tv + 1;
+                                    if (!sd.C25.IsNullOrWhiteSpace())
+                                        if (sd.C25.Equals("A"))
+                                            tv = tv + 1;
+                                    if (!sd.C26.IsNullOrWhiteSpace())
+                                        if (sd.C26.Equals("A"))
+                                            tv = tv + 1;
+                                    if (!sd.C27.IsNullOrWhiteSpace())
+                                        if (sd.C27.Equals("A"))
+                                            tv = tv + 1;
+                                    if (!sd.C28.IsNullOrWhiteSpace())
+                                        if (sd.C28.Equals("A"))
+                                            tv = tv + 1;
+                                    if (!sd.C29.IsNullOrWhiteSpace())
+                                        if (sd.C29.Equals("A"))
+                                            tv = tv + 1;
+                                    if (!sd.C30.IsNullOrWhiteSpace())
+                                        if (sd.C30.Equals("A"))
+                                            tv = tv + 1;
+                                    if (!sd.C31.IsNullOrWhiteSpace())
+                                        if (sd.C31.Equals("A"))
+                                            tv = tv + 1;
+
+                                    sd.TotalAbsent = tv;
+                                }
+                                {
+                                    sd.TotalTransefer = 0;
+                                    long tv = 0;
+                                    if (!sd.C1.IsNullOrWhiteSpace())
+                                        if (sd.C1.Equals("T"))
+                                            tv = tv + 1;
+                                    if (!sd.C2.IsNullOrWhiteSpace())
+                                        if (sd.C2.Equals("T"))
+                                            tv = tv + 1;
+                                    if (!sd.C3.IsNullOrWhiteSpace())
+                                        if (sd.C3.Equals("T"))
+                                            tv = tv + 1;
+                                    if (!sd.C4.IsNullOrWhiteSpace())
+                                        if (sd.C4.Equals("T"))
+                                            tv = tv + 1;
+                                    if (!sd.C5.IsNullOrWhiteSpace())
+                                        if (sd.C5.Equals("T"))
+                                            tv = tv + 1;
+                                    if (!sd.C6.IsNullOrWhiteSpace())
+                                        if (sd.C6.Equals("T"))
+                                            tv = tv + 1;
+                                    if (!sd.C7.IsNullOrWhiteSpace())
+                                        if (sd.C7.Equals("T"))
+                                            tv = tv + 1;
+                                    if (!sd.C8.IsNullOrWhiteSpace())
+                                        if (sd.C8.Equals("T"))
+                                            tv = tv + 1;
+                                    if (!sd.C9.IsNullOrWhiteSpace())
+                                        if (sd.C9.Equals("T"))
+                                            tv = tv + 1;
+                                    if (!sd.C10.IsNullOrWhiteSpace())
+                                        if (sd.C10.Equals("T"))
+                                            tv = tv + 1;
+                                    if (!sd.C11.IsNullOrWhiteSpace())
+                                        if (sd.C11.Equals("T"))
+                                            tv = tv + 1;
+                                    if (!sd.C12.IsNullOrWhiteSpace())
+                                        if (sd.C12.Equals("T"))
+                                            tv = tv + 1;
+                                    if (!sd.C13.IsNullOrWhiteSpace())
+                                        if (sd.C13.Equals("T"))
+                                            tv = tv + 1;
+                                    if (!sd.C14.IsNullOrWhiteSpace())
+                                        if (sd.C14.Equals("T"))
+                                            tv = tv + 1;
+                                    if (!sd.C15.IsNullOrWhiteSpace())
+                                        if (sd.C15.Equals("T"))
+                                            tv = tv + 1;
+                                    if (!sd.C16.IsNullOrWhiteSpace())
+                                        if (sd.C16.Equals("T"))
+                                            tv = tv + 1;
+                                    if (!sd.C17.IsNullOrWhiteSpace())
+                                        if (sd.C17.Equals("T"))
+                                            tv = tv + 1;
+                                    if (!sd.C18.IsNullOrWhiteSpace())
+                                        if (sd.C18.Equals("T"))
+                                            tv = tv + 1;
+                                    if (!sd.C19.IsNullOrWhiteSpace())
+                                        if (sd.C19.Equals("T"))
+                                            tv = tv + 1;
+                                    if (!sd.C20.IsNullOrWhiteSpace())
+                                        if (sd.C20.Equals("T"))
+                                            tv = tv + 1;
+                                    if (!sd.C21.IsNullOrWhiteSpace())
+                                        if (sd.C21.Equals("T"))
+                                            tv = tv + 1;
+                                    if (!sd.C22.IsNullOrWhiteSpace())
+                                        if (sd.C22.Equals("T"))
+                                            tv = tv + 1;
+                                    if (!sd.C23.IsNullOrWhiteSpace())
+                                        if (sd.C23.Equals("T"))
+                                            tv = tv + 1;
+                                    if (!sd.C24.IsNullOrWhiteSpace())
+                                        if (sd.C24.Equals("T"))
+                                            tv = tv + 1;
+                                    if (!sd.C25.IsNullOrWhiteSpace())
+                                        if (sd.C25.Equals("T"))
+                                            tv = tv + 1;
+                                    if (!sd.C26.IsNullOrWhiteSpace())
+                                        if (sd.C26.Equals("T"))
+                                            tv = tv + 1;
+                                    if (!sd.C27.IsNullOrWhiteSpace())
+                                        if (sd.C27.Equals("T"))
+                                            tv = tv + 1;
+                                    if (!sd.C28.IsNullOrWhiteSpace())
+                                        if (sd.C28.Equals("T"))
+                                            tv = tv + 1;
+                                    if (!sd.C29.IsNullOrWhiteSpace())
+                                        if (sd.C29.Equals("T"))
+                                            tv = tv + 1;
+                                    if (!sd.C30.IsNullOrWhiteSpace())
+                                        if (sd.C30.Equals("T"))
+                                            tv = tv + 1;
+                                    if (!sd.C31.IsNullOrWhiteSpace())
+                                        if (sd.C31.Equals("T"))
+                                            tv = tv + 1;
+
+                                    sd.TotalTransefer = tv;
+                                }
+                                sd.status = "panding";
+                                this.db.Entry(sd).State = EntityState.Modified;
+                                this.db.SaveChanges();
+                            }
+
+                            goto fi;
+                        }
+
+                        if (aq.Exists(x => x.Equals(sy + 1)))
+                        {
+                            goto fi;
+                        }
+
+                        if (sy == 1)
+                        {
+                            if (sd.C2 == sd.C1 || sd.C2 == null || sd.C2 == "0")
+                            {
+                                sd.C2 = sd.C1;
+                                change = true;
+                            }
+                        }
+
+                        if (sy == 2)
+                        {
+                            if (sd.C3 == sd.C2 || sd.C3 == null || sd.C3 == "0")
+                            {
+                                sd.C3 = sd.C2;
+                                change = true;
+                            }
+                        }
+
+                        if (sy == 3)
+                        {
+                            if (sd.C4 == sd.C3 || sd.C4 == null || sd.C4 == "0")
+                            {
+                                sd.C4 = sd.C3;
+                                change = true;
+                            }
+                        }
+
+                        if (sy == 4)
+                        {
+                            if (sd.C5 == sd.C4 || sd.C5 == null || sd.C5 == "0")
+                            {
+                                sd.C5 = sd.C4;
+                                change = true;
+                            }
+                        }
+
+                        if (sy == 5)
+                        {
+                            if (sd.C6 == sd.C5 || sd.C6 == null || sd.C6 == "0")
+                            {
+                                sd.C6 = sd.C5;
+                                change = true;
+                            }
+                        }
+
+                        if (sy == 6)
+                        {
+                            if (sd.C7 == sd.C6 || sd.C7 == null || sd.C7 == "0")
+                            {
+                                sd.C7 = sd.C6;
+                                change = true;
+                            }
+                        }
+
+                        if (sy == 7)
+                        {
+                            if (sd.C8 == sd.C7 || sd.C8 == null || sd.C8 == "0")
+                            {
+                                sd.C8 = sd.C7;
+                                change = true;
+                            }
+                        }
+
+                        if (sy == 8)
+                        {
+                            if (sd.C9 == sd.C8 || sd.C9 == null || sd.C9 == "0")
+                            {
+                                sd.C9 = sd.C8;
+                                change = true;
+                            }
+                        }
+
+                        if (sy == 9)
+                        {
+                            if (sd.C10 == sd.C9 || sd.C10 == null || sd.C10 == "0")
+                            {
+                                sd.C10 = sd.C9;
+                                change = true;
+                            }
+                        }
+
+                        if (sy == 10)
+                        {
+                            if (sd.C11 == sd.C10 || sd.C11 == null || sd.C11 == "0")
+                            {
+                                sd.C11 = sd.C10;
+                                change = true;
+                            }
+                        }
+
+                        if (sy == 11)
+                        {
+                            if (sd.C12 == sd.C11 || sd.C12 == null || sd.C12 == "0")
+                            {
+                                sd.C12 = sd.C11;
+                                change = true;
+                            }
+                        }
+
+                        if (sy == 12)
+                        {
+                            if (sd.C13 == sd.C12 || sd.C13 == null || sd.C13 == "0")
+                            {
+                                sd.C13 = sd.C12;
+                                change = true;
+                            }
+                        }
+
+                        if (sy == 13)
+                        {
+                            if (sd.C14 == sd.C13 || sd.C14 == null || sd.C14 == "0")
+                            {
+                                sd.C14 = sd.C13;
+                                change = true;
+                            }
+                        }
+
+                        if (sy == 14)
+                        {
+                            if (sd.C15 == sd.C14 || sd.C15 == null || sd.C15 == "0")
+                            {
+                                sd.C15 = sd.C14;
+                                change = true;
+                            }
+                        }
+
+                        if (sy == 15)
+                        {
+                            if (sd.C16 == sd.C15 || sd.C16 == null || sd.C16 == "0")
+                            {
+                                sd.C16 = sd.C15;
+                                change = true;
+                            }
+                        }
+
+                        if (sy == 16)
+                        {
+                            if (sd.C17 == sd.C16 || sd.C17 == null || sd.C17 == "0")
+                            {
+                                sd.C17 = sd.C16;
+                                change = true;
+                            }
+                        }
+
+                        if (sy == 17)
+                        {
+                            if (sd.C18 == sd.C17 || sd.C18 == null || sd.C18 == "0")
+                            {
+                                sd.C18 = sd.C17;
+                                change = true;
+                            }
+                        }
+
+                        if (sy == 18)
+                        {
+                            if (sd.C19 == sd.C18 || sd.C19 == null || sd.C19 == "0")
+                            {
+                                sd.C19 = sd.C18;
+                                change = true;
+                            }
+                        }
+
+                        if (sy == 19)
+                        {
+                            if (sd.C20 == sd.C19 || sd.C20 == null || sd.C20 == "0")
+                            {
+                                sd.C20 = sd.C19;
+                                change = true;
+                            }
+                        }
+
+                        if (sy == 20)
+                        {
+                            if (sd.C21 == sd.C20 || sd.C21 == null || sd.C21 == "0")
+                            {
+                                sd.C21 = sd.C20;
+                                change = true;
+                            }
+                        }
+
+                        if (sy == 21)
+                        {
+                            if (sd.C22 == sd.C21 || sd.C22 == null || sd.C22 == "0")
+                            {
+                                sd.C22 = sd.C21;
+                                change = true;
+                            }
+                        }
+
+                        if (sy == 22)
+                        {
+                            if (sd.C23 == sd.C22 || sd.C23 == null || sd.C23 == "0")
+                            {
+                                sd.C23 = sd.C22;
+                                change = true;
+                            }
+                        }
+
+                        if (sy == 23)
+                        {
+                            if (sd.C24 == sd.C23 || sd.C24 == null || sd.C24 == "0")
+                            {
+                                sd.C24 = sd.C23;
+                                change = true;
+                            }
+                        }
+
+                        if (sy == 24)
+                        {
+                            if (sd.C25 == sd.C24 || sd.C25 == null || sd.C25 == "0")
+                            {
+                                sd.C25 = sd.C24;
+                                change = true;
+                            }
+                        }
+
+                        if (sy == 25)
+                        {
+                            if (sd.C26 == sd.C25 || sd.C26 == null || sd.C26 == "0")
+                            {
+                                sd.C26 = sd.C25;
+                                change = true;
+                            }
+                        }
+
+                        if (sy == 26)
+                        {
+                            if (sd.C27 == sd.C26 || sd.C27 == null || sd.C27 == "0")
+                            {
+                                sd.C27 = sd.C26;
+                                change = true;
+                            }
+                        }
+
+                        if (sy == 27)
+                        {
+                            if (sd.C28 == sd.C27 || sd.C28 == null || sd.C28 == "0")
+                            {
+                                sd.C28 = sd.C27;
+                                change = true;
+                            }
+                        }
+
+                        if (sy == 28)
+                        {
+                            if (sd.C29 == sd.C28 || sd.C29 == null || sd.C29 == "0")
+                            {
+                                sd.C29 = sd.C28;
+                                change = true;
+                            }
+                        }
+
+                        if (sy == 29)
+                        {
+                            if (sd.C30 == sd.C29 || sd.C30 == null || sd.C30 == "0")
+                            {
+                                sd.C30 = sd.C29;
+                                change = true;
+                            }
+                        }
+
+                        if (sy == 30)
+                        {
+                            if (sd.C31 == sd.C30 || sd.C31 == null || sd.C31 == "0")
+                            {
+                                sd.C31 = sd.C30;
+                                change = true;
+                            }
+                        }
+
+
+                        this.db.Entry(sd).State = EntityState.Modified;
+                        this.db.SaveChanges();
+                        if (change)
+                        {
                             sd.TotalHours = 0;
                             long.TryParse(sd.C1, out var tal);
                             long.TryParse(sd.C2, out var tal1);
@@ -691,8 +1519,10 @@
                             long.TryParse(sd.C29, out var tal28);
                             long.TryParse(sd.C30, out var tal29);
                             long.TryParse(sd.C31, out var tal30);
-                            sd.TotalHours = tal + tal1 + tal2 + tal3 + tal4 + tal5 + tal6 + tal7 + tal8 + tal9 + tal10 + tal11 + tal12
-                                            + tal13 + tal14 + tal15 + tal16 + tal17 + tal18 + tal19 + tal20 + tal21 + tal22 + tal23
+                            sd.TotalHours = tal + tal1 + tal2 + tal3 + tal4 + tal5 + tal6 + tal7 + tal8 + tal9 + tal10 +
+                                            tal11 + tal12
+                                            + tal13 + tal14 + tal15 + tal16 + tal17 + tal18 + tal19 + tal20 + tal21 +
+                                            tal22 + tal23
                                             + tal24 + tal25 + tal26 + tal27 + tal28 + tal29 + tal30;
                             double.TryParse(b.NormalTimeUpto.ToString(), out var tho);
                             {
@@ -730,776 +1560,19 @@
                                 t.Add(tal29);
                                 t.Add(tal30);
                                 long tho1 = 0;
-                                    int i = 0;
-                                    foreach (var l in t)
-                                    {
-                                        i++;
-                                        if (!fday.Exists(x=>x.Equals(i)))
-                                        {
-                                            if (l > tho)
-                                            {
-                                                tho1 += l - (long)tho;
-                                                sd.TotalOverTime = tho1;
-                                            }
-                                        }
-                                        
-                                    }
-                            }
-                        {
-                            sd.TotalSickLeave = 0;
-                            long ts = 0;
-                            if (!sd.C1.IsNullOrWhiteSpace())
-                                if (sd.C1.Equals("S"))
-                                    ts = ts + 1;
-                            if (!sd.C2.IsNullOrWhiteSpace())
-                                if (sd.C2.Equals("S"))
-                                    ts = ts + 1;
-                            if (!sd.C3.IsNullOrWhiteSpace())
-                                if (sd.C3.Equals("S"))
-                                    ts = ts + 1;
-                            if (!sd.C4.IsNullOrWhiteSpace())
-                                if (sd.C4.Equals("S"))
-                                    ts = ts + 1;
-                            if (!sd.C5.IsNullOrWhiteSpace())
-                                if (sd.C5.Equals("S"))
-                                    ts = ts + 1;
-                            if (!sd.C6.IsNullOrWhiteSpace())
-                                if (sd.C6.Equals("S"))
-                                    ts = ts + 1;
-                            if (!sd.C7.IsNullOrWhiteSpace())
-                                if (sd.C7.Equals("S"))
-                                    ts = ts + 1;
-                            if (!sd.C8.IsNullOrWhiteSpace())
-                                if (sd.C8.Equals("S"))
-                                    ts = ts + 1;
-                            if (!sd.C9.IsNullOrWhiteSpace())
-                                if (sd.C9.Equals("S"))
-                                    ts = ts + 1;
-                            if (!sd.C10.IsNullOrWhiteSpace())
-                                if (sd.C10.Equals("S"))
-                                    ts = ts + 1;
-                            if (!sd.C11.IsNullOrWhiteSpace())
-                                if (sd.C11.Equals("S"))
-                                    ts = ts + 1;
-                            if (!sd.C12.IsNullOrWhiteSpace())
-                                if (sd.C12.Equals("S"))
-                                    ts = ts + 1;
-                            if (!sd.C13.IsNullOrWhiteSpace())
-                                if (sd.C13.Equals("S"))
-                                    ts = ts + 1;
-                            if (!sd.C14.IsNullOrWhiteSpace())
-                                if (sd.C14.Equals("S"))
-                                    ts = ts + 1;
-                            if (!sd.C15.IsNullOrWhiteSpace())
-                                if (sd.C15.Equals("S"))
-                                    ts = ts + 1;
-                            if (!sd.C16.IsNullOrWhiteSpace())
-                                if (sd.C16.Equals("S"))
-                                    ts = ts + 1;
-                            if (!sd.C17.IsNullOrWhiteSpace())
-                                if (sd.C17.Equals("S"))
-                                    ts = ts + 1;
-                            if (!sd.C18.IsNullOrWhiteSpace())
-                                if (sd.C18.Equals("S"))
-                                    ts = ts + 1;
-                            if (!sd.C19.IsNullOrWhiteSpace())
-                                if (sd.C19.Equals("S"))
-                                    ts = ts + 1;
-                            if (!sd.C20.IsNullOrWhiteSpace())
-                                if (sd.C20.Equals("S"))
-                                    ts = ts + 1;
-                            if (!sd.C21.IsNullOrWhiteSpace())
-                                if (sd.C21.Equals("S"))
-                                    ts = ts + 1;
-                            if (!sd.C22.IsNullOrWhiteSpace())
-                                if (sd.C22.Equals("S"))
-                                    ts = ts + 1;
-                            if (!sd.C23.IsNullOrWhiteSpace())
-                                if (sd.C23.Equals("S"))
-                                    ts = ts + 1;
-                            if (!sd.C24.IsNullOrWhiteSpace())
-                                if (sd.C24.Equals("S"))
-                                    ts = ts + 1;
-                            if (!sd.C25.IsNullOrWhiteSpace())
-                                if (sd.C25.Equals("S"))
-                                    ts = ts + 1;
-                            if (!sd.C26.IsNullOrWhiteSpace())
-                                if (sd.C26.Equals("S"))
-                                    ts = ts + 1;
-                            if (!sd.C27.IsNullOrWhiteSpace())
-                                if (sd.C27.Equals("S"))
-                                    ts = ts + 1;
-                            if (!sd.C28.IsNullOrWhiteSpace())
-                                if (sd.C28.Equals("S"))
-                                    ts = ts + 1;
-                            if (!sd.C29.IsNullOrWhiteSpace())
-                                if (sd.C29.Equals("S"))
-                                    ts = ts + 1;
-                            if (!sd.C30.IsNullOrWhiteSpace())
-                                if (sd.C30.Equals("S"))
-                                    ts = ts + 1;
-                            if (!sd.C31.IsNullOrWhiteSpace())
-                                if (sd.C31.Equals("S"))
-                                    ts = ts + 1;
-    
-                            sd.TotalSickLeave = ts;
-                        }
-                        {
-                            sd.TotalVL = 0;
-                            long tv = 0;
-                            if (!sd.C1.IsNullOrWhiteSpace())
-                                if (sd.C1.Equals("V"))
-                                    tv = tv + 1;
-                            if (!sd.C2.IsNullOrWhiteSpace())
-                                if (sd.C2.Equals("V"))
-                                    tv = tv + 1;
-                            if (!sd.C3.IsNullOrWhiteSpace())
-                                if (sd.C3.Equals("V"))
-                                    tv = tv + 1;
-                            if (!sd.C4.IsNullOrWhiteSpace())
-                                if (sd.C4.Equals("V"))
-                                    tv = tv + 1;
-                            if (!sd.C5.IsNullOrWhiteSpace())
-                                if (sd.C5.Equals("V"))
-                                    tv = tv + 1;
-                            if (!sd.C6.IsNullOrWhiteSpace())
-                                if (sd.C6.Equals("V"))
-                                    tv = tv + 1;
-                            if (!sd.C7.IsNullOrWhiteSpace())
-                                if (sd.C7.Equals("V"))
-                                    tv = tv + 1;
-                            if (!sd.C8.IsNullOrWhiteSpace())
-                                if (sd.C8.Equals("V"))
-                                    tv = tv + 1;
-                            if (!sd.C9.IsNullOrWhiteSpace())
-                                if (sd.C9.Equals("V"))
-                                    tv = tv + 1;
-                            if (!sd.C10.IsNullOrWhiteSpace())
-                                if (sd.C10.Equals("V"))
-                                    tv = tv + 1;
-                            if (!sd.C11.IsNullOrWhiteSpace())
-                                if (sd.C11.Equals("V"))
-                                    tv = tv + 1;
-                            if (!sd.C12.IsNullOrWhiteSpace())
-                                if (sd.C12.Equals("V"))
-                                    tv = tv + 1;
-                            if (!sd.C13.IsNullOrWhiteSpace())
-                                if (sd.C13.Equals("V"))
-                                    tv = tv + 1;
-                            if (!sd.C14.IsNullOrWhiteSpace())
-                                if (sd.C14.Equals("V"))
-                                    tv = tv + 1;
-                            if (!sd.C15.IsNullOrWhiteSpace())
-                                if (sd.C15.Equals("V"))
-                                    tv = tv + 1;
-                            if (!sd.C16.IsNullOrWhiteSpace())
-                                if (sd.C16.Equals("V"))
-                                    tv = tv + 1;
-                            if (!sd.C17.IsNullOrWhiteSpace())
-                                if (sd.C17.Equals("V"))
-                                    tv = tv + 1;
-                            if (!sd.C18.IsNullOrWhiteSpace())
-                                if (sd.C18.Equals("V"))
-                                    tv = tv + 1;
-                            if (!sd.C19.IsNullOrWhiteSpace())
-                                if (sd.C19.Equals("V"))
-                                    tv = tv + 1;
-                            if (!sd.C20.IsNullOrWhiteSpace())
-                                if (sd.C20.Equals("V"))
-                                    tv = tv + 1;
-                            if (!sd.C21.IsNullOrWhiteSpace())
-                                if (sd.C21.Equals("V"))
-                                    tv = tv + 1;
-                            if (!sd.C22.IsNullOrWhiteSpace())
-                                if (sd.C22.Equals("V"))
-                                    tv = tv + 1;
-                            if (!sd.C23.IsNullOrWhiteSpace())
-                                if (sd.C23.Equals("V"))
-                                    tv = tv + 1;
-                            if (!sd.C24.IsNullOrWhiteSpace())
-                                if (sd.C24.Equals("V"))
-                                    tv = tv + 1;
-                            if (!sd.C25.IsNullOrWhiteSpace())
-                                if (sd.C25.Equals("V"))
-                                    tv = tv + 1;
-                            if (!sd.C26.IsNullOrWhiteSpace())
-                                if (sd.C26.Equals("V"))
-                                    tv = tv + 1;
-                            if (!sd.C27.IsNullOrWhiteSpace())
-                                if (sd.C27.Equals("V"))
-                                    tv = tv + 1;
-                            if (!sd.C28.IsNullOrWhiteSpace())
-                                if (sd.C28.Equals("V"))
-                                    tv = tv + 1;
-                            if (!sd.C29.IsNullOrWhiteSpace())
-                                if (sd.C29.Equals("V"))
-                                    tv = tv + 1;
-                            if (!sd.C30.IsNullOrWhiteSpace())
-                                if (sd.C30.Equals("V"))
-                                    tv = tv + 1;
-                            if (!sd.C31.IsNullOrWhiteSpace())
-                                if (sd.C31.Equals("V"))
-                                    tv = tv + 1;
-    
-                            sd.TotalVL = tv;
-                        }
-                        {
-                            sd.TotalAbsent = 0;
-                            long tv = 0;
-                            if (!sd.C1.IsNullOrWhiteSpace())
-                                if (sd.C1.Equals("A"))
-                                    tv = tv + 1;
-                            if (!sd.C2.IsNullOrWhiteSpace())
-                                if (sd.C2.Equals("A"))
-                                    tv = tv + 1;
-                            if (!sd.C3.IsNullOrWhiteSpace())
-                                if (sd.C3.Equals("A"))
-                                    tv = tv + 1;
-                            if (!sd.C4.IsNullOrWhiteSpace())
-                                if (sd.C4.Equals("A"))
-                                    tv = tv + 1;
-                            if (!sd.C5.IsNullOrWhiteSpace())
-                                if (sd.C5.Equals("A"))
-                                    tv = tv + 1;
-                            if (!sd.C6.IsNullOrWhiteSpace())
-                                if (sd.C6.Equals("A"))
-                                    tv = tv + 1;
-                            if (!sd.C7.IsNullOrWhiteSpace())
-                                if (sd.C7.Equals("A"))
-                                    tv = tv + 1;
-                            if (!sd.C8.IsNullOrWhiteSpace())
-                                if (sd.C8.Equals("A"))
-                                    tv = tv + 1;
-                            if (!sd.C9.IsNullOrWhiteSpace())
-                                if (sd.C9.Equals("A"))
-                                    tv = tv + 1;
-                            if (!sd.C10.IsNullOrWhiteSpace())
-                                if (sd.C10.Equals("A"))
-                                    tv = tv + 1;
-                            if (!sd.C11.IsNullOrWhiteSpace())
-                                if (sd.C11.Equals("A"))
-                                    tv = tv + 1;
-                            if (!sd.C12.IsNullOrWhiteSpace())
-                                if (sd.C12.Equals("A"))
-                                    tv = tv + 1;
-                            if (!sd.C13.IsNullOrWhiteSpace())
-                                if (sd.C13.Equals("A"))
-                                    tv = tv + 1;
-                            if (!sd.C14.IsNullOrWhiteSpace())
-                                if (sd.C14.Equals("A"))
-                                    tv = tv + 1;
-                            if (!sd.C15.IsNullOrWhiteSpace())
-                                if (sd.C15.Equals("A"))
-                                    tv = tv + 1;
-                            if (!sd.C16.IsNullOrWhiteSpace())
-                                if (sd.C16.Equals("A"))
-                                    tv = tv + 1;
-                            if (!sd.C17.IsNullOrWhiteSpace())
-                                if (sd.C17.Equals("A"))
-                                    tv = tv + 1;
-                            if (!sd.C18.IsNullOrWhiteSpace())
-                                if (sd.C18.Equals("A"))
-                                    tv = tv + 1;
-                            if (!sd.C19.IsNullOrWhiteSpace())
-                                if (sd.C19.Equals("A"))
-                                    tv = tv + 1;
-                            if (!sd.C20.IsNullOrWhiteSpace())
-                                if (sd.C20.Equals("A"))
-                                    tv = tv + 1;
-                            if (!sd.C21.IsNullOrWhiteSpace())
-                                if (sd.C21.Equals("A"))
-                                    tv = tv + 1;
-                            if (!sd.C22.IsNullOrWhiteSpace())
-                                if (sd.C22.Equals("A"))
-                                    tv = tv + 1;
-                            if (!sd.C23.IsNullOrWhiteSpace())
-                                if (sd.C23.Equals("A"))
-                                    tv = tv + 1;
-                            if (!sd.C24.IsNullOrWhiteSpace())
-                                if (sd.C24.Equals("A"))
-                                    tv = tv + 1;
-                            if (!sd.C25.IsNullOrWhiteSpace())
-                                if (sd.C25.Equals("A"))
-                                    tv = tv + 1;
-                            if (!sd.C26.IsNullOrWhiteSpace())
-                                if (sd.C26.Equals("A"))
-                                    tv = tv + 1;
-                            if (!sd.C27.IsNullOrWhiteSpace())
-                                if (sd.C27.Equals("A"))
-                                    tv = tv + 1;
-                            if (!sd.C28.IsNullOrWhiteSpace())
-                                if (sd.C28.Equals("A"))
-                                    tv = tv + 1;
-                            if (!sd.C29.IsNullOrWhiteSpace())
-                                if (sd.C29.Equals("A"))
-                                    tv = tv + 1;
-                            if (!sd.C30.IsNullOrWhiteSpace())
-                                if (sd.C30.Equals("A"))
-                                    tv = tv + 1;
-                            if (!sd.C31.IsNullOrWhiteSpace())
-                                if (sd.C31.Equals("A"))
-                                    tv = tv + 1;
-    
-                            sd.TotalAbsent = tv;
-                        }
-                        {
-                            sd.TotalTransefer = 0;
-                            long tv = 0;
-                            if (!sd.C1.IsNullOrWhiteSpace())
-                                if (sd.C1.Equals("T"))
-                                    tv = tv + 1;
-                            if (!sd.C2.IsNullOrWhiteSpace())
-                                if (sd.C2.Equals("T"))
-                                    tv = tv + 1;
-                            if (!sd.C3.IsNullOrWhiteSpace())
-                                if (sd.C3.Equals("T"))
-                                    tv = tv + 1;
-                            if (!sd.C4.IsNullOrWhiteSpace())
-                                if (sd.C4.Equals("T"))
-                                    tv = tv + 1;
-                            if (!sd.C5.IsNullOrWhiteSpace())
-                                if (sd.C5.Equals("T"))
-                                    tv = tv + 1;
-                            if (!sd.C6.IsNullOrWhiteSpace())
-                                if (sd.C6.Equals("T"))
-                                    tv = tv + 1;
-                            if (!sd.C7.IsNullOrWhiteSpace())
-                                if (sd.C7.Equals("T"))
-                                    tv = tv + 1;
-                            if (!sd.C8.IsNullOrWhiteSpace())
-                                if (sd.C8.Equals("T"))
-                                    tv = tv + 1;
-                            if (!sd.C9.IsNullOrWhiteSpace())
-                                if (sd.C9.Equals("T"))
-                                    tv = tv + 1;
-                            if (!sd.C10.IsNullOrWhiteSpace())
-                                if (sd.C10.Equals("T"))
-                                    tv = tv + 1;
-                            if (!sd.C11.IsNullOrWhiteSpace())
-                                if (sd.C11.Equals("T"))
-                                    tv = tv + 1;
-                            if (!sd.C12.IsNullOrWhiteSpace())
-                                if (sd.C12.Equals("T"))
-                                    tv = tv + 1;
-                            if (!sd.C13.IsNullOrWhiteSpace())
-                                if (sd.C13.Equals("T"))
-                                    tv = tv + 1;
-                            if (!sd.C14.IsNullOrWhiteSpace())
-                                if (sd.C14.Equals("T"))
-                                    tv = tv + 1;
-                            if (!sd.C15.IsNullOrWhiteSpace())
-                                if (sd.C15.Equals("T"))
-                                    tv = tv + 1;
-                            if (!sd.C16.IsNullOrWhiteSpace())
-                                if (sd.C16.Equals("T"))
-                                    tv = tv + 1;
-                            if (!sd.C17.IsNullOrWhiteSpace())
-                                if (sd.C17.Equals("T"))
-                                    tv = tv + 1;
-                            if (!sd.C18.IsNullOrWhiteSpace())
-                                if (sd.C18.Equals("T"))
-                                    tv = tv + 1;
-                            if (!sd.C19.IsNullOrWhiteSpace())
-                                if (sd.C19.Equals("T"))
-                                    tv = tv + 1;
-                            if (!sd.C20.IsNullOrWhiteSpace())
-                                if (sd.C20.Equals("T"))
-                                    tv = tv + 1;
-                            if (!sd.C21.IsNullOrWhiteSpace())
-                                if (sd.C21.Equals("T"))
-                                    tv = tv + 1;
-                            if (!sd.C22.IsNullOrWhiteSpace())
-                                if (sd.C22.Equals("T"))
-                                    tv = tv + 1;
-                            if (!sd.C23.IsNullOrWhiteSpace())
-                                if (sd.C23.Equals("T"))
-                                    tv = tv + 1;
-                            if (!sd.C24.IsNullOrWhiteSpace())
-                                if (sd.C24.Equals("T"))
-                                    tv = tv + 1;
-                            if (!sd.C25.IsNullOrWhiteSpace())
-                                if (sd.C25.Equals("T"))
-                                    tv = tv + 1;
-                            if (!sd.C26.IsNullOrWhiteSpace())
-                                if (sd.C26.Equals("T"))
-                                    tv = tv + 1;
-                            if (!sd.C27.IsNullOrWhiteSpace())
-                                if (sd.C27.Equals("T"))
-                                    tv = tv + 1;
-                            if (!sd.C28.IsNullOrWhiteSpace())
-                                if (sd.C28.Equals("T"))
-                                    tv = tv + 1;
-                            if (!sd.C29.IsNullOrWhiteSpace())
-                                if (sd.C29.Equals("T"))
-                                    tv = tv + 1;
-                            if (!sd.C30.IsNullOrWhiteSpace())
-                                if (sd.C30.Equals("T"))
-                                    tv = tv + 1;
-                            if (!sd.C31.IsNullOrWhiteSpace())
-                                if (sd.C31.Equals("T"))
-                                    tv = tv + 1;
-    
-                            sd.TotalTransefer = tv;
-                        }
-                        sd.status = "panding";
-                        this.db.Entry(sd).State = EntityState.Modified;
-                            this.db.SaveChanges();
-                            goto fi;
-                        }
-                        if (aq.Exists(x => x.Equals(sy + 1)))
-                        {
-                            goto fi;
-                        }
-                        if (sy == 1)
-                        {
-                            if (sd.C2 == sd.C1 || sd.C2 == "0" )
-                            {
-                                sd.C2 = sd.C1;
-                            }
-    
-                        }
-    
-                        if (sy == 2)
-                        {
-                            if (sd.C3 == sd.C2 || sd.C3 == "0")
-                            {
-                                sd.C3 = sd.C2;
-                            }
-    
-                        }
-    
-                        if (sy == 3)
-                        {
-                            if (sd.C4 == sd.C3 || sd.C4 == "0")
-                            {
-                                sd.C4 = sd.C3;
-                            }
-    
-                        }
-    
-                        if (sy == 4)
-                        {
-                            if (sd.C5 == sd.C4 || sd.C5 == "0")
-                            {
-                                sd.C5 = sd.C4;
-                            }
-    
-                        }
-    
-                        if (sy == 5)
-                        {
-                            if (sd.C6 == sd.C5 || sd.C6 == "0")
-                            {
-                                sd.C6 = sd.C5;
-                            }
-    
-                        }
-    
-                        if (sy == 6)
-                        {
-                            if (sd.C7 == sd.C6 || sd.C7 == "0")
-                            {
-                                sd.C7 = sd.C6;
-                            }
-    
-                        }
-    
-                        if (sy == 7)
-                        {
-                            if (sd.C8 == sd.C7 || sd.C8 == "0")
-                            {
-                                sd.C8 = sd.C7;
-                            }
-    
-                        }
-    
-                        if (sy == 8)
-                        {
-                            if (sd.C9 == sd.C8 || sd.C9 == "0")
-                            {
-                                sd.C9 = sd.C8;
-                            }
-    
-                        }
-    
-                        if (sy == 9)
-                        {
-                            if (sd.C10 == sd.C9 || sd.C10 == "0")
-                            {
-                                sd.C10 = sd.C9;
-                            }
-    
-                        }
-    
-                        if (sy == 10)
-                        {
-                            if (sd.C11 == sd.C10 || sd.C11 == "0")
-                            {
-                                sd.C11 = sd.C10;
-                            }
-    
-                        }
-    
-                        if (sy == 11)
-                        {
-                            if (sd.C12 == sd.C11 || sd.C12 == "0")
-                            {
-                                sd.C12 = sd.C11;
-                            }
-    
-                        }
-    
-                        if (sy == 12)
-                        {
-                            if (sd.C13 == sd.C12 || sd.C13 == "0")
-                            {
-                                sd.C13 = sd.C12;
-                            }
-    
-                        }
-    
-                        if (sy == 13)
-                        {
-                            if (sd.C14 == sd.C13 || sd.C14 == "0")
-                            {
-                                sd.C14 = sd.C13;
-                            }
-    
-                        }
-    
-                        if (sy == 14)
-                        {
-                            if (sd.C15 == sd.C14 || sd.C15 == "0")
-                            {
-                                sd.C15 = sd.C14;
-                            }
-    
-                        }
-    
-                        if (sy == 15)
-                        {
-                            if (sd.C16 == sd.C15 || sd.C16 == "0")
-                            {
-                                sd.C16 = sd.C15;
-                            }
-    
-                        }
-    
-                        if (sy == 16)
-                        {
-                            if (sd.C17 == sd.C16 || sd.C17 == "0")
-                            {
-                                sd.C17 = sd.C16;
-                            }
-    
-                        }
-    
-                        if (sy == 17)
-                        {
-                            if (sd.C18 == sd.C17 || sd.C18 == "0")
-                            {
-                                sd.C18 = sd.C17;
-                            }
-    
-                        }
-    
-                        if (sy == 18)
-                        {
-                            if (sd.C19 == sd.C18 || sd.C19 == "0")
-                            {
-                                sd.C19 = sd.C18;
-                            }
-    
-                        }
-    
-                        if (sy == 19)
-                        {
-                            if (sd.C20 == sd.C19 || sd.C20 == "0")
-                            {
-                                sd.C20 = sd.C19;
-                            }
-                        }
-    
-                        if (sy == 20)
-                        {
-                            if (sd.C21 == sd.C20 || sd.C21 == "0")
-                            {
-                                sd.C21 = sd.C20;
-                            }
-    
-                        }
-    
-                        if (sy == 21)
-                        {
-                            if (sd.C22 == sd.C21 || sd.C22 == "0")
-                            {
-                                sd.C22 = sd.C21;
-                            }
-    
-                        }
-    
-                        if (sy == 22)
-                        {
-                            if (sd.C23 == sd.C22 || sd.C23 == "0")
-                            {
-                                sd.C23 = sd.C22;
-                            }
-    
-                        }
-    
-                        if (sy == 23)
-                        {
-                            if (sd.C24 == sd.C23 || sd.C24 == "0")
-                            {
-                                sd.C24 = sd.C23;
-                            }
-    
-                        }
-    
-                        if (sy == 24)
-                        {
-                            if (sd.C25 == sd.C24 || sd.C25 == "0")
-                            {
-                                sd.C25 = sd.C24;
-                            }
-    
-                        }
-    
-                        if (sy == 25)
-                        {
-                            if (sd.C26 == sd.C25 || sd.C26 == "0")
-                            {
-                                sd.C26 = sd.C25;
-                            }
-                        }
-    
-                        if (sy == 26)
-                        {
-                            if (sd.C27 == sd.C26 || sd.C27 == "0")
-                            {
-                                sd.C27 = sd.C26;
-    
-                            }
-                        }
-    
-                        if (sy == 27)
-                        {
-                            if (sd.C28 == sd.C27 || sd.C28 == "0")
-                            {
-                                sd.C28 = sd.C27;
-                            }
-    
-                        }
-    
-                        if (sy == 28)
-                        {
-                            if (sd.C29 == sd.C28 || sd.C29 == "0")
-                            {
-                                sd.C29 = sd.C28;
-    
-                            }
-                        }
-    
-                        if (sy == 29)
-                        {
-                            if (sd.C30 == sd.C29 || sd.C30 == "0")
-                            {
-                                sd.C30 = sd.C29;
-                            }
-    
-                        }
-    
-                        if (sy == 30)
-                        {
-                            if (sd.C31 == sd.C30 || sd.C31 == "0")
-                            {
-                                sd.C31 = sd.C30;
-                            }
-    
-                        }
-    
-    
-                        this.db.Entry(sd).State = EntityState.Modified;
-                        this.db.SaveChanges();
-                        sd.TotalHours = 0;
-                        {
-                            long.TryParse(sd.C1, out var tl);
-                            long.TryParse(sd.C2, out var tl1);
-                            long.TryParse(sd.C3, out var tl2);
-                            long.TryParse(sd.C4, out var tl3);
-                            long.TryParse(sd.C5, out var tl4);
-                            long.TryParse(sd.C6, out var tl5);
-                            long.TryParse(sd.C7, out var tl6);
-                            long.TryParse(sd.C8, out var tl7);
-                            long.TryParse(sd.C9, out var tl8);
-                            long.TryParse(sd.C10, out var tl9);
-                            long.TryParse(sd.C11, out var tl10);
-                            long.TryParse(sd.C12, out var tl11);
-                            long.TryParse(sd.C13, out var tl12);
-                            long.TryParse(sd.C14, out var tl13);
-                            long.TryParse(sd.C15, out var tl14);
-                            long.TryParse(sd.C16, out var tl15);
-                            long.TryParse(sd.C17, out var tl16);
-                            long.TryParse(sd.C18, out var tl17);
-                            long.TryParse(sd.C19, out var tl18);
-                            long.TryParse(sd.C20, out var tl19);
-                            long.TryParse(sd.C21, out var tl20);
-                            long.TryParse(sd.C22, out var tl21);
-                            long.TryParse(sd.C23, out var tl22);
-                            long.TryParse(sd.C24, out var tl23);
-                            long.TryParse(sd.C25, out var tl24);
-                            long.TryParse(sd.C26, out var tl25);
-                            long.TryParse(sd.C27, out var tl26);
-                            long.TryParse(sd.C28, out var tl27);
-                            long.TryParse(sd.C29, out var tl28);
-                            long.TryParse(sd.C30, out var tl29);
-                            long.TryParse(sd.C31, out var tl30);
-                            long.TryParse(sd.TotalHours.ToString(), out var sdlg);
-                            sd.TotalHours = tl + tl1 + tl2 + tl3 + tl4 + tl5 + tl6 + tl7 + tl8 + tl9 + tl10 + tl11 + tl12 + tl13
-                                            + tl14 + tl15 + tl16 + tl17 + tl18 + tl19 + tl20 + tl21 + tl22 + tl23 + tl24 + tl25
-                                            + tl26 + tl27 + tl28 + tl29 + tl30;
-                            double.TryParse(b.NormalTimeUpto.ToString(), out var tho);
-                            {
-                                var t = new List<long>();
-                                sd.TotalOverTime = 0;
-                                t.Add(tl);
-                                t.Add(tl1);
-                                t.Add(tl2);
-                                t.Add(tl3);
-                                t.Add(tl4);
-                                t.Add(tl5);
-                                t.Add(tl6);
-                                t.Add(tl7);
-                                t.Add(tl8);
-                                t.Add(tl9);
-                                t.Add(tl10);
-                                t.Add(tl11);
-                                t.Add(tl12);
-                                t.Add(tl13);
-                                t.Add(tl14);
-                                t.Add(tl15);
-                                t.Add(tl16);
-                                t.Add(tl17);
-                                t.Add(tl18);
-                                t.Add(tl19);
-                                t.Add(tl20);
-                                t.Add(tl21);
-                                t.Add(tl22);
-                                t.Add(tl23);
-                                t.Add(tl24);
-                                t.Add(tl25);
-                                t.Add(tl26);
-                                t.Add(tl27);
-                                t.Add(tl28);
-                                t.Add(tl29);
-                                t.Add(tl30);
-                                long tho1 = 0;
+                                int i = 0;
                                 foreach (var l in t)
-                                    if (l > tho)
+                                {
+                                    i++;
+                                    if (!fday.Exists(x => x.Equals(i)))
                                     {
-                                        tho1 += l - (long)tho;
-                                        sd.TotalOverTime = tho1;
+                                        if (l > tho)
+                                        {
+                                            tho1 += l - (long) tho;
+                                            sd.TotalOverTime = tho1;
+                                        }
                                     }
+                                }
                             }
                             {
                                 sd.TotalSickLeave = 0;
@@ -1597,7 +1670,7 @@
                                 if (!sd.C31.IsNullOrWhiteSpace())
                                     if (sd.C31.Equals("S"))
                                         ts = ts + 1;
-    
+
                                 sd.TotalSickLeave = ts;
                             }
                             {
@@ -1696,7 +1769,7 @@
                                 if (!sd.C31.IsNullOrWhiteSpace())
                                     if (sd.C31.Equals("V"))
                                         tv = tv + 1;
-    
+
                                 sd.TotalVL = tv;
                             }
                             {
@@ -1795,7 +1868,7 @@
                                 if (!sd.C31.IsNullOrWhiteSpace())
                                     if (sd.C31.Equals("A"))
                                         tv = tv + 1;
-    
+
                                 sd.TotalAbsent = tv;
                             }
                             {
@@ -1894,18 +1967,17 @@
                                 if (!sd.C31.IsNullOrWhiteSpace())
                                     if (sd.C31.Equals("T"))
                                         tv = tv + 1;
-    
+
                                 sd.TotalTransefer = tv;
                             }
                             sd.status = "panding";
+                            this.db.Entry(sd).State = EntityState.Modified;
+                            this.db.SaveChanges();
                         }
-                        this.db.Entry(sd).State = EntityState.Modified;
-                        this.db.SaveChanges();
                     }
-    
-                    
-                    fi:;
-    
+
+
+                    fi: ;
                 }
             }
         }
@@ -1925,12 +1997,13 @@
             {
                 var fillmonth = lastmainid.TMonth.Month + 1;
             }
+
             var atp = at.FindAll(x => x.SubMain == qw.ID);
             var atflist = at.FindAll(x => x.SubMain == lastmainid.ID);
             var dms = DateTime.DaysInMonth(lm.TMonth.Year, lm.TMonth.Month);
             var fday = new DateTime(lm.TMonth.Year, lm.TMonth.Month + 1, 1);
             var fdaylist = this.GetAll(fday);
-            if (atp.Count != 0) goto q1;
+            if (atp.Count != 0) goto q2;
             foreach (var at1 in atflist)
             {
                 var at2 = new Attendance();
@@ -1941,12 +2014,71 @@
                     if (fdaylist.Exists(x => x == 1))
                     {
                         at2.C2 = at1.C30;
+                        at2.C3 = "0";
+                        at2.C4 = "0";
+                        at2.C5 = "0";
+                        at2.C6 = "0";
+                        at2.C7 = "0";
+                        at2.C8 = "0";
+                        at2.C9 = "0";
+                        at2.C10 = "0";
+                        at2.C11 = "0";
+                        at2.C12 = "0";
+                        at2.C13 = "0";
+                        at2.C14 = "0";
+                        at2.C15 = "0";
+                        at2.C16 = "0";
+                        at2.C17 = "0";
+                        at2.C18 = "0";
+                        at2.C19 = "0";
+                        at2.C20 = "0";
+                        at2.C21 = "0";
+                        at2.C22 = "0";
+                        at2.C23 = "0";
+                        at2.C24 = "0";
+                        at2.C25 = "0";
+                        at2.C26 = "0";
+                        at2.C27 = "0";
+                        at2.C28 = "0";
+                        at2.C29 = "0";
+                        at2.C30 = "0";
+                        at2.C31 = "0";
                         long.TryParse(at2.C2, out var q1);
                         at2.TotalHours = q1;
                     }
                     else
                     {
                         at2.C1 = at1.C30;
+                        at2.C2 = "0";
+                        at2.C3 = "0";
+                        at2.C4 = "0";
+                        at2.C5 = "0";
+                        at2.C6 = "0";
+                        at2.C7 = "0";
+                        at2.C8 = "0";
+                        at2.C9 = "0";
+                        at2.C10 = "0";
+                        at2.C11 = "0";
+                        at2.C12 = "0";
+                        at2.C13 = "0";
+                        at2.C14 = "0";
+                        at2.C15 = "0";
+                        at2.C16 = "0";
+                        at2.C17 = "0";
+                        at2.C18 = "0";
+                        at2.C19 = "0";
+                        at2.C20 = "0";
+                        at2.C21 = "0";
+                        at2.C22 = "0";
+                        at2.C23 = "0";
+                        at2.C24 = "0";
+                        at2.C25 = "0";
+                        at2.C26 = "0";
+                        at2.C27 = "0";
+                        at2.C28 = "0";
+                        at2.C29 = "0";
+                        at2.C30 = "0";
+                        at2.C31 = "0";
                         long.TryParse(at2.C1, out var q1);
                         at2.TotalHours = q1;
                     }
@@ -2005,6 +2137,11 @@
             }
 
             q1: ;
+            if (qw.Attendances.Count > 0)
+            {
+                goto q2;
+            }
+
             var attplist = at.FindAll(x =>
                 x.MainTimeSheet.Project == qw.Project && x.MainTimeSheet.ManPowerSupplier == qw.ManPowerSupplier);
             var attpfinallist = new List<Attendance>();
@@ -2013,25 +2150,84 @@
             var cou = 1;
             foreach (var ap in attplist)
             {
-                var attp = new Attendance();
-                attp.SubMain = qw.ID;
-                attp.MainTimeSheet = qw;
-                attp.EmpID = ap.EmpID;
-                if (fdaylist2.Exists(x => x == 1))
+                if (!attpfinallist.Exists(x => x.EmpID == ap.EmpID))
                 {
-                    attp.C2 = "8";
-                    long.TryParse("8", out var q1);
-                    ap.TotalHours = q1;
-                }
-                else
-                {
-                    attp.C1 = "8";
-                    long.TryParse(attp.C1, out var q1);
-                    attp.TotalHours = q1;
-                }
+                    var attp = new Attendance();
+                    attp.SubMain = qw.ID;
+                    attp.MainTimeSheet = qw;
+                    attp.EmpID = ap.EmpID;
+                    if (fdaylist2.Exists(x => x == 1))
+                    {
+                        attp.C2 = "8";
+                        attp.C3 = "0";
+                        attp.C4 = "0";
+                        attp.C5 = "0";
+                        attp.C6 = "0";
+                        attp.C7 = "0";
+                        attp.C8 = "0";
+                        attp.C9 = "0";
+                        attp.C10 = "0";
+                        attp.C11 = "0";
+                        attp.C12 = "0";
+                        attp.C13 = "0";
+                        attp.C14 = "0";
+                        attp.C15 = "0";
+                        attp.C16 = "0";
+                        attp.C17 = "0";
+                        attp.C18 = "0";
+                        attp.C19 = "0";
+                        attp.C20 = "0";
+                        attp.C21 = "0";
+                        attp.C22 = "0";
+                        attp.C23 = "0";
+                        attp.C24 = "0";
+                        attp.C25 = "0";
+                        attp.C26 = "0";
+                        attp.C27 = "0";
+                        attp.C28 = "0";
+                        attp.C29 = "0";
+                        attp.C30 = "0";
+                        attp.C31 = "0";
+                        long.TryParse("8", out var q1);
+                        ap.TotalHours = q1;
+                    }
+                    else
+                    {
+                        attp.C1 = "8";
+                        attp.C2 = "0";
+                        attp.C3 = "0";
+                        attp.C4 = "0";
+                        attp.C5 = "0";
+                        attp.C6 = "0";
+                        attp.C7 = "0";
+                        attp.C8 = "0";
+                        attp.C9 = "0";
+                        attp.C10 = "0";
+                        attp.C11 = "0";
+                        attp.C12 = "0";
+                        attp.C13 = "0";
+                        attp.C14 = "0";
+                        attp.C15 = "0";
+                        attp.C16 = "0";
+                        attp.C17 = "0";
+                        attp.C18 = "0";
+                        attp.C19 = "0";
+                        attp.C20 = "0";
+                        attp.C21 = "0";
+                        attp.C22 = "0";
+                        attp.C23 = "0";
+                        attp.C24 = "0";
+                        attp.C25 = "0";
+                        attp.C26 = "0";
+                        attp.C27 = "0";
+                        attp.C28 = "0";
+                        attp.C29 = "0";
+                        attp.C30 = "0";
+                        attp.C31 = "0";
+                        long.TryParse(attp.C1, out var q1);
+                        attp.TotalHours = q1;
+                    }
 
-                if (!attpfinallist.Exists(x=>x.EmpID == ap.EmpID))
-                {
                     attpfinallist.Add(attp);
                     this.db.Attendances.Add(attp);
                     this.db.SaveChanges();
@@ -2040,10 +2236,11 @@
             }
 
             var co = cou;
+            q2: ;
         }
 
         [HttpPost]
-        [ValidateAntiForgeryToken] 
+        [ValidateAntiForgeryToken]
         [Authorize(Roles = "Employee,Admin")]
         [MultipleButton(Name = "action", Argument = "AIndex")]
         public ActionResult AIndex(
@@ -2178,7 +2375,7 @@
                     {
                         if (attendance.C1 != "0" && attendance.C1 != null)
                             if (!ap.Exists(
-                                x => x.adate == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 1) 
+                                x => x.adate == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 1)
                                      && !(x.status == null || x.status.Contains("rejected"))))
                                 at.C1 = attendance.C1;
 
@@ -2364,405 +2561,386 @@
 
                         this.db.Entry(at).State = EntityState.Modified;
                         this.db.SaveChanges();
-                        var hday = this.db.Holidays.ToList();
                         date = new DateTime(aa.TMonth.Year, aa.TMonth.Month, 1);
-                        for (var i = 0; i < DateTime.DaysInMonth(aa.TMonth.Year, aa.TMonth.Month); i++)
+                        var fdate = GetAll(date);
+                        var hdate = GetAllholi(date);
+                        if (fdate.Contains(1) && !hdate.Contains(1))
                         {
-                            if (!hday.Exists(x => x.Date == date))
-                            {
-                                if (date.DayOfWeek.Equals(DayOfWeek.Friday))
-                                {
-                                    if (date.Day == 1)
-                                    {
-                                        long.TryParse(at.C1, out var tl);
-                                        fri1 = fri1 + tl;
-                                    }
-
-                                    if (date.Day == 2)
-                                    {
-                                        long.TryParse(at.C2, out var tl);
-                                        fri1 = fri1 + tl;
-                                    }
-
-                                    if (date.Day == 3)
-                                    {
-                                        long.TryParse(at.C3, out var tl);
-                                        fri1 = fri1 + tl;
-                                    }
-
-                                    if (date.Day == 4)
-                                    {
-                                        long.TryParse(at.C4, out var tl);
-                                        fri1 = fri1 + tl;
-                                    }
-
-                                    if (date.Day == 5)
-                                    {
-                                        long.TryParse(at.C5, out var tl);
-                                        fri1 = fri1 + tl;
-                                    }
-
-                                    if (date.Day == 6)
-                                    {
-                                        long.TryParse(at.C6, out var tl);
-                                        fri1 = fri1 + tl;
-                                    }
-
-                                    if (date.Day == 7)
-                                    {
-                                        long.TryParse(at.C7, out var tl);
-                                        fri1 = fri1 + tl;
-                                    }
-
-                                    if (date.Day == 8)
-                                    {
-                                        long.TryParse(at.C8, out var tl);
-                                        fri1 = fri1 + tl;
-                                    }
-
-                                    if (date.Day == 9)
-                                    {
-                                        long.TryParse(at.C9, out var tl);
-                                        fri1 = fri1 + tl;
-                                    }
-
-                                    if (date.Day == 10)
-                                    {
-                                        long.TryParse(at.C10, out var tl);
-                                        fri1 = fri1 + tl;
-                                    }
-
-                                    if (date.Day == 11)
-                                    {
-                                        long.TryParse(at.C11, out var tl);
-                                        fri1 = fri1 + tl;
-                                    }
-
-                                    if (date.Day == 12)
-                                    {
-                                        long.TryParse(at.C11, out var tl);
-                                        fri1 = fri1 + tl;
-                                    }
-
-                                    if (date.Day == 13)
-                                    {
-                                        long.TryParse(at.C13, out var tl);
-                                        fri1 = fri1 + tl;
-                                    }
-
-                                    if (date.Day == 14)
-                                    {
-                                        long.TryParse(at.C14, out var tl);
-                                        fri1 = fri1 + tl;
-                                    }
-
-                                    if (date.Day == 15)
-                                    {
-                                        long.TryParse(at.C15, out var tl);
-                                        fri1 = fri1 + tl;
-                                    }
-
-                                    if (date.Day == 16)
-                                    {
-                                        long.TryParse(at.C16, out var tl);
-                                        fri1 = fri1 + tl;
-                                    }
-
-                                    if (date.Day == 17)
-                                    {
-                                        long.TryParse(at.C17, out var tl);
-                                        fri1 = fri1 + tl;
-                                    }
-
-                                    if (date.Day == 18)
-                                    {
-                                        long.TryParse(at.C18, out var tl);
-                                        fri1 = fri1 + tl;
-                                    }
-
-                                    if (date.Day == 19)
-                                    {
-                                        long.TryParse(at.C19, out var tl);
-                                        fri1 = fri1 + tl;
-                                    }
-
-                                    if (date.Day == 20)
-                                    {
-                                        long.TryParse(at.C20, out var tl);
-                                        fri1 = fri1 + tl;
-                                    }
-
-                                    if (date.Day == 21)
-                                    {
-                                        long.TryParse(at.C21, out var tl);
-                                        fri1 = fri1 + tl;
-                                    }
-
-                                    if (date.Day == 22)
-                                    {
-                                        long.TryParse(at.C22, out var tl);
-                                        fri1 = fri1 + tl;
-                                    }
-
-                                    if (date.Day == 23)
-                                    {
-                                        long.TryParse(at.C23, out var tl);
-                                        fri1 = fri1 + tl;
-                                    }
-
-                                    if (date.Day == 24)
-                                    {
-                                        long.TryParse(at.C24, out var tl);
-                                        fri1 = fri1 + tl;
-                                    }
-
-                                    if (date.Day == 25)
-                                    {
-                                        long.TryParse(at.C25, out var tl);
-                                        fri1 = fri1 + tl;
-                                    }
-
-                                    if (date.Day == 26)
-                                    {
-                                        long.TryParse(at.C26, out var tl);
-                                        fri1 = fri1 + tl;
-                                    }
-
-                                    if (date.Day == 27)
-                                    {
-                                        long.TryParse(at.C27, out var tl);
-                                        fri1 = fri1 + tl;
-                                    }
-
-                                    if (date.Day == 28)
-                                    {
-                                        long.TryParse(at.C28, out var tl);
-                                        fri1 = fri1 + tl;
-                                    }
-
-                                    if (date.Day == 29)
-                                    {
-                                        long.TryParse(at.C29, out var tl);
-                                        fri1 = fri1 + tl;
-                                    }
-
-                                    if (date.Day == 30)
-                                    {
-                                        long.TryParse(at.C30, out var tl);
-                                        fri1 = fri1 + tl;
-                                    }
-
-                                    if (date.Day == 31)
-                                    {
-                                        long.TryParse(at.C31, out var tl);
-                                        fri1 = fri1 + tl;
-                                    }
-
-                                    at.FridayHours = fri1;
-                                }
-                            }
-
-                            date = date.AddDays(1);
+                            long.TryParse(at.C1, out var tl);
+                            fri1 = fri1 + tl;
                         }
+
+                        if (fdate.Contains(2) && !hdate.Contains(2))
+                        {
+                            long.TryParse(at.C2, out var tl);
+                            fri1 = fri1 + tl;
+                        }
+
+                        if (fdate.Contains(3) && !hdate.Contains(3))
+                        {
+                            long.TryParse(at.C3, out var tl);
+                            fri1 = fri1 + tl;
+                        }
+
+                        if (fdate.Contains(4) && !hdate.Contains(4))
+                        {
+                            long.TryParse(at.C4, out var tl);
+                            fri1 = fri1 + tl;
+                        }
+
+                        if (fdate.Contains(5) && !hdate.Contains(5))
+                        {
+                            long.TryParse(at.C5, out var tl);
+                            fri1 = fri1 + tl;
+                        }
+
+                        if (fdate.Contains(6) && !hdate.Contains(6))
+                        {
+                            long.TryParse(at.C6, out var tl);
+                            fri1 = fri1 + tl;
+                        }
+
+                        if (fdate.Contains(7) && !hdate.Contains(7))
+                        {
+                            long.TryParse(at.C7, out var tl);
+                            fri1 = fri1 + tl;
+                        }
+
+                        if (fdate.Contains(8) && !hdate.Contains(8))
+                        {
+                            long.TryParse(at.C8, out var tl);
+                            fri1 = fri1 + tl;
+                        }
+
+                        if (fdate.Contains(9) && !hdate.Contains(9))
+                        {
+                            long.TryParse(at.C9, out var tl);
+                            fri1 = fri1 + tl;
+                        }
+
+                        if (fdate.Contains(10) && !hdate.Contains(10))
+                        {
+                            long.TryParse(at.C10, out var tl);
+                            fri1 = fri1 + tl;
+                        }
+
+                        if (fdate.Contains(11) && !hdate.Contains(11))
+                        {
+                            long.TryParse(at.C11, out var tl);
+                            fri1 = fri1 + tl;
+                        }
+
+                        if (fdate.Contains(12) && !hdate.Contains(12))
+                        {
+                            long.TryParse(at.C11, out var tl);
+                            fri1 = fri1 + tl;
+                        }
+
+                        if (fdate.Contains(13) && !hdate.Contains(13))
+                        {
+                            long.TryParse(at.C13, out var tl);
+                            fri1 = fri1 + tl;
+                        }
+
+                        if (fdate.Contains(14) && !hdate.Contains(14))
+                        {
+                            long.TryParse(at.C14, out var tl);
+                            fri1 = fri1 + tl;
+                        }
+
+                        if (fdate.Contains(15) && !hdate.Contains(15))
+                        {
+                            long.TryParse(at.C15, out var tl);
+                            fri1 = fri1 + tl;
+                        }
+
+                        if (fdate.Contains(16) && !hdate.Contains(16))
+                        {
+                            long.TryParse(at.C16, out var tl);
+                            fri1 = fri1 + tl;
+                        }
+
+                        if (fdate.Contains(17) && !hdate.Contains(17))
+                        {
+                            long.TryParse(at.C17, out var tl);
+                            fri1 = fri1 + tl;
+                        }
+
+                        if (fdate.Contains(18) && !hdate.Contains(18))
+                        {
+                            long.TryParse(at.C18, out var tl);
+                            fri1 = fri1 + tl;
+                        }
+
+                        if (fdate.Contains(19) && !hdate.Contains(19))
+                        {
+                            long.TryParse(at.C19, out var tl);
+                            fri1 = fri1 + tl;
+                        }
+
+                        if (fdate.Contains(20) && !hdate.Contains(20))
+                        {
+                            long.TryParse(at.C20, out var tl);
+                            fri1 = fri1 + tl;
+                        }
+
+                        if (fdate.Contains(21) && !hdate.Contains(21))
+                        {
+                            long.TryParse(at.C21, out var tl);
+                            fri1 = fri1 + tl;
+                        }
+
+                        if (fdate.Contains(22) && !hdate.Contains(22))
+                        {
+                            long.TryParse(at.C22, out var tl);
+                            fri1 = fri1 + tl;
+                        }
+
+                        if (fdate.Contains(23) && !hdate.Contains(23))
+                        {
+                            long.TryParse(at.C23, out var tl);
+                            fri1 = fri1 + tl;
+                        }
+
+                        if (fdate.Contains(24) && !hdate.Contains(24))
+                        {
+                            long.TryParse(at.C24, out var tl);
+                            fri1 = fri1 + tl;
+                        }
+
+                        if (fdate.Contains(25) && !hdate.Contains(25))
+                        {
+                            long.TryParse(at.C25, out var tl);
+                            fri1 = fri1 + tl;
+                        }
+
+                        if (fdate.Contains(26) && !hdate.Contains(26))
+                        {
+                            long.TryParse(at.C26, out var tl);
+                            fri1 = fri1 + tl;
+                        }
+
+                        if (fdate.Contains(27) && !hdate.Contains(27))
+                        {
+                            long.TryParse(at.C27, out var tl);
+                            fri1 = fri1 + tl;
+                        }
+
+                        if (fdate.Contains(28) && !hdate.Contains(28))
+                        {
+                            long.TryParse(at.C28, out var tl);
+                            fri1 = fri1 + tl;
+                        }
+
+                        if (fdate.Contains(29) && !hdate.Contains(29))
+                        {
+                            long.TryParse(at.C29, out var tl);
+                            fri1 = fri1 + tl;
+                        }
+
+                        if (fdate.Contains(30) && !hdate.Contains(30))
+                        {
+                            long.TryParse(at.C30, out var tl);
+                            fri1 = fri1 + tl;
+                        }
+
+                        if (fdate.Contains(31) && !hdate.Contains(31))
+                        {
+                            long.TryParse(at.C31, out var tl);
+                            fri1 = fri1 + tl;
+                        }
+
+                        at.FridayHours = fri1;
 
                         this.db.Entry(at).State = EntityState.Modified;
                         this.db.SaveChanges();
-                        date = new DateTime(aa.TMonth.Year, aa.TMonth.Month, 1);
-                        for (var i = 0; i < DateTime.DaysInMonth(aa.TMonth.Year, aa.TMonth.Month); i++)
+                        if (hdate.Contains(1))
                         {
-                            if (hday.Exists(x => x.Date == date))
-                            {
-                                if (date.Day == 1)
-                                {
-                                    long.TryParse(at.C1, out var tl);
-                                    holi = holi + tl;
-                                }
-
-                                if (date.Day == 2)
-                                {
-                                    long.TryParse(at.C2, out var tl);
-                                    holi = holi + tl;
-                                }
-
-                                if (date.Day == 3)
-                                {
-                                    long.TryParse(at.C3, out var tl);
-                                    holi = holi + tl;
-                                }
-
-                                if (date.Day == 4)
-                                {
-                                    long.TryParse(at.C4, out var tl);
-                                    holi = holi + tl;
-                                }
-
-                                if (date.Day == 5)
-                                {
-                                    long.TryParse(at.C5, out var tl);
-                                    holi = holi + tl;
-                                }
-
-                                if (date.Day == 6)
-                                {
-                                    long.TryParse(at.C6, out var tl);
-                                    holi = holi + tl;
-                                }
-
-                                if (date.Day == 7)
-                                {
-                                    long.TryParse(at.C7, out var tl);
-                                    holi = holi + tl;
-                                }
-
-                                if (date.Day == 8)
-                                {
-                                    long.TryParse(at.C8, out var tl);
-                                    holi = holi + tl;
-                                }
-
-                                if (date.Day == 9)
-                                {
-                                    long.TryParse(at.C9, out var tl);
-                                    holi = holi + tl;
-                                }
-
-                                if (date.Day == 10)
-                                {
-                                    long.TryParse(at.C10, out var tl);
-                                    holi = holi + tl;
-                                }
-
-                                if (date.Day == 11)
-                                {
-                                    long.TryParse(at.C11, out var tl);
-                                    holi = holi + tl;
-                                }
-
-                                if (date.Day == 12)
-                                {
-                                    long.TryParse(at.C11, out var tl);
-                                    holi = holi + tl;
-                                }
-
-                                if (date.Day == 13)
-                                {
-                                    long.TryParse(at.C13, out var tl);
-                                    holi = holi + tl;
-                                }
-
-                                if (date.Day == 14)
-                                {
-                                    long.TryParse(at.C14, out var tl);
-                                    holi = holi + tl;
-                                }
-
-                                if (date.Day == 15)
-                                {
-                                    long.TryParse(at.C15, out var tl);
-                                    holi = holi + tl;
-                                }
-
-                                if (date.Day == 16)
-                                {
-                                    long.TryParse(at.C16, out var tl);
-                                    holi = holi + tl;
-                                }
-
-                                if (date.Day == 17)
-                                {
-                                    long.TryParse(at.C17, out var tl);
-                                    holi = holi + tl;
-                                }
-
-                                if (date.Day == 18)
-                                {
-                                    long.TryParse(at.C18, out var tl);
-                                    holi = holi + tl;
-                                }
-
-                                if (date.Day == 19)
-                                {
-                                    long.TryParse(at.C19, out var tl);
-                                    holi = holi + tl;
-                                }
-
-                                if (date.Day == 20)
-                                {
-                                    long.TryParse(at.C20, out var tl);
-                                    holi = holi + tl;
-                                }
-
-                                if (date.Day == 21)
-                                {
-                                    long.TryParse(at.C21, out var tl);
-                                    holi = holi + tl;
-                                }
-
-                                if (date.Day == 22)
-                                {
-                                    long.TryParse(at.C22, out var tl);
-                                    holi = holi + tl;
-                                }
-
-                                if (date.Day == 23)
-                                {
-                                    long.TryParse(at.C23, out var tl);
-                                    holi = holi + tl;
-                                }
-
-                                if (date.Day == 24)
-                                {
-                                    long.TryParse(at.C24, out var tl);
-                                    holi = holi + tl;
-                                }
-
-                                if (date.Day == 25)
-                                {
-                                    long.TryParse(at.C25, out var tl);
-                                    holi = holi + tl;
-                                }
-
-                                if (date.Day == 26)
-                                {
-                                    long.TryParse(at.C26, out var tl);
-                                    holi = holi + tl;
-                                }
-
-                                if (date.Day == 27)
-                                {
-                                    long.TryParse(at.C27, out var tl);
-                                    holi = holi + tl;
-                                }
-
-                                if (date.Day == 28)
-                                {
-                                    long.TryParse(at.C28, out var tl);
-                                    holi = holi + tl;
-                                }
-
-                                if (date.Day == 29)
-                                {
-                                    long.TryParse(at.C29, out var tl);
-                                    holi = holi + tl;
-                                }
-
-                                if (date.Day == 30)
-                                {
-                                    long.TryParse(at.C30, out var tl);
-                                    holi = holi + tl;
-                                }
-
-                                if (date.Day == 31)
-                                {
-                                    long.TryParse(at.C31, out var tl);
-                                    holi = holi + tl;
-                                }
-                            }
-
-                            at.Holidays = holi;
-
-                            date = date.AddDays(1);
+                            long.TryParse(at.C1, out var tl);
+                            holi = holi + tl;
                         }
+
+                        if (hdate.Contains(2))
+                        {
+                            long.TryParse(at.C2, out var tl);
+                            holi = holi + tl;
+                        }
+
+                        if (hdate.Contains(3))
+                        {
+                            long.TryParse(at.C3, out var tl);
+                            holi = holi + tl;
+                        }
+
+                        if (hdate.Contains(4))
+                        {
+                            long.TryParse(at.C4, out var tl);
+                            holi = holi + tl;
+                        }
+
+                        if (hdate.Contains(5))
+                        {
+                            long.TryParse(at.C5, out var tl);
+                            holi = holi + tl;
+                        }
+
+                        if (hdate.Contains(6))
+                        {
+                            long.TryParse(at.C6, out var tl);
+                            holi = holi + tl;
+                        }
+
+                        if (hdate.Contains(7))
+                        {
+                            long.TryParse(at.C7, out var tl);
+                            holi = holi + tl;
+                        }
+
+                        if (hdate.Contains(8))
+                        {
+                            long.TryParse(at.C8, out var tl);
+                            holi = holi + tl;
+                        }
+
+                        if (hdate.Contains(9))
+                        {
+                            long.TryParse(at.C9, out var tl);
+                            holi = holi + tl;
+                        }
+
+                        if (hdate.Contains(10))
+                        {
+                            long.TryParse(at.C10, out var tl);
+                            holi = holi + tl;
+                        }
+
+                        if (hdate.Contains(11))
+                        {
+                            long.TryParse(at.C11, out var tl);
+                            holi = holi + tl;
+                        }
+
+                        if (hdate.Contains(12))
+                        {
+                            long.TryParse(at.C11, out var tl);
+                            holi = holi + tl;
+                        }
+
+                        if (hdate.Contains(13))
+                        {
+                            long.TryParse(at.C13, out var tl);
+                            holi = holi + tl;
+                        }
+
+                        if (hdate.Contains(14))
+                        {
+                            long.TryParse(at.C14, out var tl);
+                            holi = holi + tl;
+                        }
+
+                        if (hdate.Contains(15))
+                        {
+                            long.TryParse(at.C15, out var tl);
+                            holi = holi + tl;
+                        }
+
+                        if (hdate.Contains(16))
+                        {
+                            long.TryParse(at.C16, out var tl);
+                            holi = holi + tl;
+                        }
+
+                        if (hdate.Contains(17))
+                        {
+                            long.TryParse(at.C17, out var tl);
+                            holi = holi + tl;
+                        }
+
+                        if (hdate.Contains(18))
+                        {
+                            long.TryParse(at.C18, out var tl);
+                            holi = holi + tl;
+                        }
+
+                        if (hdate.Contains(19))
+                        {
+                            long.TryParse(at.C19, out var tl);
+                            holi = holi + tl;
+                        }
+
+                        if (hdate.Contains(20))
+                        {
+                            long.TryParse(at.C20, out var tl);
+                            holi = holi + tl;
+                        }
+
+                        if (hdate.Contains(21))
+                        {
+                            long.TryParse(at.C21, out var tl);
+                            holi = holi + tl;
+                        }
+
+                        if (hdate.Contains(22))
+                        {
+                            long.TryParse(at.C22, out var tl);
+                            holi = holi + tl;
+                        }
+
+                        if (hdate.Contains(23))
+                        {
+                            long.TryParse(at.C23, out var tl);
+                            holi = holi + tl;
+                        }
+
+                        if (hdate.Contains(24))
+                        {
+                            long.TryParse(at.C24, out var tl);
+                            holi = holi + tl;
+                        }
+
+                        if (hdate.Contains(25))
+                        {
+                            long.TryParse(at.C25, out var tl);
+                            holi = holi + tl;
+                        }
+
+                        if (hdate.Contains(26))
+                        {
+                            long.TryParse(at.C26, out var tl);
+                            holi = holi + tl;
+                        }
+
+                        if (hdate.Contains(27))
+                        {
+                            long.TryParse(at.C27, out var tl);
+                            holi = holi + tl;
+                        }
+
+                        if (hdate.Contains(28))
+                        {
+                            long.TryParse(at.C28, out var tl);
+                            holi = holi + tl;
+                        }
+
+                        if (hdate.Contains(29))
+                        {
+                            long.TryParse(at.C29, out var tl);
+                            holi = holi + tl;
+                        }
+
+                        if (hdate.Contains(30))
+                        {
+                            long.TryParse(at.C30, out var tl);
+                            holi = holi + tl;
+                        }
+
+                        if (hdate.Contains(31))
+                        {
+                            long.TryParse(at.C31, out var tl);
+                            holi = holi + tl;
+                        }
+
+                        at.Holidays = holi;
 
                         this.db.Entry(at).State = EntityState.Modified;
                         this.db.SaveChanges();
@@ -3992,399 +4170,384 @@
                     long fri1 = 0;
                     long holi = 0;
                     var date = new DateTime(aa.TMonth.Year, aa.TMonth.Month, 1);
-                    for (var i = 0; i < DateTime.DaysInMonth(aa.TMonth.Year, aa.TMonth.Month); i++)
+                    var fdate = GetAll(date);
+                    var hdate = GetAllholi(date);
+                    if (fdate.Contains(1) && !hdate.Contains(1))
                     {
-                        if (date.DayOfWeek.Equals(DayOfWeek.Friday))
-                        {
-                            if (date.Day == 1)
-                            {
-                                long.TryParse(at.C1, out var tl);
-                                fri1 = fri1 + tl;
-                            }
-
-                            if (date.Day == 2)
-                            {
-                                long.TryParse(at.C2, out var tl);
-                                fri1 = fri1 + tl;
-                            }
-
-                            if (date.Day == 3)
-                            {
-                                long.TryParse(at.C3, out var tl);
-                                fri1 = fri1 + tl;
-                            }
-
-                            if (date.Day == 4)
-                            {
-                                long.TryParse(at.C4, out var tl);
-                                fri1 = fri1 + tl;
-                            }
-
-                            if (date.Day == 5)
-                            {
-                                long.TryParse(at.C5, out var tl);
-                                fri1 = fri1 + tl;
-                            }
-
-                            if (date.Day == 6)
-                            {
-                                long.TryParse(at.C6, out var tl);
-                                fri1 = fri1 + tl;
-                            }
-
-                            if (date.Day == 7)
-                            {
-                                long.TryParse(at.C7, out var tl);
-                                fri1 = fri1 + tl;
-                            }
-
-                            if (date.Day == 8)
-                            {
-                                long.TryParse(at.C8, out var tl);
-                                fri1 = fri1 + tl;
-                            }
-
-                            if (date.Day == 9)
-                            {
-                                long.TryParse(at.C9, out var tl);
-                                fri1 = fri1 + tl;
-                            }
-
-                            if (date.Day == 10)
-                            {
-                                long.TryParse(at.C10, out var tl);
-                                fri1 = fri1 + tl;
-                            }
-
-                            if (date.Day == 11)
-                            {
-                                long.TryParse(at.C11, out var tl);
-                                fri1 = fri1 + tl;
-                            }
-
-                            if (date.Day == 12)
-                            {
-                                long.TryParse(at.C11, out var tl);
-                                fri1 = fri1 + tl;
-                            }
-
-                            if (date.Day == 13)
-                            {
-                                long.TryParse(at.C13, out var tl);
-                                fri1 = fri1 + tl;
-                            }
-
-                            if (date.Day == 14)
-                            {
-                                long.TryParse(at.C14, out var tl);
-                                fri1 = fri1 + tl;
-                            }
-
-                            if (date.Day == 15)
-                            {
-                                long.TryParse(at.C15, out var tl);
-                                fri1 = fri1 + tl;
-                            }
-
-                            if (date.Day == 16)
-                            {
-                                long.TryParse(at.C16, out var tl);
-                                fri1 = fri1 + tl;
-                            }
-
-                            if (date.Day == 17)
-                            {
-                                long.TryParse(at.C17, out var tl);
-                                fri1 = fri1 + tl;
-                            }
-
-                            if (date.Day == 18)
-                            {
-                                long.TryParse(at.C18, out var tl);
-                                fri1 = fri1 + tl;
-                            }
-
-                            if (date.Day == 19)
-                            {
-                                long.TryParse(at.C19, out var tl);
-                                fri1 = fri1 + tl;
-                            }
-
-                            if (date.Day == 20)
-                            {
-                                long.TryParse(at.C20, out var tl);
-                                fri1 = fri1 + tl;
-                            }
-
-                            if (date.Day == 21)
-                            {
-                                long.TryParse(at.C21, out var tl);
-                                fri1 = fri1 + tl;
-                            }
-
-                            if (date.Day == 22)
-                            {
-                                long.TryParse(at.C22, out var tl);
-                                fri1 = fri1 + tl;
-                            }
-
-                            if (date.Day == 23)
-                            {
-                                long.TryParse(at.C23, out var tl);
-                                fri1 = fri1 + tl;
-                            }
-
-                            if (date.Day == 24)
-                            {
-                                long.TryParse(at.C24, out var tl);
-                                fri1 = fri1 + tl;
-                            }
-
-                            if (date.Day == 25)
-                            {
-                                long.TryParse(at.C25, out var tl);
-                                fri1 = fri1 + tl;
-                            }
-
-                            if (date.Day == 26)
-                            {
-                                long.TryParse(at.C26, out var tl);
-                                fri1 = fri1 + tl;
-                            }
-
-                            if (date.Day == 27)
-                            {
-                                long.TryParse(at.C27, out var tl);
-                                fri1 = fri1 + tl;
-                            }
-
-                            if (date.Day == 28)
-                            {
-                                long.TryParse(at.C28, out var tl);
-                                fri1 = fri1 + tl;
-                            }
-
-                            if (date.Day == 29)
-                            {
-                                long.TryParse(at.C29, out var tl);
-                                fri1 = fri1 + tl;
-                            }
-
-                            if (date.Day == 30)
-                            {
-                                long.TryParse(at.C30, out var tl);
-                                fri1 = fri1 + tl;
-                            }
-
-                            if (date.Day == 31)
-                            {
-                                long.TryParse(at.C31, out var tl);
-                                fri1 = fri1 + tl;
-                            }
-
-                            at.FridayHours = fri1;
-                        }
-
-                        date = date.AddDays(1);
+                        long.TryParse(at.C1, out var tl);
+                        fri1 = fri1 + tl;
                     }
 
-                    var hday = this.db.Holidays.ToList();
-                    date = new DateTime(aa.TMonth.Year, aa.TMonth.Month, 1);
-                    for (var i = 0; i < DateTime.DaysInMonth(aa.TMonth.Year, aa.TMonth.Month); i++)
+                    if (fdate.Contains(2) && !hdate.Contains(2))
                     {
-                        if (hday.Exists(x => x.Date == date))
-                        {
-                            if (date.Day == 1)
-                            {
-                                long.TryParse(at.C1, out var tl);
-                                holi = holi + tl;
-                            }
-
-                            if (date.Day == 2)
-                            {
-                                long.TryParse(at.C2, out var tl);
-                                holi = holi + tl;
-                            }
-
-                            if (date.Day == 3)
-                            {
-                                long.TryParse(at.C3, out var tl);
-                                holi = holi + tl;
-                            }
-
-                            if (date.Day == 4)
-                            {
-                                long.TryParse(at.C4, out var tl);
-                                holi = holi + tl;
-                            }
-
-                            if (date.Day == 5)
-                            {
-                                long.TryParse(at.C5, out var tl);
-                                holi = holi + tl;
-                            }
-
-                            if (date.Day == 6)
-                            {
-                                long.TryParse(at.C6, out var tl);
-                                holi = holi + tl;
-                            }
-
-                            if (date.Day == 7)
-                            {
-                                long.TryParse(at.C7, out var tl);
-                                holi = holi + tl;
-                            }
-
-                            if (date.Day == 8)
-                            {
-                                long.TryParse(at.C8, out var tl);
-                                holi = holi + tl;
-                            }
-
-                            if (date.Day == 9)
-                            {
-                                long.TryParse(at.C9, out var tl);
-                                holi = holi + tl;
-                            }
-
-                            if (date.Day == 10)
-                            {
-                                long.TryParse(at.C10, out var tl);
-                                holi = holi + tl;
-                            }
-
-                            if (date.Day == 11)
-                            {
-                                long.TryParse(at.C11, out var tl);
-                                holi = holi + tl;
-                            }
-
-                            if (date.Day == 12)
-                            {
-                                long.TryParse(at.C11, out var tl);
-                                holi = holi + tl;
-                            }
-
-                            if (date.Day == 13)
-                            {
-                                long.TryParse(at.C13, out var tl);
-                                holi = holi + tl;
-                            }
-
-                            if (date.Day == 14)
-                            {
-                                long.TryParse(at.C14, out var tl);
-                                holi = holi + tl;
-                            }
-
-                            if (date.Day == 15)
-                            {
-                                long.TryParse(at.C15, out var tl);
-                                holi = holi + tl;
-                            }
-
-                            if (date.Day == 16)
-                            {
-                                long.TryParse(at.C16, out var tl);
-                                holi = holi + tl;
-                            }
-
-                            if (date.Day == 17)
-                            {
-                                long.TryParse(at.C17, out var tl);
-                                holi = holi + tl;
-                            }
-
-                            if (date.Day == 18)
-                            {
-                                long.TryParse(at.C18, out var tl);
-                                holi = holi + tl;
-                            }
-
-                            if (date.Day == 19)
-                            {
-                                long.TryParse(at.C19, out var tl);
-                                holi = holi + tl;
-                            }
-
-                            if (date.Day == 20)
-                            {
-                                long.TryParse(at.C20, out var tl);
-                                holi = holi + tl;
-                            }
-
-                            if (date.Day == 21)
-                            {
-                                long.TryParse(at.C21, out var tl);
-                                holi = holi + tl;
-                            }
-
-                            if (date.Day == 22)
-                            {
-                                long.TryParse(at.C22, out var tl);
-                                holi = holi + tl;
-                            }
-
-                            if (date.Day == 23)
-                            {
-                                long.TryParse(at.C23, out var tl);
-                                holi = holi + tl;
-                            }
-
-                            if (date.Day == 24)
-                            {
-                                long.TryParse(at.C24, out var tl);
-                                holi = holi + tl;
-                            }
-
-                            if (date.Day == 25)
-                            {
-                                long.TryParse(at.C25, out var tl);
-                                holi = holi + tl;
-                            }
-
-                            if (date.Day == 26)
-                            {
-                                long.TryParse(at.C26, out var tl);
-                                holi = holi + tl;
-                            }
-
-                            if (date.Day == 27)
-                            {
-                                long.TryParse(at.C27, out var tl);
-                                holi = holi + tl;
-                            }
-
-                            if (date.Day == 28)
-                            {
-                                long.TryParse(at.C28, out var tl);
-                                holi = holi + tl;
-                            }
-
-                            if (date.Day == 29)
-                            {
-                                long.TryParse(at.C29, out var tl);
-                                holi = holi + tl;
-                            }
-
-                            if (date.Day == 30)
-                            {
-                                long.TryParse(at.C30, out var tl);
-                                holi = holi + tl;
-                            }
-
-                            if (date.Day == 31)
-                            {
-                                long.TryParse(at.C31, out var tl);
-                                holi = holi + tl;
-                            }
-
-                            at.Holidays = holi;
-                        }
-
-                        date = date.AddDays(1);
+                        long.TryParse(at.C2, out var tl);
+                        fri1 = fri1 + tl;
                     }
+
+                    if (fdate.Contains(3) && !hdate.Contains(3))
+                    {
+                        long.TryParse(at.C3, out var tl);
+                        fri1 = fri1 + tl;
+                    }
+
+                    if (fdate.Contains(4) && !hdate.Contains(4))
+                    {
+                        long.TryParse(at.C4, out var tl);
+                        fri1 = fri1 + tl;
+                    }
+
+                    if (fdate.Contains(5) && !hdate.Contains(5))
+                    {
+                        long.TryParse(at.C5, out var tl);
+                        fri1 = fri1 + tl;
+                    }
+
+                    if (fdate.Contains(6) && !hdate.Contains(6))
+                    {
+                        long.TryParse(at.C6, out var tl);
+                        fri1 = fri1 + tl;
+                    }
+
+                    if (fdate.Contains(7) && !hdate.Contains(7))
+                    {
+                        long.TryParse(at.C7, out var tl);
+                        fri1 = fri1 + tl;
+                    }
+
+                    if (fdate.Contains(8) && !hdate.Contains(8))
+                    {
+                        long.TryParse(at.C8, out var tl);
+                        fri1 = fri1 + tl;
+                    }
+
+                    if (fdate.Contains(9) && !hdate.Contains(9))
+                    {
+                        long.TryParse(at.C9, out var tl);
+                        fri1 = fri1 + tl;
+                    }
+
+                    if (fdate.Contains(10) && !hdate.Contains(10))
+                    {
+                        long.TryParse(at.C10, out var tl);
+                        fri1 = fri1 + tl;
+                    }
+
+                    if (fdate.Contains(11) && !hdate.Contains(11))
+                    {
+                        long.TryParse(at.C11, out var tl);
+                        fri1 = fri1 + tl;
+                    }
+
+                    if (fdate.Contains(12) && !hdate.Contains(12))
+                    {
+                        long.TryParse(at.C11, out var tl);
+                        fri1 = fri1 + tl;
+                    }
+
+                    if (fdate.Contains(13) && !hdate.Contains(13))
+                    {
+                        long.TryParse(at.C13, out var tl);
+                        fri1 = fri1 + tl;
+                    }
+
+                    if (fdate.Contains(14) && !hdate.Contains(14))
+                    {
+                        long.TryParse(at.C14, out var tl);
+                        fri1 = fri1 + tl;
+                    }
+
+                    if (fdate.Contains(15) && !hdate.Contains(15))
+                    {
+                        long.TryParse(at.C15, out var tl);
+                        fri1 = fri1 + tl;
+                    }
+
+                    if (fdate.Contains(16) && !hdate.Contains(16))
+                    {
+                        long.TryParse(at.C16, out var tl);
+                        fri1 = fri1 + tl;
+                    }
+
+                    if (fdate.Contains(17) && !hdate.Contains(17))
+                    {
+                        long.TryParse(at.C17, out var tl);
+                        fri1 = fri1 + tl;
+                    }
+
+                    if (fdate.Contains(18) && !hdate.Contains(18))
+                    {
+                        long.TryParse(at.C18, out var tl);
+                        fri1 = fri1 + tl;
+                    }
+
+                    if (fdate.Contains(19) && !hdate.Contains(19))
+                    {
+                        long.TryParse(at.C19, out var tl);
+                        fri1 = fri1 + tl;
+                    }
+
+                    if (fdate.Contains(20) && !hdate.Contains(20))
+                    {
+                        long.TryParse(at.C20, out var tl);
+                        fri1 = fri1 + tl;
+                    }
+
+                    if (fdate.Contains(21) && !hdate.Contains(21))
+                    {
+                        long.TryParse(at.C21, out var tl);
+                        fri1 = fri1 + tl;
+                    }
+
+                    if (fdate.Contains(22) && !hdate.Contains(22))
+                    {
+                        long.TryParse(at.C22, out var tl);
+                        fri1 = fri1 + tl;
+                    }
+
+                    if (fdate.Contains(23) && !hdate.Contains(23))
+                    {
+                        long.TryParse(at.C23, out var tl);
+                        fri1 = fri1 + tl;
+                    }
+
+                    if (fdate.Contains(24) && !hdate.Contains(24))
+                    {
+                        long.TryParse(at.C24, out var tl);
+                        fri1 = fri1 + tl;
+                    }
+
+                    if (fdate.Contains(25) && !hdate.Contains(25))
+                    {
+                        long.TryParse(at.C25, out var tl);
+                        fri1 = fri1 + tl;
+                    }
+
+                    if (fdate.Contains(26) && !hdate.Contains(26))
+                    {
+                        long.TryParse(at.C26, out var tl);
+                        fri1 = fri1 + tl;
+                    }
+
+                    if (fdate.Contains(27) && !hdate.Contains(27))
+                    {
+                        long.TryParse(at.C27, out var tl);
+                        fri1 = fri1 + tl;
+                    }
+
+                    if (fdate.Contains(28) && !hdate.Contains(28))
+                    {
+                        long.TryParse(at.C28, out var tl);
+                        fri1 = fri1 + tl;
+                    }
+
+                    if (fdate.Contains(29) && !hdate.Contains(29))
+                    {
+                        long.TryParse(at.C29, out var tl);
+                        fri1 = fri1 + tl;
+                    }
+
+                    if (fdate.Contains(30) && !hdate.Contains(30))
+                    {
+                        long.TryParse(at.C30, out var tl);
+                        fri1 = fri1 + tl;
+                    }
+
+                    if (fdate.Contains(31) && !hdate.Contains(31))
+                    {
+                        long.TryParse(at.C31, out var tl);
+                        fri1 = fri1 + tl;
+                    }
+
+                    at.FridayHours = fri1;
+
+                    if (hdate.Contains(1))
+                    {
+                        long.TryParse(at.C1, out var tl);
+                        holi = holi + tl;
+                    }
+
+                    if (hdate.Contains(2))
+                    {
+                        long.TryParse(at.C2, out var tl);
+                        holi = holi + tl;
+                    }
+
+                    if (hdate.Contains(3))
+                    {
+                        long.TryParse(at.C3, out var tl);
+                        holi = holi + tl;
+                    }
+
+                    if (hdate.Contains(4))
+                    {
+                        long.TryParse(at.C4, out var tl);
+                        holi = holi + tl;
+                    }
+
+                    if (hdate.Contains(5))
+                    {
+                        long.TryParse(at.C5, out var tl);
+                        holi = holi + tl;
+                    }
+
+                    if (hdate.Contains(6))
+                    {
+                        long.TryParse(at.C6, out var tl);
+                        holi = holi + tl;
+                    }
+
+                    if (hdate.Contains(7))
+                    {
+                        long.TryParse(at.C7, out var tl);
+                        holi = holi + tl;
+                    }
+
+                    if (hdate.Contains(8))
+                    {
+                        long.TryParse(at.C8, out var tl);
+                        holi = holi + tl;
+                    }
+
+                    if (hdate.Contains(9))
+                    {
+                        long.TryParse(at.C9, out var tl);
+                        holi = holi + tl;
+                    }
+
+                    if (hdate.Contains(10))
+                    {
+                        long.TryParse(at.C10, out var tl);
+                        holi = holi + tl;
+                    }
+
+                    if (hdate.Contains(11))
+                    {
+                        long.TryParse(at.C11, out var tl);
+                        holi = holi + tl;
+                    }
+
+                    if (hdate.Contains(12))
+                    {
+                        long.TryParse(at.C11, out var tl);
+                        holi = holi + tl;
+                    }
+
+                    if (hdate.Contains(13))
+                    {
+                        long.TryParse(at.C13, out var tl);
+                        holi = holi + tl;
+                    }
+
+                    if (hdate.Contains(14))
+                    {
+                        long.TryParse(at.C14, out var tl);
+                        holi = holi + tl;
+                    }
+
+                    if (hdate.Contains(15))
+                    {
+                        long.TryParse(at.C15, out var tl);
+                        holi = holi + tl;
+                    }
+
+                    if (hdate.Contains(16))
+                    {
+                        long.TryParse(at.C16, out var tl);
+                        holi = holi + tl;
+                    }
+
+                    if (hdate.Contains(17))
+                    {
+                        long.TryParse(at.C17, out var tl);
+                        holi = holi + tl;
+                    }
+
+                    if (hdate.Contains(18))
+                    {
+                        long.TryParse(at.C18, out var tl);
+                        holi = holi + tl;
+                    }
+
+                    if (hdate.Contains(19))
+                    {
+                        long.TryParse(at.C19, out var tl);
+                        holi = holi + tl;
+                    }
+
+                    if (hdate.Contains(20))
+                    {
+                        long.TryParse(at.C20, out var tl);
+                        holi = holi + tl;
+                    }
+
+                    if (hdate.Contains(21))
+                    {
+                        long.TryParse(at.C21, out var tl);
+                        holi = holi + tl;
+                    }
+
+                    if (hdate.Contains(22))
+                    {
+                        long.TryParse(at.C22, out var tl);
+                        holi = holi + tl;
+                    }
+
+                    if (hdate.Contains(23))
+                    {
+                        long.TryParse(at.C23, out var tl);
+                        holi = holi + tl;
+                    }
+
+                    if (hdate.Contains(24))
+                    {
+                        long.TryParse(at.C24, out var tl);
+                        holi = holi + tl;
+                    }
+
+                    if (hdate.Contains(25))
+                    {
+                        long.TryParse(at.C25, out var tl);
+                        holi = holi + tl;
+                    }
+
+                    if (hdate.Contains(26))
+                    {
+                        long.TryParse(at.C26, out var tl);
+                        holi = holi + tl;
+                    }
+
+                    if (hdate.Contains(27))
+                    {
+                        long.TryParse(at.C27, out var tl);
+                        holi = holi + tl;
+                    }
+
+                    if (hdate.Contains(28))
+                    {
+                        long.TryParse(at.C28, out var tl);
+                        holi = holi + tl;
+                    }
+
+                    if (hdate.Contains(29))
+                    {
+                        long.TryParse(at.C29, out var tl);
+                        holi = holi + tl;
+                    }
+
+                    if (hdate.Contains(30))
+                    {
+                        long.TryParse(at.C30, out var tl);
+                        holi = holi + tl;
+                    }
+
+                    if (hdate.Contains(31))
+                    {
+                        long.TryParse(at.C31, out var tl);
+                        holi = holi + tl;
+                    }
+
+                    at.Holidays = holi;
+
 
                     if (attendance.C1 != "0" && attendance.C1 != null)
                         if (!ap.Exists(
@@ -6045,10 +6208,10 @@
                 else
                 {
                     var errr1 = "timesheet already " + apall.Find(
-                                        x => x.MPS_id == mainTimeSheet.ManPowerSupplier
-                                             && x.P_id == mainTimeSheet.Project
-                                             && x.adate == mainTimeSheet.TMonth)
-                                    .status;
+                            x => x.MPS_id == mainTimeSheet.ManPowerSupplier
+                                 && x.P_id == mainTimeSheet.Project
+                                 && x.adate == mainTimeSheet.TMonth)
+                        .status;
                     this.ModelState.AddModelError(string.Empty, errr1);
                 }
             }
@@ -6216,8 +6379,8 @@
                         var tb = this.db;
                         var lo = this.db.MainTimeSheets.Where(
                             e => e.ManPowerSupplier.Equals(aa.ManPowerSupplier) && e.TMonth.Year.Equals(list.date.Year)
-                                                                                && e.TMonth.Month.Equals(
-                                                                                    list.date.Month)).ToList();
+                                && e.TMonth.Month.Equals(
+                                    list.date.Month)).ToList();
                         var lo1 = new List<Attendance>();
                         foreach (var same in lo)
                         {
@@ -6247,9 +6410,9 @@
                                     {
                                         var dd = this.db.LabourMasters.Find(list.empno);
                                         var errorm = "total time of the employee no:" + dd.EMPNO.ToString()
-                                                                                      + " for the day is "
-                                                                                      + com.ToString()
-                                                                                      + "hrs which is greater then 24hrs";
+                                            + " for the day is "
+                                            + com.ToString()
+                                            + "hrs which is greater then 24hrs";
                                         this.ModelState.AddModelError(string.Empty, errorm);
                                         return this.View(test);
                                     }
@@ -6264,9 +6427,9 @@
                                     {
                                         var dd = this.db.LabourMasters.Find(list.empno);
                                         var errorm = "total time of the employee no:" + dd.EMPNO.ToString()
-                                                                                      + " for the day is "
-                                                                                      + com.ToString()
-                                                                                      + "hrs which is greater then 24hrs";
+                                            + " for the day is "
+                                            + com.ToString()
+                                            + "hrs which is greater then 24hrs";
                                         this.ModelState.AddModelError(string.Empty, errorm);
                                         return this.View(test);
                                     }
@@ -6281,9 +6444,9 @@
                                     {
                                         var dd = this.db.LabourMasters.Find(list.empno);
                                         var errorm = "total time of the employee no:" + dd.EMPNO.ToString()
-                                                                                      + " for the day is "
-                                                                                      + com.ToString()
-                                                                                      + "hrs which is greater then 24hrs";
+                                            + " for the day is "
+                                            + com.ToString()
+                                            + "hrs which is greater then 24hrs";
                                         this.ModelState.AddModelError(string.Empty, errorm);
                                         return this.View(test);
                                     }
@@ -6298,9 +6461,9 @@
                                     {
                                         var dd = this.db.LabourMasters.Find(list.empno);
                                         var errorm = "total time of the employee no:" + dd.EMPNO.ToString()
-                                                                                      + " for the day is "
-                                                                                      + com.ToString()
-                                                                                      + "hrs which is greater then 24hrs";
+                                            + " for the day is "
+                                            + com.ToString()
+                                            + "hrs which is greater then 24hrs";
                                         this.ModelState.AddModelError(string.Empty, errorm);
                                         return this.View(test);
                                     }
@@ -6315,9 +6478,9 @@
                                     {
                                         var dd = this.db.LabourMasters.Find(list.empno);
                                         var errorm = "total time of the employee no:" + dd.EMPNO.ToString()
-                                                                                      + " for the day is "
-                                                                                      + com.ToString()
-                                                                                      + "hrs which is greater then 24hrs";
+                                            + " for the day is "
+                                            + com.ToString()
+                                            + "hrs which is greater then 24hrs";
                                         this.ModelState.AddModelError(string.Empty, errorm);
                                         return this.View(test);
                                     }
@@ -6332,9 +6495,9 @@
                                     {
                                         var dd = this.db.LabourMasters.Find(list.empno);
                                         var errorm = "total time of the employee no:" + dd.EMPNO.ToString()
-                                                                                      + " for the day is "
-                                                                                      + com.ToString()
-                                                                                      + "hrs which is greater then 24hrs";
+                                            + " for the day is "
+                                            + com.ToString()
+                                            + "hrs which is greater then 24hrs";
                                         this.ModelState.AddModelError(string.Empty, errorm);
                                         return this.View(test);
                                     }
@@ -6349,9 +6512,9 @@
                                     {
                                         var dd = this.db.LabourMasters.Find(list.empno);
                                         var errorm = "total time of the employee no:" + dd.EMPNO.ToString()
-                                                                                      + " for the day is "
-                                                                                      + com.ToString()
-                                                                                      + "hrs which is greater then 24hrs";
+                                            + " for the day is "
+                                            + com.ToString()
+                                            + "hrs which is greater then 24hrs";
                                         this.ModelState.AddModelError(string.Empty, errorm);
                                         return this.View(test);
                                     }
@@ -6366,9 +6529,9 @@
                                     {
                                         var dd = this.db.LabourMasters.Find(list.empno);
                                         var errorm = "total time of the employee no:" + dd.EMPNO.ToString()
-                                                                                      + " for the day is "
-                                                                                      + com.ToString()
-                                                                                      + "hrs which is greater then 24hrs";
+                                            + " for the day is "
+                                            + com.ToString()
+                                            + "hrs which is greater then 24hrs";
                                         this.ModelState.AddModelError(string.Empty, errorm);
                                         return this.View(test);
                                     }
@@ -6383,9 +6546,9 @@
                                     {
                                         var dd = this.db.LabourMasters.Find(list.empno);
                                         var errorm = "total time of the employee no:" + dd.EMPNO.ToString()
-                                                                                      + " for the day is "
-                                                                                      + com.ToString()
-                                                                                      + "hrs which is greater then 24hrs";
+                                            + " for the day is "
+                                            + com.ToString()
+                                            + "hrs which is greater then 24hrs";
                                         this.ModelState.AddModelError(string.Empty, errorm);
                                         return this.View(test);
                                     }
@@ -6400,9 +6563,9 @@
                                     {
                                         var dd = this.db.LabourMasters.Find(list.empno);
                                         var errorm = "total time of the employee no:" + dd.EMPNO.ToString()
-                                                                                      + " for the day is "
-                                                                                      + com.ToString()
-                                                                                      + "hrs which is greater then 24hrs";
+                                            + " for the day is "
+                                            + com.ToString()
+                                            + "hrs which is greater then 24hrs";
                                         this.ModelState.AddModelError(string.Empty, errorm);
                                         return this.View(test);
                                     }
@@ -6417,9 +6580,9 @@
                                     {
                                         var dd = this.db.LabourMasters.Find(list.empno);
                                         var errorm = "total time of the employee no:" + dd.EMPNO.ToString()
-                                                                                      + " for the day is "
-                                                                                      + com.ToString()
-                                                                                      + "hrs which is greater then 24hrs";
+                                            + " for the day is "
+                                            + com.ToString()
+                                            + "hrs which is greater then 24hrs";
                                         this.ModelState.AddModelError(string.Empty, errorm);
                                         return this.View(test);
                                     }
@@ -6434,9 +6597,9 @@
                                     {
                                         var dd = this.db.LabourMasters.Find(list.empno);
                                         var errorm = "total time of the employee no:" + dd.EMPNO.ToString()
-                                                                                      + " for the day is "
-                                                                                      + com.ToString()
-                                                                                      + "hrs which is greater then 24hrs";
+                                            + " for the day is "
+                                            + com.ToString()
+                                            + "hrs which is greater then 24hrs";
                                         this.ModelState.AddModelError(string.Empty, errorm);
                                         return this.View(test);
                                     }
@@ -6451,9 +6614,9 @@
                                     {
                                         var dd = this.db.LabourMasters.Find(list.empno);
                                         var errorm = "total time of the employee no:" + dd.EMPNO.ToString()
-                                                                                      + " for the day is "
-                                                                                      + com.ToString()
-                                                                                      + "hrs which is greater then 24hrs";
+                                            + " for the day is "
+                                            + com.ToString()
+                                            + "hrs which is greater then 24hrs";
                                         this.ModelState.AddModelError(string.Empty, errorm);
                                         return this.View(test);
                                     }
@@ -6468,9 +6631,9 @@
                                     {
                                         var dd = this.db.LabourMasters.Find(list.empno);
                                         var errorm = "total time of the employee no:" + dd.EMPNO.ToString()
-                                                                                      + " for the day is "
-                                                                                      + com.ToString()
-                                                                                      + "hrs which is greater then 24hrs";
+                                            + " for the day is "
+                                            + com.ToString()
+                                            + "hrs which is greater then 24hrs";
                                         this.ModelState.AddModelError(string.Empty, errorm);
                                         return this.View(test);
                                     }
@@ -6485,9 +6648,9 @@
                                     {
                                         var dd = this.db.LabourMasters.Find(list.empno);
                                         var errorm = "total time of the employee no:" + dd.EMPNO.ToString()
-                                                                                      + " for the day is "
-                                                                                      + com.ToString()
-                                                                                      + "hrs which is greater then 24hrs";
+                                            + " for the day is "
+                                            + com.ToString()
+                                            + "hrs which is greater then 24hrs";
                                         this.ModelState.AddModelError(string.Empty, errorm);
                                         return this.View(test);
                                     }
@@ -6502,9 +6665,9 @@
                                     {
                                         var dd = this.db.LabourMasters.Find(list.empno);
                                         var errorm = "total time of the employee no:" + dd.EMPNO.ToString()
-                                                                                      + " for the day is "
-                                                                                      + com.ToString()
-                                                                                      + "hrs which is greater then 24hrs";
+                                            + " for the day is "
+                                            + com.ToString()
+                                            + "hrs which is greater then 24hrs";
                                         this.ModelState.AddModelError(string.Empty, errorm);
                                         return this.View(test);
                                     }
@@ -6519,9 +6682,9 @@
                                     {
                                         var dd = this.db.LabourMasters.Find(list.empno);
                                         var errorm = "total time of the employee no:" + dd.EMPNO.ToString()
-                                                                                      + " for the day is "
-                                                                                      + com.ToString()
-                                                                                      + "hrs which is greater then 24hrs";
+                                            + " for the day is "
+                                            + com.ToString()
+                                            + "hrs which is greater then 24hrs";
                                         this.ModelState.AddModelError(string.Empty, errorm);
                                         return this.View(test);
                                     }
@@ -6536,9 +6699,9 @@
                                     {
                                         var dd = this.db.LabourMasters.Find(list.empno);
                                         var errorm = "total time of the employee no:" + dd.EMPNO.ToString()
-                                                                                      + " for the day is "
-                                                                                      + com.ToString()
-                                                                                      + "hrs which is greater then 24hrs";
+                                            + " for the day is "
+                                            + com.ToString()
+                                            + "hrs which is greater then 24hrs";
                                         this.ModelState.AddModelError(string.Empty, errorm);
                                         return this.View(test);
                                     }
@@ -6553,9 +6716,9 @@
                                     {
                                         var dd = this.db.LabourMasters.Find(list.empno);
                                         var errorm = "total time of the employee no:" + dd.EMPNO.ToString()
-                                                                                      + " for the day is "
-                                                                                      + com.ToString()
-                                                                                      + "hrs which is greater then 24hrs";
+                                            + " for the day is "
+                                            + com.ToString()
+                                            + "hrs which is greater then 24hrs";
                                         this.ModelState.AddModelError(string.Empty, errorm);
                                         return this.View(test);
                                     }
@@ -6570,9 +6733,9 @@
                                     {
                                         var dd = this.db.LabourMasters.Find(list.empno);
                                         var errorm = "total time of the employee no:" + dd.EMPNO.ToString()
-                                                                                      + " for the day is "
-                                                                                      + com.ToString()
-                                                                                      + "hrs which is greater then 24hrs";
+                                            + " for the day is "
+                                            + com.ToString()
+                                            + "hrs which is greater then 24hrs";
                                         this.ModelState.AddModelError(string.Empty, errorm);
                                         return this.View(test);
                                     }
@@ -6587,9 +6750,9 @@
                                     {
                                         var dd = this.db.LabourMasters.Find(list.empno);
                                         var errorm = "total time of the employee no:" + dd.EMPNO.ToString()
-                                                                                      + " for the day is "
-                                                                                      + com.ToString()
-                                                                                      + "hrs which is greater then 24hrs";
+                                            + " for the day is "
+                                            + com.ToString()
+                                            + "hrs which is greater then 24hrs";
                                         this.ModelState.AddModelError(string.Empty, errorm);
                                         return this.View(test);
                                     }
@@ -6604,9 +6767,9 @@
                                     {
                                         var dd = this.db.LabourMasters.Find(list.empno);
                                         var errorm = "total time of the employee no:" + dd.EMPNO.ToString()
-                                                                                      + " for the day is "
-                                                                                      + com.ToString()
-                                                                                      + "hrs which is greater then 24hrs";
+                                            + " for the day is "
+                                            + com.ToString()
+                                            + "hrs which is greater then 24hrs";
                                         this.ModelState.AddModelError(string.Empty, errorm);
                                         return this.View(test);
                                     }
@@ -6621,9 +6784,9 @@
                                     {
                                         var dd = this.db.LabourMasters.Find(list.empno);
                                         var errorm = "total time of the employee no:" + dd.EMPNO.ToString()
-                                                                                      + " for the day is "
-                                                                                      + com.ToString()
-                                                                                      + "hrs which is greater then 24hrs";
+                                            + " for the day is "
+                                            + com.ToString()
+                                            + "hrs which is greater then 24hrs";
                                         this.ModelState.AddModelError(string.Empty, errorm);
                                         return this.View(test);
                                     }
@@ -6638,9 +6801,9 @@
                                     {
                                         var dd = this.db.LabourMasters.Find(list.empno);
                                         var errorm = "total time of the employee no:" + dd.EMPNO.ToString()
-                                                                                      + " for the day is "
-                                                                                      + com.ToString()
-                                                                                      + "hrs which is greater then 24hrs";
+                                            + " for the day is "
+                                            + com.ToString()
+                                            + "hrs which is greater then 24hrs";
                                         this.ModelState.AddModelError(string.Empty, errorm);
                                         return this.View(test);
                                     }
@@ -6655,9 +6818,9 @@
                                     {
                                         var dd = this.db.LabourMasters.Find(list.empno);
                                         var errorm = "total time of the employee no:" + dd.EMPNO.ToString()
-                                                                                      + " for the day is "
-                                                                                      + com.ToString()
-                                                                                      + "hrs which is greater then 24hrs";
+                                            + " for the day is "
+                                            + com.ToString()
+                                            + "hrs which is greater then 24hrs";
                                         this.ModelState.AddModelError(string.Empty, errorm);
                                         return this.View(test);
                                     }
@@ -6672,9 +6835,9 @@
                                     {
                                         var dd = this.db.LabourMasters.Find(list.empno);
                                         var errorm = "total time of the employee no:" + dd.EMPNO.ToString()
-                                                                                      + " for the day is "
-                                                                                      + com.ToString()
-                                                                                      + "hrs which is greater then 24hrs";
+                                            + " for the day is "
+                                            + com.ToString()
+                                            + "hrs which is greater then 24hrs";
                                         this.ModelState.AddModelError(string.Empty, errorm);
                                         return this.View(test);
                                     }
@@ -6689,9 +6852,9 @@
                                     {
                                         var dd = this.db.LabourMasters.Find(list.empno);
                                         var errorm = "total time of the employee no:" + dd.EMPNO.ToString()
-                                                                                      + " for the day is "
-                                                                                      + com.ToString()
-                                                                                      + "hrs which is greater then 24hrs";
+                                            + " for the day is "
+                                            + com.ToString()
+                                            + "hrs which is greater then 24hrs";
                                         this.ModelState.AddModelError(string.Empty, errorm);
                                         return this.View(test);
                                     }
@@ -6706,9 +6869,9 @@
                                     {
                                         var dd = this.db.LabourMasters.Find(list.empno);
                                         var errorm = "total time of the employee no:" + dd.EMPNO.ToString()
-                                                                                      + " for the day is "
-                                                                                      + com.ToString()
-                                                                                      + "hrs which is greater then 24hrs";
+                                            + " for the day is "
+                                            + com.ToString()
+                                            + "hrs which is greater then 24hrs";
                                         this.ModelState.AddModelError(string.Empty, errorm);
                                         return this.View(test);
                                     }
@@ -6723,9 +6886,9 @@
                                     {
                                         var dd = this.db.LabourMasters.Find(list.empno);
                                         var errorm = "total time of the employee no:" + dd.EMPNO.ToString()
-                                                                                      + " for the day is "
-                                                                                      + com.ToString()
-                                                                                      + "hrs which is greater then 24hrs";
+                                            + " for the day is "
+                                            + com.ToString()
+                                            + "hrs which is greater then 24hrs";
                                         this.ModelState.AddModelError(string.Empty, errorm);
                                         return this.View(test);
                                     }
@@ -6740,9 +6903,9 @@
                                     {
                                         var dd = this.db.LabourMasters.Find(list.empno);
                                         var errorm = "total time of the employee no:" + dd.EMPNO.ToString()
-                                                                                      + " for the day is "
-                                                                                      + com.ToString()
-                                                                                      + "hrs which is greater then 24hrs";
+                                            + " for the day is "
+                                            + com.ToString()
+                                            + "hrs which is greater then 24hrs";
                                         this.ModelState.AddModelError(string.Empty, errorm);
                                         return this.View(test);
                                     }
@@ -6757,9 +6920,9 @@
                                     {
                                         var dd = this.db.LabourMasters.Find(list.empno);
                                         var errorm = "total time of the employee no:" + dd.EMPNO.ToString()
-                                                                                      + " for the day is "
-                                                                                      + com.ToString()
-                                                                                      + "hrs which is greater then 24hrs";
+                                            + " for the day is "
+                                            + com.ToString()
+                                            + "hrs which is greater then 24hrs";
                                         this.ModelState.AddModelError(string.Empty, errorm);
                                         return this.View(test);
                                     }
@@ -7652,7 +7815,7 @@
                         if (date1.Day == 24) et.hours = attendance.C24;
 
                         if (date1.Day == 25) et.hours = attendance.C25;
-                        
+
                         if (date1.Day == 26) et.hours = attendance.C26;
 
                         if (date1.Day == 27) et.hours = attendance.C27;
@@ -7737,7 +7900,9 @@
                 {
                     Text = @"Dear Sir,
 
-Please note that I have sent a new Time-Sheet for the date " + da.ToShortDateString() + ", ManPowerSupplier: " + sup + " and Project name: " + prop + " for you to  approve / reject\n\nBest regards\n" + na + "\n\n\n\n"
+Please note that I have sent a new Time-Sheet for the date " + da.ToShortDateString() + ", ManPowerSupplier: " + sup +
+                           " and Project name: " + prop + " for you to  approve / reject\n\nBest regards\n" + na +
+                           "\n\n\n\n"
                 };
 
                 using (var client = new SmtpClient())
@@ -7751,7 +7916,6 @@ Please note that I have sent a new Time-Sheet for the date " + da.ToShortDateStr
                     client.Disconnect(true);
                 }
             }
-
         }
 
         [Authorize(Roles = "Employee")]
