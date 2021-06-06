@@ -515,507 +515,545 @@
     </div>
 
     <script>
-    function GetAll(date) {
+        function GetAll(date) {
 
-        var month = date.getMonth();
-        var lastDayOfMonth = new Date(date.getFullYear(), date.getMonth() + 1, 0);
-        var lastDay = lastDayOfMonth.getDate();
-        var array = []; //dd/mm/yy
-        for (var i = 1; i <= lastDay; i++) {
+            var month = date.getMonth();
+            var lastDayOfMonth = new Date(date.getFullYear(), date.getMonth() + 1, 0);
+            var lastDay = lastDayOfMonth.getDate();
+            var array = []; //dd/mm/yy
+            for (var i = 1; i <= lastDay; i++) {
 
-            var temp = new Date(date.getFullYear(), month, i);
-            var day = temp.getDay();
-            if (day == 5) // Thursday
-            {
+                var temp = new Date(date.getFullYear(), month, i);
+                var day = temp.getDay();
+                if (day == 5) // Thursday
+                {
 
-                var dd = temp.getDate();
-                var mm = temp.getMonth() + 1;
-                var mm0 = ('0' + mm.toString());
-                mm0 = mm0.length == 3 ? mm0.substring(1, 3) : mm0;
+                    var dd = temp.getDate();
+                    var mm = temp.getMonth() + 1;
+                    var mm0 = ('0' + mm.toString());
+                    mm0 = mm0.length == 3 ? mm0.substring(1, 3) : mm0;
 
-                var dd0 = ('0' + dd.toString());
-                dd0 = dd0.length == 3 ? dd0.substring(1, 3) : dd0;
+                    var dd0 = ('0' + dd.toString());
+                    dd0 = dd0.length == 3 ? dd0.substring(1, 3) : dd0;
 
 
-                var yyyy = temp.getFullYear();
-                array.push(dd);
-            }
-        }
-        return array;
-    }
-
-    function total() {
-        $('select').attr("disabled", false);
-        $('#empno').attr("disabled", false);
-        $('#pos1').attr("disabled", false);
-        $('#name1').attr("disabled", false);
-        var aaq = $('#EmpID').val();
-        if (aaq == "") {
-            $("#aaq1").prop('disabled', true);
-            $("#aaq2").prop('disabled', true);
-        } else {
-            $("#aaq1").prop('disabled', false);
-            $("#aaq2").prop('disabled', false);
-        }
-        $('#empno').val(aaq);
-        $('#pos1').val(aaq);
-        $('#name1').val(aaq);
-        $('#pos2').text("Position :"+$('#pos1 option:selected').text());
-        $('#name2').text(", name :"+$('#name1 option:selected').text());
-        onlo();
-        /*var c1 = '';
-        var c2 = '';
-        var c3 = '';
-        var c4 = '';
-        var c5 = '';
-        var c6 = '';
-        var c7 = '';
-        var c8 = '';
-        var c9 = '';
-        var c10 = '';
-        var c11 = '';
-        var c12 = '';
-        var c13 = '';
-        var c14 = '';
-        var c15 = '';
-        var c16 = '';
-        var c17 = '';
-        var c18 = '';
-        var c19 = '';
-        var c20 = '';
-        var c21 = '';
-        var c22 = '';
-        var c23 = '';
-        var c24 = '';
-        var c25 = '';
-        var c26 = '';
-        var c27 = '';
-        var c28 = '';
-        var c29 = '';
-        var c30 = '';
-        var c31 = '';
-        c1 = $("#C1").val() == '' ? 0 : $("#C1").val();
-        c2 = $("#C2").val() == '' ? 0 : $("#C2").val();
-        c3 = $("#C3").val() == '' ? 0 : $("#C3").val();
-        c4 = $("#C4").val() == '' ? 0 : $("#C4").val();
-        c5 = $("#C5").val() == '' ? 0 : $("#C5").val();
-        c6 = $("#C6").val() == '' ? 0 : $("#C6").val();
-        c7 = $("#C7").val() == '' ? 0 : $("#C7").val();
-        c8 = $("#C8").val() == '' ? 0 : $("#C8").val();
-        c9 = $("#C9").val() == '' ? 0 : $("#C9").val();
-        c10 = $("#C20").val() == '' ? 0 : $("#C10").val();
-        c11 = $("#C11").val() == '' ? 0 : $("#C11").val();
-        c12 = $("#C12").val() == '' ? 0 : $("#C12").val();
-        c13 = $("#C13").val() == '' ? 0 : $("#C13").val();
-        c14 = $("#C14").val() == '' ? 0 : $("#C14").val();
-        c15 = $("#C15").val() == '' ? 0 : $("#C15").val();
-        c16 = $("#C16").val() == '' ? 0 : $("#C16").val();
-        c17 = $("#C17").val() == '' ? 0 : $("#C17").val();
-        c18 = $("#C18").val() == '' ? 0 : $("#C18").val();
-        c19 = $("#C19").val() == '' ? 0 : $("#C19").val();
-        c20 = $("#C20").val() == '' ? 0 : $("#C20").val();
-        c21 = $("#C21").val() == '' ? 0 : $("#C21").val();
-        c22 = $("#C22").val() == '' ? 0 : $("#C22").val();
-        c23 = $("#C23").val() == '' ? 0 : $("#C23").val();
-        c24 = $("#C24").val() == '' ? 0 : $("#C24").val();
-        c25 = $("#C25").val() == '' ? 0 : $("#C25").val();
-        c26 = $("#C26").val() == '' ? 0 : $("#C26").val();
-        c27 = $("#C27").val() == '' ? 0 : $("#C27").val();
-        c28 = $("#C28").val() == '' ? 0 : $("#C28").val();
-        c29 = $("#C29").val() == '' ? 0 : $("#C29").val();
-        c30 = $("#C30").val() == '' ? 0 : $("#C30").val();
-        c31 = $("#C31").val() == '' ? 0 : $("#C31").val();
-        if ($.isNumeric($("#C1").val())) {
-            c1 = $("#C1").val();
-        } else {
-            c1 = 0;
-        }
-        if ($.isNumeric($("#C2").val())) {
-            c2 = $("#C2").val();
-        } else {
-            c2 = 0;
-        }
-        if ($.isNumeric($("#C3").val())) {
-            c3 = $("#C3").val();
-        } else {
-            c3 = 0;
-        }
-        if ($.isNumeric($("#C4").val())) {
-            C4 = $("#C4").val();
-        } else {
-            C4 = 0;
-        }
-        if ($.isNumeric($("#C5").val())) {
-            C5 = $("#C5").val();
-        } else {
-            C5 = 0;
-        }
-        if ($.isNumeric($("#C6").val())) {
-            C6 = $("#C6").val();
-        } else {
-            C6 = 0;
-        }
-        if ($.isNumeric($("#C7").val())) {
-            C7 = $("#C7").val();
-        } else {
-            C8 = 0;
-        }
-        if ($.isNumeric($("#C8").val())) {
-            C8 = $("#C8").val();
-        } else {
-            C9 = 0;
-        }
-        if ($.isNumeric($("#C9").val())) {
-            C9 = $("#C9").val();
-        } else {
-            c9 = 0;
-        }
-        if ($.isNumeric($("#C10").val())) {
-            c10 = $("#C10").val();
-        } else {
-            c10 = 0;
-        }
-        if ($.isNumeric($("#C11").val())) {
-            c11 = $("#C11").val();
-        } else {
-            c11 = 0;
-        }
-        if ($.isNumeric($("#C12").val())) {
-            c12 = $("#C12").val();
-        } else {
-            c12 = 0;
-        }
-        if ($.isNumeric($("#C13").val())) {
-            c13 = $("#C13").val();
-        } else {
-            c13 = 0;
-        }
-        if ($.isNumeric($("#C14").val())) {
-            c14 = $("#C14").val();
-        } else {
-            c14 = 0;
-        }
-        if ($.isNumeric($("#C15").val())) {
-            c15 = $("#C15").val();
-        } else {
-            c15 = 0;
-        }
-        if ($.isNumeric($("#C16").val())) {
-            c16 = $("#C16").val();
-        } else {
-            c16 = 0;
-        }
-        if ($.isNumeric($("#C17").val())) {
-            c17 = $("#C17").val();
-        } else {
-            c17 = 0;
-        }
-        if ($.isNumeric($("#C18").val())) {
-            c18 = $("#C18").val();
-        } else {
-            c18 = 0;
-        }
-        if ($.isNumeric($("#C19").val())) {
-            c19 = $("#C19").val();
-        } else {
-            c19 = 0;
-        }
-        if ($.isNumeric($("#C20").val())) {
-            C20 = $("#C20").val();
-        } else {
-            C20 = 0;
-        }
-        if ($.isNumeric($("#C21").val())) {
-            C21 = $("#C21").val();
-        } else {
-            C21 = 0;
-        }
-        if ($.isNumeric($("#C22").val())) {
-            C22 = $("#C22").val();
-        } else {
-            C22 = 0;
-        }
-        if ($.isNumeric($("#C23").val())) {
-            C23 = $("#C23").val();
-        } else {
-            C23 = 0;
-        }
-        if ($.isNumeric($("#C24").val())) {
-            C24 = $("#C24").val();
-        } else {
-            C24 = 0;
-        }
-        if ($.isNumeric($("#C25").val())) {
-            C25 = $("#C25").val();
-        } else {
-            C25 = 0;
-        }
-        if ($.isNumeric($("#C26").val())) {
-            C26 = $("#C26").val();
-        } else {
-            C26 = 0;
-        }
-        if ($.isNumeric($("#C27").val())) {
-            C27 = $("#C27").val();
-        } else {
-            C27 = 0;
-        }
-        if ($.isNumeric($("#C28").val())) {
-            C28 = $("#C28").val();
-        } else {
-            C28 = 0;
-        }
-        if ($.isNumeric($("#C29").val())) {
-            C29 = $("#C29").val();
-        } else {
-            C29 = 0;
-        }
-        if ($.isNumeric($("#C30").val())) {
-            C30 = $("#C30").val();
-        } else {
-            C30 = 0;
-        }
-        if ($.isNumeric($("#C31").val())) {
-            C31 = $("#C31").val();
-        } else {
-            C31 = 0;
-        }
-        var totalh = parseInt(c1) +
-            parseInt(c2) +
-            parseInt(c3) +
-            parseInt(c4) +
-            parseInt(c5) +
-            parseInt(c6) +
-            parseInt(c7) +
-            parseInt(c8) +
-            parseInt(c9) +
-            parseInt(c10) +
-            parseInt(c11) +
-            parseInt(c12) +
-            parseInt(c13) +
-            parseInt(c14) +
-            parseInt(c15) +
-            parseInt(c16) +
-            parseInt(c17) +
-            parseInt(c18) +
-            parseInt(c19) +
-            parseInt(c20) +
-            parseInt(c21) +
-            parseInt(c22) +
-            parseInt(c23) +
-            parseInt(c24) +
-            parseInt(c25) +
-            parseInt(c26) +
-            parseInt(c27) +
-            parseInt(c28) +
-            parseInt(c29) +
-            parseInt(c30) +
-            parseInt(c31);
-        $("#TotalHours").val(totalh);
-        $("#TotalHours2").val(totalh);*/
-    }
-
-    function onlo() {
-
-        $('select').attr("disabled", true);
-        $('#EmpID').attr("disabled", false);
-        var customVal = $("#md1").data("value");
-        var aa = new Date(customVal);
-        var fd = GetAll(aa);
-        for (var x in fd) {
-            $('#C' + fd[x]).css("background-color", "red");
-            $('#C' + fd[x]).css("color", "white");
-            $('#d' + fd[x]).css("background-color", "red");
-            $('#d' + fd[x]).css("color", "white");
-            for (var l = 0; l <=@ae; l++) {
-                $('#d' + fd[x] + "_1" + "_" + l).css("background-color", "red");
-                $('#d' + fd[x] + "_1" + "_" + l).css("color", "white");
-            }
-            if (fd[x] == "29") {
-                for (var k = 0; k <= @ae; k++) {
-                    $("#ex1_1_" + k).css("background-color", "red");
-                    $("#ex1_1_" + k).css("color", "white");
+                    var yyyy = temp.getFullYear();
+                    array.push(dd);
                 }
-                $("#ex1_2").css("background-color", "red");
-                $("#ex1_2").css("color", "white");
             }
-            if (fd[x] == "30") {
-                for (var h = 0; h <= @ae; h++) {
-                    $("#ex2_1_" + h).css("background-color", "red");
-                    $("#ex2_1_" +h).css("color", "white");
+            return array;
+        }
+
+        function total() {
+            $('select').attr("disabled", false);
+            $('#empno').attr("disabled", false);
+            $('#pos1').attr("disabled", false);
+            $('#name1').attr("disabled", false);
+            var aaq = $('#EmpID').val();
+            if (aaq == "") {
+                $("#aaq1").prop('disabled', true);
+                $("#aaq2").prop('disabled', true);
+            } else {
+                $("#aaq1").prop('disabled', false);
+                $("#aaq2").prop('disabled', false);
+            }
+            $('#empno').val(aaq);
+            $('#pos1').val(aaq);
+            $('#name1').val(aaq);
+            $('#pos2').text("Position :"+$('#pos1 option:selected').text());
+            $('#name2').text(", name :"+$('#name1 option:selected').text());
+            onlo();
+            /*var c1 = '';
+            var c2 = '';
+            var c3 = '';
+            var c4 = '';
+            var c5 = '';
+            var c6 = '';
+            var c7 = '';
+            var c8 = '';
+            var c9 = '';
+            var c10 = '';
+            var c11 = '';
+            var c12 = '';
+            var c13 = '';
+            var c14 = '';
+            var c15 = '';
+            var c16 = '';
+            var c17 = '';
+            var c18 = '';
+            var c19 = '';
+            var c20 = '';
+            var c21 = '';
+            var c22 = '';
+            var c23 = '';
+            var c24 = '';
+            var c25 = '';
+            var c26 = '';
+            var c27 = '';
+            var c28 = '';
+            var c29 = '';
+            var c30 = '';
+            var c31 = '';
+            c1 = $("#C1").val() == '' ? 0 : $("#C1").val();
+            c2 = $("#C2").val() == '' ? 0 : $("#C2").val();
+            c3 = $("#C3").val() == '' ? 0 : $("#C3").val();
+            c4 = $("#C4").val() == '' ? 0 : $("#C4").val();
+            c5 = $("#C5").val() == '' ? 0 : $("#C5").val();
+            c6 = $("#C6").val() == '' ? 0 : $("#C6").val();
+            c7 = $("#C7").val() == '' ? 0 : $("#C7").val();
+            c8 = $("#C8").val() == '' ? 0 : $("#C8").val();
+            c9 = $("#C9").val() == '' ? 0 : $("#C9").val();
+            c10 = $("#C20").val() == '' ? 0 : $("#C10").val();
+            c11 = $("#C11").val() == '' ? 0 : $("#C11").val();
+            c12 = $("#C12").val() == '' ? 0 : $("#C12").val();
+            c13 = $("#C13").val() == '' ? 0 : $("#C13").val();
+            c14 = $("#C14").val() == '' ? 0 : $("#C14").val();
+            c15 = $("#C15").val() == '' ? 0 : $("#C15").val();
+            c16 = $("#C16").val() == '' ? 0 : $("#C16").val();
+            c17 = $("#C17").val() == '' ? 0 : $("#C17").val();
+            c18 = $("#C18").val() == '' ? 0 : $("#C18").val();
+            c19 = $("#C19").val() == '' ? 0 : $("#C19").val();
+            c20 = $("#C20").val() == '' ? 0 : $("#C20").val();
+            c21 = $("#C21").val() == '' ? 0 : $("#C21").val();
+            c22 = $("#C22").val() == '' ? 0 : $("#C22").val();
+            c23 = $("#C23").val() == '' ? 0 : $("#C23").val();
+            c24 = $("#C24").val() == '' ? 0 : $("#C24").val();
+            c25 = $("#C25").val() == '' ? 0 : $("#C25").val();
+            c26 = $("#C26").val() == '' ? 0 : $("#C26").val();
+            c27 = $("#C27").val() == '' ? 0 : $("#C27").val();
+            c28 = $("#C28").val() == '' ? 0 : $("#C28").val();
+            c29 = $("#C29").val() == '' ? 0 : $("#C29").val();
+            c30 = $("#C30").val() == '' ? 0 : $("#C30").val();
+            c31 = $("#C31").val() == '' ? 0 : $("#C31").val();
+            if ($.isNumeric($("#C1").val())) {
+                c1 = $("#C1").val();
+            } else {
+                c1 = 0;
+            }
+            if ($.isNumeric($("#C2").val())) {
+                c2 = $("#C2").val();
+            } else {
+                c2 = 0;
+            }
+            if ($.isNumeric($("#C3").val())) {
+                c3 = $("#C3").val();
+            } else {
+                c3 = 0;
+            }
+            if ($.isNumeric($("#C4").val())) {
+                C4 = $("#C4").val();
+            } else {
+                C4 = 0;
+            }
+            if ($.isNumeric($("#C5").val())) {
+                C5 = $("#C5").val();
+            } else {
+                C5 = 0;
+            }
+            if ($.isNumeric($("#C6").val())) {
+                C6 = $("#C6").val();
+            } else {
+                C6 = 0;
+            }
+            if ($.isNumeric($("#C7").val())) {
+                C7 = $("#C7").val();
+            } else {
+                C8 = 0;
+            }
+            if ($.isNumeric($("#C8").val())) {
+                C8 = $("#C8").val();
+            } else {
+                C9 = 0;
+            }
+            if ($.isNumeric($("#C9").val())) {
+                C9 = $("#C9").val();
+            } else {
+                c9 = 0;
+            }
+            if ($.isNumeric($("#C10").val())) {
+                c10 = $("#C10").val();
+            } else {
+                c10 = 0;
+            }
+            if ($.isNumeric($("#C11").val())) {
+                c11 = $("#C11").val();
+            } else {
+                c11 = 0;
+            }
+            if ($.isNumeric($("#C12").val())) {
+                c12 = $("#C12").val();
+            } else {
+                c12 = 0;
+            }
+            if ($.isNumeric($("#C13").val())) {
+                c13 = $("#C13").val();
+            } else {
+                c13 = 0;
+            }
+            if ($.isNumeric($("#C14").val())) {
+                c14 = $("#C14").val();
+            } else {
+                c14 = 0;
+            }
+            if ($.isNumeric($("#C15").val())) {
+                c15 = $("#C15").val();
+            } else {
+                c15 = 0;
+            }
+            if ($.isNumeric($("#C16").val())) {
+                c16 = $("#C16").val();
+            } else {
+                c16 = 0;
+            }
+            if ($.isNumeric($("#C17").val())) {
+                c17 = $("#C17").val();
+            } else {
+                c17 = 0;
+            }
+            if ($.isNumeric($("#C18").val())) {
+                c18 = $("#C18").val();
+            } else {
+                c18 = 0;
+            }
+            if ($.isNumeric($("#C19").val())) {
+                c19 = $("#C19").val();
+            } else {
+                c19 = 0;
+            }
+            if ($.isNumeric($("#C20").val())) {
+                C20 = $("#C20").val();
+            } else {
+                C20 = 0;
+            }
+            if ($.isNumeric($("#C21").val())) {
+                C21 = $("#C21").val();
+            } else {
+                C21 = 0;
+            }
+            if ($.isNumeric($("#C22").val())) {
+                C22 = $("#C22").val();
+            } else {
+                C22 = 0;
+            }
+            if ($.isNumeric($("#C23").val())) {
+                C23 = $("#C23").val();
+            } else {
+                C23 = 0;
+            }
+            if ($.isNumeric($("#C24").val())) {
+                C24 = $("#C24").val();
+            } else {
+                C24 = 0;
+            }
+            if ($.isNumeric($("#C25").val())) {
+                C25 = $("#C25").val();
+            } else {
+                C25 = 0;
+            }
+            if ($.isNumeric($("#C26").val())) {
+                C26 = $("#C26").val();
+            } else {
+                C26 = 0;
+            }
+            if ($.isNumeric($("#C27").val())) {
+                C27 = $("#C27").val();
+            } else {
+                C27 = 0;
+            }
+            if ($.isNumeric($("#C28").val())) {
+                C28 = $("#C28").val();
+            } else {
+                C28 = 0;
+            }
+            if ($.isNumeric($("#C29").val())) {
+                C29 = $("#C29").val();
+            } else {
+                C29 = 0;
+            }
+            if ($.isNumeric($("#C30").val())) {
+                C30 = $("#C30").val();
+            } else {
+                C30 = 0;
+            }
+            if ($.isNumeric($("#C31").val())) {
+                C31 = $("#C31").val();
+            } else {
+                C31 = 0;
+            }
+            var totalh = parseInt(c1) +
+                parseInt(c2) +
+                parseInt(c3) +
+                parseInt(c4) +
+                parseInt(c5) +
+                parseInt(c6) +
+                parseInt(c7) +
+                parseInt(c8) +
+                parseInt(c9) +
+                parseInt(c10) +
+                parseInt(c11) +
+                parseInt(c12) +
+                parseInt(c13) +
+                parseInt(c14) +
+                parseInt(c15) +
+                parseInt(c16) +
+                parseInt(c17) +
+                parseInt(c18) +
+                parseInt(c19) +
+                parseInt(c20) +
+                parseInt(c21) +
+                parseInt(c22) +
+                parseInt(c23) +
+                parseInt(c24) +
+                parseInt(c25) +
+                parseInt(c26) +
+                parseInt(c27) +
+                parseInt(c28) +
+                parseInt(c29) +
+                parseInt(c30) +
+                parseInt(c31);
+            $("#TotalHours").val(totalh);
+            $("#TotalHours2").val(totalh);*/
+        }
+
+        function onlo() {
+
+            $('select').attr("disabled", true);
+            $('#EmpID').attr("disabled", false);
+            var customVal = $("#md1").data("value");
+            var aa = new Date(customVal);
+            var fd = GetAll(aa);
+            for (var x in fd) {
+                $('#C' + fd[x]).css("background-color", "red");
+                $('#C' + fd[x]).css("color", "white");
+                $('#d' + fd[x]).css("background-color", "red");
+                $('#d' + fd[x]).css("color", "white");
+                for (var l = 0; l <=@ae; l++) {
+                    $('#d' + fd[x] + "_1" + "_" + l).css("background-color", "red");
+                    $('#d' + fd[x] + "_1" + "_" + l).css("color", "white");
                 }
-                $("#ex2_2").css("background-color", "red");
-                $("#ex2_2").css("color", "white");
-            }
-            if (fd[x] == "31") {
-                for (var g = 0; g <= @ae; g++) {
-                    $("#ex3_1_" +g).css("background-color", "red");
-                    $("#ex3_1_" +g).css("color", "white");
+                if (fd[x] == "29") {
+                    for (var k = 0; k <= @ae; k++) {
+                        $("#ex1_1_" + k).css("background-color", "red");
+                        $("#ex1_1_" + k).css("color", "white");
+                    }
+                    $("#ex1_2").css("background-color", "red");
+                    $("#ex1_2").css("color", "white");
                 }
-                $("#ex3_3").css("background-color", "red");
-                $("#ex3_3").css("color", "white");
+                if (fd[x] == "30") {
+                    for (var h = 0; h <= @ae; h++) {
+                        $("#ex2_1_" + h).css("background-color", "red");
+                        $("#ex2_1_" +h).css("color", "white");
+                    }
+                    $("#ex2_2").css("background-color", "red");
+                    $("#ex2_2").css("color", "white");
+                }
+                if (fd[x] == "31") {
+                    for (var g = 0; g <= @ae; g++) {
+                        $("#ex3_1_" +g).css("background-color", "red");
+                        $("#ex3_1_" +g).css("color", "white");
+                    }
+                    $("#ex3_3").css("background-color", "red");
+                    $("#ex3_3").css("color", "white");
+                }
             }
-        }
-        var md = daysInMonth(aa.getMonth(), aa.getFullYear());
-        if (md == 28) {
-            $('#ex1').hide();
-            $('#ex2').hide();
-            $('#ex3').hide();
-            for (var f = 0; f <= @ae; f++) {
-                $('#ex1_1_' + f).hide();
-                $('#ex2_1_' + f).hide();
-                $('#ex3_1_' + f).hide();
+            var md = daysInMonth(aa.getMonth(), aa.getFullYear());
+            if (md == 28) {
+                $('#ex1').hide();
+                $('#ex2').hide();
+                $('#ex3').hide();
+                for (var f = 0; f <= @ae; f++) {
+                    $('#ex1_1_' + f).hide();
+                    $('#ex2_1_' + f).hide();
+                    $('#ex3_1_' + f).hide();
+                }
+                $('#ex1_2').hide();
+                $('#ex2_2').hide();
+                $('#ex3_3').hide();
             }
-            $('#ex1_2').hide();
-            $('#ex2_2').hide();
-            $('#ex3_3').hide();
-        }
-        if (md == 29) {
-            $('#ex2').hide();
-            $('#ex3').hide();
-            for (var d = 0; d <= @ae; d++) {
-                $('#ex2_1_' + d).hide();
-                $('#ex3_1_' + d).hide();
+            if (md == 29) {
+                $('#ex2').hide();
+                $('#ex3').hide();
+                for (var d = 0; d <= @ae; d++) {
+                    $('#ex2_1_' + d).hide();
+                    $('#ex3_1_' + d).hide();
+                }
+                $('#ex2_2').hide();
+                $('#ex3_3').hide();
             }
-            $('#ex2_2').hide();
-            $('#ex3_3').hide();
-        }
-        if (md == 30) {
-            $('#ex3').hide();
-            for (var i = 0; i <= @ae; i++) {
-                $('#ex3_1_' + i).hide();
+            if (md == 30) {
+                $('#ex3').hide();
+                for (var i = 0; i <= @ae; i++) {
+                    $('#ex3_1_' + i).hide();
+                }
+                $('#ex3_3').hide();
             }
-            $('#ex3_3').hide();
+            //alert("no of days = " + md + " month = " + aa.getMonth() + " year = " + aa.getFullYear());
+            if (aa.getDate() == 1) {
+                $('#C1').attr("disabled", false);
+            }
+            if (aa.getDate() == 2) {
+                $('#C1').attr("disabled", false);
+                $('#C2').attr("disabled", false);
+            }
+            if (aa.getDate() == 3) {
+                $('#C3').attr("disabled", false);
+                $('#C2').attr("disabled", false);
+            }
+            if (aa.getDate() == 4) {
+                $('#C3').attr("disabled", false);
+                $('#C4').attr("disabled", false);
+            }
+            if (aa.getDate() == 5) {
+                $('#C4').attr("disabled", false);
+                $('#C5').attr("disabled", false);
+            }
+            if (aa.getDate() == 6) {
+                $('#C5').attr("disabled", false);
+                $('#C6').attr("disabled", false);
+            }
+            if (aa.getDate() == 7) {
+                $('#C6').attr("disabled", false);
+                $('#C7').attr("disabled", false);
+            }
+            if (aa.getDate() == 8) {
+                $('#C7').attr("disabled", false);
+                $('#C8').attr("disabled", false);
+            }
+            if (aa.getDate() == 9) {
+                $('#C8').attr("disabled", false);
+                $('#C9').attr("disabled", false);
+            }
+            if (aa.getDate() == 10) {
+                $('#C9').attr("disabled", false);
+                $('#C10').attr("disabled", false);
+            }
+            if (aa.getDate() == 11) {
+                $('#C10').attr("disabled", false);
+                $('#C11').attr("disabled", false);
+            }
+            if (aa.getDate() == 12) {
+                $('#C11').attr("disabled", false);
+                $('#C12').attr("disabled", false);
+            }
+            if (aa.getDate() == 13) {
+                $('#C13').attr("disabled", false);
+                $('#C12').attr("disabled", false);
+            }
+            if (aa.getDate() == 14) {
+                $('#C13').attr("disabled", false);
+                $('#C14').attr("disabled", false);
+            }
+            if (aa.getDate() == 15) {
+                $('#C14').attr("disabled", false);
+                $('#C15').attr("disabled", false);
+            }
+            if (aa.getDate() == 16) {
+                $('#C15').attr("disabled", false);
+                $('#C16').attr("disabled", false);
+            }
+            if (aa.getDate() == 17) {
+                $('#C16').attr("disabled", false);
+                $('#C17').attr("disabled", false);
+            }
+            if (aa.getDate() == 18) {
+                $('#C17').attr("disabled", false);
+                $('#C18').attr("disabled", false);
+            }
+            if (aa.getDate() == 19) {
+                $('#C18').attr("disabled", false);
+                $('#C19').attr("disabled", false);
+            }
+            if (aa.getDate() == 20) {
+                $('#C19').attr("disabled", false);
+                $('#C20').attr("disabled", false);
+            }
+            if (aa.getDate() == 21) {
+                $('#C19').attr("disabled", false);
+                $('#C20').attr("disabled", false);
+            }
+            if (aa.getDate() == 22) {
+                $('#C21').attr("disabled", false);
+                $('#C22').attr("disabled", false);
+            }
+            if (aa.getDate() == 23) {
+                $('#C23').attr("disabled", false);
+                $('#C22').attr("disabled", false);
+            }
+            if (aa.getDate() == 24) {
+                $('#C23').attr("disabled", false);
+                $('#c24').attr("disabled", false);
+            }
+            if (aa.getDate() == 25) {
+                $('#C24').attr("disabled", false);
+                $('#C25').attr("disabled", false);
+            }
+            if (aa.getDate() == 26) {
+                $('#C25').attr("disabled", false);
+                $('#C26').attr("disabled", false);
+            }
+            if (aa.getDate() == 27) {
+                $('#C26').attr("disabled", false);
+                $('#C27').attr("disabled", false);
+            }
+            if (aa.getDate() == 28) {
+                $('#C27').attr("disabled", false);
+                $('#C28').attr("disabled", false);
+            }
+            if (aa.getDate() == 29) {
+                $('#C28').attr("disabled", false);
+                $('#C29').attr("disabled", false);
+            }
+            if (aa.getDate() == 30) {
+                $('#C29').attr("disabled", false);
+                $('#C30').attr("disabled", false);
+            }
+            if (aa.getDate() == 31) {
+                $('#C31').attr("disabled", false);
+                $('#C30').attr("disabled", false);
+            }
+            onlo1();
         }
-        //alert("no of days = " + md + " month = " + aa.getMonth() + " year = " + aa.getFullYear());
-        if (aa.getDate() == 1) {
-            $('#C1').attr("disabled", false);
+        function daysInMonth(month, year) {
+            return new Date(year, month + 1, 0).getDate();
         }
-        if (aa.getDate() == 2) {
-            $('#C1').attr("disabled", false);
-            $('#C2').attr("disabled", false);
-        }
-        if (aa.getDate() == 3) {
-            $('#C3').attr("disabled", false);
-            $('#C2').attr("disabled", false);
-        }
-        if (aa.getDate() == 4) {
-            $('#C3').attr("disabled", false);
-            $('#C4').attr("disabled", false);
-        }
-        if (aa.getDate() == 5) {
-            $('#C4').attr("disabled", false);
-            $('#C5').attr("disabled", false);
-        }
-        if (aa.getDate() == 6) {
-            $('#C5').attr("disabled", false);
-            $('#C6').attr("disabled", false);
-        }
-        if (aa.getDate() == 7) {
-            $('#C6').attr("disabled", false);
-            $('#C7').attr("disabled", false);
-        }
-        if (aa.getDate() == 8) {
-            $('#C7').attr("disabled", false);
-            $('#C8').attr("disabled", false);
-        }
-        if (aa.getDate() == 9) {
-            $('#C8').attr("disabled", false);
-            $('#C9').attr("disabled", false);
-        }
-        if (aa.getDate() == 10) {
-            $('#C9').attr("disabled", false);
-            $('#C10').attr("disabled", false);
-        }
-        if (aa.getDate() == 11) {
-            $('#C10').attr("disabled", false);
-            $('#C11').attr("disabled", false);
-        }
-        if (aa.getDate() == 12) {
-            $('#C11').attr("disabled", false);
-            $('#C12').attr("disabled", false);
-        }
-        if (aa.getDate() == 13) {
-            $('#C13').attr("disabled", false);
-            $('#C12').attr("disabled", false);
-        }
-        if (aa.getDate() == 14) {
-            $('#C13').attr("disabled", false);
-            $('#C14').attr("disabled", false);
-        }
-        if (aa.getDate() == 15) {
-            $('#C14').attr("disabled", false);
-            $('#C15').attr("disabled", false);
-        }
-        if (aa.getDate() == 16) {
-            $('#C15').attr("disabled", false);
-            $('#C16').attr("disabled", false);
-        }
-        if (aa.getDate() == 17) {
-            $('#C16').attr("disabled", false);
-            $('#C17').attr("disabled", false);
-        }
-        if (aa.getDate() == 18) {
-            $('#C17').attr("disabled", false);
-            $('#C18').attr("disabled", false);
-        }
-        if (aa.getDate() == 19) {
-            $('#C18').attr("disabled", false);
-            $('#C19').attr("disabled", false);
-        }
-        if (aa.getDate() == 20) {
-            $('#C19').attr("disabled", false);
-            $('#C20').attr("disabled", false);
-        }
-        if (aa.getDate() == 21) {
-            $('#C19').attr("disabled", false);
-            $('#C20').attr("disabled", false);
-        }
-        if (aa.getDate() == 22) {
-            $('#C21').attr("disabled", false);
-            $('#C22').attr("disabled", false);
-        }
-        if (aa.getDate() == 23) {
-            $('#C23').attr("disabled", false);
-            $('#C22').attr("disabled", false);
-        }
-        if (aa.getDate() == 24) {
-            $('#C23').attr("disabled", false);
-            $('#c24').attr("disabled", false);
-        }
-        if (aa.getDate() == 25) {
-            $('#C24').attr("disabled", false);
-            $('#C25').attr("disabled", false);
-        }
-        if (aa.getDate() == 26) {
-            $('#C25').attr("disabled", false);
-            $('#C26').attr("disabled", false);
-        }
-        if (aa.getDate() == 27) {
-            $('#C26').attr("disabled", false);
-            $('#C27').attr("disabled", false);
-        }
-        if (aa.getDate() == 28) {
-            $('#C27').attr("disabled", false);
-            $('#C28').attr("disabled", false);
-        }
-        if (aa.getDate() == 29) {
-            $('#C28').attr("disabled", false);
-            $('#C29').attr("disabled", false);
-        }
-        if (aa.getDate() == 30) {
-            $('#C29').attr("disabled", false);
-            $('#C30').attr("disabled", false);
-        }
-        if (aa.getDate() == 31) {
-            $('#C31').attr("disabled", false);
-            $('#C30').attr("disabled", false);
-        }
-    }
-    function daysInMonth(month, year) {
-        return new Date(year, month + 1, 0).getDate();
-    }
     </script>
+    if (DateTime.Now.Day == 1)
+    {
+        <script>
+            function onlo1() {
+                var customVal = $("#md1").data("value");
+                var aa = new Date(customVal);
+                var md = daysInMonth(aa.getMonth(), aa.getFullYear());
+                if (date.now.date != aa.date) {
+                    if (md === 28) {
+                        if (aa.getDate() == 28) {
+                            $('#C28').attr("disabled", false);
+                            $('#C27').attr("disabled", true);
+                        }
+                    }
+                    if (md === 29) {
+                        if (aa.getDate() == 29) {
+                            $('#C29').attr("disabled", false);
+                            $('#C28').attr("disabled", true);
+                        }
+                    }
+                    if (md === 30) {
+                        if (aa.getDate() == 30) {
+                            $('#C30').attr("disabled", false);
+                            $('#C29').attr("disabled", true);
+                        }
+                    }
+                    if (md === 31) {
+                        if (aa.getDate() == 31) {
+                            $('#C31').attr("disabled", false);
+                            $('#C30').attr("disabled", true);
+                        }
+                    }
+                }
+                    
+            }
+        </script>
+    }
     @*
         <script>
             $("#edit").dialog({

@@ -9,16 +9,23 @@
     <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
     <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-    @*<script>
-        $(function() {
-            $("#datepicker").datepicker({
-                minDate: -1,
-                maxDate: 0,dateFormat: 'mm/dd/yy', changeMonth: true, changeYear: true
+    if (DateTime.Now.Day == 3)
+    {
+        <script>
+            $(function () {
+                $("#datepicker").datepicker({
+                    minDate: -1,
+                    maxDate: 0,
+                    dateFormat: 'mm/dd/yy',
+                    changeMonth: true,
+                    changeYear: true
+                });
             });
-        });
-    </script>*@
+        </script>
+    }
+    
     <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js">
-             </script>
+    </script>
     <script type="text/javascript">
         $(document).ready(function() {
             $('input#btnSubmit').on('click',
@@ -38,11 +45,13 @@
             -webkit-print-color-adjust: exact;
             border-collapse: collapse;
         }
+
         th {
             background-color: #2c6faa;
             color: white;
         }
-        #i,#datepicker, #ManPowerSupplier,#Project {
+
+        #i, #datepicker, #ManPowerSupplier, #Project {
             display: block !important;
             width: 100% !important;
             height: 34px !important;
@@ -64,48 +73,48 @@
             transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s, -webkit-box-shadow ease-in-out .15s !important;
         }
     </style>
-using (Html.BeginForm())
-{
-    <h2>add timesheet </h2>
-    @Html.AntiForgeryToken()
+    using (Html.BeginForm())
+    {
+        <h2>add timesheet </h2>
+        @Html.AntiForgeryToken()
 
-    <div class="form-horizontal">
-        <hr />
+        <div class="form-horizontal">
+            <hr/>
 
-        <div class="form-group">
-            <div class="row">
-                <div class="col-md-2">
-                    @*
+            <div class="form-group">
+                <div class="row">
+                    <div class="col-md-2">
+                        @*
                 @Html.EditorFor(model => model.TMonth, new { htmlAttributes = new { @class = "form-control" } })
 
                     *@
-                    <div class="row">
-                        <div class="col-md-4">
-                            @Html.Label("date:",new { @class = "control-label col-md-2" })
+                        <div class="row">
+                            <div class="col-md-4">
+                                @Html.Label("date:", new {@class = "control-label col-md-2"})
+                            </div>
+                            <div class="col-md-8">
+                                <input type="text" id="datepicker" name="TMonth" readonly="readonly" value="@DateTime.Now.ToString("d")"/>
+                            </div>
                         </div>
-                        <div class="col-md-8">
-                            <input type="text" id="datepicker" name="TMonth" readonly="readonly" value="@DateTime.Now.ToString("d")"/>
-                        </div>
-                    </div> 
-                    @Html.ValidationMessageFor(model => model.TMonth, "", new { @class = "text-danger" ,})
+                        @Html.ValidationMessageFor(model => model.TMonth, "", new {@class = "text-danger",})
+                    </div>
+                    @Html.LabelFor(model => model.ManPowerSupplier, htmlAttributes: new {@class = "control-label col-md-2"})
+                    <div class="col-md-2">
+                        @Html.DropDownList("ManPowerSupplier", null, new {htmlAttributes = new {@class = "form-control"}})
+                        @Html.ValidationMessageFor(model => model.ManPowerSupplier, "", new {@class = "text-danger"})
+                    </div>
+                    @Html.LabelFor(model => model.Project, htmlAttributes: new {@class = "control-label col-md-2"})
+                    <div class="col-md-3">
+                        @Html.DropDownList("Project", null, new {htmlAttributes = new {@class = "form-control"}})
+                        @Html.ValidationMessageFor(model => model.Project, "", new {@class = "text-danger"})
+                    </div>
+
                 </div>
-                @Html.LabelFor(model => model.ManPowerSupplier, htmlAttributes: new { @class = "control-label col-md-2"})
-                <div class="col-md-2">
-                    @Html.DropDownList("ManPowerSupplier", null, new { htmlAttributes = new { @class = "form-control"} })
-                    @Html.ValidationMessageFor(model => model.ManPowerSupplier, "", new { @class = "text-danger" })
+                <div class="row" align="center">
+                    <br/>
+                    <input type="submit" value="Create" class="btn btn-default"/>
                 </div>
-                @Html.LabelFor(model => model.Project, htmlAttributes: new { @class = "control-label col-md-2"})
-                <div class="col-md-3">
-                    @Html.DropDownList("Project", null, new { htmlAttributes = new { @class = "form-control" } })
-                    @Html.ValidationMessageFor(model => model.Project, "", new { @class = "text-danger" })
-                </div>
-                
-            </div>
-            <div class="row" align="center">
-                <br/>
-                <input type="submit" value="Create" class="btn btn-default"/>
-            </div>
-            @*
+                @*
             <div class="row">
                 @Html.LabelFor(model => model.Ref, htmlAttributes: new { @class = "control-label col-md-2" })
                 <div class="col-md-2">
@@ -124,13 +133,12 @@ using (Html.BeginForm())
                     @Html.ValidationMessageFor(model => model.Note, "", new { @class = "text-danger" })
                 </div>
             </div>*@
-            
-            <br />
-            <br />
-            <br />
-            @Html.ValidationSummary(false, string.Empty, new { @class = "text-danger", style = "font-size: 20px;" })
-        </div>
-    </div>
-}
-}
 
+                <br/>
+                <br/>
+                <br/>
+                @Html.ValidationSummary(false, string.Empty, new {@class = "text-danger", style = "font-size: 20px;"})
+            </div>
+        </div>
+    }
+}

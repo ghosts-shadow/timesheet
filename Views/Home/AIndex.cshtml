@@ -22,7 +22,7 @@
 
 @{
     <script>
-        $(function () {
+        $(function() {
             onlo();
             var aaq = $('#EmpID').val();
             if (aaq == "") {
@@ -39,28 +39,28 @@
 }
 @using (Html.BeginForm("AIndex", "Home"))
 {
-    <input type="hidden" id="md1" data-value="@ViewBag.mdate1" />
+    <input type="hidden" id="md1" data-value="@ViewBag.mdate1"/>
     @Html.AntiForgeryToken()
     <div class="row" onclick="total()">
-        @Html.LabelFor(model => model.attendance.EmpID, new { @class = "control-label col-md-2" })
+        @Html.LabelFor(model => model.attendance.EmpID, new {@class = "control-label col-md-2"})
         <div class="col-md-10" onclick="total()">
             @*
                 @Html.EditorFor(model => model.EmpID, new { htmlAttributes = new { @class = "form-control" } })*@
-            @Html.DropDownList("EmpID", null, "", new { @class = "form-control", id = "EmpID" })
-            @Html.DropDownList("pos", null, new { @class = "form-control", id = "pos1", style = "display:none" })
-            @Html.DropDownList("name", null, new { @class = "form-control", id = "name1", style = "display:none" })
-            @Html.ValidationMessageFor(model => model.attendance.EmpID, string.Empty, new { @class = "text-danger" })
+            @Html.DropDownList("EmpID", null, "", new {@class = "form-control", id = "EmpID"})
+            @Html.DropDownList("pos", null, new {@class = "form-control", id = "pos1", style = "display:none"})
+            @Html.DropDownList("name", null, new {@class = "form-control", id = "name1", style = "display:none"})
+            @Html.ValidationMessageFor(model => model.attendance.EmpID, string.Empty, new {@class = "text-danger"})
             <label id="pos2"></label>
             <label id="name2"></label>
         </div>
     </div>
-    <br />
+    <br/>
     <div id="create " onclick="total()">
         <div class="row">
-            <input type="text" value="@ViewBag.mdate" disabled="disabled" />
-            <input type="text" value="@ViewBag.mps" disabled="disabled" />
-            <input type="text" value="@ViewBag.pid" disabled="disabled" />
-            <input type="submit" value="submit entry" class="btn btn-default" name="action:AIndex" id="aaq1" />
+            <input type="text" value="@ViewBag.mdate" disabled="disabled"/>
+            <input type="text" value="@ViewBag.mps" disabled="disabled"/>
+            <input type="text" value="@ViewBag.pid" disabled="disabled"/>
+            <input type="submit" value="submit entry" class="btn btn-default" name="action:AIndex" id="aaq1"/>
         </div>
         <div class="form-horizontal" onclick="total()">
             <div class="form-group">
@@ -69,167 +69,167 @@
 
 
                     <div class="col-xs-1">
-                        @Html.LabelFor(model => model.attendance.C1, new { @class = "control-label col-md-2" })
-                        @Html.DropDownList("C1", null, new { @class = "form-control", id = "C1", name = "C1" })
-                        @Html.ValidationMessageFor(model => model.attendance.C1, string.Empty, new { @class = "text-danger" })
+                        @Html.LabelFor(model => model.attendance.C1, new {@class = "control-label col-md-2"})
+                        @Html.DropDownList("C1", null, new {@class = "form-control", id = "C1", name = "C1"})
+                        @Html.ValidationMessageFor(model => model.attendance.C1, string.Empty, new {@class = "text-danger"})
                     </div>
                     <div class="col-xs-1">
-                        @Html.LabelFor(model => model.attendance.C2, new { @class = "control-label col-md-2" })
-                        @Html.DropDownList("C2", null, new { @class = "form-control", id = "C2", name = "C2" })
-                        @Html.ValidationMessageFor(model => model.attendance.C2, string.Empty, new { @class = "text-danger" })
+                        @Html.LabelFor(model => model.attendance.C2, new {@class = "control-label col-md-2"})
+                        @Html.DropDownList("C2", null, new {@class = "form-control", id = "C2", name = "C2"})
+                        @Html.ValidationMessageFor(model => model.attendance.C2, string.Empty, new {@class = "text-danger"})
                     </div>
                     <div class="col-xs-1">
-                        @Html.LabelFor(model => model.attendance.C3, new { @class = "control-label col-md-2" })
-                        @Html.DropDownList("C3", null, new { @class = "form-control", id = "C3", name = "C3" })
-                        @Html.ValidationMessageFor(model => model.attendance.C3, string.Empty, new { @class = "text-danger" })
+                        @Html.LabelFor(model => model.attendance.C3, new {@class = "control-label col-md-2"})
+                        @Html.DropDownList("C3", null, new {@class = "form-control", id = "C3", name = "C3"})
+                        @Html.ValidationMessageFor(model => model.attendance.C3, string.Empty, new {@class = "text-danger"})
                     </div>
                     <div class="col-xs-1">
-                        @Html.LabelFor(model => model.attendance.C4, new { @class = "control-label col-md-2" })
-                        @Html.DropDownList("C4", null, new { @class = "form-control", id = "C4", name = "C4" })
-                        @Html.ValidationMessageFor(model => model.attendance.C4, string.Empty, new { @class = "text-danger" })
+                        @Html.LabelFor(model => model.attendance.C4, new {@class = "control-label col-md-2"})
+                        @Html.DropDownList("C4", null, new {@class = "form-control", id = "C4", name = "C4"})
+                        @Html.ValidationMessageFor(model => model.attendance.C4, string.Empty, new {@class = "text-danger"})
                     </div>
                     <div class="col-xs-1">
-                        @Html.LabelFor(model => model.attendance.C5, new { @class = "control-label col-md-2" })
-                        @Html.DropDownList("C5", null, new { @class = "form-control", id = "C5", name = "C5" })
-                        @Html.ValidationMessageFor(model => model.attendance.C5, string.Empty, new { @class = "text-danger" })
+                        @Html.LabelFor(model => model.attendance.C5, new {@class = "control-label col-md-2"})
+                        @Html.DropDownList("C5", null, new {@class = "form-control", id = "C5", name = "C5"})
+                        @Html.ValidationMessageFor(model => model.attendance.C5, string.Empty, new {@class = "text-danger"})
                     </div>
                     <div class="col-xs-1">
-                        @Html.LabelFor(model => model.attendance.C6, new { @class = "control-label col-md-2" })
-                        @Html.DropDownList("C6", null, new { @class = "form-control", id = "C6", name = "C6" })
-                        @Html.ValidationMessageFor(model => model.attendance.C6, string.Empty, new { @class = "text-danger" })
+                        @Html.LabelFor(model => model.attendance.C6, new {@class = "control-label col-md-2"})
+                        @Html.DropDownList("C6", null, new {@class = "form-control", id = "C6", name = "C6"})
+                        @Html.ValidationMessageFor(model => model.attendance.C6, string.Empty, new {@class = "text-danger"})
                     </div>
                     <div class="col-xs-1">
-                        @Html.LabelFor(model => model.attendance.C7, new { @class = "control-label col-md-2" })
-                        @Html.DropDownList("C7", null, new { @class = "form-control", id = "C7", name = "C7" })
-                        @Html.ValidationMessageFor(model => model.attendance.C7, string.Empty, new { @class = "text-danger" })
+                        @Html.LabelFor(model => model.attendance.C7, new {@class = "control-label col-md-2"})
+                        @Html.DropDownList("C7", null, new {@class = "form-control", id = "C7", name = "C7"})
+                        @Html.ValidationMessageFor(model => model.attendance.C7, string.Empty, new {@class = "text-danger"})
                     </div>
                     <div class="col-xs-1">
-                        @Html.LabelFor(model => model.attendance.C8, new { @class = "control-label col-md-2" })
-                        @Html.DropDownList("C8", null, new { @class = "form-control", id = "C8", name = "C8" })
-                        @Html.ValidationMessageFor(model => model.attendance.C8, string.Empty, new { @class = "text-danger" })
+                        @Html.LabelFor(model => model.attendance.C8, new {@class = "control-label col-md-2"})
+                        @Html.DropDownList("C8", null, new {@class = "form-control", id = "C8", name = "C8"})
+                        @Html.ValidationMessageFor(model => model.attendance.C8, string.Empty, new {@class = "text-danger"})
                     </div>
                     <div class="col-xs-1">
-                        @Html.LabelFor(model => model.attendance.C9, new { @class = "control-label col-md-2" })
-                        @Html.DropDownList("C9", null, new { @class = "form-control", id = "C9", name = "C9" })
-                        @Html.ValidationMessageFor(model => model.attendance.C9, string.Empty, new { @class = "text-danger" })
+                        @Html.LabelFor(model => model.attendance.C9, new {@class = "control-label col-md-2"})
+                        @Html.DropDownList("C9", null, new {@class = "form-control", id = "C9", name = "C9"})
+                        @Html.ValidationMessageFor(model => model.attendance.C9, string.Empty, new {@class = "text-danger"})
                     </div>
                     <div class="col-xs-1">
-                        @Html.LabelFor(model => model.attendance.C10, new { @class = "control-label col-md-2" })
-                        @Html.DropDownList("C10", null, new { @class = "form-control", id = "C10", name = "C10" })
-                        @Html.ValidationMessageFor(model => model.attendance.C10, string.Empty, new { @class = "text-danger" })
+                        @Html.LabelFor(model => model.attendance.C10, new {@class = "control-label col-md-2"})
+                        @Html.DropDownList("C10", null, new {@class = "form-control", id = "C10", name = "C10"})
+                        @Html.ValidationMessageFor(model => model.attendance.C10, string.Empty, new {@class = "text-danger"})
                     </div>
                     <div class="col-xs-1">
-                        @Html.LabelFor(model => model.attendance.C11, new { @class = "control-label col-md-2" })
-                        @Html.DropDownList("C11", null, new { @class = "form-control", id = "C11", name = "C11" })
-                        @Html.ValidationMessageFor(model => model.attendance.C11, string.Empty, new { @class = "text-danger" })
+                        @Html.LabelFor(model => model.attendance.C11, new {@class = "control-label col-md-2"})
+                        @Html.DropDownList("C11", null, new {@class = "form-control", id = "C11", name = "C11"})
+                        @Html.ValidationMessageFor(model => model.attendance.C11, string.Empty, new {@class = "text-danger"})
                     </div>
                     <div class="col-xs-1">
-                        @Html.LabelFor(model => model.attendance.C12, new { @class = "control-label col-md-2" })
-                        @Html.DropDownList("C12", null, new { @class = "form-control", id = "C12", name = "C12" })
-                        @Html.ValidationMessageFor(model => model.attendance.C12, string.Empty, new { @class = "text-danger" })
+                        @Html.LabelFor(model => model.attendance.C12, new {@class = "control-label col-md-2"})
+                        @Html.DropDownList("C12", null, new {@class = "form-control", id = "C12", name = "C12"})
+                        @Html.ValidationMessageFor(model => model.attendance.C12, string.Empty, new {@class = "text-danger"})
                     </div>
                     <div class="col-xs-1">
-                        @Html.LabelFor(model => model.attendance.C13, new { @class = "control-label col-md-2" })
-                        @Html.DropDownList("C13", null, new { @class = "form-control", id = "C13", name = "C13" })
-                        @Html.ValidationMessageFor(model => model.attendance.C13, string.Empty, new { @class = "text-danger" })
+                        @Html.LabelFor(model => model.attendance.C13, new {@class = "control-label col-md-2"})
+                        @Html.DropDownList("C13", null, new {@class = "form-control", id = "C13", name = "C13"})
+                        @Html.ValidationMessageFor(model => model.attendance.C13, string.Empty, new {@class = "text-danger"})
                     </div>
                     <div class="col-xs-1">
-                        @Html.LabelFor(model => model.attendance.C14, new { @class = "control-label col-md-2" })
-                        @Html.DropDownList("C14", null, new { @class = "form-control", id = "C14", name = "C14" })
-                        @Html.ValidationMessageFor(model => model.attendance.C14, string.Empty, new { @class = "text-danger" })
+                        @Html.LabelFor(model => model.attendance.C14, new {@class = "control-label col-md-2"})
+                        @Html.DropDownList("C14", null, new {@class = "form-control", id = "C14", name = "C14"})
+                        @Html.ValidationMessageFor(model => model.attendance.C14, string.Empty, new {@class = "text-danger"})
                     </div>
                     <div class="col-xs-1">
-                        @Html.LabelFor(model => model.attendance.C15, new { @class = "control-label col-md-2" })
-                        @Html.DropDownList("C15", null, new { @class = "form-control", id = "C15", name = "C15" })
-                        @Html.ValidationMessageFor(model => model.attendance.C15, string.Empty, new { @class = "text-danger" })
+                        @Html.LabelFor(model => model.attendance.C15, new {@class = "control-label col-md-2"})
+                        @Html.DropDownList("C15", null, new {@class = "form-control", id = "C15", name = "C15"})
+                        @Html.ValidationMessageFor(model => model.attendance.C15, string.Empty, new {@class = "text-danger"})
                     </div>
                     <div class="col-xs-1">
-                        @Html.LabelFor(model => model.attendance.C16, new { @class = "control-label col-md-2" })
-                        @Html.DropDownList("C16", null, new { @class = "form-control", id = "C16", name = "C16" })
-                        @Html.ValidationMessageFor(model => model.attendance.C16, string.Empty, new { @class = "text-danger" })
+                        @Html.LabelFor(model => model.attendance.C16, new {@class = "control-label col-md-2"})
+                        @Html.DropDownList("C16", null, new {@class = "form-control", id = "C16", name = "C16"})
+                        @Html.ValidationMessageFor(model => model.attendance.C16, string.Empty, new {@class = "text-danger"})
                     </div>
                     <div class="col-xs-1">
-                        @Html.LabelFor(model => model.attendance.C17, new { @class = "control-label col-md-2" })
-                        @Html.DropDownList("C17", null, new { @class = "form-control", id = "C17" })
-                        @Html.ValidationMessageFor(model => model.attendance.C17, string.Empty, new { @class = "text-danger", name = "C17" })
+                        @Html.LabelFor(model => model.attendance.C17, new {@class = "control-label col-md-2"})
+                        @Html.DropDownList("C17", null, new {@class = "form-control", id = "C17"})
+                        @Html.ValidationMessageFor(model => model.attendance.C17, string.Empty, new {@class = "text-danger", name = "C17"})
                     </div>
                     <div class="col-xs-1">
-                        @Html.LabelFor(model => model.attendance.C18, new { @class = "control-label col-md-2" })
-                        @Html.DropDownList("C18", null, new { @class = "form-control", id = "C18", name = "C18" })
-                        @Html.ValidationMessageFor(model => model.attendance.C18, string.Empty, new { @class = "text-danger" })
+                        @Html.LabelFor(model => model.attendance.C18, new {@class = "control-label col-md-2"})
+                        @Html.DropDownList("C18", null, new {@class = "form-control", id = "C18", name = "C18"})
+                        @Html.ValidationMessageFor(model => model.attendance.C18, string.Empty, new {@class = "text-danger"})
                     </div>
                     <div class="col-xs-1">
-                        @Html.LabelFor(model => model.attendance.C19, new { @class = "control-label col-md-2" })
-                        @Html.DropDownList("C19", null, new { @class = "form-control", id = "C19", name = "C19" })
-                        @Html.ValidationMessageFor(model => model.attendance.C19, string.Empty, new { @class = "text-danger" })
+                        @Html.LabelFor(model => model.attendance.C19, new {@class = "control-label col-md-2"})
+                        @Html.DropDownList("C19", null, new {@class = "form-control", id = "C19", name = "C19"})
+                        @Html.ValidationMessageFor(model => model.attendance.C19, string.Empty, new {@class = "text-danger"})
                     </div>
                     <div class="col-xs-1">
-                        @Html.LabelFor(model => model.attendance.C20, new { @class = "control-label col-md-2" })
-                        @Html.DropDownList("C20", null, new { @class = "form-control", id = "C20", name = "C20" })
-                        @Html.ValidationMessageFor(model => model.attendance.C20, string.Empty, new { @class = "text-danger" })
+                        @Html.LabelFor(model => model.attendance.C20, new {@class = "control-label col-md-2"})
+                        @Html.DropDownList("C20", null, new {@class = "form-control", id = "C20", name = "C20"})
+                        @Html.ValidationMessageFor(model => model.attendance.C20, string.Empty, new {@class = "text-danger"})
                     </div>
                     <div class="col-xs-1">
-                        @Html.LabelFor(model => model.attendance.C21, new { @class = "control-label col-md-2" })
-                        @Html.DropDownList("C21", null, new { @class = "form-control", id = "C21", name = "C21" })
-                        @Html.ValidationMessageFor(model => model.attendance.C21, string.Empty, new { @class = "text-danger" })
+                        @Html.LabelFor(model => model.attendance.C21, new {@class = "control-label col-md-2"})
+                        @Html.DropDownList("C21", null, new {@class = "form-control", id = "C21", name = "C21"})
+                        @Html.ValidationMessageFor(model => model.attendance.C21, string.Empty, new {@class = "text-danger"})
                     </div>
                     <div class="col-xs-1">
-                        @Html.LabelFor(model => model.attendance.C22, new { @class = "control-label col-md-2" })
-                        @Html.DropDownList("C22", null, new { @class = "form-control", id = "C22", name = "C22" })
-                        @Html.ValidationMessageFor(model => model.attendance.C22, string.Empty, new { @class = "text-danger" })
+                        @Html.LabelFor(model => model.attendance.C22, new {@class = "control-label col-md-2"})
+                        @Html.DropDownList("C22", null, new {@class = "form-control", id = "C22", name = "C22"})
+                        @Html.ValidationMessageFor(model => model.attendance.C22, string.Empty, new {@class = "text-danger"})
                     </div>
                     <div class="col-xs-1">
-                        @Html.LabelFor(model => model.attendance.C23, new { @class = "control-label col-md-2" })
-                        @Html.DropDownList("C23", null, new { @class = "form-control", id = "C23", name = "C23" })
-                        @Html.ValidationMessageFor(model => model.attendance.C23, string.Empty, new { @class = "text-danger" })
+                        @Html.LabelFor(model => model.attendance.C23, new {@class = "control-label col-md-2"})
+                        @Html.DropDownList("C23", null, new {@class = "form-control", id = "C23", name = "C23"})
+                        @Html.ValidationMessageFor(model => model.attendance.C23, string.Empty, new {@class = "text-danger"})
                     </div>
                     <div class="col-xs-1">
-                        @Html.LabelFor(model => model.attendance.C24, new { @class = "control-label col-md-2" })
-                        @Html.DropDownList("C24", null, new { @class = "form-control", id = "C24", name = "C24" })
-                        @Html.ValidationMessageFor(model => model.attendance.C24, string.Empty, new { @class = "text-danger" })
+                        @Html.LabelFor(model => model.attendance.C24, new {@class = "control-label col-md-2"})
+                        @Html.DropDownList("C24", null, new {@class = "form-control", id = "C24", name = "C24"})
+                        @Html.ValidationMessageFor(model => model.attendance.C24, string.Empty, new {@class = "text-danger"})
                     </div>
                     <div class="col-xs-1">
-                        @Html.LabelFor(model => model.attendance.C25, new { @class = "control-label col-md-2" })
-                        @Html.DropDownList("C25", null, new { @class = "form-control", id = "C25", name = "C25" })
-                        @Html.ValidationMessageFor(model => model.attendance.C25, string.Empty, new { @class = "text-danger" })
+                        @Html.LabelFor(model => model.attendance.C25, new {@class = "control-label col-md-2"})
+                        @Html.DropDownList("C25", null, new {@class = "form-control", id = "C25", name = "C25"})
+                        @Html.ValidationMessageFor(model => model.attendance.C25, string.Empty, new {@class = "text-danger"})
                     </div>
                     <div class="col-xs-1">
-                        @Html.LabelFor(model => model.attendance.C26, new { @class = "control-label col-md-2" })
-                        @Html.DropDownList("C26", null, new { @class = "form-control", id = "C26", name = "C26" })
-                        @Html.ValidationMessageFor(model => model.attendance.C26, string.Empty, new { @class = "text-danger" })
+                        @Html.LabelFor(model => model.attendance.C26, new {@class = "control-label col-md-2"})
+                        @Html.DropDownList("C26", null, new {@class = "form-control", id = "C26", name = "C26"})
+                        @Html.ValidationMessageFor(model => model.attendance.C26, string.Empty, new {@class = "text-danger"})
                     </div>
                     <div class="col-xs-1">
-                        @Html.LabelFor(model => model.attendance.C27, new { @class = "control-label col-md-2" })
-                        @Html.DropDownList("C27", null, new { @class = "form-control", id = "C27", name = "C27" })
-                        @Html.ValidationMessageFor(model => model.attendance.C27, string.Empty, new { @class = "text-danger" })
+                        @Html.LabelFor(model => model.attendance.C27, new {@class = "control-label col-md-2"})
+                        @Html.DropDownList("C27", null, new {@class = "form-control", id = "C27", name = "C27"})
+                        @Html.ValidationMessageFor(model => model.attendance.C27, string.Empty, new {@class = "text-danger"})
                     </div>
                     <div class="col-xs-1">
-                        @Html.LabelFor(model => model.attendance.C28, new { @class = "control-label col-md-2" })
-                        @Html.DropDownList("C28", null, new { @class = "form-control", id = "C28", name = "C28" })
-                        @Html.ValidationMessageFor(model => model.attendance.C28, string.Empty, new { @class = "text-danger" })
+                        @Html.LabelFor(model => model.attendance.C28, new {@class = "control-label col-md-2"})
+                        @Html.DropDownList("C28", null, new {@class = "form-control", id = "C28", name = "C28"})
+                        @Html.ValidationMessageFor(model => model.attendance.C28, string.Empty, new {@class = "text-danger"})
                     </div>
                     <div class="col-xs-1" id="ex1">
-                        @Html.LabelFor(model => model.attendance.C29, new { @class = "control-label col-md-2" })
-                        @Html.DropDownList("C29", null, new { @class = "form-control", id = "C29", name = "C29" })
-                        @Html.ValidationMessageFor(model => model.attendance.C29, string.Empty, new { @class = "text-danger" })
+                        @Html.LabelFor(model => model.attendance.C29, new {@class = "control-label col-md-2"})
+                        @Html.DropDownList("C29", null, new {@class = "form-control", id = "C29", name = "C29"})
+                        @Html.ValidationMessageFor(model => model.attendance.C29, string.Empty, new {@class = "text-danger"})
                     </div>
                     <div class="col-xs-1" id="ex2">
-                        @Html.LabelFor(model => model.attendance.C30, new { @class = "control-label col-md-2" })
-                        @Html.DropDownList("C30", null, new { @class = "form-control", id = "C30", name = "C30" })
-                        @Html.ValidationMessageFor(model => model.attendance.C30, string.Empty, new { @class = "text-danger" })
+                        @Html.LabelFor(model => model.attendance.C30, new {@class = "control-label col-md-2"})
+                        @Html.DropDownList("C30", null, new {@class = "form-control", id = "C30", name = "C30"})
+                        @Html.ValidationMessageFor(model => model.attendance.C30, string.Empty, new {@class = "text-danger"})
                     </div>
                     <div class="col-xs-1" id="ex3">
-                        @Html.LabelFor(model => model.attendance.C31, new { @class = "control-label col-md-2" })
-                        @Html.DropDownList("C31", null, new { @class = "form-control", id = "C31", name = "C31" })
-                        @Html.ValidationMessageFor(model => model.attendance.C31, string.Empty, new { @class = "text-danger" })
+                        @Html.LabelFor(model => model.attendance.C31, new {@class = "control-label col-md-2"})
+                        @Html.DropDownList("C31", null, new {@class = "form-control", id = "C31", name = "C31"})
+                        @Html.ValidationMessageFor(model => model.attendance.C31, string.Empty, new {@class = "text-danger"})
                     </div>
                     <div class="col-xs-1" style="display: none">
-                        @Html.LabelFor(model => model.attendance.TotalHours, new { @class = "control-label col-md-2" })
+                        @Html.LabelFor(model => model.attendance.TotalHours, new {@class = "control-label col-md-2"})
                         @*
                             @Html.EditorFor(model => model.TotalHours, new { htmlAttributes = new { @class = "form-control" } })*@
-                        <input type="text" id="TotalHours" name="TotalHours1" disabled="true" />
-                        <input type="text" id="TotalHours2" name="TotalHours" style="display: none" />
-                        @Html.ValidationMessageFor(model => model.attendance.TotalHours, string.Empty, new { @class = "text-danger" })
+                        <input type="text" id="TotalHours" name="TotalHours1" disabled="true"/>
+                        <input type="text" id="TotalHours2" name="TotalHours" style="display: none"/>
+                        @Html.ValidationMessageFor(model => model.attendance.TotalHours, string.Empty, new {@class = "text-danger"})
                     </div>@*
 
                                                 @*
@@ -238,186 +238,185 @@
                     <div class="col-xs-1" style="display: none">
                         @*
                             @Html.EditorFor(model => model.ManPowerSupply, new { htmlAttributes = new { @class = "form-control" } })*@
-                        <input type="text" id="ManPowerSupply" value="@ViewBag.mspID" style="display: none" name="ManPowerSupply" />
-                        @Html.ValidationMessageFor(model => model.attendance.ManPowerSupply, string.Empty, new { @class = "text-danger" })
+                        <input type="text" id="ManPowerSupply" value="@ViewBag.mspID" style="display: none" name="ManPowerSupply"/>
+                        @Html.ValidationMessageFor(model => model.attendance.ManPowerSupply, string.Empty, new {@class = "text-danger"})
                     </div>
                 </div>
             </div>
             <div class="form-group" style="display: none" onclick="total()">
-                @Html.LabelFor(model => model.attendance.SubMain, new { @class = "control-label col-md-2" })
+                @Html.LabelFor(model => model.attendance.SubMain, new {@class = "control-label col-md-2"})
                 <div class="col-xs-1" style="display: none">
                     @*
                         @Html.EditorFor(model => model.SubMain, new { htmlAttributes = new { @class = "form-control" } })
                     *@
-                    <input type="text" id="SubMain" value="@ViewBag.mid" name="SubMain" />
-                    @Html.ValidationMessageFor(model => model.attendance.SubMain, string.Empty, new { @class = "text-danger" })
+                    <input type="text" id="SubMain" value="@ViewBag.mid" name="SubMain"/>
+                    @Html.ValidationMessageFor(model => model.attendance.SubMain, string.Empty, new {@class = "text-danger"})
                 </div>
             </div>
         </div>
     </div>
     <div id="read" onclick="total()">
-        <script>
-            function search() {
-                $("#my tr").filter(function () {
-                    $(this).toggle($(this).text().toLowerCase().indexOf($("#search").val()) > -1);
-                });
-            }
-
-        </script>
-        <script>
-            $(document).ready(function () {
-                $("#search").on("keyup",
-                    function () {
-                        var value = $(this).val().toLowerCase();
-                        $("#mytable tr").filter(function () {
-                            $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1);
-                        });
-                    });
+    <script>
+        function search() {
+            $("#my tr").filter(function() {
+                $(this).toggle($(this).text().toLowerCase().indexOf($("#search").val()) > -1);
             });
-        </script>
-        <p>@ViewBag.exist</p>
-        @{
-            var ass = new DateTime();
-            ass =Convert.ToDateTime(ViewBag.mdate1);
-            ass.AddDays(1);
         }
-        @Html.DropDownList("empno", null, " ", new { @class = "form-control", id = "empno", style = "display:none" })
-        <input type="submit" value="search" name="action:AIndex1" class="btn btn-default" id="aaq2" />
 
-        <table class="table">
-            <tr>
-                @if (User.Identity.Name == "sdiniz")
+    </script>
+    <script>
+        $(document).ready(function() {
+            $("#search").on("keyup",
+                function() {
+                    var value = $(this).val().toLowerCase();
+                    $("#mytable tr").filter(function() {
+                        $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1);
+                    });
+                });
+        });
+    </script>
+    <p>@ViewBag.exist</p>
+    @{
+        var ass = new DateTime();
+        ass = Convert.ToDateTime(ViewBag.mdate1);
+        ass.AddDays(1);
+    }
+    @Html.DropDownList("empno", null, " ", new {@class = "form-control", id = "empno", style = "display:none"})
+    <input type="submit" value="search" name="action:AIndex1" class="btn btn-default" id="aaq2"/>
+
+    <table class="table">
+    <tr>
+        @if (User.Identity.Name == "sdiniz")
+        {
+            <th></th>
+            <th>
+                @Html.DisplayNameFor(model => model.attendance.SubMain)
+            </th>
+        }
+        <th>#SN</th>
+        <th>
+            @Html.DisplayNameFor(model => model.attendance.LabourMaster.EMPNO)
+        </th>
+        <th id="d1">
+            @Html.DisplayNameFor(model => model.attendance.C1)
+        </th>
+        <th id="d2">
+            @Html.DisplayNameFor(model => model.attendance.C2)
+        </th>
+        <th id="d3">
+            @Html.DisplayNameFor(model => model.attendance.C3)
+        </th>
+        <th id="d4">
+            @Html.DisplayNameFor(model => model.attendance.C4)
+        </th>
+        <th id="d5">
+            @Html.DisplayNameFor(model => model.attendance.C5)
+        </th>
+        <th id="d6">
+            @Html.DisplayNameFor(model => model.attendance.C6)
+        </th>
+        <th id="d7">
+            @Html.DisplayNameFor(model => model.attendance.C7)
+        </th>
+        <th id="d8">
+            @Html.DisplayNameFor(model => model.attendance.C8)
+        </th>
+        <th id="d9">
+            @Html.DisplayNameFor(model => model.attendance.C9)
+        </th>
+        <th id="d10">
+            @Html.DisplayNameFor(model => model.attendance.C10)
+        </th>
+        <th id="d11">
+            @Html.DisplayNameFor(model => model.attendance.C11)
+        </th>
+        <th id="d12">
+            @Html.DisplayNameFor(model => model.attendance.C12)
+        </th>
+        <th id="d13">
+            @Html.DisplayNameFor(model => model.attendance.C13)
+        </th>
+        <th id="d14">
+            @Html.DisplayNameFor(model => model.attendance.C14)
+        </th>
+        <th id="d15">
+            @Html.DisplayNameFor(model => model.attendance.C15)
+        </th>
+        <th id="d16">
+            @Html.DisplayNameFor(model => model.attendance.C16)
+        </th>
+        <th id="d17">
+            @Html.DisplayNameFor(model => model.attendance.C17)
+        </th>
+        <th id="d18">
+            @Html.DisplayNameFor(model => model.attendance.C18)
+        </th>
+        <th id="d19">
+            @Html.DisplayNameFor(model => model.attendance.C19)
+        </th>
+        <th id="d20">
+            @Html.DisplayNameFor(model => model.attendance.C20)
+        </th>
+        <th id="d21">
+            @Html.DisplayNameFor(model => model.attendance.C21)
+        </th>
+        <th id="22">
+            @Html.DisplayNameFor(model => model.attendance.C22)
+        </th>
+        <th id="d23">
+            @Html.DisplayNameFor(model => model.attendance.C23)
+        </th>
+        <th id="d24">
+            @Html.DisplayNameFor(model => model.attendance.C24)
+        </th>
+        <th id="d25">
+            @Html.DisplayNameFor(model => model.attendance.C25)
+        </th>
+        <th id="d26">
+            @Html.DisplayNameFor(model => model.attendance.C26)
+        </th>
+        <th id="d27">
+            @Html.DisplayNameFor(model => model.attendance.C27)
+        </th>
+        <th id="d28">
+            @Html.DisplayNameFor(model => model.attendance.C28)
+        </th>
+        <th id="ex1_2">
+            @Html.DisplayNameFor(model => model.attendance.C29)
+        </th>
+        <th id="ex2_2">
+            @Html.DisplayNameFor(model => model.attendance.C30)
+        </th>
+        <th id="ex3_3">
+            @Html.DisplayNameFor(model => model.attendance.C31)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.attendance.TotalHours)
+        </th>
+    </tr>
+    <tbody id="mytable">
+    @{
+        var i = 0;
+    }
+    @foreach (var item in Model.Attendancecollection)
+    {
+        ae++;
+        <tr>
+            @{
+                if (User.Identity.Name == "sdiniz")
                 {
-                    <th></th>
-                    <th>
-                        @Html.DisplayNameFor(model => model.attendance.SubMain)
-                    </th>
+                    <td>
+                        @Html.ActionLink("Edit", "AEdit", new {id = item.ID}) |
+                        @Html.ActionLink("delete", "Delete", new {id = item.ID})
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.SubMain)
+                    </td>
                 }
-                <th>#SN</th>
-                <th>
-                    @Html.DisplayNameFor(model => model.attendance.LabourMaster.EMPNO)
-                </th>
-                <th id="d1">
-                    @Html.DisplayNameFor(model => model.attendance.C1)
-                </th>
-                <th id="d2">
-                    @Html.DisplayNameFor(model => model.attendance.C2)
-                </th>
-                <th id="d3">
-                    @Html.DisplayNameFor(model => model.attendance.C3)
-                </th>
-                <th id="d4">
-                    @Html.DisplayNameFor(model => model.attendance.C4)
-                </th>
-                <th id="d5">
-                    @Html.DisplayNameFor(model => model.attendance.C5)
-                </th>
-                <th id="d6">
-                    @Html.DisplayNameFor(model => model.attendance.C6)
-                </th>
-                <th id="d7">
-                    @Html.DisplayNameFor(model => model.attendance.C7)
-                </th>
-                <th id="d8">
-                    @Html.DisplayNameFor(model => model.attendance.C8)
-                </th>
-                <th id="d9">
-                    @Html.DisplayNameFor(model => model.attendance.C9)
-                </th>
-                <th id="d10">
-                    @Html.DisplayNameFor(model => model.attendance.C10)
-                </th>
-                <th id="d11">
-                    @Html.DisplayNameFor(model => model.attendance.C11)
-                </th>
-                <th id="d12">
-                    @Html.DisplayNameFor(model => model.attendance.C12)
-                </th>
-                <th id="d13">
-                    @Html.DisplayNameFor(model => model.attendance.C13)
-                </th>
-                <th id="d14">
-                    @Html.DisplayNameFor(model => model.attendance.C14)
-                </th>
-                <th id="d15">
-                    @Html.DisplayNameFor(model => model.attendance.C15)
-                </th>
-                <th id="d16">
-                    @Html.DisplayNameFor(model => model.attendance.C16)
-                </th>
-                <th id="d17">
-                    @Html.DisplayNameFor(model => model.attendance.C17)
-                </th>
-                <th id="d18">
-                    @Html.DisplayNameFor(model => model.attendance.C18)
-                </th>
-                <th id="d19">
-                    @Html.DisplayNameFor(model => model.attendance.C19)
-                </th>
-                <th id="d20">
-                    @Html.DisplayNameFor(model => model.attendance.C20)
-                </th>
-                <th id="d21">
-                    @Html.DisplayNameFor(model => model.attendance.C21)
-                </th>
-                <th id="22">
-                    @Html.DisplayNameFor(model => model.attendance.C22)
-                </th>
-                <th id="d23">
-                    @Html.DisplayNameFor(model => model.attendance.C23)
-                </th>
-                <th id="d24">
-                    @Html.DisplayNameFor(model => model.attendance.C24)
-                </th>
-                <th id="d25">
-                    @Html.DisplayNameFor(model => model.attendance.C25)
-                </th>
-                <th id="d26">
-                    @Html.DisplayNameFor(model => model.attendance.C26)
-                </th>
-                <th id="d27">
-                    @Html.DisplayNameFor(model => model.attendance.C27)
-                </th>
-                <th id="d28">
-                    @Html.DisplayNameFor(model => model.attendance.C28)
-                </th>
-                <th id="ex1_2">
-                    @Html.DisplayNameFor(model => model.attendance.C29)
-                </th>
-                <th id="ex2_2">
-                    @Html.DisplayNameFor(model => model.attendance.C30)
-                </th>
-                <th id="ex3_3">
-                    @Html.DisplayNameFor(model => model.attendance.C31)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.attendance.TotalHours)
-                </th>
-            </tr>
-        <tbody id="mytable">
-        @{
-            var i = 0;
-        }
-        @foreach (var item in Model.Attendancecollection)
-        {  
-            ae++;
-            <tr>
+            }
+            <td>
                 @{
-                    if (User.Identity.Name == "sdiniz")
-                    {
-                        <td>
-                            @Html.ActionLink("Edit", "AEdit", new { id = item.ID }) |
-                            @Html.ActionLink("delete", "Delete", new { id = item.ID })
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.SubMain)
-                        </td>
-
-                    }
-                }
-                <td>
-                    @{
-                        i++;
+                    i++;
                 }
                 @i
             </td>
@@ -520,264 +519,303 @@
             <td>
                 @Html.DisplayFor(modelItem => item.TotalHours)
             </td>
-            </tr>
-        }
-        </tbody>
-        </table>
+        </tr>
+    }
+    </tbody>
+    </table>
     </div>
 
     <script>
-    function GetAll(date) {
+        function GetAll(date) {
 
-        var month = date.getMonth();
-        var lastDayOfMonth = new Date(date.getFullYear(), date.getMonth() + 1, 0);
-        var lastDay = lastDayOfMonth.getDate();
-        var array = []; //dd/mm/yy
-        for (var i = 1; i <= lastDay; i++) {
+            var month = date.getMonth();
+            var lastDayOfMonth = new Date(date.getFullYear(), date.getMonth() + 1, 0);
+            var lastDay = lastDayOfMonth.getDate();
+            var array = []; //dd/mm/yy
+            for (var i = 1; i <= lastDay; i++) {
 
-            var temp = new Date(date.getFullYear(), month, i);
-            var day = temp.getDay();
-            if (day == 5) // Thursday
-            {
+                var temp = new Date(date.getFullYear(), month, i);
+                var day = temp.getDay();
+                if (day == 5) // Thursday
+                {
 
-                var dd = temp.getDate();
-                var mm = temp.getMonth() + 1;
-                var mm0 = ('0' + mm.toString());
-                mm0 = mm0.length == 3 ? mm0.substring(1, 3) : mm0;
+                    var dd = temp.getDate();
+                    var mm = temp.getMonth() + 1;
+                    var mm0 = ('0' + mm.toString());
+                    mm0 = mm0.length == 3 ? mm0.substring(1, 3) : mm0;
 
-                var dd0 = ('0' + dd.toString());
-                dd0 = dd0.length == 3 ? dd0.substring(1, 3) : dd0;
+                    var dd0 = ('0' + dd.toString());
+                    dd0 = dd0.length == 3 ? dd0.substring(1, 3) : dd0;
 
 
-                var yyyy = temp.getFullYear();
-                array.push(dd);
-            }
-        }
-        return array;
-    }
-
-    function total() {
-        $('#empno').attr("disabled", false);
-        $('#pos1').attr("disabled", false);
-        $('#name1').attr("disabled", false);
-        var aaq = $('#EmpID').val();
-        if (aaq == "") {
-            $("#aaq1").prop('disabled', true);
-            $("#aaq2").prop('disabled', true);
-        } else {
-            $("#aaq1").prop('disabled', false);
-            $("#aaq2").prop('disabled', false);
-        }
-        $('#empno').val(aaq);
-        $('#pos1').val(aaq);
-        $('#name1').val(aaq);
-        $('#pos2').text("Position :"+$('#pos1 option:selected').text());
-        $('#name2').text(", name :"+$('#name1 option:selected').text());
-        onlo();
-    }
-
-    function onlo() {
-
-        $('select').attr("disabled", true);
-        $('#EmpID').attr("disabled", false);
-        var customVal = $("#md1").data("value");
-        var aa = new Date(customVal);
-        var fd = GetAll(aa);
-        for (var x in fd) {
-            $('#C' + fd[x]).css("background-color", "red");
-            $('#C' + fd[x]).css("color", "white");
-            $('#d' + fd[x]).css("background-color", "red");
-            $('#d' + fd[x]).css("color", "white");
-            for (var l = 0; l <=@ae; l++) {
-                $('#d' + fd[x] + "_1" + "_" + l).css("background-color", "red");
-                $('#d' + fd[x] + "_1" + "_" + l).css("color", "white");
-            }
-            if (fd[x] == "29") {
-                for (var k = 0; k <= @ae; k++) {
-                    $("#ex1_1_" + k).css("background-color", "red");
-                    $("#ex1_1_" + k).css("color", "white");
+                    var yyyy = temp.getFullYear();
+                    array.push(dd);
                 }
-                $("#ex1_2").css("background-color", "red");
-                $("#ex1_2").css("color", "white");
             }
-            if (fd[x] == "30") {
-                for (var h = 0; h <= @ae; h++) {
-                    $("#ex2_1_" + h).css("background-color", "red");
-                    $("#ex2_1_" +h).css("color", "white");
+            return array;
+        }
+
+        function total() {
+            $('#empno').attr("disabled", false);
+            $('#pos1').attr("disabled", false);
+            $('#name1').attr("disabled", false);
+            var aaq = $('#EmpID').val();
+            if (aaq == "") {
+                $("#aaq1").prop('disabled', true);
+                $("#aaq2").prop('disabled', true);
+            } else {
+                $("#aaq1").prop('disabled', false);
+                $("#aaq2").prop('disabled', false);
+            }
+            $('#empno').val(aaq);
+            $('#pos1').val(aaq);
+            $('#name1').val(aaq);
+            $('#pos2').text("Position :" + $('#pos1 option:selected').text());
+            $('#name2').text(", name :" + $('#name1 option:selected').text());
+            onlo();
+        }
+
+        function onlo() {
+
+            $('select').attr("disabled", true);
+            $('#EmpID').attr("disabled", false);
+            var customVal = $("#md1").data("value");
+            var aa = new Date(customVal);
+            var fd = GetAll(aa);
+            for (var x in fd) {
+                $('#C' + fd[x]).css("background-color", "red");
+                $('#C' + fd[x]).css("color", "white");
+                $('#d' + fd[x]).css("background-color", "red");
+                $('#d' + fd[x]).css("color", "white");
+                for (var l = 0; l <= @ae; l++) {
+                    $('#d' + fd[x] + "_1" + "_" + l).css("background-color", "red");
+                    $('#d' + fd[x] + "_1" + "_" + l).css("color", "white");
                 }
-                $("#ex2_2").css("background-color", "red");
-                $("#ex2_2").css("color", "white");
-            }
-            if (fd[x] == "31") {
-                for (var g = 0; g <= @ae; g++) {
-                    $("#ex3_1_" +g).css("background-color", "red");
-                    $("#ex3_1_" +g).css("color", "white");
+                if (fd[x] == "29") {
+                    for (var k = 0; k <= @ae; k++) {
+                        $("#ex1_1_" + k).css("background-color", "red");
+                        $("#ex1_1_" + k).css("color", "white");
+                    }
+                    $("#ex1_2").css("background-color", "red");
+                    $("#ex1_2").css("color", "white");
                 }
-                $("#ex3_3").css("background-color", "red");
-                $("#ex3_3").css("color", "white");
+                if (fd[x] == "30") {
+                    for (var h = 0; h <= @ae; h++) {
+                        $("#ex2_1_" + h).css("background-color", "red");
+                        $("#ex2_1_" + h).css("color", "white");
+                    }
+                    $("#ex2_2").css("background-color", "red");
+                    $("#ex2_2").css("color", "white");
+                }
+                if (fd[x] == "31") {
+                    for (var g = 0; g <= @ae; g++) {
+                        $("#ex3_1_" + g).css("background-color", "red");
+                        $("#ex3_1_" + g).css("color", "white");
+                    }
+                    $("#ex3_3").css("background-color", "red");
+                    $("#ex3_3").css("color", "white");
+                }
             }
-        }
-        var md = daysInMonth(aa.getMonth(), aa.getFullYear());
-        if (md == 28) {
-            $('#ex1').hide();
-            $('#ex2').hide();
-            $('#ex3').hide();
-            for (var f = 0; f <= @ae; f++) {
-                $('#ex1_1_' + f).hide();
-                $('#ex2_1_' + f).hide();
-                $('#ex3_1_' + f).hide();
+            var md = daysInMonth(aa.getMonth(), aa.getFullYear());
+            if (md == 28) {
+                $('#ex1').hide();
+                $('#ex2').hide();
+                $('#ex3').hide();
+                for (var f = 0; f <= @ae; f++) {
+                    $('#ex1_1_' + f).hide();
+                    $('#ex2_1_' + f).hide();
+                    $('#ex3_1_' + f).hide();
+                }
+                $('#ex1_2').hide();
+                $('#ex2_2').hide();
+                $('#ex3_3').hide();
             }
-            $('#ex1_2').hide();
-            $('#ex2_2').hide();
-            $('#ex3_3').hide();
-        }
-        if (md == 29) {
-            $('#ex2').hide();
-            $('#ex3').hide();
-            for (var d = 0; d <= @ae; d++) {
-                $('#ex2_1_' + d).hide();
-                $('#ex3_1_' + d).hide();
+            if (md == 29) {
+                $('#ex2').hide();
+                $('#ex3').hide();
+                for (var d = 0; d <= @ae; d++) {
+                    $('#ex2_1_' + d).hide();
+                    $('#ex3_1_' + d).hide();
+                }
+                $('#ex2_2').hide();
+                $('#ex3_3').hide();
             }
-            $('#ex2_2').hide();
-            $('#ex3_3').hide();
-        }
-        if (md == 30) {
-            $('#ex3').hide();
-            for (var i = 0; i <= @ae; i++) {
-                $('#ex3_1_' + i).hide();
+            if (md == 30) {
+                $('#ex3').hide();
+                for (var i = 0; i <= @ae; i++) {
+                    $('#ex3_1_' + i).hide();
+                }
+                $('#ex3_3').hide();
             }
-            $('#ex3_3').hide();
+            //alert("no of days = " + md + " month = " + aa.getMonth() + " year = " + aa.getFullYear());
+            if (aa.getDate() == 1) {
+                $('#C1').attr("disabled", false);
+            }
+            if (aa.getDate() == 2) {
+                $('#C1').attr("disabled", false);
+                $('#C2').attr("disabled", false);
+            }
+            if (aa.getDate() == 3) {
+                $('#C3').attr("disabled", false);
+                $('#C2').attr("disabled", false);
+            }
+            if (aa.getDate() == 4) {
+                $('#C3').attr("disabled", false);
+                $('#C4').attr("disabled", false);
+            }
+            if (aa.getDate() == 5) {
+                $('#C4').attr("disabled", false);
+                $('#C5').attr("disabled", false);
+            }
+            if (aa.getDate() == 6) {
+                $('#C5').attr("disabled", false);
+                $('#C6').attr("disabled", false);
+            }
+            if (aa.getDate() == 7) {
+                $('#C6').attr("disabled", false);
+                $('#C7').attr("disabled", false);
+            }
+            if (aa.getDate() == 8) {
+                $('#C7').attr("disabled", false);
+                $('#C8').attr("disabled", false);
+            }
+            if (aa.getDate() == 9) {
+                $('#C8').attr("disabled", false);
+                $('#C9').attr("disabled", false);
+            }
+            if (aa.getDate() == 10) {
+                $('#C9').attr("disabled", false);
+                $('#C10').attr("disabled", false);
+            }
+            if (aa.getDate() == 11) {
+                $('#C10').attr("disabled", false);
+                $('#C11').attr("disabled", false);
+            }
+            if (aa.getDate() == 12) {
+                $('#C11').attr("disabled", false);
+                $('#C12').attr("disabled", false);
+            }
+            if (aa.getDate() == 13) {
+                $('#C13').attr("disabled", false);
+                $('#C12').attr("disabled", false);
+            }
+            if (aa.getDate() == 14) {
+                $('#C13').attr("disabled", false);
+                $('#C14').attr("disabled", false);
+            }
+            if (aa.getDate() == 15) {
+                $('#C14').attr("disabled", false);
+                $('#C15').attr("disabled", false);
+            }
+            if (aa.getDate() == 16) {
+                $('#C15').attr("disabled", false);
+                $('#C16').attr("disabled", false);
+            }
+            if (aa.getDate() == 17) {
+                $('#C16').attr("disabled", false);
+                $('#C17').attr("disabled", false);
+            }
+            if (aa.getDate() == 18) {
+                $('#C17').attr("disabled", false);
+                $('#C18').attr("disabled", false);
+            }
+            if (aa.getDate() == 19) {
+                $('#C18').attr("disabled", false);
+                $('#C19').attr("disabled", false);
+            }
+            if (aa.getDate() == 20) {
+                $('#C19').attr("disabled", false);
+                $('#C20').attr("disabled", false);
+            }
+            if (aa.getDate() == 21) {
+                $('#C19').attr("disabled", false);
+                $('#C20').attr("disabled", false);
+            }
+            if (aa.getDate() == 22) {
+                $('#C21').attr("disabled", false);
+                $('#C22').attr("disabled", false);
+            }
+            if (aa.getDate() == 23) {
+                $('#C23').attr("disabled", false);
+                $('#C22').attr("disabled", false);
+            }
+            if (aa.getDate() == 24) {
+                $('#C23').attr("disabled", false);
+                $('#c24').attr("disabled", false);
+            }
+            if (aa.getDate() == 25) {
+                $('#C24').attr("disabled", false);
+                $('#C25').attr("disabled", false);
+            }
+            if (aa.getDate() == 26) {
+                $('#C25').attr("disabled", false);
+                $('#C26').attr("disabled", false);
+            }
+            if (aa.getDate() == 27) {
+                $('#C26').attr("disabled", false);
+                $('#C27').attr("disabled", false);
+            }
+            if (aa.getDate() == 28) {
+                $('#C27').attr("disabled", false);
+                $('#C28').attr("disabled", false);
+            }
+            if (aa.getDate() == 29) {
+                $('#C28').attr("disabled", false);
+                $('#C29').attr("disabled", false);
+            }
+            if (aa.getDate() == 30) {
+                $('#C29').attr("disabled", false);
+                $('#C30').attr("disabled", false);
+            }
+            if (aa.getDate() == 31) {
+                $('#C31').attr("disabled", false);
+                $('#C30').attr("disabled", false);
+            }
+            onlo1();
         }
-        //alert("no of days = " + md + " month = " + aa.getMonth() + " year = " + aa.getFullYear());
-        if (aa.getDate() == 1) {
-            $('#C1').attr("disabled", false);
+
+        function daysInMonth(month, year) {
+            return new Date(year, month + 1, 0).getDate();
         }
-        if (aa.getDate() == 2) {
-            $('#C1').attr("disabled", false);
-            $('#C2').attr("disabled", false);
-        }
-        if (aa.getDate() == 3) {
-            $('#C3').attr("disabled", false);
-            $('#C2').attr("disabled", false);
-        }
-        if (aa.getDate() == 4) {
-            $('#C3').attr("disabled", false);
-            $('#C4').attr("disabled", false);
-        }
-        if (aa.getDate() == 5) {
-            $('#C4').attr("disabled", false);
-            $('#C5').attr("disabled", false);
-        }
-        if (aa.getDate() == 6) {
-            $('#C5').attr("disabled", false);
-            $('#C6').attr("disabled", false);
-        }
-        if (aa.getDate() == 7) {
-            $('#C6').attr("disabled", false);
-            $('#C7').attr("disabled", false);
-        }
-        if (aa.getDate() == 8) {
-            $('#C7').attr("disabled", false);
-            $('#C8').attr("disabled", false);
-        }
-        if (aa.getDate() == 9) {
-            $('#C8').attr("disabled", false);
-            $('#C9').attr("disabled", false);
-        }
-        if (aa.getDate() == 10) {
-            $('#C9').attr("disabled", false);
-            $('#C10').attr("disabled", false);
-        }
-        if (aa.getDate() == 11) {
-            $('#C10').attr("disabled", false);
-            $('#C11').attr("disabled", false);
-        }
-        if (aa.getDate() == 12) {
-            $('#C11').attr("disabled", false);
-            $('#C12').attr("disabled", false);
-        }
-        if (aa.getDate() == 13) {
-            $('#C13').attr("disabled", false);
-            $('#C12').attr("disabled", false);
-        }
-        if (aa.getDate() == 14) {
-            $('#C13').attr("disabled", false);
-            $('#C14').attr("disabled", false);
-        }
-        if (aa.getDate() == 15) {
-            $('#C14').attr("disabled", false);
-            $('#C15').attr("disabled", false);
-        }
-        if (aa.getDate() == 16) {
-            $('#C15').attr("disabled", false);
-            $('#C16').attr("disabled", false);
-        }
-        if (aa.getDate() == 17) {
-            $('#C16').attr("disabled", false);
-            $('#C17').attr("disabled", false);
-        }
-        if (aa.getDate() == 18) {
-            $('#C17').attr("disabled", false);
-            $('#C18').attr("disabled", false);
-        }
-        if (aa.getDate() == 19) {
-            $('#C18').attr("disabled", false);
-            $('#C19').attr("disabled", false);
-        }
-        if (aa.getDate() == 20) {
-            $('#C19').attr("disabled", false);
-            $('#C20').attr("disabled", false);
-        }
-        if (aa.getDate() == 21) {
-            $('#C19').attr("disabled", false);
-            $('#C20').attr("disabled", false);
-        }
-        if (aa.getDate() == 22) {
-            $('#C21').attr("disabled", false);
-            $('#C22').attr("disabled", false);
-        }
-        if (aa.getDate() == 23) {
-            $('#C23').attr("disabled", false);
-            $('#C22').attr("disabled", false);
-        }
-        if (aa.getDate() == 24) {
-            $('#C23').attr("disabled", false);
-            $('#c24').attr("disabled", false);
-        }
-        if (aa.getDate() == 25) {
-            $('#C24').attr("disabled", false);
-            $('#C25').attr("disabled", false);
-        }
-        if (aa.getDate() == 26) {
-            $('#C25').attr("disabled", false);
-            $('#C26').attr("disabled", false);
-        }
-        if (aa.getDate() == 27) {
-            $('#C26').attr("disabled", false);
-            $('#C27').attr("disabled", false);
-        }
-        if (aa.getDate() == 28) {
-            $('#C27').attr("disabled", false);
-            $('#C28').attr("disabled", false);
-        }
-        if (aa.getDate() == 29) {
-            $('#C28').attr("disabled", false);
-            $('#C29').attr("disabled", false);
-        }
-        if (aa.getDate() == 30) {
-            $('#C29').attr("disabled", false);
-            $('#C30').attr("disabled", false);
-        }
-        if (aa.getDate() == 31) {
-            $('#C31').attr("disabled", false);
-            $('#C30').attr("disabled", false);
-        }
-    }
-    function daysInMonth(month, year) {
-        return new Date(year, month + 1, 0).getDate();
-    }
     </script>
-    @*
+    if (DateTime.Now.Day == 1)
+    {
+        <script>
+            function onlo1() {
+                var customVal = $("#md1").data("value");
+                var aa = new Date(customVal);
+                var md = daysInMonth(aa.getMonth(), aa.getFullYear());
+                if (date.now.date != aa.date) {
+                    if (md === 28) {
+                        if (aa.getDate() == 28) {
+                            $('#C28').attr("disabled", false);
+                            $('#C27').attr("disabled", true);
+                        }
+                    }
+                    if (md === 29) {
+                        if (aa.getDate() == 29) {
+                            $('#C29').attr("disabled", false);
+                            $('#C28').attr("disabled", true);
+                        }
+                    }
+                    if (md === 30) {
+                        if (aa.getDate() == 30) {
+                            $('#C30').attr("disabled", false);
+                            $('#C29').attr("disabled", true);
+                        }
+                    }
+                    if (md === 31) {
+                        if (aa.getDate() == 31) {
+                            $('#C31').attr("disabled", false);
+                            $('#C30').attr("disabled", true);
+                        }
+                    }
+                }
+                    
+            }
+        </script>
+    }
+@*
         <script>
             $("#edit").dialog({
                 autoOpen: false,
