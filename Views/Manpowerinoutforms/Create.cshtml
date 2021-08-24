@@ -131,7 +131,7 @@
             @Html.ValidationMessageFor(model => model.camp, "", new { @class = "text-danger" })
         </div>
         <div style="position: absolute;top: 161.5px;left: 16.3cm;width: 50px;">
-            @Html.EditorFor(model => model.date_, new { htmlAttributes = new { @Style = "width:125px" } })
+            @Html.EditorFor(model => model.date_, new { htmlAttributes = new { @Style = "width:125px" , @required = "required" } })
             @Html.ValidationMessageFor(model => model.date_, "", new { @class = "text-danger" })
         </div>
         <div style="position: absolute;top: 343px;left: 200px;width: 170px;">

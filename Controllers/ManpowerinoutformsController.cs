@@ -66,12 +66,6 @@ namespace onlygodknows.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Create( Manpowerinoutform manpowerinoutform)
         {
-            if (ModelState.IsValid)
-            {
-                db.Manpowerinoutforms.Add(manpowerinoutform);
-                db.SaveChanges();
-                return RedirectToAction("Create");
-            }
             ViewBag.camp = new List<SelectListItem>()
             {
                 new SelectListItem(){Value = "Al Ain",Text = "Al Ain"},
@@ -85,10 +79,35 @@ namespace onlygodknows.Controllers
                 new SelectListItem(){Value = "Citiscape",Text = "Citiscape"},
                 new SelectListItem(){Value = "Grove",Text = "Grove"},
             };
-            ViewBag.EmpID = new SelectList(db.LabourMasters.Where(x=>x.ManPowerSupply == 1 || x.ManPowerSupply == 8).OrderBy(x=>x.EMPNO), "ID", "EMPNO");
-            ViewBag.Empname = new SelectList(db.LabourMasters.Where(x=>x.ManPowerSupply == 1 || x.ManPowerSupply == 8).OrderBy(x=>x.EMPNO), "ID", "Person_Name");
-            ViewBag.Position = new SelectList(db.LabourMasters.Where(x=>x.ManPowerSupply == 1 || x.ManPowerSupply == 8).OrderBy(x=>x.EMPNO), "ID", "Position");
+            ViewBag.EmpID = new SelectList(db.LabourMasters.Where(x => x.ManPowerSupply == 1 || x.ManPowerSupply == 8).OrderBy(x => x.EMPNO), "ID", "EMPNO");
+            ViewBag.Empname = new SelectList(db.LabourMasters.Where(x => x.ManPowerSupply == 1 || x.ManPowerSupply == 8).OrderBy(x => x.EMPNO), "ID", "Person_Name");
+            ViewBag.Position = new SelectList(db.LabourMasters.Where(x => x.ManPowerSupply == 1 || x.ManPowerSupply == 8).OrderBy(x => x.EMPNO), "ID", "Position");
             ViewBag.Project = new SelectList(db.ProjectLists, "ID", "PROJECT_NAME");
+            if (ModelState.IsValid)
+            {
+                if (manpowerinoutform.check_out != null)
+                {
+                    var minoutlist = db.Manpowerinoutforms.Where(x => x.EmpID == manpowerinoutform.EmpID && x.Project == manpowerinoutform.Project && x.check_out == null).OrderByDescending(x => x.date_).ToList();
+                    if (minoutlist.Count != 0)
+                    {
+                        var minoutcheck = minoutlist.First();
+                        minoutcheck.check_out = manpowerinoutform.check_out;
+                        db.Entry(minoutcheck).State = EntityState.Modified;
+                        db.SaveChanges();
+                    }
+                    else
+                    {
+                        ModelState.AddModelError("check_out", "add check_in first");
+                        return View(manpowerinoutform);
+                    }
+                }
+                else
+                {
+                    db.Manpowerinoutforms.Add(manpowerinoutform);
+                    db.SaveChanges();
+                }
+                return RedirectToAction("Create");
+            }
             return View(manpowerinoutform);
         }
 

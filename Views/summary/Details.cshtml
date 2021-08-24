@@ -139,13 +139,16 @@
     </td>
     <td>
         @{
-            if (item.LabourMaster.Position.ToLower() == "labor".ToLower() || item.LabourMaster.Position.ToLower() == "LABOURER".ToLower() || item.LabourMaster.Position.ToLower() == "helper".ToLower())
+            if(item.LabourMaster.Position != null)
             {
-                <p>Unskilled</p>
-            }
-            else
-            {
-                <p> Skilled</p>
+                if (item.LabourMaster.Position.ToLower() == "labor".ToLower() || item.LabourMaster.Position.ToLower() == "LABOURER".ToLower() || item.LabourMaster.Position.ToLower() == "helper".ToLower())
+                {
+                    <p>Unskilled</p>
+                }
+                else
+                {
+                    <p> Skilled</p>
+                }
             }
         }
     </td>

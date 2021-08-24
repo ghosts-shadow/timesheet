@@ -9,6 +9,8 @@
 //  this will all change in april
 // --------------------------------------------------------------------------------------------------------------------
 
+using MimeKit;
+
 namespace onlygodknows.Controllers
 {
     using System;
@@ -16,10 +18,10 @@ namespace onlygodknows.Controllers
     using System.Data.Entity;
     using System.Linq;
     using System.Web.Mvc;
-
     using Microsoft.AspNet.Identity;
-
     using onlygodknows.Models;
+    using MimeKit;
+    using SmtpClient = MailKit.Net.Smtp.SmtpClient;
 
     public class ProjmanController : Controller
     {
@@ -73,12 +75,23 @@ namespace onlygodknows.Controllers
 
             var ap2 = this.db.approvals
                 .Where(x => x.adate == da && x.MPS_id == mp && x.P_id == p && x.status == "submitted").ToList();
+            var suplist = db.ManPowerSuppliers.ToList();
+            var proplist = db.ProjectLists.ToList();
+            var sup = suplist.Find(x => x.ID == mp).Supplier;
+            var prop = proplist.Find(x => x.ID == p).PROJECT_NAME;
+            var j = 0;
             foreach (var approval in ap2)
             {
+                j++;
                 approval.status = "approved";
                 approval.Ausername = this.User.Identity.Name;
                 this.db.Entry(approval).State = EntityState.Modified;
                 this.db.SaveChanges();
+                if (j == 1)
+                {
+                    SendMail(sup, prop, da, this.User.Identity.Name, approval.Susername,
+                        "the timesheet for " + da.ToString("D") + " is approved", true," ");
+                }
             }
 
             return this.RedirectToAction("PMapproval");
@@ -87,14 +100,26 @@ namespace onlygodknows.Controllers
         [Authorize(Roles = "Project_manager")]
         public ActionResult approved1(long? mp, long? p, DateTime? da)
         {
+            var suplist = db.ManPowerSuppliers.ToList();
+            var proplist = db.ProjectLists.ToList();
+            var sup = suplist.Find(x => x.ID == mp).Supplier;
+            var prop = proplist.Find(x => x.ID == p).PROJECT_NAME;
             var ap2 = this.db.approvals
                 .Where(x => x.adate == da && x.MPS_id == mp && x.P_id == p && x.status == "submitted").ToList();
+            var j = 0;
             foreach (var approval in ap2)
             {
+                j++;
                 approval.status = "approved";
                 approval.Ausername = this.User.Identity.Name;
                 this.db.Entry(approval).State = EntityState.Modified;
                 this.db.SaveChanges();
+                if (j == 1)
+                {
+                    if (da != null)
+                        SendMail(sup, prop, da.Value, this.User.Identity.Name,approval.Susername,
+                            "the timesheet for " + da.Value.ToString("D") + " is approved",true," ");
+                }
             }
 
             return this.RedirectToAction("appsum");
@@ -942,6 +967,10 @@ namespace onlygodknows.Controllers
             var da = new DateTime();
             long p = 0, mp = 0;
 
+            var suplist = db.ManPowerSuppliers.ToList();
+            var proplist = db.ProjectLists.ToList();
+            var sup = suplist.Find(x => x.ID == mp).Supplier;
+            var prop = proplist.Find(x => x.ID == p).PROJECT_NAME;
             DateTime.TryParse(this.TempData["mydata"].ToString(), out da);
 
             long.TryParse(this.TempData["mydata2"].ToString(), out p);
@@ -950,11 +979,18 @@ namespace onlygodknows.Controllers
 
             var ap2 = this.db.approvals
                 .Where(x => x.adate == da && x.MPS_id == mp && x.P_id == p && x.status == "submitted").ToList();
+            var j = 0;
             foreach (var approval in ap2)
             {
                 approval.status = "rejected for " + why;
                 this.db.Entry(approval).State = EntityState.Modified;
                 this.db.SaveChanges();
+                j++;
+                if (j == 1)
+                {
+                    SendMail(sup, prop, da, this.User.Identity.Name, approval.Susername,
+                        "the timesheet for " + da.ToString("D") + " is approved", false,why);
+                }
             }
 
             return this.RedirectToAction("PMapproval");
@@ -963,17 +999,101 @@ namespace onlygodknows.Controllers
         [Authorize(Roles = "Project_manager")]
         public ActionResult rejected1(string why, long? mp, long? p, DateTime? da)
         {
+            var suplist = db.ManPowerSuppliers.ToList();
+            var proplist = db.ProjectLists.ToList();
+            var sup = suplist.Find(x => x.ID == mp).Supplier;
+            var prop = proplist.Find(x => x.ID == p).PROJECT_NAME;
             var ap2 = this.db.approvals
                 .Where(x => x.adate == da && x.MPS_id == mp && x.P_id == p && x.status == "submitted").ToList();
+            var j = 0;
             foreach (var approval in ap2)
             {
                 approval.status = "rejected for " + why;
                 this.db.Entry(approval).State = EntityState.Modified;
                 this.db.SaveChanges();
+                j++;
+                if (j == 1)
+                {
+                    if (da != null)
+                        SendMail(sup, prop, da.Value, this.User.Identity.Name, approval.Susername,
+                            "the timesheet for " + da.Value.ToString("D") + " is approved", false,why);
+                }
             }
 
             return this.RedirectToAction("appsum");
         }
         //this task is done according to MD.Khairy and will only show attendance of each day leaving the rest of the values blank
+
+        public void SendMail(string sup, string prop, DateTime da, string aName,string sName,string msg,bool a_r,string com)
+        {
+            var man = this.db.AspNetUsers.ToList();
+            var context = new ApplicationDbContext();
+            var users = context.Users
+                .Where(x => x.UserName == sName).ToList();
+            var asa = new List<AspNetUser>();
+            var cper = this.db.CsPermissions.ToList();
+            foreach (var user1 in users) asa.Add(man.Find(x => x.Id == user1.Id));
+
+            var pname = this.db.ProjectLists.ToList();
+            var pname1 = pname.Find(x => x.PROJECT_NAME == prop);
+            var fuser1 = new List<CsPermission>();
+            foreach (var netUser in asa)
+                if (cper.Exists(x => x.CsUser == netUser.csid && x.Project == pname1.ID))
+                    fuser1.Add(cper.Find(x => x.CsUser == netUser.csid && x.Project == pname1.ID));
+            var pno = fuser1.FindAll(x => x.Project == pname1.ID);
+            var pasa = new List<AspNetUser>();
+            foreach (var permission in pno) pasa.Add(asa.Find(x => x.csid == permission.CsUser));
+            {
+                var message = new MimeMessage();
+                message.From.Add(new MailboxAddress("timekeeper", "timekeeper@citiscapegroup.com"));
+                message.To.Add(new MailboxAddress(pasa.First().UserName, pasa.First().Email));
+                // string[] ccstring =
+                // {
+                //     "mkhairy@citiscapegroup.com", "efathy@citiscapegroup.com", "zNader@citiscapegroup.com",
+                //     "amohamed@itiscapegroup.com"
+                // };
+                // foreach (var VARIABLE in ccstring)
+                // {
+                //     message.Cc.Add(new MailboxAddress(VARIABLE));
+                // }
+
+                pasa.Remove(pasa.First());
+                foreach (var ccpasa in pasa) message.Cc.Add(new MailboxAddress(ccpasa.Email));
+                if (a_r)
+                {
+                    message.Subject = "TIME-SHEET APPROVED";
+                    message.Body = new TextPart("plain")
+                    {
+                        Text = @"Dear Sir,
+Please note that the Time-Sheet for the date " + da.ToShortDateString() + ", ManPowerSupplier: " + sup +
+                            " and Project name: " + prop + " has been  approved\n\nBest regards\n" + aName +
+                            "\n\n\n\n"
+                };
+                }
+                else
+                {
+                    message.Subject = "TIME-SHEET rejected";
+                    message.Body = new TextPart("plain")
+                    {
+                        Text = @"Dear Sir,
+Please note that the Time-Sheet for the date " + da.ToShortDateString() + ", ManPowerSupplier: " + sup +
+                               " and Project name: " + prop + " has been  rejected for the reason:"+com+"\n\nBest regards\n" + aName +
+                               "\n\n\n\n"
+                    };
+                }
+
+
+                using (var client = new SmtpClient())
+                {
+                    client.Connect("outlook.office365.com", 587, false);
+
+                    // Note: only needed if the SMTP server requires authentication
+                    client.Authenticate("timekeeper@citiscapegroup.com", "Vam15380");
+
+                    client.Send(message);
+                    client.Disconnect(true);
+                }
+            }
+        }
     }
 }

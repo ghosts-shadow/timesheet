@@ -9,27 +9,42 @@
     <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
     <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-    if (DateTime.Now.Day == 3)
-    {
-        <script>
-            $(function () {
-                $("#datepicker").datepicker({
-                    minDate: -1,
-                    maxDate: 0,
-                    dateFormat: 'mm/dd/yy',
-                    changeMonth: true,
-                    changeYear: true
+    if (DateTime.Now.Day == 1)
+        {
+            <script>
+                $(function () {
+                    $("#datepicker").datepicker({
+                        minDate: -1,
+                        maxDate: 0,
+                        dateFormat: 'mm/dd/yy',
+                        changeMonth: true,
+                        changeYear: true
+                    });
                 });
-            });
-        </script>
+            </script>
+        }
+    if (User.Identity.IsAuthenticated)
+    {
+        if (User.Identity.Name == "stest")
+        {
+            <script>
+                $(function () {
+                    $("#datepicker").datepicker({
+                        dateFormat: 'mm/dd/yy',
+                        changeMonth: true,
+                        changeYear: true
+                    });
+                });
+            </script>
+        }
     }
-    
+
     <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js">
     </script>
     <script type="text/javascript">
-        $(document).ready(function() {
+        $(document).ready(function () {
             $('input#btnSubmit').on('click',
-                function() {
+                function () {
                     var myForm = $("form#form1");
                     if (myForm) {
                         $(this).prop('disabled', true);
@@ -79,65 +94,65 @@
         @Html.AntiForgeryToken()
 
         <div class="form-horizontal">
-            <hr/>
+            <hr />
 
             <div class="form-group">
                 <div class="row">
                     <div class="col-md-2">
                         @*
-                @Html.EditorFor(model => model.TMonth, new { htmlAttributes = new { @class = "form-control" } })
+                            @Html.EditorFor(model => model.TMonth, new { htmlAttributes = new { @class = "form-control" } })
 
-                    *@
+                        *@
                         <div class="row">
                             <div class="col-md-4">
-                                @Html.Label("date:", new {@class = "control-label col-md-2"})
+                                @Html.Label("date:", new { @class = "control-label col-md-2" })
                             </div>
                             <div class="col-md-8">
-                                <input type="text" id="datepicker" name="TMonth" readonly="readonly" value="@DateTime.Now.ToString("d")"/>
+                                <input type="text" id="datepicker" name="TMonth" readonly="readonly" value="@DateTime.Now.ToString("d")" />
                             </div>
                         </div>
-                        @Html.ValidationMessageFor(model => model.TMonth, "", new {@class = "text-danger",})
+                        @Html.ValidationMessageFor(model => model.TMonth, "", new { @class = "text-danger", })
                     </div>
-                    @Html.LabelFor(model => model.ManPowerSupplier, htmlAttributes: new {@class = "control-label col-md-2"})
+                    @Html.LabelFor(model => model.ManPowerSupplier, htmlAttributes: new { @class = "control-label col-md-2" })
                     <div class="col-md-2">
-                        @Html.DropDownList("ManPowerSupplier", null, new {htmlAttributes = new {@class = "form-control"}})
-                        @Html.ValidationMessageFor(model => model.ManPowerSupplier, "", new {@class = "text-danger"})
+                        @Html.DropDownList("ManPowerSupplier", null, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.ManPowerSupplier, "", new { @class = "text-danger" })
                     </div>
-                    @Html.LabelFor(model => model.Project, htmlAttributes: new {@class = "control-label col-md-2"})
+                    @Html.LabelFor(model => model.Project, htmlAttributes: new { @class = "control-label col-md-2" })
                     <div class="col-md-3">
-                        @Html.DropDownList("Project", null, new {htmlAttributes = new {@class = "form-control"}})
-                        @Html.ValidationMessageFor(model => model.Project, "", new {@class = "text-danger"})
+                        @Html.DropDownList("Project", null, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.Project, "", new { @class = "text-danger" })
                     </div>
 
                 </div>
                 <div class="row" align="center">
-                    <br/>
-                    <input type="submit" value="Create" class="btn btn-default"/>
+                    <br />
+                    <input type="submit" value="Create" class="btn btn-default" />
                 </div>
                 @*
-            <div class="row">
-                @Html.LabelFor(model => model.Ref, htmlAttributes: new { @class = "control-label col-md-2" })
-                <div class="col-md-2">
-                    @Html.EditorFor(model => model.Ref, new { htmlAttributes = new { @class = "form-control" } })
-                    @Html.ValidationMessageFor(model => model.Ref, "", new { @class = "text-danger" })
-                </div>
-                @Html.LabelFor(model => model.RefNo, htmlAttributes: new { @class = "control-label col-md-2" })
-                <div class="col-md-2">
-                    @Html.EditorFor(model => model.RefNo, new { htmlAttributes = new { @class = "form-control" } })
-                    @Html.ValidationMessageFor(model => model.RefNo, "", new { @class = "text-danger" })
-                </div>
+                    <div class="row">
+                        @Html.LabelFor(model => model.Ref, htmlAttributes: new { @class = "control-label col-md-2" })
+                        <div class="col-md-2">
+                            @Html.EditorFor(model => model.Ref, new { htmlAttributes = new { @class = "form-control" } })
+                            @Html.ValidationMessageFor(model => model.Ref, "", new { @class = "text-danger" })
+                        </div>
+                        @Html.LabelFor(model => model.RefNo, htmlAttributes: new { @class = "control-label col-md-2" })
+                        <div class="col-md-2">
+                            @Html.EditorFor(model => model.RefNo, new { htmlAttributes = new { @class = "form-control" } })
+                            @Html.ValidationMessageFor(model => model.RefNo, "", new { @class = "text-danger" })
+                        </div>
 
-                @Html.LabelFor(model => model.Note, htmlAttributes: new { @class = "control-label col-md-2" })
-                <div class="col-md-2">
-                    @Html.EditorFor(model => model.Note, new { htmlAttributes = new { @class = "form-control" } })
-                    @Html.ValidationMessageFor(model => model.Note, "", new { @class = "text-danger" })
-                </div>
-            </div>*@
+                        @Html.LabelFor(model => model.Note, htmlAttributes: new { @class = "control-label col-md-2" })
+                        <div class="col-md-2">
+                            @Html.EditorFor(model => model.Note, new { htmlAttributes = new { @class = "form-control" } })
+                            @Html.ValidationMessageFor(model => model.Note, "", new { @class = "text-danger" })
+                        </div>
+                    </div>*@
 
-                <br/>
-                <br/>
-                <br/>
-                @Html.ValidationSummary(false, string.Empty, new {@class = "text-danger", style = "font-size: 20px;"})
+                <br />
+                <br />
+                <br />
+                @Html.ValidationSummary(false, string.Empty, new { @class = "text-danger", style = "font-size: 20px;" })
             </div>
         </div>
     }

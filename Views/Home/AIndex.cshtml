@@ -3,6 +3,7 @@
 @{
     ViewBag.Title = "AIndex";
     Layout = "~/Views/Shared/_Layout.cshtml";
+    var usertf = "True";
 }
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.3/jquery.min.js"></script>
 <script src="http://code.jquery.com/ui/1.11.1/jquery-ui.min.js"></script>
@@ -42,14 +43,14 @@
     <input type="hidden" id="md1" data-value="@ViewBag.mdate1"/>
     @Html.AntiForgeryToken()
     <div class="row" onclick="total()">
-        @Html.LabelFor(model => model.attendance.EmpID, new {@class = "control-label col-md-2"})
+        @Html.LabelFor(model => model.attendance.EmpID, new { @class = "control-label col-md-2" })
         <div class="col-md-10" onclick="total()">
             @*
                 @Html.EditorFor(model => model.EmpID, new { htmlAttributes = new { @class = "form-control" } })*@
-            @Html.DropDownList("EmpID", null, "", new {@class = "form-control", id = "EmpID"})
-            @Html.DropDownList("pos", null, new {@class = "form-control", id = "pos1", style = "display:none"})
-            @Html.DropDownList("name", null, new {@class = "form-control", id = "name1", style = "display:none"})
-            @Html.ValidationMessageFor(model => model.attendance.EmpID, string.Empty, new {@class = "text-danger"})
+            @Html.DropDownList("EmpID", null, "", new { @class = "form-control", id = "EmpID" })
+            @Html.DropDownList("pos", null, new { @class = "form-control", id = "pos1", style = "display:none" })
+            @Html.DropDownList("name", null, new { @class = "form-control", id = "name1", style = "display:none" })
+            @Html.ValidationMessageFor(model => model.attendance.EmpID, string.Empty, new { @class = "text-danger" })
             <label id="pos2"></label>
             <label id="name2"></label>
         </div>
@@ -69,167 +70,167 @@
 
 
                     <div class="col-xs-1">
-                        @Html.LabelFor(model => model.attendance.C1, new {@class = "control-label col-md-2"})
-                        @Html.DropDownList("C1", null, new {@class = "form-control", id = "C1", name = "C1"})
-                        @Html.ValidationMessageFor(model => model.attendance.C1, string.Empty, new {@class = "text-danger"})
+                        @Html.LabelFor(model => model.attendance.C1, new { @class = "control-label col-md-2" })
+                        @Html.DropDownList("C1", null, new { @class = "form-control", id = "C1", name = "C1" })
+                        @Html.ValidationMessageFor(model => model.attendance.C1, string.Empty, new { @class = "text-danger" })
                     </div>
                     <div class="col-xs-1">
-                        @Html.LabelFor(model => model.attendance.C2, new {@class = "control-label col-md-2"})
-                        @Html.DropDownList("C2", null, new {@class = "form-control", id = "C2", name = "C2"})
-                        @Html.ValidationMessageFor(model => model.attendance.C2, string.Empty, new {@class = "text-danger"})
+                        @Html.LabelFor(model => model.attendance.C2, new { @class = "control-label col-md-2" })
+                        @Html.DropDownList("C2", null, new { @class = "form-control", id = "C2", name = "C2" })
+                        @Html.ValidationMessageFor(model => model.attendance.C2, string.Empty, new { @class = "text-danger" })
                     </div>
                     <div class="col-xs-1">
-                        @Html.LabelFor(model => model.attendance.C3, new {@class = "control-label col-md-2"})
-                        @Html.DropDownList("C3", null, new {@class = "form-control", id = "C3", name = "C3"})
-                        @Html.ValidationMessageFor(model => model.attendance.C3, string.Empty, new {@class = "text-danger"})
+                        @Html.LabelFor(model => model.attendance.C3, new { @class = "control-label col-md-2" })
+                        @Html.DropDownList("C3", null, new { @class = "form-control", id = "C3", name = "C3" })
+                        @Html.ValidationMessageFor(model => model.attendance.C3, string.Empty, new { @class = "text-danger" })
                     </div>
                     <div class="col-xs-1">
-                        @Html.LabelFor(model => model.attendance.C4, new {@class = "control-label col-md-2"})
-                        @Html.DropDownList("C4", null, new {@class = "form-control", id = "C4", name = "C4"})
-                        @Html.ValidationMessageFor(model => model.attendance.C4, string.Empty, new {@class = "text-danger"})
+                        @Html.LabelFor(model => model.attendance.C4, new { @class = "control-label col-md-2" })
+                        @Html.DropDownList("C4", null, new { @class = "form-control", id = "C4", name = "C4" })
+                        @Html.ValidationMessageFor(model => model.attendance.C4, string.Empty, new { @class = "text-danger" })
                     </div>
                     <div class="col-xs-1">
-                        @Html.LabelFor(model => model.attendance.C5, new {@class = "control-label col-md-2"})
-                        @Html.DropDownList("C5", null, new {@class = "form-control", id = "C5", name = "C5"})
-                        @Html.ValidationMessageFor(model => model.attendance.C5, string.Empty, new {@class = "text-danger"})
+                        @Html.LabelFor(model => model.attendance.C5, new { @class = "control-label col-md-2" })
+                        @Html.DropDownList("C5", null, new { @class = "form-control", id = "C5", name = "C5" })
+                        @Html.ValidationMessageFor(model => model.attendance.C5, string.Empty, new { @class = "text-danger" })
                     </div>
                     <div class="col-xs-1">
-                        @Html.LabelFor(model => model.attendance.C6, new {@class = "control-label col-md-2"})
-                        @Html.DropDownList("C6", null, new {@class = "form-control", id = "C6", name = "C6"})
-                        @Html.ValidationMessageFor(model => model.attendance.C6, string.Empty, new {@class = "text-danger"})
+                        @Html.LabelFor(model => model.attendance.C6, new { @class = "control-label col-md-2" })
+                        @Html.DropDownList("C6", null, new { @class = "form-control", id = "C6", name = "C6" })
+                        @Html.ValidationMessageFor(model => model.attendance.C6, string.Empty, new { @class = "text-danger" })
                     </div>
                     <div class="col-xs-1">
-                        @Html.LabelFor(model => model.attendance.C7, new {@class = "control-label col-md-2"})
-                        @Html.DropDownList("C7", null, new {@class = "form-control", id = "C7", name = "C7"})
-                        @Html.ValidationMessageFor(model => model.attendance.C7, string.Empty, new {@class = "text-danger"})
+                        @Html.LabelFor(model => model.attendance.C7, new { @class = "control-label col-md-2" })
+                        @Html.DropDownList("C7", null, new { @class = "form-control", id = "C7", name = "C7" })
+                        @Html.ValidationMessageFor(model => model.attendance.C7, string.Empty, new { @class = "text-danger" })
                     </div>
                     <div class="col-xs-1">
-                        @Html.LabelFor(model => model.attendance.C8, new {@class = "control-label col-md-2"})
-                        @Html.DropDownList("C8", null, new {@class = "form-control", id = "C8", name = "C8"})
-                        @Html.ValidationMessageFor(model => model.attendance.C8, string.Empty, new {@class = "text-danger"})
+                        @Html.LabelFor(model => model.attendance.C8, new { @class = "control-label col-md-2" })
+                        @Html.DropDownList("C8", null, new { @class = "form-control", id = "C8", name = "C8" })
+                        @Html.ValidationMessageFor(model => model.attendance.C8, string.Empty, new { @class = "text-danger" })
                     </div>
                     <div class="col-xs-1">
-                        @Html.LabelFor(model => model.attendance.C9, new {@class = "control-label col-md-2"})
-                        @Html.DropDownList("C9", null, new {@class = "form-control", id = "C9", name = "C9"})
-                        @Html.ValidationMessageFor(model => model.attendance.C9, string.Empty, new {@class = "text-danger"})
+                        @Html.LabelFor(model => model.attendance.C9, new { @class = "control-label col-md-2" })
+                        @Html.DropDownList("C9", null, new { @class = "form-control", id = "C9", name = "C9" })
+                        @Html.ValidationMessageFor(model => model.attendance.C9, string.Empty, new { @class = "text-danger" })
                     </div>
                     <div class="col-xs-1">
-                        @Html.LabelFor(model => model.attendance.C10, new {@class = "control-label col-md-2"})
-                        @Html.DropDownList("C10", null, new {@class = "form-control", id = "C10", name = "C10"})
-                        @Html.ValidationMessageFor(model => model.attendance.C10, string.Empty, new {@class = "text-danger"})
+                        @Html.LabelFor(model => model.attendance.C10, new { @class = "control-label col-md-2" })
+                        @Html.DropDownList("C10", null, new { @class = "form-control", id = "C10", name = "C10" })
+                        @Html.ValidationMessageFor(model => model.attendance.C10, string.Empty, new { @class = "text-danger" })
                     </div>
                     <div class="col-xs-1">
-                        @Html.LabelFor(model => model.attendance.C11, new {@class = "control-label col-md-2"})
-                        @Html.DropDownList("C11", null, new {@class = "form-control", id = "C11", name = "C11"})
-                        @Html.ValidationMessageFor(model => model.attendance.C11, string.Empty, new {@class = "text-danger"})
+                        @Html.LabelFor(model => model.attendance.C11, new { @class = "control-label col-md-2" })
+                        @Html.DropDownList("C11", null, new { @class = "form-control", id = "C11", name = "C11" })
+                        @Html.ValidationMessageFor(model => model.attendance.C11, string.Empty, new { @class = "text-danger" })
                     </div>
                     <div class="col-xs-1">
-                        @Html.LabelFor(model => model.attendance.C12, new {@class = "control-label col-md-2"})
-                        @Html.DropDownList("C12", null, new {@class = "form-control", id = "C12", name = "C12"})
-                        @Html.ValidationMessageFor(model => model.attendance.C12, string.Empty, new {@class = "text-danger"})
+                        @Html.LabelFor(model => model.attendance.C12, new { @class = "control-label col-md-2" })
+                        @Html.DropDownList("C12", null, new { @class = "form-control", id = "C12", name = "C12" })
+                        @Html.ValidationMessageFor(model => model.attendance.C12, string.Empty, new { @class = "text-danger" })
                     </div>
                     <div class="col-xs-1">
-                        @Html.LabelFor(model => model.attendance.C13, new {@class = "control-label col-md-2"})
-                        @Html.DropDownList("C13", null, new {@class = "form-control", id = "C13", name = "C13"})
-                        @Html.ValidationMessageFor(model => model.attendance.C13, string.Empty, new {@class = "text-danger"})
+                        @Html.LabelFor(model => model.attendance.C13, new { @class = "control-label col-md-2" })
+                        @Html.DropDownList("C13", null, new { @class = "form-control", id = "C13", name = "C13" })
+                        @Html.ValidationMessageFor(model => model.attendance.C13, string.Empty, new { @class = "text-danger" })
                     </div>
                     <div class="col-xs-1">
-                        @Html.LabelFor(model => model.attendance.C14, new {@class = "control-label col-md-2"})
-                        @Html.DropDownList("C14", null, new {@class = "form-control", id = "C14", name = "C14"})
-                        @Html.ValidationMessageFor(model => model.attendance.C14, string.Empty, new {@class = "text-danger"})
+                        @Html.LabelFor(model => model.attendance.C14, new { @class = "control-label col-md-2" })
+                        @Html.DropDownList("C14", null, new { @class = "form-control", id = "C14", name = "C14" })
+                        @Html.ValidationMessageFor(model => model.attendance.C14, string.Empty, new { @class = "text-danger" })
                     </div>
                     <div class="col-xs-1">
-                        @Html.LabelFor(model => model.attendance.C15, new {@class = "control-label col-md-2"})
-                        @Html.DropDownList("C15", null, new {@class = "form-control", id = "C15", name = "C15"})
-                        @Html.ValidationMessageFor(model => model.attendance.C15, string.Empty, new {@class = "text-danger"})
+                        @Html.LabelFor(model => model.attendance.C15, new { @class = "control-label col-md-2" })
+                        @Html.DropDownList("C15", null, new { @class = "form-control", id = "C15", name = "C15" })
+                        @Html.ValidationMessageFor(model => model.attendance.C15, string.Empty, new { @class = "text-danger" })
                     </div>
                     <div class="col-xs-1">
-                        @Html.LabelFor(model => model.attendance.C16, new {@class = "control-label col-md-2"})
-                        @Html.DropDownList("C16", null, new {@class = "form-control", id = "C16", name = "C16"})
-                        @Html.ValidationMessageFor(model => model.attendance.C16, string.Empty, new {@class = "text-danger"})
+                        @Html.LabelFor(model => model.attendance.C16, new { @class = "control-label col-md-2" })
+                        @Html.DropDownList("C16", null, new { @class = "form-control", id = "C16", name = "C16" })
+                        @Html.ValidationMessageFor(model => model.attendance.C16, string.Empty, new { @class = "text-danger" })
                     </div>
                     <div class="col-xs-1">
-                        @Html.LabelFor(model => model.attendance.C17, new {@class = "control-label col-md-2"})
-                        @Html.DropDownList("C17", null, new {@class = "form-control", id = "C17"})
-                        @Html.ValidationMessageFor(model => model.attendance.C17, string.Empty, new {@class = "text-danger", name = "C17"})
+                        @Html.LabelFor(model => model.attendance.C17, new { @class = "control-label col-md-2" })
+                        @Html.DropDownList("C17", null, new { @class = "form-control", id = "C17" })
+                        @Html.ValidationMessageFor(model => model.attendance.C17, string.Empty, new { @class = "text-danger", name = "C17" })
                     </div>
                     <div class="col-xs-1">
-                        @Html.LabelFor(model => model.attendance.C18, new {@class = "control-label col-md-2"})
-                        @Html.DropDownList("C18", null, new {@class = "form-control", id = "C18", name = "C18"})
-                        @Html.ValidationMessageFor(model => model.attendance.C18, string.Empty, new {@class = "text-danger"})
+                        @Html.LabelFor(model => model.attendance.C18, new { @class = "control-label col-md-2" })
+                        @Html.DropDownList("C18", null, new { @class = "form-control", id = "C18", name = "C18" })
+                        @Html.ValidationMessageFor(model => model.attendance.C18, string.Empty, new { @class = "text-danger" })
                     </div>
                     <div class="col-xs-1">
-                        @Html.LabelFor(model => model.attendance.C19, new {@class = "control-label col-md-2"})
-                        @Html.DropDownList("C19", null, new {@class = "form-control", id = "C19", name = "C19"})
-                        @Html.ValidationMessageFor(model => model.attendance.C19, string.Empty, new {@class = "text-danger"})
+                        @Html.LabelFor(model => model.attendance.C19, new { @class = "control-label col-md-2" })
+                        @Html.DropDownList("C19", null, new { @class = "form-control", id = "C19", name = "C19" })
+                        @Html.ValidationMessageFor(model => model.attendance.C19, string.Empty, new { @class = "text-danger" })
                     </div>
                     <div class="col-xs-1">
-                        @Html.LabelFor(model => model.attendance.C20, new {@class = "control-label col-md-2"})
-                        @Html.DropDownList("C20", null, new {@class = "form-control", id = "C20", name = "C20"})
-                        @Html.ValidationMessageFor(model => model.attendance.C20, string.Empty, new {@class = "text-danger"})
+                        @Html.LabelFor(model => model.attendance.C20, new { @class = "control-label col-md-2" })
+                        @Html.DropDownList("C20", null, new { @class = "form-control", id = "C20", name = "C20" })
+                        @Html.ValidationMessageFor(model => model.attendance.C20, string.Empty, new { @class = "text-danger" })
                     </div>
                     <div class="col-xs-1">
-                        @Html.LabelFor(model => model.attendance.C21, new {@class = "control-label col-md-2"})
-                        @Html.DropDownList("C21", null, new {@class = "form-control", id = "C21", name = "C21"})
-                        @Html.ValidationMessageFor(model => model.attendance.C21, string.Empty, new {@class = "text-danger"})
+                        @Html.LabelFor(model => model.attendance.C21, new { @class = "control-label col-md-2" })
+                        @Html.DropDownList("C21", null, new { @class = "form-control", id = "C21", name = "C21" })
+                        @Html.ValidationMessageFor(model => model.attendance.C21, string.Empty, new { @class = "text-danger" })
                     </div>
                     <div class="col-xs-1">
-                        @Html.LabelFor(model => model.attendance.C22, new {@class = "control-label col-md-2"})
-                        @Html.DropDownList("C22", null, new {@class = "form-control", id = "C22", name = "C22"})
-                        @Html.ValidationMessageFor(model => model.attendance.C22, string.Empty, new {@class = "text-danger"})
+                        @Html.LabelFor(model => model.attendance.C22, new { @class = "control-label col-md-2" })
+                        @Html.DropDownList("C22", null, new { @class = "form-control", id = "C22", name = "C22" })
+                        @Html.ValidationMessageFor(model => model.attendance.C22, string.Empty, new { @class = "text-danger" })
                     </div>
                     <div class="col-xs-1">
-                        @Html.LabelFor(model => model.attendance.C23, new {@class = "control-label col-md-2"})
-                        @Html.DropDownList("C23", null, new {@class = "form-control", id = "C23", name = "C23"})
-                        @Html.ValidationMessageFor(model => model.attendance.C23, string.Empty, new {@class = "text-danger"})
+                        @Html.LabelFor(model => model.attendance.C23, new { @class = "control-label col-md-2" })
+                        @Html.DropDownList("C23", null, new { @class = "form-control", id = "C23", name = "C23" })
+                        @Html.ValidationMessageFor(model => model.attendance.C23, string.Empty, new { @class = "text-danger" })
                     </div>
                     <div class="col-xs-1">
-                        @Html.LabelFor(model => model.attendance.C24, new {@class = "control-label col-md-2"})
-                        @Html.DropDownList("C24", null, new {@class = "form-control", id = "C24", name = "C24"})
-                        @Html.ValidationMessageFor(model => model.attendance.C24, string.Empty, new {@class = "text-danger"})
+                        @Html.LabelFor(model => model.attendance.C24, new { @class = "control-label col-md-2" })
+                        @Html.DropDownList("C24", null, new { @class = "form-control", id = "C24", name = "C24" })
+                        @Html.ValidationMessageFor(model => model.attendance.C24, string.Empty, new { @class = "text-danger" })
                     </div>
                     <div class="col-xs-1">
-                        @Html.LabelFor(model => model.attendance.C25, new {@class = "control-label col-md-2"})
-                        @Html.DropDownList("C25", null, new {@class = "form-control", id = "C25", name = "C25"})
-                        @Html.ValidationMessageFor(model => model.attendance.C25, string.Empty, new {@class = "text-danger"})
+                        @Html.LabelFor(model => model.attendance.C25, new { @class = "control-label col-md-2" })
+                        @Html.DropDownList("C25", null, new { @class = "form-control", id = "C25", name = "C25" })
+                        @Html.ValidationMessageFor(model => model.attendance.C25, string.Empty, new { @class = "text-danger" })
                     </div>
                     <div class="col-xs-1">
-                        @Html.LabelFor(model => model.attendance.C26, new {@class = "control-label col-md-2"})
-                        @Html.DropDownList("C26", null, new {@class = "form-control", id = "C26", name = "C26"})
-                        @Html.ValidationMessageFor(model => model.attendance.C26, string.Empty, new {@class = "text-danger"})
+                        @Html.LabelFor(model => model.attendance.C26, new { @class = "control-label col-md-2" })
+                        @Html.DropDownList("C26", null, new { @class = "form-control", id = "C26", name = "C26" })
+                        @Html.ValidationMessageFor(model => model.attendance.C26, string.Empty, new { @class = "text-danger" })
                     </div>
                     <div class="col-xs-1">
-                        @Html.LabelFor(model => model.attendance.C27, new {@class = "control-label col-md-2"})
-                        @Html.DropDownList("C27", null, new {@class = "form-control", id = "C27", name = "C27"})
-                        @Html.ValidationMessageFor(model => model.attendance.C27, string.Empty, new {@class = "text-danger"})
+                        @Html.LabelFor(model => model.attendance.C27, new { @class = "control-label col-md-2" })
+                        @Html.DropDownList("C27", null, new { @class = "form-control", id = "C27", name = "C27" })
+                        @Html.ValidationMessageFor(model => model.attendance.C27, string.Empty, new { @class = "text-danger" })
                     </div>
                     <div class="col-xs-1">
-                        @Html.LabelFor(model => model.attendance.C28, new {@class = "control-label col-md-2"})
-                        @Html.DropDownList("C28", null, new {@class = "form-control", id = "C28", name = "C28"})
-                        @Html.ValidationMessageFor(model => model.attendance.C28, string.Empty, new {@class = "text-danger"})
+                        @Html.LabelFor(model => model.attendance.C28, new { @class = "control-label col-md-2" })
+                        @Html.DropDownList("C28", null, new { @class = "form-control", id = "C28", name = "C28" })
+                        @Html.ValidationMessageFor(model => model.attendance.C28, string.Empty, new { @class = "text-danger" })
                     </div>
                     <div class="col-xs-1" id="ex1">
-                        @Html.LabelFor(model => model.attendance.C29, new {@class = "control-label col-md-2"})
-                        @Html.DropDownList("C29", null, new {@class = "form-control", id = "C29", name = "C29"})
-                        @Html.ValidationMessageFor(model => model.attendance.C29, string.Empty, new {@class = "text-danger"})
+                        @Html.LabelFor(model => model.attendance.C29, new { @class = "control-label col-md-2" })
+                        @Html.DropDownList("C29", null, new { @class = "form-control", id = "C29", name = "C29" })
+                        @Html.ValidationMessageFor(model => model.attendance.C29, string.Empty, new { @class = "text-danger" })
                     </div>
                     <div class="col-xs-1" id="ex2">
-                        @Html.LabelFor(model => model.attendance.C30, new {@class = "control-label col-md-2"})
-                        @Html.DropDownList("C30", null, new {@class = "form-control", id = "C30", name = "C30"})
-                        @Html.ValidationMessageFor(model => model.attendance.C30, string.Empty, new {@class = "text-danger"})
+                        @Html.LabelFor(model => model.attendance.C30, new { @class = "control-label col-md-2" })
+                        @Html.DropDownList("C30", null, new { @class = "form-control", id = "C30", name = "C30" })
+                        @Html.ValidationMessageFor(model => model.attendance.C30, string.Empty, new { @class = "text-danger" })
                     </div>
                     <div class="col-xs-1" id="ex3">
-                        @Html.LabelFor(model => model.attendance.C31, new {@class = "control-label col-md-2"})
-                        @Html.DropDownList("C31", null, new {@class = "form-control", id = "C31", name = "C31"})
-                        @Html.ValidationMessageFor(model => model.attendance.C31, string.Empty, new {@class = "text-danger"})
+                        @Html.LabelFor(model => model.attendance.C31, new { @class = "control-label col-md-2" })
+                        @Html.DropDownList("C31", null, new { @class = "form-control", id = "C31", name = "C31" })
+                        @Html.ValidationMessageFor(model => model.attendance.C31, string.Empty, new { @class = "text-danger" })
                     </div>
                     <div class="col-xs-1" style="display: none">
-                        @Html.LabelFor(model => model.attendance.TotalHours, new {@class = "control-label col-md-2"})
+                        @Html.LabelFor(model => model.attendance.TotalHours, new { @class = "control-label col-md-2" })
                         @*
                             @Html.EditorFor(model => model.TotalHours, new { htmlAttributes = new { @class = "form-control" } })*@
                         <input type="text" id="TotalHours" name="TotalHours1" disabled="true"/>
                         <input type="text" id="TotalHours2" name="TotalHours" style="display: none"/>
-                        @Html.ValidationMessageFor(model => model.attendance.TotalHours, string.Empty, new {@class = "text-danger"})
+                        @Html.ValidationMessageFor(model => model.attendance.TotalHours, string.Empty, new { @class = "text-danger" })
                     </div>@*
 
                                                 @*
@@ -239,18 +240,18 @@
                         @*
                             @Html.EditorFor(model => model.ManPowerSupply, new { htmlAttributes = new { @class = "form-control" } })*@
                         <input type="text" id="ManPowerSupply" value="@ViewBag.mspID" style="display: none" name="ManPowerSupply"/>
-                        @Html.ValidationMessageFor(model => model.attendance.ManPowerSupply, string.Empty, new {@class = "text-danger"})
+                        @Html.ValidationMessageFor(model => model.attendance.ManPowerSupply, string.Empty, new { @class = "text-danger" })
                     </div>
                 </div>
             </div>
             <div class="form-group" style="display: none" onclick="total()">
-                @Html.LabelFor(model => model.attendance.SubMain, new {@class = "control-label col-md-2"})
+                @Html.LabelFor(model => model.attendance.SubMain, new { @class = "control-label col-md-2" })
                 <div class="col-xs-1" style="display: none">
                     @*
                         @Html.EditorFor(model => model.SubMain, new { htmlAttributes = new { @class = "form-control" } })
                     *@
                     <input type="text" id="SubMain" value="@ViewBag.mid" name="SubMain"/>
-                    @Html.ValidationMessageFor(model => model.attendance.SubMain, string.Empty, new {@class = "text-danger"})
+                    @Html.ValidationMessageFor(model => model.attendance.SubMain, string.Empty, new { @class = "text-danger" })
                 </div>
             </div>
         </div>
@@ -281,7 +282,7 @@
         ass = Convert.ToDateTime(ViewBag.mdate1);
         ass.AddDays(1);
     }
-    @Html.DropDownList("empno", null, " ", new {@class = "form-control", id = "empno", style = "display:none"})
+    @Html.DropDownList("empno", null, " ", new { @class = "form-control", id = "empno", style = "display:none" })
     <input type="submit" value="search" name="action:AIndex1" class="btn btn-default" id="aaq2"/>
 
     <table class="table">
@@ -406,8 +407,8 @@
                 if (User.Identity.Name == "sdiniz")
                 {
                     <td>
-                        @Html.ActionLink("Edit", "AEdit", new {id = item.ID}) |
-                        @Html.ActionLink("delete", "Delete", new {id = item.ID})
+                        @Html.ActionLink("Edit", "AEdit", new { id = item.ID }) |
+                        @Html.ActionLink("delete", "Delete", new { id = item.ID })
                     </td>
                     <td>
                         @Html.DisplayFor(modelItem => item.SubMain)
@@ -520,7 +521,7 @@
                 @Html.DisplayFor(modelItem => item.TotalHours)
             </td>
         </tr>
-    }
+                    }
     </tbody>
     </table>
     </div>
@@ -574,11 +575,22 @@
             $('#name2').text(", name :" + $('#name1 option:selected').text());
             onlo();
         }
+            @if (User.Identity.IsAuthenticated)
+            {
+                if (User.Identity.Name == "stest")
+                {
+                    usertf = "False";
+                }
+            }
 
         function onlo() {
-
-            $('select').attr("disabled", true);
-            $('#EmpID').attr("disabled", false);
+            var utf = "@usertf";
+            if (utf == "True") {
+                $('select').attr("disabled", true);
+            } else {
+                $('select').attr("disabled", false);
+            }
+                $('#EmpID').attr("disabled", false);
             var customVal = $("#md1").data("value");
             var aa = new Date(customVal);
             var fd = GetAll(aa);
@@ -728,8 +740,8 @@
                 $('#C20').attr("disabled", false);
             }
             if (aa.getDate() == 21) {
-                $('#C19').attr("disabled", false);
                 $('#C20').attr("disabled", false);
+                $('#C21').attr("disabled", false);
             }
             if (aa.getDate() == 22) {
                 $('#C21').attr("disabled", false);
@@ -778,43 +790,44 @@
             return new Date(year, month + 1, 0).getDate();
         }
     </script>
-    if (DateTime.Now.Day == 1)
-    {
         <script>
             function onlo1() {
-                var customVal = $("#md1").data("value");
-                var aa = new Date(customVal);
-                var md = daysInMonth(aa.getMonth(), aa.getFullYear());
-                if (date.now.date != aa.date) {
-                    if (md === 28) {
-                        if (aa.getDate() == 28) {
-                            $('#C28').attr("disabled", false);
-                            $('#C27').attr("disabled", true);
+                var today = new Date();
+                if (today.getDay() == 1) {
+                    var customVal = $("#md1").data("value");
+                    var aa = new Date(customVal);
+                    var md = daysInMonth(aa.getMonth(), aa.getFullYear());
+                    if (today.getDate() != aa.getDate()) {
+                        if (md === 28) {
+                            if (aa.getDate() == 28) {
+                                $('#C28').attr("disabled", false);
+                                $('#C27').attr("disabled", true);
+                            }
+                        }
+                        if (md === 29) {
+                            if (aa.getDate() == 29) {
+                                $('#C29').attr("disabled", false);
+                                $('#C28').attr("disabled", true);
+                            }
+                        }
+                        if (md === 30) {
+                            if (aa.getDate() == 30) {
+                                $('#C30').attr("disabled", false);
+                                $('#C29').attr("disabled", true);
+                            }
+                        }
+                        if (md === 31) {
+                            if (aa.getDate() == 31) {
+                                $('#C31').attr("disabled", false);
+                                $('#C30').attr("disabled", true);
+                            }
                         }
                     }
-                    if (md === 29) {
-                        if (aa.getDate() == 29) {
-                            $('#C29').attr("disabled", false);
-                            $('#C28').attr("disabled", true);
-                        }
-                    }
-                    if (md === 30) {
-                        if (aa.getDate() == 30) {
-                            $('#C30').attr("disabled", false);
-                            $('#C29').attr("disabled", true);
-                        }
-                    }
-                    if (md === 31) {
-                        if (aa.getDate() == 31) {
-                            $('#C31').attr("disabled", false);
-                            $('#C30').attr("disabled", true);
-                        }
-                    }
+                    
                 }
                     
             }
         </script>
-    }
 @*
         <script>
             $("#edit").dialog({

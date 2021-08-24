@@ -92,6 +92,10 @@
         th {
             background-color: #2f5168 !important
         }
+        table th {
+            position: sticky;
+            top: 0px
+        }
         .navbar-inverse .navbar-nav > li > a {
             color: #fff;
         }
@@ -209,6 +213,7 @@
                                 </i>
                             </li>
                         }
+                        if (User.IsInRole("Head_of_projects")){<li>@Html.ActionLink("summary", "Index", "summary")</li>}
                         if (User.IsInRole("Admin") || User.IsInRole("Employee"))
                         {
                             <li>@Html.ActionLink("Add new Time-sheet", "MCreate", "Home")</li>

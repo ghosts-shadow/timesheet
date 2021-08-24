@@ -149,10 +149,18 @@
             if (dateat.Day == 1) this.fillformpremon(aa.ID);
             else
             {
-                var filleddate = atlist.Find(x=>x.SubMain == aa.ID).Path;
-                if (filleddate.IsNullOrWhiteSpace() || !filleddate.Contains(aa.TMonth.ToString("d")) )
+                var atl = atlist.Find(x => x.SubMain == aa.ID);
+                if (atl != null)
                 {
-                    filldate(aa.ID);
+                    var filleddate = atlist.Find(x => x.SubMain == aa.ID).Path;
+                    if (filleddate.IsNullOrWhiteSpace() || !filleddate.Contains(aa.TMonth.ToString("d")))
+                    {
+                        filldate(aa.ID);
+                    }
+                }
+                else
+                {
+                    fillformpremon(aa.ID);
                 }
             }
 
@@ -6022,12 +6030,10 @@
             {
                 var scid = this.db.CsPermissions.Where(x => x.CsUser == uid1.csid).ToList();
                 foreach (var i in scid) t.Add(this.db.ProjectLists.Find(i.Project));
-
-                this.ViewBag.csp = new SelectList(t, "ID", "PROJECT_NAME").OrderBy(x => x.Text);
             }
             else
             {
-                this.ViewBag.csp = new SelectList(this.db.ProjectLists, "ID", "PROJECT_NAME").OrderBy(x => x.Text);
+                t = db.ProjectLists.ToList();
             }
 
             this.ViewBag.csmps1 = csmps;
@@ -6041,11 +6047,18 @@
             {
                 DateTime.TryParse(mtsmonth.Value.ToString(), out var dm);
                 long.TryParse(csmps.ToString(), out var lcsmps);
-                var ab = this.db.MainTimeSheets
+                var ab1 = this.db.MainTimeSheets
                     .Where(
                         x => x.TMonth.Month.Equals(dm.Month) && x.TMonth.Year.Equals(dm.Year)
-                                                             && x.ManPowerSupplier.Equals(lcsmps)).OrderBy(x => x.ID)
-                    .ToPagedList(1, 1000);
+                                                             && x.ManPowerSupplier.Equals(lcsmps)).OrderBy(x => x.ID);
+                var ab = new List<MainTimeSheet>();
+                foreach (var pr in t)
+                {
+                    ab.AddRange(this.db.MainTimeSheets
+                        .Where(
+                            x => x.TMonth.Month.Equals(dm.Month) && x.TMonth.Year.Equals(dm.Year)
+                                                                 && x.ManPowerSupplier.Equals(lcsmps) && x.Project.Equals(pr.ID)).OrderBy(x => x.ID).ToList());
+                }
                 if (ab.Count != 0)
                 {
                     foreach (var abis in ab)
@@ -6067,7 +6080,7 @@
                 }
                 else
                 {
-                    this.ModelState.AddModelError(string.Empty, "the combination does not exist");
+                    this.ModelState.AddModelError(string.Empty, "the timesheet does not exist");
                     return this.View(ll.OrderByDescending(x => x.ID).ToPagedList(1, 1000));
                 }
             }
@@ -7933,11 +7946,12 @@ Please note that I have sent a new Time-Sheet for the date " + da.ToShortDateStr
                                                              && x.ManPowerSupplier.Equals(lcsmps)
                                                              && x.Project.Equals(lcsp)).OrderBy(x => x.ID).ToList();
                 var apall = this.db.approvals.ToList();
+                var i = 0;
+                var j = 0;
                 foreach (var abis in ab)
                 {
                     var ass = this.db.Attendances.Where(x => x.SubMain.Equals(abis.ID)).Include(x => x.LabourMaster)
                         .ToList();
-                    var i = 0;
                     foreach (var attendance in ass)
                         if (!apall.Exists(x => x.A_id == attendance.ID && x.adate == dm))
                         {
@@ -7980,12 +7994,13 @@ Please note that I have sent a new Time-Sheet for the date " + da.ToShortDateStr
                                 if (aa1.status.Contains("rejected") && aa1.adate == dm)
                                     if (this.User.IsInRole("Employee"))
                                     {
+                                        j++;
                                         attendance.status = "submitted for " + dm.Day;
                                         this.db.Entry(attendance).State = EntityState.Modified;
                                         this.db.SaveChanges();
                                         aa1.status = "submitted";
                                         this.db.Entry(aa1).State = EntityState.Modified;
-                                        if (i == 1)
+                                        if (j == 1)
                                             this.SendMail(
                                                 attendance.MainTimeSheet.ManPowerSupplier1.Supplier,
                                                 attendance.MainTimeSheet.ProjectList.PROJECT_NAME,

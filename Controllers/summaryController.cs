@@ -21,8 +21,23 @@ namespace onlygodknows.Controllers
         // GET: Attendances
         public ActionResult Index()
         {
+
+            var uid = this.User.Identity.GetUserId();
+            var uid1 = this.db.AspNetUsers.Find(uid);
+            var projectlist = new List<ProjectList>();
+            if (uid1.csid != 0 && !(this.User.IsInRole("Admin") || this.User.IsInRole("Head_of_projects")))
+            {
+                var scid = this.db.CsPermissions.Where(x => x.CsUser == uid1.csid).ToList();
+                var t = new List<ProjectList>();
+                foreach (var i in scid) t.Add(this.db.ProjectLists.Find(i.Project));
+                projectlist = t;
+            }
+            else
+            {
+                projectlist = this.db.ProjectLists.ToList();
+            }
             var attendances = db.Attendances.Include(a => a.LabourMaster).Include(a => a.MainTimeSheet);
-            var projectlist = this.db.ProjectLists.ToList();
+            
             var att = new List<Attendance>();
             foreach (var plist in projectlist)
             {
