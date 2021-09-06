@@ -2670,187 +2670,187 @@
                     var date = new DateTime(aa.TMonth.Year, aa.TMonth.Month, 1);
                     if (at != null)
                     {
-                        if (attendance.C1 != "0" && attendance.C1 != null &&  tfed.effectivedate.Value.Day <= 1)
+                        if (attendance.C1 != "0" && attendance.C1 != null &&  tfed.effectivedate.Value <= new DateTime(aa.TMonth.Year, aa.TMonth.Month,1))
                             if (!ap.Exists(
                                 x => x.adate == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 1)
                                      && !(x.status == null || x.status.Contains("rejected"))))
                                 at.C1 = attendance.C1;
 
-                        if (attendance.C2 != "0" && attendance.C2 != null &&  tfed.effectivedate.Value.Day <= 2)
+                        if (attendance.C2 != "0" && attendance.C2 != null &&  tfed.effectivedate.Value <= new DateTime(aa.TMonth.Year, aa.TMonth.Month, 2))
                             if (!ap.Exists(
                                 x => x.adate == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 2)
                                      && !(x.status == null || x.status.Contains("rejected"))))
                                 at.C2 = attendance.C2;
 
-                        if (attendance.C3 != "0" && attendance.C3 != null &&  tfed.effectivedate.Value.Day <= 3)
+                        if (attendance.C3 != "0" && attendance.C3 != null &&  tfed.effectivedate.Value <= new DateTime(aa.TMonth.Year, aa.TMonth.Month, 3))
                             if (!ap.Exists(
                                 x => x.adate == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 3)
                                      && !(x.status == null || x.status.Contains("rejected"))))
                                 at.C3 = attendance.C3;
 
-                        if (attendance.C4 != "0" && attendance.C4 != null &&  tfed.effectivedate.Value.Day <= 4)
+                        if (attendance.C4 != "0" && attendance.C4 != null &&  tfed.effectivedate.Value <= new DateTime(aa.TMonth.Year, aa.TMonth.Month, 4))
                             if (!ap.Exists(
                                 x => x.adate == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 4)
                                      && !(x.status == null || x.status.Contains("rejected"))))
                                 at.C4 = attendance.C4;
 
-                        if (attendance.C5 != "0" && attendance.C5 != null &&  tfed.effectivedate.Value.Day <= 5)
+                        if (attendance.C5 != "0" && attendance.C5 != null &&  tfed.effectivedate.Value <= new DateTime(aa.TMonth.Year, aa.TMonth.Month, 5))
                             if (!ap.Exists(
                                 x => x.adate == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 5)
                                      && !(x.status == null || x.status.Contains("rejected"))))
                                 at.C5 = attendance.C5;
 
-                        if (attendance.C6 != "0" && attendance.C6 != null &&  tfed.effectivedate.Value.Day <= 6)
+                        if (attendance.C6 != "0" && attendance.C6 != null &&  tfed.effectivedate.Value <= new DateTime(aa.TMonth.Year, aa.TMonth.Month, 6))
                             if (!ap.Exists(
                                 x => x.adate == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 6)
                                      && !(x.status == null || x.status.Contains("rejected"))))
                                 at.C6 = attendance.C6;
 
-                        if (attendance.C7 != "0" && attendance.C7 != null &&  tfed.effectivedate.Value.Day <= 7)
+                        if (attendance.C7 != "0" && attendance.C7 != null &&  tfed.effectivedate.Value <= new DateTime(aa.TMonth.Year, aa.TMonth.Month, 7))
                             if (!ap.Exists(
                                 x => x.adate == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 7)
                                      && !(x.status == null || x.status.Contains("rejected"))))
                                 at.C7 = attendance.C7;
 
-                        if (attendance.C8 != "0" && attendance.C8 != null &&  tfed.effectivedate.Value.Day <= 8)
+                        if (attendance.C8 != "0" && attendance.C8 != null &&  tfed.effectivedate.Value <= new DateTime(aa.TMonth.Year, aa.TMonth.Month, 8))
                             if (!ap.Exists(
                                 x => x.adate == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 8)
                                      && !(x.status == null || x.status.Contains("rejected"))))
                                 at.C8 = attendance.C8;
 
-                        if (attendance.C9 != "0" && attendance.C9 != null &&  tfed.effectivedate.Value.Day <= 9)
+                        if (attendance.C9 != "0" && attendance.C9 != null &&  tfed.effectivedate.Value <= new DateTime(aa.TMonth.Year, aa.TMonth.Month, 9))
                             if (!ap.Exists(
                                 x => x.adate == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 9)
                                      && !(x.status == null || x.status.Contains("rejected"))))
                                 at.C9 = attendance.C9;
 
-                        if (attendance.C10 != "0" && attendance.C10 != null &&  tfed.effectivedate.Value.Day <= 10)
+                        if (attendance.C10 != "0" && attendance.C10 != null &&  tfed.effectivedate.Value <= new DateTime(aa.TMonth.Year, aa.TMonth.Month, 10))
                             if (!ap.Exists(
                                 x => x.adate == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 10)
                                      && !(x.status == null || x.status.Contains("rejected"))))
                                 at.C10 = attendance.C10;
 
-                        if (attendance.C11 != "0" && attendance.C11 != null &&  tfed.effectivedate.Value.Day <= 11)
+                        if (attendance.C11 != "0" && attendance.C11 != null &&  tfed.effectivedate.Value <= new DateTime(aa.TMonth.Year, aa.TMonth.Month, 11))
                             if (!ap.Exists(
                                 x => x.adate == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 11)
                                      && !(x.status == null || x.status.Contains("rejected"))))
                                 at.C11 = attendance.C11;
 
-                        if (attendance.C12 != "0" && attendance.C12 != null &&  tfed.effectivedate.Value.Day <= 12)
+                        if (attendance.C12 != "0" && attendance.C12 != null &&  tfed.effectivedate.Value <= new DateTime(aa.TMonth.Year, aa.TMonth.Month, 12))
                             if (!ap.Exists(
                                 x => x.adate == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 12)
                                      && !(x.status == null || x.status.Contains("rejected"))))
                                 at.C12 = attendance.C12;
 
-                        if (attendance.C13 != "0" && attendance.C13 != null &&  tfed.effectivedate.Value.Day <= 13)
+                        if (attendance.C13 != "0" && attendance.C13 != null &&  tfed.effectivedate.Value <= new DateTime(aa.TMonth.Year, aa.TMonth.Month, 13))
                             if (!ap.Exists(
                                 x => x.adate == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 13)
                                      && !(x.status == null || x.status.Contains("rejected"))))
                                 at.C13 = attendance.C13;
 
-                        if (attendance.C14 != "0" && attendance.C14 != null &&  tfed.effectivedate.Value.Day <= 14)
+                        if (attendance.C14 != "0" && attendance.C14 != null &&  tfed.effectivedate.Value <= new DateTime(aa.TMonth.Year, aa.TMonth.Month, 14))
                             if (!ap.Exists(
                                 x => x.adate == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 14)
                                      && !(x.status == null || x.status.Contains("rejected"))))
                                 at.C14 = attendance.C14;
 
-                        if (attendance.C15 != "0" && attendance.C15 != null &&  tfed.effectivedate.Value.Day <= 15)
+                        if (attendance.C15 != "0" && attendance.C15 != null &&  tfed.effectivedate.Value <= new DateTime(aa.TMonth.Year, aa.TMonth.Month, 15))
                             if (!ap.Exists(
                                 x => x.adate == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 15)
                                      && !(x.status == null || x.status.Contains("rejected"))))
                                 at.C15 = attendance.C15;
 
-                        if (attendance.C16 != "0" && attendance.C16 != null &&  tfed.effectivedate.Value.Day <= 16)
+                        if (attendance.C16 != "0" && attendance.C16 != null &&  tfed.effectivedate.Value <= new DateTime(aa.TMonth.Year, aa.TMonth.Month, 16))
                             if (!ap.Exists(
                                 x => x.adate == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 16)
                                      && !(x.status == null || x.status.Contains("rejected"))))
                                 at.C16 = attendance.C16;
 
-                        if (attendance.C17 != "0" && attendance.C17 != null &&  tfed.effectivedate.Value.Day <= 17)
+                        if (attendance.C17 != "0" && attendance.C17 != null &&  tfed.effectivedate.Value <= new DateTime(aa.TMonth.Year, aa.TMonth.Month, 17))
                             if (!ap.Exists(
                                 x => x.adate == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 17)
                                      && !(x.status == null || x.status.Contains("rejected"))))
                                 at.C17 = attendance.C17;
 
-                        if (attendance.C18 != "0" && attendance.C18 != null &&  tfed.effectivedate.Value.Day <= 18)
+                        if (attendance.C18 != "0" && attendance.C18 != null &&  tfed.effectivedate.Value <= new DateTime(aa.TMonth.Year, aa.TMonth.Month, 18))
                             if (!ap.Exists(
                                 x => x.adate == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 18)
                                      && !(x.status == null || x.status.Contains("rejected"))))
                                 at.C18 = attendance.C18;
 
-                        if (attendance.C19 != "0" && attendance.C19 != null &&  tfed.effectivedate.Value.Day <= 19)
+                        if (attendance.C19 != "0" && attendance.C19 != null &&  tfed.effectivedate.Value <= new DateTime(aa.TMonth.Year, aa.TMonth.Month, 19))
                             if (!ap.Exists(
                                 x => x.adate == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 19)
                                      && !(x.status == null || x.status.Contains("rejected"))))
                                 at.C19 = attendance.C19;
 
-                        if (attendance.C20 != "0" && attendance.C20 != null &&  tfed.effectivedate.Value.Day <= 20)
+                        if (attendance.C20 != "0" && attendance.C20 != null &&  tfed.effectivedate.Value <= new DateTime(aa.TMonth.Year, aa.TMonth.Month, 20))
                             if (!ap.Exists(
                                 x => x.adate == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 20)
                                      && !(x.status == null || x.status.Contains("rejected"))))
                                 at.C20 = attendance.C20;
 
-                        if (attendance.C21 != "0" && attendance.C21 != null &&  tfed.effectivedate.Value.Day <= 21)
+                        if (attendance.C21 != "0" && attendance.C21 != null &&  tfed.effectivedate.Value <= new DateTime(aa.TMonth.Year, aa.TMonth.Month, 21))
                             if (!ap.Exists(
                                 x => x.adate == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 21)
                                      && !(x.status == null || x.status.Contains("rejected"))))
                                 at.C21 = attendance.C21;
 
-                        if (attendance.C22 != "0" && attendance.C22 != null &&  tfed.effectivedate.Value.Day <= 22)
+                        if (attendance.C22 != "0" && attendance.C22 != null &&  tfed.effectivedate.Value <= new DateTime(aa.TMonth.Year, aa.TMonth.Month, 22))
                             if (!ap.Exists(
                                 x => x.adate == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 22)
                                      && !(x.status == null || x.status.Contains("rejected"))))
                                 at.C22 = attendance.C22;
 
-                        if (attendance.C23 != "0" && attendance.C23 != null &&  tfed.effectivedate.Value.Day <= 23)
+                        if (attendance.C23 != "0" && attendance.C23 != null &&  tfed.effectivedate.Value <= new DateTime(aa.TMonth.Year, aa.TMonth.Month, 23))
                             if (!ap.Exists(
                                 x => x.adate == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 23)
                                      && !(x.status == null || x.status.Contains("rejected"))))
                                 at.C23 = attendance.C23;
 
-                        if (attendance.C24 != "0" && attendance.C24 != null &&  tfed.effectivedate.Value.Day <= 24)
+                        if (attendance.C24 != "0" && attendance.C24 != null &&  tfed.effectivedate.Value <= new DateTime(aa.TMonth.Year, aa.TMonth.Month, 24))
                             if (!ap.Exists(
                                 x => x.adate == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 24)
                                      && !(x.status == null || x.status.Contains("rejected"))))
                                 at.C24 = attendance.C24;
 
-                        if (attendance.C25 != "0" && attendance.C25 != null &&  tfed.effectivedate.Value.Day <= 25)
+                        if (attendance.C25 != "0" && attendance.C25 != null &&  tfed.effectivedate.Value <= new DateTime(aa.TMonth.Year, aa.TMonth.Month, 25))
                             if (!ap.Exists(
                                 x => x.adate == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 25)
                                      && !(x.status == null || x.status.Contains("rejected"))))
                                 at.C25 = attendance.C25;
 
-                        if (attendance.C26 != "0" && attendance.C26 != null &&  tfed.effectivedate.Value.Day <= 26)
+                        if (attendance.C26 != "0" && attendance.C26 != null &&  tfed.effectivedate.Value <= new DateTime(aa.TMonth.Year, aa.TMonth.Month, 26))
                             if (!ap.Exists(
                                 x => x.adate == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 26)
                                      && !(x.status == null || x.status.Contains("rejected"))))
                                 at.C26 = attendance.C26;
 
-                        if (attendance.C27 != "0" && attendance.C27 != null &&  tfed.effectivedate.Value.Day <= 27)
+                        if (attendance.C27 != "0" && attendance.C27 != null &&  tfed.effectivedate.Value <= new DateTime(aa.TMonth.Year, aa.TMonth.Month, 27))
                             if (!ap.Exists(
                                 x => x.adate == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 27)
                                      && !(x.status == null || x.status.Contains("rejected"))))
                                 at.C27 = attendance.C27;
 
-                        if (attendance.C28 != "0" && attendance.C28 != null &&  tfed.effectivedate.Value.Day <= 28)
+                        if (attendance.C28 != "0" && attendance.C28 != null &&  tfed.effectivedate.Value <= new DateTime(aa.TMonth.Year, aa.TMonth.Month, 28))
                             if (!ap.Exists(
                                 x => x.adate == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 28)
                                      && !(x.status == null || x.status.Contains("rejected"))))
                                 at.C28 = attendance.C28;
 
-                        if (attendance.C29 != "0" && attendance.C29 != null &&  tfed.effectivedate.Value.Day <= 29)
+                        if (attendance.C29 != "0" && attendance.C29 != null &&  tfed.effectivedate.Value <= new DateTime(aa.TMonth.Year, aa.TMonth.Month, 29))
                             if (!ap.Exists(
                                 x => x.adate == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 29)
                                      && !(x.status == null || x.status.Contains("rejected"))))
                                 at.C29 = attendance.C29;
 
-                        if (attendance.C30 != "0" && attendance.C30 != null &&  tfed.effectivedate.Value.Day <= 30)
+                        if (attendance.C30 != "0" && attendance.C30 != null &&  tfed.effectivedate.Value <= new DateTime(aa.TMonth.Year, aa.TMonth.Month, 30))
                             if (!ap.Exists(
                                 x => x.adate == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 30)
                                      && !(x.status == null || x.status.Contains("rejected"))))
                                 at.C30 = attendance.C30;
 
-                        if (attendance.C31 != "0" && attendance.C31 != null &&  tfed.effectivedate.Value.Day <= 31)
+                        if (attendance.C31 != "0" && attendance.C31 != null &&  tfed.effectivedate.Value <= new DateTime(aa.TMonth.Year, aa.TMonth.Month, 31))
                             if (!ap.Exists(
                                 x => x.adate == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 31)
                                      && !(x.status == null || x.status.Contains("rejected"))))
@@ -4847,187 +4847,187 @@
                     at.Holidays = holi;
 
 
-                    if (attendance.C1 != "0" && attendance.C1 != null && tfed.effectivedate.Value.Day <= 1)
+                    if (attendance.C1 != "0" && attendance.C1 != null && tfed.effectivedate.Value <= new DateTime(aa.TMonth.Year, aa.TMonth.Month, 1))
                         if (!ap.Exists(
                             x => x.adate == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 1)
                                  && !(x.status == null || x.status.Contains("rejected"))))
                             at.C1 = attendance.C1;
 
-                    if (attendance.C2 != "0" && attendance.C2 != null &&  tfed.effectivedate.Value.Day <= 2)
+                    if (attendance.C2 != "0" && attendance.C2 != null &&  tfed.effectivedate.Value <= new DateTime(aa.TMonth.Year, aa.TMonth.Month, 2))
                         if (!ap.Exists(
                             x => x.adate == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 2)
                                  && !(x.status == null || x.status.Contains("rejected"))))
                             at.C2 = attendance.C2;
 
-                    if (attendance.C3 != "0" && attendance.C3 != null &&  tfed.effectivedate.Value.Day <= 3)
+                    if (attendance.C3 != "0" && attendance.C3 != null &&  tfed.effectivedate.Value <= new DateTime(aa.TMonth.Year, aa.TMonth.Month, 3))
                         if (!ap.Exists(
                             x => x.adate == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 3)
                                  && !(x.status == null || x.status.Contains("rejected"))))
                             at.C3 = attendance.C3;
 
-                    if (attendance.C4 != "0" && attendance.C4 != null &&  tfed.effectivedate.Value.Day <= 4)
+                    if (attendance.C4 != "0" && attendance.C4 != null &&  tfed.effectivedate.Value <= new DateTime(aa.TMonth.Year, aa.TMonth.Month, 4))
                         if (!ap.Exists(
                             x => x.adate == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 4)
                                  && !(x.status == null || x.status.Contains("rejected"))))
                             at.C4 = attendance.C4;
 
-                    if (attendance.C5 != "0" && attendance.C5 != null &&  tfed.effectivedate.Value.Day <= 5)
+                    if (attendance.C5 != "0" && attendance.C5 != null &&  tfed.effectivedate.Value <= new DateTime(aa.TMonth.Year, aa.TMonth.Month, 5))
                         if (!ap.Exists(
                             x => x.adate == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 5)
                                  && !(x.status == null || x.status.Contains("rejected"))))
                             at.C5 = attendance.C5;
 
-                    if (attendance.C6 != "0" && attendance.C6 != null &&  tfed.effectivedate.Value.Day <= 6)
+                    if (attendance.C6 != "0" && attendance.C6 != null &&  tfed.effectivedate.Value <= new DateTime(aa.TMonth.Year, aa.TMonth.Month, 6))
                         if (!ap.Exists(
                             x => x.adate == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 6)
                                  && !(x.status == null || x.status.Contains("rejected"))))
                             at.C6 = attendance.C6;
 
-                    if (attendance.C7 != "0" && attendance.C7 != null &&  tfed.effectivedate.Value.Day <= 7)
+                    if (attendance.C7 != "0" && attendance.C7 != null &&  tfed.effectivedate.Value <= new DateTime(aa.TMonth.Year, aa.TMonth.Month, 7))
                         if (!ap.Exists(
                             x => x.adate == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 7)
                                  && !(x.status == null || x.status.Contains("rejected"))))
                             at.C7 = attendance.C7;
 
-                    if (attendance.C8 != "0" && attendance.C8 != null &&  tfed.effectivedate.Value.Day <= 8)
+                    if (attendance.C8 != "0" && attendance.C8 != null &&  tfed.effectivedate.Value <= new DateTime(aa.TMonth.Year, aa.TMonth.Month, 8))
                         if (!ap.Exists(
                             x => x.adate == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 8)
                                  && !(x.status == null || x.status.Contains("rejected"))))
                             at.C8 = attendance.C8;
 
-                    if (attendance.C9 != "0" && attendance.C9 != null &&  tfed.effectivedate.Value.Day <= 9)
+                    if (attendance.C9 != "0" && attendance.C9 != null &&  tfed.effectivedate.Value <= new DateTime(aa.TMonth.Year, aa.TMonth.Month, 9))
                         if (!ap.Exists(
                             x => x.adate == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 9)
                                  && !(x.status == null || x.status.Contains("rejected"))))
                             at.C9 = attendance.C9;
 
-                    if (attendance.C10 != "0" && attendance.C10 != null &&  tfed.effectivedate.Value.Day <= 10)
+                    if (attendance.C10 != "0" && attendance.C10 != null &&  tfed.effectivedate.Value <= new DateTime(aa.TMonth.Year, aa.TMonth.Month, 10))
                         if (!ap.Exists(
                             x => x.adate == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 10)
                                  && !(x.status == null || x.status.Contains("rejected"))))
                             at.C10 = attendance.C10;
 
-                    if (attendance.C11 != "0" && attendance.C11 != null &&  tfed.effectivedate.Value.Day <= 11)
+                    if (attendance.C11 != "0" && attendance.C11 != null &&  tfed.effectivedate.Value <= new DateTime(aa.TMonth.Year, aa.TMonth.Month, 11))
                         if (!ap.Exists(
                             x => x.adate == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 11)
                                  && !(x.status == null || x.status.Contains("rejected"))))
                             at.C11 = attendance.C11;
 
-                    if (attendance.C12 != "0" && attendance.C12 != null &&  tfed.effectivedate.Value.Day <= 12)
+                    if (attendance.C12 != "0" && attendance.C12 != null &&  tfed.effectivedate.Value <= new DateTime(aa.TMonth.Year, aa.TMonth.Month, 12))
                         if (!ap.Exists(
                             x => x.adate == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 12)
                                  && !(x.status == null || x.status.Contains("rejected"))))
                             at.C12 = attendance.C12;
 
-                    if (attendance.C13 != "0" && attendance.C13 != null &&  tfed.effectivedate.Value.Day <= 13)
+                    if (attendance.C13 != "0" && attendance.C13 != null &&  tfed.effectivedate.Value <= new DateTime(aa.TMonth.Year, aa.TMonth.Month, 13))
                         if (!ap.Exists(
                             x => x.adate == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 13)
                                  && !(x.status == null || x.status.Contains("rejected"))))
                             at.C13 = attendance.C13;
 
-                    if (attendance.C14 != "0" && attendance.C14 != null &&  tfed.effectivedate.Value.Day <= 14)
+                    if (attendance.C14 != "0" && attendance.C14 != null &&  tfed.effectivedate.Value <= new DateTime(aa.TMonth.Year, aa.TMonth.Month, 14))
                         if (!ap.Exists(
                             x => x.adate == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 14)
                                  && !(x.status == null || x.status.Contains("rejected"))))
                             at.C14 = attendance.C14;
 
-                    if (attendance.C15 != "0" && attendance.C15 != null &&  tfed.effectivedate.Value.Day <= 15)
+                    if (attendance.C15 != "0" && attendance.C15 != null &&  tfed.effectivedate.Value <= new DateTime(aa.TMonth.Year, aa.TMonth.Month, 15))
                         if (!ap.Exists(
                             x => x.adate == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 15)
                                  && !(x.status == null || x.status.Contains("rejected"))))
                             at.C15 = attendance.C15;
 
-                    if (attendance.C16 != "0" && attendance.C16 != null &&  tfed.effectivedate.Value.Day <= 16)
+                    if (attendance.C16 != "0" && attendance.C16 != null &&  tfed.effectivedate.Value <= new DateTime(aa.TMonth.Year, aa.TMonth.Month, 16))
                         if (!ap.Exists(
                             x => x.adate == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 16)
                                  && !(x.status == null || x.status.Contains("rejected"))))
                             at.C16 = attendance.C16;
 
-                    if (attendance.C17 != "0" && attendance.C17 != null &&  tfed.effectivedate.Value.Day <= 17)
+                    if (attendance.C17 != "0" && attendance.C17 != null &&  tfed.effectivedate.Value <= new DateTime(aa.TMonth.Year, aa.TMonth.Month, 17))
                         if (!ap.Exists(
                             x => x.adate == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 17)
                                  && !(x.status == null || x.status.Contains("rejected"))))
                             at.C17 = attendance.C17;
 
-                    if (attendance.C18 != "0" && attendance.C18 != null &&  tfed.effectivedate.Value.Day <= 18)
+                    if (attendance.C18 != "0" && attendance.C18 != null &&  tfed.effectivedate.Value <= new DateTime(aa.TMonth.Year, aa.TMonth.Month, 18))
                         if (!ap.Exists(
                             x => x.adate == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 18)
                                  && !(x.status == null || x.status.Contains("rejected"))))
                             at.C18 = attendance.C18;
 
-                    if (attendance.C19 != "0" && attendance.C19 != null &&  tfed.effectivedate.Value.Day <= 19)
+                    if (attendance.C19 != "0" && attendance.C19 != null &&  tfed.effectivedate.Value <= new DateTime(aa.TMonth.Year, aa.TMonth.Month, 19))
                         if (!ap.Exists(
                             x => x.adate == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 19)
                                  && !(x.status == null || x.status.Contains("rejected"))))
                             at.C19 = attendance.C19;
 
-                    if (attendance.C20 != "0" && attendance.C20 != null &&  tfed.effectivedate.Value.Day <= 20)
+                    if (attendance.C20 != "0" && attendance.C20 != null &&  tfed.effectivedate.Value <= new DateTime(aa.TMonth.Year, aa.TMonth.Month, 20))
                         if (!ap.Exists(
                             x => x.adate == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 20)
                                  && !(x.status == null || x.status.Contains("rejected"))))
                             at.C20 = attendance.C20;
 
-                    if (attendance.C21 != "0" && attendance.C21 != null &&  tfed.effectivedate.Value.Day <= 21)
+                    if (attendance.C21 != "0" && attendance.C21 != null &&  tfed.effectivedate.Value <= new DateTime(aa.TMonth.Year, aa.TMonth.Month, 21))
                         if (!ap.Exists(
                             x => x.adate == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 21)
                                  && !(x.status == null || x.status.Contains("rejected"))))
                             at.C21 = attendance.C21;
 
-                    if (attendance.C22 != "0" && attendance.C22 != null &&  tfed.effectivedate.Value.Day <= 22)
+                    if (attendance.C22 != "0" && attendance.C22 != null &&  tfed.effectivedate.Value <= new DateTime(aa.TMonth.Year, aa.TMonth.Month, 22))
                         if (!ap.Exists(
                             x => x.adate == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 22)
                                  && !(x.status == null || x.status.Contains("rejected"))))
                             at.C22 = attendance.C22;
 
-                    if (attendance.C23 != "0" && attendance.C23 != null &&  tfed.effectivedate.Value.Day <= 23)
+                    if (attendance.C23 != "0" && attendance.C23 != null &&  tfed.effectivedate.Value <= new DateTime(aa.TMonth.Year, aa.TMonth.Month, 23))
                         if (!ap.Exists(
                             x => x.adate == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 23)
                                  && !(x.status == null || x.status.Contains("rejected"))))
                             at.C23 = attendance.C23;
 
-                    if (attendance.C24 != "0" && attendance.C24 != null &&  tfed.effectivedate.Value.Day <= 24)
+                    if (attendance.C24 != "0" && attendance.C24 != null &&  tfed.effectivedate.Value <= new DateTime(aa.TMonth.Year, aa.TMonth.Month, 24))
                         if (!ap.Exists(
                             x => x.adate == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 24)
                                  && !(x.status == null || x.status.Contains("rejected"))))
                             at.C24 = attendance.C24;
 
-                    if (attendance.C25 != "0" && attendance.C25 != null &&  tfed.effectivedate.Value.Day <= 25)
+                    if (attendance.C25 != "0" && attendance.C25 != null &&  tfed.effectivedate.Value <= new DateTime(aa.TMonth.Year, aa.TMonth.Month, 25))
                         if (!ap.Exists(
                             x => x.adate == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 25)
                                  && !(x.status == null || x.status.Contains("rejected"))))
                             at.C25 = attendance.C25;
 
-                    if (attendance.C26 != "0" && attendance.C26 != null &&  tfed.effectivedate.Value.Day <= 26)
+                    if (attendance.C26 != "0" && attendance.C26 != null &&  tfed.effectivedate.Value <= new DateTime(aa.TMonth.Year, aa.TMonth.Month, 26))
                         if (!ap.Exists(
                             x => x.adate == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 26)
                                  && !(x.status == null || x.status.Contains("rejected"))))
                             at.C26 = attendance.C26;
 
-                    if (attendance.C27 != "0" && attendance.C27 != null &&  tfed.effectivedate.Value.Day <= 27)
+                    if (attendance.C27 != "0" && attendance.C27 != null &&  tfed.effectivedate.Value <= new DateTime(aa.TMonth.Year, aa.TMonth.Month, 27))
                         if (!ap.Exists(
                             x => x.adate == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 27)
                                  && !(x.status == null || x.status.Contains("rejected"))))
                             at.C27 = attendance.C27;
 
-                    if (attendance.C28 != "0" && attendance.C28 != null &&  tfed.effectivedate.Value.Day <= 28)
+                    if (attendance.C28 != "0" && attendance.C28 != null &&  tfed.effectivedate.Value <= new DateTime(aa.TMonth.Year, aa.TMonth.Month, 28))
                         if (!ap.Exists(
                             x => x.adate == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 28)
                                  && !(x.status == null || x.status.Contains("rejected"))))
                             at.C28 = attendance.C28;
 
-                    if (attendance.C29 != "0" && attendance.C29 != null &&  tfed.effectivedate.Value.Day <= 29)
+                    if (attendance.C29 != "0" && attendance.C29 != null &&  tfed.effectivedate.Value <= new DateTime(aa.TMonth.Year, aa.TMonth.Month, 29))
                         if (!ap.Exists(
                             x => x.adate == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 29)
                                  && !(x.status == null || x.status.Contains("rejected"))))
                             at.C29 = attendance.C29;
 
-                    if (attendance.C30 != "0" && attendance.C30 != null &&  tfed.effectivedate.Value.Day <= 30)
+                    if (attendance.C30 != "0" && attendance.C30 != null &&  tfed.effectivedate.Value <= new DateTime(aa.TMonth.Year, aa.TMonth.Month, 30))
                         if (!ap.Exists(
                             x => x.adate == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 30)
                                  && !(x.status == null || x.status.Contains("rejected"))))
                             at.C30 = attendance.C30;
 
-                    if (attendance.C31 != "0" && attendance.C31 != null &&  tfed.effectivedate.Value.Day <= 31)
+                    if (attendance.C31 != "0" && attendance.C31 != null &&  tfed.effectivedate.Value <= new DateTime(aa.TMonth.Year, aa.TMonth.Month, 31))
                         if (!ap.Exists(
                             x => x.adate == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 31)
                                  && !(x.status == null || x.status.Contains("rejected"))))
