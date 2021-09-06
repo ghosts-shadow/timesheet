@@ -6,6 +6,7 @@ using System.Linq;
 using System.Net;
 using System.Web;
 using System.Web.Mvc;
+using Microsoft.AspNet.Identity;
 using onlygodknows.Models;
 
 namespace onlygodknows.Controllers
@@ -13,7 +14,7 @@ namespace onlygodknows.Controllers
     using System.IO;
 
     using PagedList;
-
+    [Authorize(Roles = "Admin,Employee,Head_of_projects,HR_manager,Project_manager")]
     public class towrefsController : Controller
     {
         private LogisticsSoftEntities db = new LogisticsSoftEntities();
@@ -21,7 +22,36 @@ namespace onlygodknows.Controllers
         // GET: towrefs
         public ActionResult Index()
         {
-            var towrefs = db.towrefs.Include(t => t.ProjectList).Include(t => t.ProjectList1).ToList();
+            var uid = this.User.Identity.GetUserId();
+            var uid1 = this.db.AspNetUsers.Find(uid);
+            var t = new List<ProjectList>();
+            var towrlist = db.towrefs.ToList();
+            if (uid1.csid != 0 && !this.User.IsInRole("Admin"))
+            {
+                var scid = this.db.CsPermissions.Where(x => x.CsUser == uid1.csid).ToList();
+                foreach (var i in scid) t.Add(this.db.ProjectLists.Find(i.Project));
+                
+            }
+            else
+            {
+              t = this.db.ProjectLists.ToList();
+            }
+            var towrefs = new List<towref>();
+            foreach (var list in t)
+            {
+                var trlist = towrlist.FindAll(x => x.mp_to == list.ID);
+                var trlist1 = towrlist.FindAll(x => x.mp_from == list.ID);
+                foreach (var towref in trlist1)
+                {
+                    towref.AR = true;
+                    towrefs.Add(towref);
+                }
+                towrefs.AddRange(trlist);
+            }
+            if (Request.IsAjaxRequest())
+            {
+                return PartialView(towrefs.ToPagedList(1, 100));
+            }
             return View(towrefs.ToPagedList(1,100));
         }
 
@@ -41,10 +71,29 @@ namespace onlygodknows.Controllers
         }
 
         // GET: towrefs/Create
+        [Authorize(Roles = "HR_manager,Project_manager")]
         public ActionResult Create()
         {
-            ViewBag.mp_to = new SelectList(db.ProjectLists, "ID", "PROJECT_NAME");
-            ViewBag.mp_from = new SelectList(db.ProjectLists, "ID", "PROJECT_NAME");
+            var prolist = db.ProjectLists.ToList();
+            var uid = this.User.Identity.GetUserId();
+            var uid1 = this.db.AspNetUsers.Find(uid);
+            var t = new List<ProjectList>();
+            if (uid1.csid != 0 && !this.User.IsInRole("Admin"))
+            {
+                var scid = this.db.CsPermissions.Where(x => x.CsUser == uid1.csid).ToList();
+                foreach (var i in scid) t.Add(this.db.ProjectLists.Find(i.Project));
+
+            }
+            else
+            {
+                t = this.db.ProjectLists.ToList();
+            }
+            ViewBag.mp_from = new SelectList(t, "ID", "PROJECT_NAME");
+            foreach (var list in t)
+            {
+                prolist.Remove(list);
+            }
+            ViewBag.mp_to = new SelectList(prolist, "ID", "PROJECT_NAME");
             return View();
         }
 
@@ -53,6 +102,7 @@ namespace onlygodknows.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "HR_manager,Project_manager")]
         public ActionResult Create([Bind(Include = "Id,refe1,mp_to,mp_from,R_no,mpcdate")] towref towref, HttpPostedFileBase postedFile)
         {
             var checktow = this.db.towrefs.ToList();
@@ -105,10 +155,28 @@ namespace onlygodknows.Controllers
                 var towf = this.db.towrefs.ToList().Last();
                 return RedirectToAction("Create","towemps",towf);
             }
-            ass: ; 
+            ass: ;
 
-            ViewBag.mp_to = new SelectList(db.ProjectLists, "ID", "PROJECT_NAME", towref.mp_to);
-            ViewBag.mp_from = new SelectList(db.ProjectLists, "ID", "PROJECT_NAME", towref.mp_from);
+            var prolist = db.ProjectLists.ToList();
+            var uid = this.User.Identity.GetUserId();
+            var uid1 = this.db.AspNetUsers.Find(uid);
+            var t = new List<ProjectList>();
+            if (uid1.csid != 0 && !this.User.IsInRole("Admin"))
+            {
+                var scid = this.db.CsPermissions.Where(x => x.CsUser == uid1.csid).ToList();
+                foreach (var i in scid) t.Add(this.db.ProjectLists.Find(i.Project));
+
+            }
+            else
+            {
+                t = this.db.ProjectLists.ToList();
+            }
+            ViewBag.mp_from = new SelectList(t, "ID", "PROJECT_NAME");
+            foreach (var list in t)
+            {
+                prolist.Remove(list);
+            }
+            ViewBag.mp_to = new SelectList(prolist, "ID", "PROJECT_NAME");
             return View(towref);
         }
 
@@ -124,8 +192,26 @@ namespace onlygodknows.Controllers
             {
                 return HttpNotFound();
             }
-            ViewBag.mp_to = new SelectList(db.ProjectLists, "ID", "PROJECT_NAME", towref.mp_to);
-            ViewBag.mp_from = new SelectList(db.ProjectLists, "ID", "PROJECT_NAME", towref.mp_from);
+            var prolist = db.ProjectLists.ToList();
+            var uid = this.User.Identity.GetUserId();
+            var uid1 = this.db.AspNetUsers.Find(uid);
+            var t = new List<ProjectList>();
+            if (uid1.csid != 0 && !this.User.IsInRole("Admin"))
+            {
+                var scid = this.db.CsPermissions.Where(x => x.CsUser == uid1.csid).ToList();
+                foreach (var i in scid) t.Add(this.db.ProjectLists.Find(i.Project));
+
+            }
+            else
+            {
+                t = this.db.ProjectLists.ToList();
+            }
+            ViewBag.mp_from = new SelectList(t, "ID", "PROJECT_NAME");
+            foreach (var list in t)
+            {
+                prolist.Remove(list);
+            }
+            ViewBag.mp_to = new SelectList(prolist, "ID", "PROJECT_NAME");
             return View(towref);
         }
 
@@ -142,8 +228,26 @@ namespace onlygodknows.Controllers
                 db.SaveChanges();
                 return RedirectToAction("Index");
             }
-            ViewBag.mp_to = new SelectList(db.ProjectLists, "ID", "PROJECT_NAME", towref.mp_to);
-            ViewBag.mp_from = new SelectList(db.ProjectLists, "ID", "PROJECT_NAME", towref.mp_from);
+            var prolist = db.ProjectLists.ToList();
+            var uid = this.User.Identity.GetUserId();
+            var uid1 = this.db.AspNetUsers.Find(uid);
+            var t = new List<ProjectList>();
+            if (uid1.csid != 0 && !this.User.IsInRole("Admin"))
+            {
+                var scid = this.db.CsPermissions.Where(x => x.CsUser == uid1.csid).ToList();
+                foreach (var i in scid) t.Add(this.db.ProjectLists.Find(i.Project));
+
+            }
+            else
+            {
+                t = this.db.ProjectLists.ToList();
+            }
+             ViewBag.mp_from = new SelectList(t, "ID", "PROJECT_NAME");
+            foreach (var list in t)
+            {
+                prolist.Remove(list);
+            }
+            ViewBag.mp_to = new SelectList(prolist, "ID", "PROJECT_NAME");
             return View(towref);
         }
 

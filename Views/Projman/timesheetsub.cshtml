@@ -1,0 +1,54 @@
+﻿@model IEnumerable<onlygodknows.Models.approval>
+
+
+<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+<script>
+    $(function () {
+        $("#datepicker").datepicker({
+            dateFormat: 'mm/dd/yy',
+            changeMonth: true,
+            changeYear: true
+        });
+    });
+</script>
+@using (Html.BeginForm())
+{
+    <input type="text" id="datepicker" name="subdate" class = "form-control"/><input type="submit" value="search" class="btn btn-default" />
+}
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.adate)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Attendance.MainTimeSheet.ProjectList.PROJECT_NAME)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Attendance.MainTimeSheet.ManPowerSupplier1.Supplier)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.status)
+        </th>
+    </tr>
+
+   @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.adate)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Attendance.MainTimeSheet.ProjectList.PROJECT_NAME)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Attendance.MainTimeSheet.ManPowerSupplier1.Supplier)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.status)
+            </td>
+        </tr>
+    }
+
+</table>

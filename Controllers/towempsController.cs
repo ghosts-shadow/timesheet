@@ -6,19 +6,38 @@ using System.Linq;
 using System.Net;
 using System.Web;
 using System.Web.Mvc;
+using MailKit.Net.Smtp;
+using Microsoft.AspNet.Identity;
+using MimeKit;
 using onlygodknows.Models;
 
 namespace onlygodknows.Controllers
 {
     using OfficeOpenXml;
 
+    [Authorize(Roles = "Admin,Employee,Head_of_projects,HR_manager,Project_manager")]
     public class towempsController : Controller
     {
         private LogisticsSoftEntities db = new LogisticsSoftEntities();
+
         // GET: towemps
         public ActionResult Index(int? id)
         {
-            var towemps = db.towemps.Include(t => t.LabourMaster).Include(t => t.towref).ToList();
+            var uid = this.User.Identity.GetUserId();
+            var uid1 = this.db.AspNetUsers.Find(uid);
+            var t = new List<ProjectList>();
+            var towrlist = db.towrefs.ToList();
+            if (uid1.csid != 0 && !this.User.IsInRole("Admin"))
+            {
+                var scid = this.db.CsPermissions.Where(x => x.CsUser == uid1.csid).ToList();
+                foreach (var i in scid) t.Add(this.db.ProjectLists.Find(i.Project));
+
+            }
+            else
+            {
+                t = this.db.ProjectLists.ToList();
+            }
+            var towemps = db.towemps.Include(t1 => t1.LabourMaster).Include(t1 => t1.towref).ToList();
             var tr = this.db.towrefs.Find(id);
             ViewBag.tw = tr.Id;
             ViewBag.form = tr.ProjectList1.PROJECT_NAME;
@@ -26,7 +45,15 @@ namespace onlygodknows.Controllers
             ViewBag.R_no = tr.R_no;
             ViewBag.refe1 = tr.refe1;
             ViewBag.mpcdate = tr.mpcdate;
-            return View(towemps.FindAll(x => x.rowref == id));
+            var tow = towemps.FindAll(x => x.rowref == id);
+            foreach (var towemp in tow)
+            {
+                if (t.Exists(x=>x.ID == tr.mp_to))
+                {
+                    towemp.towref.AR = true;
+                }
+            }
+            return View(tow);
         }
 
         // GET: towemps/Details/5
@@ -36,21 +63,28 @@ namespace onlygodknows.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
+
             towemp towemp = db.towemps.Find(id);
             if (towemp == null)
             {
                 return HttpNotFound();
             }
+
             return View(towemp);
         }
-        
+
         // GET: towemps/Create
+        [Authorize(Roles = "HR_manager,Project_manager")]
         public ActionResult Create(towref tw1)
         {
-            ViewBag.lab_no = new SelectList(db.LabourMasters.Where(x=>x.EMPNO >3).OrderBy(x=>x.EMPNO), "ID", "EMPNO");
-            ViewBag.lab_name = new SelectList(db.LabourMasters.Where(x => x.EMPNO > 3).OrderBy(x=>x.EMPNO), "ID", "Person_Name");
-            ViewBag.lab_position = new SelectList(db.LabourMasters.Where(x => x.EMPNO > 3).OrderBy(x=>x.EMPNO), "ID", "Position");
-            ViewBag.lab_mps = new SelectList(db.LabourMasters.Where(x => x.EMPNO > 3).OrderBy(x=>x.EMPNO), "ID", "ManPowerSupply");
+            ViewBag.lab_no = new SelectList(db.LabourMasters.Where(x => x.EMPNO > 3).OrderBy(x => x.EMPNO), "ID",
+                "EMPNO");
+            ViewBag.lab_name = new SelectList(db.LabourMasters.Where(x => x.EMPNO > 3).OrderBy(x => x.EMPNO), "ID",
+                "Person_Name");
+            ViewBag.lab_position = new SelectList(db.LabourMasters.Where(x => x.EMPNO > 3).OrderBy(x => x.EMPNO), "ID",
+                "Position");
+            ViewBag.lab_mps = new SelectList(db.LabourMasters.Where(x => x.EMPNO > 3).OrderBy(x => x.EMPNO), "ID",
+                "ManPowerSupply");
             var tr = this.db.towrefs.Find(tw1.Id);
             ViewBag.tw = tr.Id;
             ViewBag.form = tr.ProjectList1.PROJECT_NAME;
@@ -67,7 +101,9 @@ namespace onlygodknows.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "Id,lab_no,effectivedate,rowref")] towemp[] towemp)
+        [Authorize(Roles = "HR_manager,Project_manager")]
+        public ActionResult Create([Bind(Include = "Id,lab_no,effectivedate,rowref")]
+            towemp[] towemp)
         {
             towref tw = TempData["mydata"] as towref;
             if (ModelState.IsValid)
@@ -75,27 +111,35 @@ namespace onlygodknows.Controllers
                 var i = 0;
                 foreach (var towemp1 in towemp)
                 {
-                    if (i==0)
-                    {
-                    towemp1.rowref = tw.Id;
-                        db.towemps.Add(towemp1);
-                        db.SaveChanges();
-                    }
-                    else if (towemp[i-1].lab_no != towemp1.lab_no)
+                    if (i == 0)
                     {
                         towemp1.rowref = tw.Id;
                         db.towemps.Add(towemp1);
-                    db.SaveChanges();
+                        db.SaveChanges();
+                        SendMail("", "submitted", tw.Id);
                     }
+                    else if (towemp[i - 1].lab_no != towemp1.lab_no)
+                    {
+                        towemp1.rowref = tw.Id;
+                        db.towemps.Add(towemp1);
+                        db.SaveChanges();
+                    }
+
                     i++;
-                }  
-                return RedirectToAction("Index","towrefs");
+                }
+
+                return RedirectToAction("Index", "towrefs");
             }
-            ViewBag.lab_no = new SelectList(db.LabourMasters.Where(x => x.EMPNO > 3).OrderBy(x => x.EMPNO), "ID", "EMPNO", towemp[0].lab_no);
+
+            ViewBag.lab_no = new SelectList(db.LabourMasters.Where(x => x.EMPNO > 3).OrderBy(x => x.EMPNO), "ID",
+                "EMPNO", towemp[0].lab_no);
             ViewBag.rowref = new SelectList(db.towrefs, "Id", "Id", towemp[0].rowref);
-            ViewBag.lab_name = new SelectList(db.LabourMasters.Where(x => x.EMPNO > 3).OrderBy(x => x.EMPNO), "ID", "Person_Name");
-            ViewBag.lab_position = new SelectList(db.LabourMasters.Where(x => x.EMPNO > 3).OrderBy(x => x.EMPNO), "ID", "Position");
-            ViewBag.lab_mps = new SelectList(db.LabourMasters.Where(x => x.EMPNO > 3).OrderBy(x => x.EMPNO), "ID", "ManPowerSupply");
+            ViewBag.lab_name = new SelectList(db.LabourMasters.Where(x => x.EMPNO > 3).OrderBy(x => x.EMPNO), "ID",
+                "Person_Name");
+            ViewBag.lab_position = new SelectList(db.LabourMasters.Where(x => x.EMPNO > 3).OrderBy(x => x.EMPNO), "ID",
+                "Position");
+            ViewBag.lab_mps = new SelectList(db.LabourMasters.Where(x => x.EMPNO > 3).OrderBy(x => x.EMPNO), "ID",
+                "ManPowerSupply");
             return View(towemp[1]);
         }
 
@@ -106,11 +150,13 @@ namespace onlygodknows.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
+
             towemp towemp = db.towemps.Find(id);
             if (towemp == null)
             {
                 return HttpNotFound();
             }
+
             ViewBag.lab_no = new SelectList(db.LabourMasters, "ID", "EMPNO", towemp.lab_no);
             ViewBag.rowref = new SelectList(db.towrefs, "Id", "Id", towemp.rowref);
             return View(towemp);
@@ -121,7 +167,8 @@ namespace onlygodknows.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "Id,lab_no,effectivedate,rowref")] towemp towemp)
+        public ActionResult Edit([Bind(Include = "Id,lab_no,effectivedate,rowref")]
+            towemp towemp)
         {
             if (ModelState.IsValid)
             {
@@ -129,6 +176,7 @@ namespace onlygodknows.Controllers
                 db.SaveChanges();
                 return RedirectToAction("Index");
             }
+
             ViewBag.lab_no = new SelectList(db.LabourMasters, "ID", "EMPNO", towemp.lab_no);
             ViewBag.rowref = new SelectList(db.towrefs, "Id", "Id", towemp.rowref);
             return View(towemp);
@@ -141,11 +189,13 @@ namespace onlygodknows.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
+
             towemp towemp = db.towemps.Find(id);
             if (towemp == null)
             {
                 return HttpNotFound();
             }
+
             return View(towemp);
         }
 
@@ -198,6 +248,7 @@ namespace onlygodknows.Controllers
                     var as1 = tw1.effectivedate.ToString();
                     as2 = as1.Remove(tw1.effectivedate.ToString().IndexOf(" "), 12);
                 }
+
                 Sheet.Cells[string.Format("A{0}", i)].Value = as2;
                 Sheet.Cells[string.Format("B{0}", i)].Value = tw1.LabourMaster.EMPNO;
                 Sheet.Cells[string.Format("C{0}", i)].Value = tw1.LabourMaster.Person_Name;
@@ -205,7 +256,7 @@ namespace onlygodknows.Controllers
                 switch (tw1.LabourMaster.ManPowerSupply)
                 {
                     case 1:
-                        Sheet.Cells[string.Format("E{0}", i)].Value = "CITISCAPE"; 
+                        Sheet.Cells[string.Format("E{0}", i)].Value = "CITISCAPE";
                         break;
                     case 2:
                         Sheet.Cells[string.Format("E{0}", i)].Value = "CALIBERS";
@@ -229,8 +280,10 @@ namespace onlygodknows.Controllers
                         Sheet.Cells[string.Format("E{0}", i)].Value = "GROVE";
                         break;
                 }
+
                 i++;
             }
+
             Sheet.Cells["A:AZ"].AutoFitColumns();
             this.Response.Clear();
             this.Response.ContentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
@@ -238,12 +291,177 @@ namespace onlygodknows.Controllers
             this.Response.BinaryWrite(Ep.GetAsByteArray());
             this.Response.End();
         }
+
+        [Authorize(Roles = "Project_manager")]
+        public ActionResult aprestatus(int tr, string message)
+        {
+            var trvar = db.towrefs.Where(x => x.Id == tr).ToList();
+            var templist = db.towemps.ToList();
+            var telist = new List<towemp>();
+            foreach (var towref in trvar)
+            {
+                telist.AddRange(towref.towemps);
+            }
+
+            if (telist.Count != 0)
+            {
+                var i = 0;
+                foreach (var towemp in telist)
+                {
+                    if (message.Contains("approved"))
+                    {
+                        i++;
+                        var te = templist.Find(x => x.Id == towemp.Id);
+                        te.ARstatus = "approved";
+                        te.app_by = this.User.Identity.Name;
+                        this.db.Entry(te).State = EntityState.Modified;
+                        this.db.SaveChanges();
+                        if(i == 1)
+                            SendMail("", "approved",tr);
+                    }
+                    else
+                    {
+                        i++;
+                        var te = templist.Find(x => x.Id == towemp.Id);
+                        te.ARstatus = "rejected for :" + message;
+                        this.db.Entry(te).State = EntityState.Modified;
+                        this.db.SaveChanges();
+                        if (i == 1)
+                            SendMail(message, "rejected",tr);
+                    }
+                }
+            }
+
+            return RedirectToAction("Index", "towrefs");
+        }
+
+        public void SendMail(string msg, string action, int tr)
+        {
+            var trvar = db.towrefs.ToList().Find(x => x.Id == tr);
+            var man = this.db.AspNetUsers.ToList();
+            var asa = new List<AspNetUser>();
+            var context = new ApplicationDbContext();
+            var users = context.Users
+                .Where(x => x.Roles.Select(y => y.RoleId).Contains("6023f0a5-8d24-45d3-9641-b3c2e39aa763") || x.Roles.Select(y => y.RoleId).Contains("4d175b2a-31a2-448d-8a2e-cde6c328c721")).ToList();
+            var users1 = context.Users
+                .Where(x => x.Roles.Select(y => y.RoleId).Contains("8840f8c3-862d-4b1e-9205-47e84c85696e") || x.Roles.Select(y => y.RoleId).Contains("4d175b2a-31a2-448d-8a2e-cde6c328c721")).ToList();
+            var cper = this.db.CsPermissions.Where(x => x.Project == trvar.mp_to).ToList();
+            var cper1 = this.db.CsPermissions.Where(x => x.Project == trvar.mp_from).ToList();
+            var userslist = new List<AspNetUser>();
+            var message = new MimeMessage();
+            message.From.Add(new MailboxAddress("timekeeper", "timekeeper@citiscapegroup.com"));
+            if (action.Contains("submitted"))
+            {
+                foreach (var csp in cper)
+                {
+                    var manvar = man.Find(x => x.csid == csp.CsUser);
+                    if (users.Exists(x=>x.Id == manvar.Id))
+                    {
+                        userslist.Add(manvar);
+                    }
+
+                }
+
+                foreach (var netUser in userslist)
+                {
+                    message.To.Add((new MailboxAddress(netUser.UserName,netUser.Email)));
+                }
+
+                message.Subject = "remobilization of staff";
+                message.Body = new TextPart("plain")
+                {
+                    Text = @"Dear Sir/ma'am," + "\n\n" + "Please note that the transfer of workers from perject " + trvar.ProjectList1.PROJECT_NAME + " to project " + trvar.ProjectList.PROJECT_NAME + "has been submitted for ur approval/rejection" + "\n\n\n" + "http://cstimesheet.ddns.net:6333/timesheet/towrefs" + "\n\n\n" + "Thanks Best Regards, "
+                };
+                if (message.To != null)
+                {
+                    using (var client = new SmtpClient())
+                    {
+                        client.Connect("outlook.office365.com", 587, false);
+
+                        // Note: only needed if the SMTP server requires authentication
+                        client.Authenticate("timekeeper@citiscapegroup.com", "Vam15380");
+
+                        client.Send(message);
+                        client.Disconnect(true);
+                    }
+                }
+            }
+            else if (action.Contains("approved"))
+            {
+                message.Subject = "";
+                foreach (var csp in cper1)
+                {
+                    var manvar = man.Find(x => x.csid == csp.CsUser);
+                    if (users1.Exists(x => x.Id == manvar.Id))
+                    {
+                        userslist.Add(manvar);
+                    }
+                }
+                foreach (var netUser in userslist)
+                {
+                    message.To.Add((new MailboxAddress(netUser.UserName, netUser.Email)));
+                }
+                message.Subject = "remobilization of staff";
+                message.Body = new TextPart("plain")
+                {
+                    Text = @"Dear Sir/ma'am," + "\n\n" +"Please note that the transfer of workers from perject " + trvar.ProjectList1.PROJECT_NAME + " to project " + trvar.ProjectList.PROJECT_NAME + "has been approvaled" + "\n\n\n" + "http://cstimesheet.ddns.net:6333/timesheet/towrefs" + "\n\n\n" + "Thanks Best Regards, "
+                };
+                if (message.To != null)
+                {
+                    using (var client = new SmtpClient())
+                    {
+                        client.Connect("outlook.office365.com", 587, false);
+
+                        // Note: only needed if the SMTP server requires authentication
+                        client.Authenticate("timekeeper@citiscapegroup.com", "Vam15380");
+
+                        client.Send(message);
+                        client.Disconnect(true);
+                    }
+                }
+            }
+            else if (action.Contains("rejected"))
+            {
+                foreach (var csp in cper1)
+                {
+                    var manvar = man.Find(x => x.csid == csp.CsUser);
+                    if (users1.Exists(x => x.Id == manvar.Id))
+                    {
+                        userslist.Add(manvar);
+                    }
+                }
+                foreach (var netUser in userslist)
+                {
+                    message.To.Add((new MailboxAddress(netUser.UserName, netUser.Email)));
+                }
+                message.Subject = "remobilization of staff";
+                message.Body = new TextPart("plain")
+                {
+                    Text = @"Dear Sir/ma'am," + "\n\n" + "Please note that the transfer of workers from perject " + trvar.ProjectList1.PROJECT_NAME + " to project " + trvar.ProjectList.PROJECT_NAME + "has been rejected for "+msg + "\n\n\n" + "http://cstimesheet.ddns.net:6333/timesheet/towrefs" + "\n\n\n"+"Thanks Best Regards, "
+                };
+                if (message.To != null)
+                {
+                    using (var client = new SmtpClient())
+                    {
+                        client.Connect("outlook.office365.com", 587, false);
+
+                        // Note: only needed if the SMTP server requires authentication
+                        client.Authenticate("timekeeper@citiscapegroup.com", "Vam15380");
+
+                        client.Send(message);
+                        client.Disconnect(true);
+                    }
+                }
+            }
+        }
+
         protected override void Dispose(bool disposing)
         {
             if (disposing)
             {
                 db.Dispose();
             }
+
             base.Dispose(disposing);
         }
     }

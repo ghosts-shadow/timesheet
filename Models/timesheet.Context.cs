@@ -61,5 +61,6 @@ namespace onlygodknows.Models
         public virtual DbSet<USER_ROLES> USER_ROLES { get; set; }
         public virtual DbSet<UserInfo> UserInfoes { get; set; }
         public virtual DbSet<Manpowerinoutform> Manpowerinoutforms { get; set; }
+        public virtual DbSet<promanlist> promanlists { get; set; }
     }
 }

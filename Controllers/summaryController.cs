@@ -25,7 +25,7 @@ namespace onlygodknows.Controllers
             var uid = this.User.Identity.GetUserId();
             var uid1 = this.db.AspNetUsers.Find(uid);
             var projectlist = new List<ProjectList>();
-            if (uid1.csid != 0 && !(this.User.IsInRole("Admin") || this.User.IsInRole("Head_of_projects")))
+            if (uid1.csid != 0 && !(this.User.IsInRole("Admin") || this.User.IsInRole("Head_of_projects") || this.User.IsInRole("HR_manager")))
             {
                 var scid = this.db.CsPermissions.Where(x => x.CsUser == uid1.csid).ToList();
                 var t = new List<ProjectList>();

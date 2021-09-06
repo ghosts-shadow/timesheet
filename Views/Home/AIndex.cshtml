@@ -283,7 +283,7 @@
         ass.AddDays(1);
     }
     @Html.DropDownList("empno", null, " ", new { @class = "form-control", id = "empno", style = "display:none" })
-    <input type="submit" value="search" name="action:AIndex1" class="btn btn-default" id="aaq2"/>
+    <input type="submit" value="search" name="action:AIndex1" class="btn btn-default" id="aaq2"  style = "display:none" />
 
     <table class="table">
     <tr>
@@ -753,7 +753,7 @@
             }
             if (aa.getDate() == 24) {
                 $('#C23').attr("disabled", false);
-                $('#c24').attr("disabled", false);
+                $('#C24').attr("disabled", false);
             }
             if (aa.getDate() == 25) {
                 $('#C24').attr("disabled", false);

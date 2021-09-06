@@ -1,0 +1,39 @@
+﻿@model IEnumerable<onlygodknows.Models.promanlist>
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>suppliers for project</h2>
+
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.ManPowerSupplier1.Supplier)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.ProjectList.PROJECT_NAME)
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.ManPowerSupplier1.Supplier)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.ProjectList.PROJECT_NAME)
+        </td>
+        <td>
+            @Html.ActionLink("Edit", "Edit", new { id=item.Id }) |
+            @Html.ActionLink("Delete", "Delete", new { id=item.Id })
+        </td>
+    </tr>
+}
+
+</table>

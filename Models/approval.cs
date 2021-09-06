@@ -25,6 +25,7 @@ namespace onlygodknows.Models
         public string Susername { get; set; }
         public string Ausername { get; set; }
         public Nullable<long> Empno { get; set; }
+        public string Husername { get; set; }
     
         public virtual Attendance Attendance { get; set; }
     }

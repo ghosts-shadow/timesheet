@@ -36,6 +36,8 @@ namespace onlygodknows.Models
         [Display(Name = "date")]
         [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}", ApplyFormatInEditMode = true)]
         public Nullable<System.DateTime> mpcdate { get; set; }
+
+        public bool AR { get; set; }
     
         public virtual ProjectList ProjectList { get; set; }
         public virtual ProjectList ProjectList1 { get; set; }

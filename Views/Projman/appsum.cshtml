@@ -63,7 +63,7 @@
                 <td>
                     @if (User.Identity.IsAuthenticated)
                     {
-                        if (User.IsInRole("Project_manager"))
+                        if (User.IsInRole("Project_manager")||User.IsInRole("HR_manager"))
                         {
                             <div class="row">
                                 <div class="col-md-2">

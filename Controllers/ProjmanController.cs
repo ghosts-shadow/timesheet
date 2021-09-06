@@ -9,6 +9,8 @@
 //  this will all change in april
 // --------------------------------------------------------------------------------------------------------------------
 
+using System.Data.Entity.Core.Metadata.Edm;
+using Microsoft.Ajax.Utilities;
 using MimeKit;
 
 namespace onlygodknows.Controllers
@@ -29,41 +31,9 @@ namespace onlygodknows.Controllers
 
         private int i = 0;
 
-        [Authorize(Roles = "Project_manager")]
+        [Authorize(Roles = "Project_manager,HR_manager")]
         public ActionResult approved()
         {
-            /*var t = new List<ProjectList>();
-            var uid = User.Identity.GetUserId();
-            var uid1 = this.db.AspNetUsers.Find(uid);
-            if (uid1.csid != 0 && !User.IsInRole("Admin"))
-            {
-                var scid = this.db.CsPermissions.Where(x => x.CsUser == uid1.csid).ToList();
-                t = new List<ProjectList>();
-                foreach (var i in scid)
-                {
-                    t.Add(this.db.ProjectLists.Find(i.Project));
-                }
-            }
-            else
-            {
-                t = this.db.ProjectLists.ToList();
-            }
-
-            var pl = new List<ProjectList>();
-            var t1 = t.First();
-            long f1 = t1.ID;
-            foreach (var v in t)
-            {
-
-                if (v.ID == f1)
-                {
-                    pl.Add(v);
-                }
-            }
-
-            var pl1 = pl.First();
-            var ap1 = new List<approval>();
-            ap1 = this.db.approvals.Where(x => x.P_id == pl1.ID && x.status == "submitted").ToList();*/
             var da = new DateTime();
             long p = 0, mp = 0;
 
@@ -72,53 +42,109 @@ namespace onlygodknows.Controllers
             long.TryParse(this.TempData["mydata2"].ToString(), out p);
 
             long.TryParse(this.TempData["mydata1"].ToString(), out mp);
-
-            var ap2 = this.db.approvals
-                .Where(x => x.adate == da && x.MPS_id == mp && x.P_id == p && x.status == "submitted").ToList();
-            var suplist = db.ManPowerSuppliers.ToList();
-            var proplist = db.ProjectLists.ToList();
-            var sup = suplist.Find(x => x.ID == mp).Supplier;
-            var prop = proplist.Find(x => x.ID == p).PROJECT_NAME;
-            var j = 0;
-            foreach (var approval in ap2)
+            if (User.IsInRole("Project_manager"))
             {
-                j++;
-                approval.status = "approved";
-                approval.Ausername = this.User.Identity.Name;
-                this.db.Entry(approval).State = EntityState.Modified;
-                this.db.SaveChanges();
-                if (j == 1)
+                var ap2 = this.db.approvals
+                    .Where(x => x.adate == da && x.MPS_id == mp && x.P_id == p && x.status == "submitted").ToList();
+                var suplist = db.ManPowerSuppliers.ToList();
+                var proplist = db.ProjectLists.ToList();
+                var sup = suplist.Find(x => x.ID == mp).Supplier;
+                var prop = proplist.Find(x => x.ID == p).PROJECT_NAME;
+                var j = 0;
+                foreach (var approval in ap2)
                 {
-                    SendMail(sup, prop, da, this.User.Identity.Name, approval.Susername,
-                        "the timesheet for " + da.ToString("D") + " is approved", true," ");
+                    j++;
+                    approval.status = "approved";
+                    approval.Ausername = this.User.Identity.Name;
+                    this.db.Entry(approval).State = EntityState.Modified;
+                    this.db.SaveChanges();
+                    if (j == 1)
+                    {
+                        SendMail(sup, prop, da, this.User.Identity.Name, approval.Susername,
+                            "is approved", true, " ", "HR_manager");
+                    }
+                }
+            }
+
+            if (User.IsInRole("HR_manager"))
+            {
+                var ap2 = this.db.approvals
+                    .Where(x => x.adate == da && x.MPS_id == mp && x.P_id == p && x.status == "approved").ToList();
+                var suplist = db.ManPowerSuppliers.ToList();
+                var proplist = db.ProjectLists.ToList();
+                var sup = suplist.Find(x => x.ID == mp).Supplier;
+                var prop = proplist.Find(x => x.ID == p).PROJECT_NAME;
+                var j = 0;
+                foreach (var approval in ap2)
+                {
+                    j++;
+                    approval.status = "approved by HR";
+                    approval.Husername = this.User.Identity.Name;
+                    this.db.Entry(approval).State = EntityState.Modified;
+                    this.db.SaveChanges();
+                    if (j == 1)
+                    {
+                        SendMail(sup, prop, da, this.User.Identity.Name, approval.Ausername,
+                            "is approved by hr", true, " ", null);
+                    }
                 }
             }
 
             return this.RedirectToAction("PMapproval");
         }
 
-        [Authorize(Roles = "Project_manager")]
+        [Authorize(Roles = "Project_manager,HR_manager")]
         public ActionResult approved1(long? mp, long? p, DateTime? da)
         {
-            var suplist = db.ManPowerSuppliers.ToList();
-            var proplist = db.ProjectLists.ToList();
-            var sup = suplist.Find(x => x.ID == mp).Supplier;
-            var prop = proplist.Find(x => x.ID == p).PROJECT_NAME;
-            var ap2 = this.db.approvals
-                .Where(x => x.adate == da && x.MPS_id == mp && x.P_id == p && x.status == "submitted").ToList();
-            var j = 0;
-            foreach (var approval in ap2)
+            if (User.IsInRole("Project_manager"))
             {
-                j++;
-                approval.status = "approved";
-                approval.Ausername = this.User.Identity.Name;
-                this.db.Entry(approval).State = EntityState.Modified;
-                this.db.SaveChanges();
-                if (j == 1)
+                var ap2 = this.db.approvals
+                    .Where(x => x.adate == da && x.MPS_id == mp && x.P_id == p && x.status == "submitted").ToList();
+                var suplist = db.ManPowerSuppliers.ToList();
+                var proplist = db.ProjectLists.ToList();
+                var sup = suplist.Find(x => x.ID == mp).Supplier;
+                var prop = proplist.Find(x => x.ID == p).PROJECT_NAME;
+
+                var j = 0;
+                foreach (var approval in ap2)
                 {
-                    if (da != null)
-                        SendMail(sup, prop, da.Value, this.User.Identity.Name,approval.Susername,
-                            "the timesheet for " + da.Value.ToString("D") + " is approved",true," ");
+                    j++;
+                    approval.status = "approved";
+                    approval.Ausername = this.User.Identity.Name;
+                    this.db.Entry(approval).State = EntityState.Modified;
+                    this.db.SaveChanges();
+                    if (j == 1)
+                    {
+                        if (da != null)
+                            SendMail(sup, prop, da.Value, this.User.Identity.Name, approval.Susername,
+                                "approved", true, " ", "HR_manager");
+                    }
+                }
+            }
+
+            if (User.IsInRole("HR_manager"))
+            {
+                var ap2 = this.db.approvals
+                    .Where(x => x.adate == da && x.MPS_id == mp && x.P_id == p && x.status == "approved").ToList();
+                var suplist = db.ManPowerSuppliers.ToList();
+                var proplist = db.ProjectLists.ToList();
+                var sup = suplist.Find(x => x.ID == mp).Supplier;
+                var prop = proplist.Find(x => x.ID == p).PROJECT_NAME;
+
+                var j = 0;
+                foreach (var approval in ap2)
+                {
+                    j++;
+                    approval.status = "approved by HR";
+                    approval.Husername = this.User.Identity.Name;
+                    this.db.Entry(approval).State = EntityState.Modified;
+                    this.db.SaveChanges();
+                    if (j == 1)
+                    {
+                        if (da != null)
+                            SendMail(sup, prop, da.Value, this.User.Identity.Name, approval.Ausername,
+                                "approved by HR", true, " ", null);
+                    }
                 }
             }
 
@@ -130,7 +156,7 @@ namespace onlygodknows.Controllers
             var t = new List<ProjectList>();
             var uid = this.User.Identity.GetUserId();
             var uid1 = this.db.AspNetUsers.Find(uid);
-            if (uid1.csid != 0 && !this.User.IsInRole("Admin"))
+            if (uid1.csid != 0 && !(this.User.IsInRole("Admin") || this.User.IsInRole("HR_manager")))
             {
                 var scid = this.db.CsPermissions.Where(x => x.CsUser == uid1.csid).ToList();
                 t = new List<ProjectList>();
@@ -145,9 +171,14 @@ namespace onlygodknows.Controllers
             foreach (var listp in t)
             {
                 var aaa = this.db.approvals.Where(x => x.P_id == listp.ID && x.status == "submitted").ToList();
+                if (User.IsInRole("HR_manager"))
+                {
+                    aaa = this.db.approvals.Where(x => x.P_id == listp.ID && x.status == "approved").ToList();
+                }
 
                 foreach (var approval in aaa)
-                    if (!ap2.Exists(x => x.MPS_id == approval.MPS_id && x.adate == approval.adate))
+                    if (!ap2.Exists(x =>
+                        x.MPS_id == approval.MPS_id && x.adate == approval.adate && x.P_id == listp.ID))
                         ap2.Add(approval);
             }
 
@@ -160,7 +191,7 @@ namespace onlygodknows.Controllers
                 apnon.P_id = mdknonsence.P_id;
                 apnon.MPS_name = mdknonsence.Attendance.MainTimeSheet.ManPowerSupplier1.Supplier;
                 apnon.P_name = mdknonsence.Attendance.MainTimeSheet.ProjectList.PROJECT_NAME;
-                var atlist = this.db.Attendances.Where(x => x.SubMain == mdknonsence.Attendance.SubMain);
+                var atlist = this.db.Attendances.Where(x => x.SubMain == mdknonsence.Attendance.SubMain).ToList();
                 int.TryParse(mdknonsence.adate.Value.Year.ToString(), out var inty);
                 int.TryParse(mdknonsence.adate.Value.Month.ToString(), out var intm);
                 var date = new DateTime(inty, intm, 1);
@@ -647,7 +678,6 @@ namespace onlygodknows.Controllers
                                 }
                             }
                         }
-
                     }
                 else
                     foreach (var at in atlist)
@@ -875,7 +905,7 @@ namespace onlygodknows.Controllers
 
             if (Request.IsAjaxRequest())
             {
-                return PartialView(apno); 
+                return PartialView(apno);
             }
 
             return this.View(apno);
@@ -898,7 +928,7 @@ namespace onlygodknows.Controllers
                 }
             }
 
-            return new JsonResult { Data = aap, JsonRequestBehavior = JsonRequestBehavior.AllowGet };
+            return new JsonResult {Data = aap, JsonRequestBehavior = JsonRequestBehavior.AllowGet};
         }
 
         public ActionResult PMapproval(long? manPower, long? pro, DateTime? mtsmonth2)
@@ -928,6 +958,14 @@ namespace onlygodknows.Controllers
             var ap2 = new List<approval>();
             ap2 = this.db.approvals.Where(
                 x => x.P_id == pro && x.adate == mtsmonth2 && x.MPS_id == manPower && x.status == "submitted").ToList();
+
+            if (User.IsInRole("HR_manager"))
+            {
+                ap2 = this.db.approvals.Where(
+                        x => x.P_id == pro && x.adate == mtsmonth2 && x.MPS_id == manPower && x.status == "approved")
+                    .ToList();
+            }
+
             {
                 /*
             var pl=new List<ProjectList>();
@@ -961,62 +999,107 @@ namespace onlygodknows.Controllers
             return this.View(ap2);
         }
 
-        [Authorize(Roles = "Project_manager")]
+        [Authorize(Roles = "Project_manager,HR_manager")]
         public ActionResult rejected(string why)
         {
             var da = new DateTime();
             long p = 0, mp = 0;
 
-            var suplist = db.ManPowerSuppliers.ToList();
-            var proplist = db.ProjectLists.ToList();
-            var sup = suplist.Find(x => x.ID == mp).Supplier;
-            var prop = proplist.Find(x => x.ID == p).PROJECT_NAME;
             DateTime.TryParse(this.TempData["mydata"].ToString(), out da);
 
             long.TryParse(this.TempData["mydata2"].ToString(), out p);
 
             long.TryParse(this.TempData["mydata1"].ToString(), out mp);
-
-            var ap2 = this.db.approvals
-                .Where(x => x.adate == da && x.MPS_id == mp && x.P_id == p && x.status == "submitted").ToList();
-            var j = 0;
-            foreach (var approval in ap2)
+            var suplist = db.ManPowerSuppliers.ToList();
+            var proplist = db.ProjectLists.ToList();
+            var sup = suplist.Find(x => x.ID == mp).Supplier;
+            var prop = proplist.Find(x => x.ID == p).PROJECT_NAME;
+            if (User.IsInRole("Project_manager"))
             {
-                approval.status = "rejected for " + why;
-                this.db.Entry(approval).State = EntityState.Modified;
-                this.db.SaveChanges();
-                j++;
-                if (j == 1)
+                var ap2 = this.db.approvals
+                    .Where(x => x.adate == da && x.MPS_id == mp && x.P_id == p && x.status == "submitted").ToList();
+                var j = 0;
+                foreach (var approval in ap2)
                 {
-                    SendMail(sup, prop, da, this.User.Identity.Name, approval.Susername,
-                        "the timesheet for " + da.ToString("D") + " is approved", false,why);
+                    approval.status = "rejected for " + why;
+                    this.db.Entry(approval).State = EntityState.Modified;
+                    this.db.SaveChanges();
+                    j++;
+                    if (j == 1)
+                    {
+                        SendMail(sup, prop, da, this.User.Identity.Name, approval.Susername,
+                            "rejected", false, why, null);
+                    }
+                }
+            }
+
+            if (User.IsInRole("HR_manager"))
+            {
+                var ap2 = this.db.approvals
+                    .Where(x => x.adate == da && x.MPS_id == mp && x.P_id == p && x.status == "approved").ToList();
+                var j = 0;
+                foreach (var approval in ap2)
+                {
+                    approval.status = "rejected by HR for " + why;
+                    this.db.Entry(approval).State = EntityState.Modified;
+                    this.db.SaveChanges();
+                    j++;
+                    if (j == 1)
+                    {
+                        SendMail(sup, prop, da, this.User.Identity.Name, approval.Ausername,
+                            "rejected by HR", false, why, null);
+                    }
                 }
             }
 
             return this.RedirectToAction("PMapproval");
         }
 
-        [Authorize(Roles = "Project_manager")]
+        [Authorize(Roles = "Project_manager,HR_manager")]
         public ActionResult rejected1(string why, long? mp, long? p, DateTime? da)
         {
             var suplist = db.ManPowerSuppliers.ToList();
             var proplist = db.ProjectLists.ToList();
             var sup = suplist.Find(x => x.ID == mp).Supplier;
             var prop = proplist.Find(x => x.ID == p).PROJECT_NAME;
-            var ap2 = this.db.approvals
-                .Where(x => x.adate == da && x.MPS_id == mp && x.P_id == p && x.status == "submitted").ToList();
-            var j = 0;
-            foreach (var approval in ap2)
+
+            if (User.IsInRole("Project_manager"))
             {
-                approval.status = "rejected for " + why;
-                this.db.Entry(approval).State = EntityState.Modified;
-                this.db.SaveChanges();
-                j++;
-                if (j == 1)
+                var ap2 = this.db.approvals
+                    .Where(x => x.adate == da && x.MPS_id == mp && x.P_id == p && x.status == "submitted").ToList();
+                var j = 0;
+                foreach (var approval in ap2)
                 {
-                    if (da != null)
-                        SendMail(sup, prop, da.Value, this.User.Identity.Name, approval.Susername,
-                            "the timesheet for " + da.Value.ToString("D") + " is approved", false,why);
+                    approval.status = "rejected for " + why;
+                    this.db.Entry(approval).State = EntityState.Modified;
+                    this.db.SaveChanges();
+                    j++;
+                    if (j == 1)
+                    {
+                        if (da != null)
+                            SendMail(sup, prop, da.Value, this.User.Identity.Name, approval.Susername,
+                                "rejected", false, why, null);
+                    }
+                }
+            }
+
+            if (User.IsInRole("HR_manager"))
+            {
+                var ap2 = this.db.approvals
+                    .Where(x => x.adate == da && x.MPS_id == mp && x.P_id == p && x.status == "approved").ToList();
+                var j = 0;
+                foreach (var approval in ap2)
+                {
+                    approval.status = "rejected by HR for " + why;
+                    this.db.Entry(approval).State = EntityState.Modified;
+                    this.db.SaveChanges();
+                    j++;
+                    if (j == 1)
+                    {
+                        if (da != null)
+                            SendMail(sup, prop, da.Value, this.User.Identity.Name, approval.Ausername,
+                                "rejected by HR", false, why, null);
+                    }
                 }
             }
 
@@ -1024,7 +1107,8 @@ namespace onlygodknows.Controllers
         }
         //this task is done according to MD.Khairy and will only show attendance of each day leaving the rest of the values blank
 
-        public void SendMail(string sup, string prop, DateTime da, string aName,string sName,string msg,bool a_r,string com)
+        public void SendMail(string sup, string prop, DateTime da, string aName, string sName, string msg, bool a_r,
+            string com, string HRrole)
         {
             var man = this.db.AspNetUsers.ToList();
             var context = new ApplicationDbContext();
@@ -1056,19 +1140,49 @@ namespace onlygodknows.Controllers
                 // {
                 //     message.Cc.Add(new MailboxAddress(VARIABLE));
                 // }
-
+                var cspid = pasa.First().csid;
                 pasa.Remove(pasa.First());
                 foreach (var ccpasa in pasa) message.Cc.Add(new MailboxAddress(ccpasa.Email));
+                if (!HRrole.IsNullOrWhiteSpace())
+                {
+                    var userHR = context.Users
+                        .Where(x => x.UserName == aName).ToList();
+                    foreach (var user1 in userHR)
+                    {
+                        message.Cc.Add(new MailboxAddress(user1.Email));
+                    }
+                }
+
+                if (msg.Contains("rejected by HR") || msg.Contains("approved by HR"))
+                {
+                    var usertklist = context.Users
+                        .Where(x => x.Roles.Select(y => y.RoleId).Contains("8840f8c3-862d-4b1e-9205-47e84c85696e"))
+                        .ToList();
+                    var asa1 = new List<AspNetUser>();
+                    foreach (var user1 in usertklist) asa1.Add(man.Find(x => x.Id == user1.Id));
+                    var fuser12 = new List<CsPermission>();
+                    foreach (var netUser in asa1)
+                        if (cper.Exists(x => x.CsUser == netUser.csid && x.Project == pname1.ID))
+                            fuser12.Add(cper.Find(x => x.CsUser == netUser.csid && x.Project == pname1.ID));
+                    var pno1 = fuser12.FindAll(x => x.Project == pname1.ID);
+                    var pasa1 = new List<AspNetUser>();
+                    foreach (var permission in pno1) pasa1.Add(asa1.Find(x => x.csid == permission.CsUser));
+                    foreach (var usere3 in pasa1)
+                    {
+                        message.To.Add(new MailboxAddress(usere3.UserName, usere3.Email));
+                    }
+                }
+
                 if (a_r)
                 {
                     message.Subject = "TIME-SHEET APPROVED";
                     message.Body = new TextPart("plain")
                     {
-                        Text = @"Dear Sir,
+                        Text = @"Dear Sir/ma'am,
 Please note that the Time-Sheet for the date " + da.ToShortDateString() + ", ManPowerSupplier: " + sup +
-                            " and Project name: " + prop + " has been  approved\n\nBest regards\n" + aName +
-                            "\n\n\n\n"
-                };
+                               " and Project name: " + prop + " has been  " + msg + "\n\nBest regards\n" + aName +
+                               "\n\n\n\n"
+                    };
                 }
                 else
                 {
@@ -1077,7 +1191,8 @@ Please note that the Time-Sheet for the date " + da.ToShortDateString() + ", Man
                     {
                         Text = @"Dear Sir,
 Please note that the Time-Sheet for the date " + da.ToShortDateString() + ", ManPowerSupplier: " + sup +
-                               " and Project name: " + prop + " has been  rejected for the reason:"+com+"\n\nBest regards\n" + aName +
+                               " and Project name: " + prop + " has been " + msg + " for the reason:" + com +
+                               "\n\nBest regards\n" + aName +
                                "\n\n\n\n"
                     };
                 }
@@ -1094,6 +1209,80 @@ Please note that the Time-Sheet for the date " + da.ToShortDateString() + ", Man
                     client.Disconnect(true);
                 }
             }
+        }
+        [Authorize(Users = "sdiniz,khairy,sherif,Hiba,ameer,amohamed,yahya")]
+        public ActionResult timesheetsub(DateTime? subdate)
+        {
+            var approsubdate = new List<approval>();
+            if (subdate != null)
+            {
+                var projlist = db.ProjectLists.Where(x => x.STATUS == "active").ToList();
+                var aplist = db.approvals.Where(x => x.adate == subdate).ToList();
+                var apsubdate = new List<approval>();
+                foreach (var aq in aplist)
+                    if (!apsubdate.Exists(x => x.P_id == aq.P_id && x.MPS_id == aq.MPS_id))
+                        apsubdate.Add(aq);
+                foreach (var list in projlist)
+                {
+                    if (apsubdate.Exists(x => x.P_id == list.ID))
+                    {
+                        var ap1list = apsubdate.FindAll(x => x.P_id == list.ID);
+                        approsubdate.AddRange(ap1list);
+                    }
+                    else
+                    {
+                        var pmanlist = db.promanlists.Where(x => x.Project == list.ID).ToList();
+                        foreach (var VARIABLE in pmanlist)
+                        {
+                            var attendances1 = db.MainTimeSheets.Where(x =>
+                                    x.TMonth.Month == subdate.Value.Month && x.TMonth.Year == subdate.Value.Year &&
+                                    x.Project == list.ID && x.ManPowerSupplier == VARIABLE.ManPowerSupplier)
+                                .ToList();
+                            var attendances = new List<Attendance>();
+                            if (attendances1.Count !=0)
+                            {
+                                foreach (var sheet in attendances1)
+                                {
+                                    attendances.AddRange(sheet.Attendances.ToList());
+                                }
+                            }
+                            if (attendances.Count != 0)
+                            {
+                                var mat = attendances.LastOrDefault();
+                                var apvariable = new approval();
+                                apvariable.P_id = list.ID;
+                                apvariable.MPS_id = VARIABLE.ManPowerSupplier;
+                                apvariable.adate = subdate;
+                                apvariable.status = "not submitted";
+                                apvariable.A_id = mat.ID;
+                                apvariable.Attendance = mat;
+                                approsubdate.Add(apvariable);
+                            }
+                            else
+                            {
+                                var mts = new MainTimeSheet();
+                                var mat = new Attendance();
+                                mts.ManPowerSupplier1 = VARIABLE.ManPowerSupplier1;
+                                mts.ManPowerSupplier = VARIABLE.ManPowerSupplier;
+                                mts.Project = VARIABLE.Project;
+                                mts.ProjectList = VARIABLE.ProjectList;
+                                mts.TMonth = subdate.Value;
+                                mat.MainTimeSheet = mts;
+                                var apvariable = new approval();
+                                apvariable.P_id = list.ID;
+                                apvariable.MPS_id = VARIABLE.ManPowerSupplier;
+                                apvariable.adate = subdate;
+                                apvariable.status = "not submitted";
+                                apvariable.A_id = null;
+                                apvariable.Attendance = mat;
+                                approsubdate.Add(apvariable);
+                            }
+                        }
+                    }
+                }
+            }
+
+            return View(approsubdate);
         }
     }
 }

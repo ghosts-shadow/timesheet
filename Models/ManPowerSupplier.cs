@@ -18,6 +18,7 @@ namespace onlygodknows.Models
         public ManPowerSupplier()
         {
             this.MainTimeSheets = new HashSet<MainTimeSheet>();
+            this.promanlists = new HashSet<promanlist>();
         }
     
         public long ID { get; set; }
@@ -36,5 +37,7 @@ namespace onlygodknows.Models
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<MainTimeSheet> MainTimeSheets { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<promanlist> promanlists { get; set; }
     }
 }

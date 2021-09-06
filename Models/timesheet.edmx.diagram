@@ -56,6 +56,9 @@
         <EntityTypeShape EntityType="LogisticsSoftModel.Manpowerinoutform" Width="1.5" PointX="13.25" PointY="20" />
         <AssociationConnector Association="LogisticsSoftModel.FK_Manpowerinoutform_ToLabourMaster" />
         <AssociationConnector Association="LogisticsSoftModel.FK_Manpowerinoutform_ToTable_1" />
+        <EntityTypeShape EntityType="LogisticsSoftModel.promanlist" Width="1.5" PointX="9" PointY="0.75" />
+        <AssociationConnector Association="LogisticsSoftModel.FK_MainTimeSheet_Tomps" />
+        <AssociationConnector Association="LogisticsSoftModel.FK_MainTimeSheet_Topro" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

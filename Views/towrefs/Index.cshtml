@@ -1,87 +1,144 @@
-﻿@model IEnumerable<onlygodknows.Models.towref>
+﻿@using Microsoft.AspNet.SignalR.Messaging
+@model IEnumerable<onlygodknows.Models.towref>
 
 @{
     ViewBag.Title = "Index";
-    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2>Index</h2>
 <style>
     #tttttt td {
         text-align: center;
         vertical-align: middle;
     }
 </style>
-<p>
-    @Html.ActionLink("Create New", "Create","towrefs")
-</p>
-<table class="table" id="tttttt">
-    <tr>
-        <th>
-            @Html.DisplayNameFor(model => model.refe1)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.R_no)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.mpcdate)
-        </th>
-        <th>
-            form
-        </th>
-        <th>
-            to
-        </th>
-        <th>
-            attachment
-        </th>
-        <th></th>
-    </tr>
-    
-    @foreach (var item in Model)
-    {
-        <tr style="text-align: center; ">
-            <td>
-                @Html.DisplayFor(modelItem => item.refe1)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.R_no)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.mpcdate)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.ProjectList.PROJECT_NAME)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.ProjectList1.PROJECT_NAME)
-            </td>
-            <td style="width: 150px">
-                @{
-                    if (item.trattfiles.Count != 0)
-                    {
-                    var postedFileExtension = Path.GetExtension(item.trattfiles.First().name);
-                    if (string.Equals(postedFileExtension, ".pdf", StringComparison.OrdinalIgnoreCase))
-                    {
-                        <a href="data:@item.trattfiles.First().content_type;base64,@Convert.ToBase64String(item.trattfiles.First().data)" target="_blank" name="@item.trattfiles.First().name">
-                            view
-                        </a>
-                    }
-                    else
-                    {
-                        <a href="data:@item.trattfiles.First().content_type;base64,@Convert.ToBase64String(item.trattfiles.First().data)" target="_blank">
-                            <img src="data:@item.trattfiles.First().content_type;base64,@Convert.ToBase64String(item.trattfiles.First().data)" type="@item.trattfiles.First().content_type" width="150px" height="150px"/>
-                        </a>
+<script>
+
+    setInterval(function() {
+            $.ajax({
+                url: '/towrefs/index',
+                type: "POST",
+                success: function(result) {
+                    $("#charts").html(result);
+                }
+            });
+        },
+        30000);
+</script>
+<div id="charts">
+    <h2>transfred workers</h2>
+    <p>
+        @if (User.Identity.IsAuthenticated)
+        {
+            if (User.IsInRole("Project_manager") || User.IsInRole("HR_manager"))
+            {
+                <input type="submit" value="Create new" class="btn btn-default" onclick="window.location.href = '@Url.Action("Create", "towrefs")'" />
+            }
+        }
+    </p>
+    <table class="table" id="tttttt">
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.refe1)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.R_no)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.mpcdate)
+            </th>
+            <th>
+                form
+            </th>
+            <th>
+                to
+            </th>
+            <th>
+                attachment
+            </th>
+            <th></th>
+            <th></th>
+        </tr>
+
+        @foreach (var item in Model)
+        {
+            <tr style="text-align: center;">
+                <td>
+                    @Html.DisplayFor(modelItem => item.refe1)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.R_no)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.mpcdate)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ProjectList1.PROJECT_NAME)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ProjectList.PROJECT_NAME)
+                </td>
+                <td style="width: 150px">
+                    @{
+                        if (item.trattfiles.Count != 0)
+                        {
+                            var postedFileExtension = Path.GetExtension(item.trattfiles.First().name);
+                            if (string.Equals(postedFileExtension, ".pdf", StringComparison.OrdinalIgnoreCase))
+                            {
+                                <a href="data:@item.trattfiles.First().content_type;base64,@Convert.ToBase64String(item.trattfiles.First().data)" target="_blank" name="@item.trattfiles.First().name">
+                                    view
+                                </a>
+                            }
+                            else
+                            {
+                                <a href="data:@item.trattfiles.First().content_type;base64,@Convert.ToBase64String(item.trattfiles.First().data)" target="_blank">
+                                    <img src="data:@item.trattfiles.First().content_type;base64,@Convert.ToBase64String(item.trattfiles.First().data)" type="@item.trattfiles.First().content_type" width="150px" height="150px" />
+                                </a>
+                            }
                         }
 
                     }
+                </td>
+                <td>
+                    @Html.ActionLink("Details", "Index", "towemps", new { id = item.Id }, new { id = item.Id })
+                </td>
+                <td>
+                    @if (User.Identity.IsAuthenticated)
+                    {
+                        if (item.towemps.Count != 0)
+                        {
+                            if (User.IsInRole("Project_manager") || User.IsInRole("HR_manager"))
+                            {
+                                if (!item.AR)
+                                {
+                                    if (item.towemps.First().app_by == null)
+                                    {
+                                        <div class="row">
+                                            <div class="col-md-2">
+                                                <input type="submit" value="Approve" class="btn btn-default" style="color: green;" onclick="window.location.href = '@Url.Action("aprestatus", "towemps", new {tr = item.Id, message = "approved"})'" />
+                                            </div>
+                                            <div class="col-md-6">
+                                                @using (Html.BeginForm("aprestatus", "towemps", new { tr = item.Id }))
+                                                {
+                                                    <div class="col-md-3">
+                                                        <input type="submit" class="btn btn-default" value="Reject" style="color: red;" />
+                                                    </div>
+                                                    <div class="col-md-7">
+                                                        <p>
+                                                            <input type="text" name="message" required class="form-control" placeholder="comment" />
+                                                        </p>
+                                                    </div>
+                                                }
+                                            </div>
+                                        </div>
+                                    }
+                                }
+                            }
+                            @item.towemps.First().ARstatus
+                        }
+                    }
+                </td>
+            </tr>
+        }
 
-                }
-            </td>
-            <td>
-                @Html.ActionLink("Details", "Index", "towemps", new { id = item.Id }, new { id = item.Id })
-            </td>
-        </tr>
-    }
-
-</table>
+    </table>
+</div>

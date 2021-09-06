@@ -171,6 +171,7 @@
                                     <li>@Html.ActionLink("add new labor", "Create", "LabourMasters")</li>
                                     <li>@Html.ActionLink("add new holiday", "Create", "Holidays")</li>
                                     <li>@Html.ActionLink("add in&out", "Create", "Manpowerinoutforms")</li>
+                                    <li>@Html.ActionLink("add supplier to project", "Create", "promanlists")</li>
                                 </ul>
                             }
                         </li>
@@ -198,13 +199,13 @@
                                 </ul>
                             }
                         </li>
-                        if (User.IsInRole("Project_manager") || User.IsInRole("Admin"))
+                        if (User.IsInRole("Project_manager") || User.IsInRole("Admin") || User.IsInRole("HR_manager"))
                         {
                             <li>
                                 @Html.ActionLink("approve timesheet", "appsum", "Projman")
                             </li>
                             <li>@Html.ActionLink("summary", "Index", "summary")</li>
-                            <li style="position: absolute; left: 77%; top: 10px; display: none" >
+                            <li style="position: absolute; left: 77%; top: 10px; display: none">
                                 <button class="fa fa-bell fa-2x" onclick="tt()" style="color: #2c6faa; background-color: #2c6faa; border: none" id="note1"></button>
                                 <i style="color: #ff2323; width: 100px; height: 100px;" id="apnote_11" class="popup">
                                     <span id="apnote_1" onclick="got()" style="display: none" class="popuptext">
@@ -212,12 +213,20 @@
                                     </span>
                                 </i>
                             </li>
+
+                            <li>@Html.ActionLink("transfer workers", "Index", "towrefs")</li>
                         }
-                        if (User.IsInRole("Head_of_projects")){<li>@Html.ActionLink("summary", "Index", "summary")</li>}
+                        if (User.IsInRole("Head_of_projects"))
+                        {
+                            <li>@Html.ActionLink("summary", "Index", "summary")</li>
+                        }
                         if (User.IsInRole("Admin") || User.IsInRole("Employee"))
                         {
                             <li>@Html.ActionLink("Add new Time-sheet", "MCreate", "Home")</li>
-                            <li>@Html.ActionLink("transfer workers", "Index", "towrefs")</li>
+                        }
+                        if (User.Identity.Name == "sdiniz" || User.Identity.Name == "khairy" || User.Identity.Name == "sherif" || User.Identity.Name == "Hiba" || User.Identity.Name == "ameer" || User.Identity.Name == "amohamed" || User.Identity.Name == "yahya")
+                        {
+                            <li>@Html.ActionLink("timesheet submission ", "timesheetsub", "Projman")</li>
                         }
 
                     }

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin;
 
 [assembly: OwinStartupAttribute(typeof(onlygodknows.Startup))]
@@ -41,22 +42,20 @@ namespace onlygodknows
 
                 //Here we create a Admin super user who will maintain the website                   
 
-                var user = new ApplicationUser();
-                user.UserName = "sdiniz";
-                user.Email = "sdiniz";
-
-                string userPWD = "Qazwsx1!";
-
+            }
+            var user = new ApplicationUser();
+            user.UserName = "user";
+            user.Email = "user";
+            string userPWD = "asdfghjkl";
+            var asasas = context.Users.ToList();
+            if (!asasas.Exists(x=>x.UserName == user.UserName))
+            {
                 var chkUser = UserManager.Create(user, userPWD);
-
-                //Add default User to Role Admin    
                 if (chkUser.Succeeded)
                 {
                     var result1 = UserManager.AddToRole(user.Id, "Admin");
-
                 }
             }
-
             // creating Creating Manager role     
             if (!roleManager.RoleExists("Manager"))
             {
@@ -65,12 +64,19 @@ namespace onlygodknows
                 roleManager.Create(role);
 
             }
-
-            // creating Creating Manager role     
+     
             if (!roleManager.RoleExists("Head_of_projects"))
             {
                 var role = new Microsoft.AspNet.Identity.EntityFramework.IdentityRole();
                 role.Name = "Head_of_projects";
+                roleManager.Create(role);
+
+            }
+
+            if (!roleManager.RoleExists("HR_manager"))
+            {
+                var role = new Microsoft.AspNet.Identity.EntityFramework.IdentityRole();
+                role.Name = "HR_manager";
                 roleManager.Create(role);
 
             }
