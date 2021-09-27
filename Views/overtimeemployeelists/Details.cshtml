@@ -1,0 +1,67 @@
+﻿@model onlygodknows.Models.overtimeemployeelist
+
+@{
+    ViewBag.Title = "Details";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>overtimeemployeelist</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.effectivedate)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.effectivedate)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.hrs)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.hrs)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.hopAP)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.hopAP)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.HRAP)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.HRAP)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.LabourMaster.VisaSponser)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.LabourMaster.VisaSponser)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.overtimeref.overtimeref1)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.overtimeref.overtimeref1)
+        </dd>
+
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.Id }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>

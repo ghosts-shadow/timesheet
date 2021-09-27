@@ -59,7 +59,6 @@
     <div id="create " onclick="total()">
         <div class="row">
             <input type="text" value="@ViewBag.mdate" disabled="disabled"/>
-            <input type="text" value="@ViewBag.mps" disabled="disabled"/>
             <input type="text" value="@ViewBag.pid" disabled="disabled"/>
             <input type="submit" value="submit entry" class="btn btn-default" name="action:AIndex" id="aaq1"/>
         </div>
@@ -298,6 +297,9 @@
         <th>
             @Html.DisplayNameFor(model => model.attendance.LabourMaster.EMPNO)
         </th>
+        <th>
+            @Html.DisplayNameFor(model => model.attendance.LabourMaster.ManPowerSupply)
+        </th>
         <th id="d1">
             @Html.DisplayNameFor(model => model.attendance.C1)
         </th>
@@ -423,6 +425,56 @@
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.LabourMaster.EMPNO)
+            </td>
+            <td>
+                @switch (item.LabourMaster.ManPowerSupply)
+                {
+                    case 1:
+                        <p>
+                            CITISCAPE
+                        </p>
+                        break;
+                    case 2:
+                        <p>
+                            CALIBERS
+                        </p>
+                        break;
+                    case 3:
+                        <p>
+                            SAWAEED
+                        </p>
+                        break;
+                    case 4:
+                        <p>
+                            TAKATOF
+                        </p>
+                        break;
+                    case 5:
+                        <p>
+                            Shorook
+                        </p>
+                        break;
+                    case 6:
+                        <p>
+                            ARABTEC
+                        </p>
+                        break;
+                    case 7:
+                        <p>
+                            Fibrex
+                        </p>
+                        break;
+                    case 8:
+                        <p>
+                            GROVE
+                        </p>
+                        break;
+                    case 9:
+                        <p>
+                            COMMON
+                        </p>
+                        break;
+                }
             </td>
             <td id="d1_1_@ae">
                 @Html.DisplayFor(modelItem => item.C1)

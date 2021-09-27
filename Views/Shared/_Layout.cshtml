@@ -199,11 +199,23 @@
                                 </ul>
                             }
                         </li>
+                        <li class="dropdown">
+                            @if (User.IsInRole("Project_manager") || User.IsInRole("Admin") || User.IsInRole("HR_manager"))
+                            {
+                                <a class="dropdown-toggle" data-toggle="dropdown" href="#">approvals</a>
+                                <ul class="dropdown-menu" style="background-color: #2c6faa; color: white">
+                                    <li>
+                                        @Html.ActionLink("approve timesheet", "appsum", "Projman")
+                                    </li>
+                                    <li>
+                                        @Html.ActionLink("approve overtime", "Index", "overtimerefs")
+                                    </li>
+
+                                </ul>
+                            }
+                        </li>
                         if (User.IsInRole("Project_manager") || User.IsInRole("Admin") || User.IsInRole("HR_manager"))
                         {
-                            <li>
-                                @Html.ActionLink("approve timesheet", "appsum", "Projman")
-                            </li>
                             <li>@Html.ActionLink("summary", "Index", "summary")</li>
                             <li style="position: absolute; left: 77%; top: 10px; display: none">
                                 <button class="fa fa-bell fa-2x" onclick="tt()" style="color: #2c6faa; background-color: #2c6faa; border: none" id="note1"></button>

@@ -996,6 +996,74 @@ namespace onlygodknows.Controllers
             }
 
             if (ap2.Count > 0) this.ViewBag.suser = ap2.First().Susername;
+            var ap3 = new List<approval>(ap2);
+            foreach (var item in ap3)
+            {
+                var date = item.adate.Value;
+
+                if (date.Day == 1 && (item.Attendance.C1=="0" || item.Attendance.C1==null))
+                { ap2.Remove(item); }
+                else if (date.Day == 2 && (item.Attendance.C2=="0" || item.Attendance.C2==null))
+                { ap2.Remove(item); }
+                else if (date.Day == 3 && (item.Attendance.C3=="0" || item.Attendance.C3==null))
+                { ap2.Remove(item); }
+                else if (date.Day == 4 && (item.Attendance.C4=="0" || item.Attendance.C4==null))
+                { ap2.Remove(item); }
+                else if (date.Day == 5 && (item.Attendance.C5=="0" || item.Attendance.C5==null))
+                { ap2.Remove(item); }
+                else if (date.Day == 6 && (item.Attendance.C6=="0" || item.Attendance.C6==null))
+                { ap2.Remove(item); }
+                else if (date.Day == 7 && (item.Attendance.C7=="0" || item.Attendance.C7==null))
+                { ap2.Remove(item); }
+                else if (date.Day == 8 && (item.Attendance.C8=="0" || item.Attendance.C8==null))
+                { ap2.Remove(item); }
+                else if (date.Day == 9 && (item.Attendance.C9=="0" || item.Attendance.C9==null))
+                { ap2.Remove(item); }
+                else if (date.Day == 10 && (item.Attendance.C10=="0" || item.Attendance.C10==null))
+                { ap2.Remove(item); }
+                else if (date.Day == 11 && (item.Attendance.C11=="0" || item.Attendance.C11==null))
+                { ap2.Remove(item); }
+                else if (date.Day == 12 && (item.Attendance.C12=="0" || item.Attendance.C12==null))
+                { ap2.Remove(item); }
+                else if (date.Day == 13 && (item.Attendance.C13=="0" || item.Attendance.C13==null))
+                { ap2.Remove(item); }
+                else if (date.Day == 14 && (item.Attendance.C14=="0" || item.Attendance.C14==null))
+                { ap2.Remove(item); }
+                else if (date.Day == 15 && (item.Attendance.C15=="0" || item.Attendance.C15==null))
+                { ap2.Remove(item); }
+                else if (date.Day == 16 && (item.Attendance.C16=="0" || item.Attendance.C16==null))
+                { ap2.Remove(item); }
+                else if (date.Day == 17 && (item.Attendance.C17=="0" || item.Attendance.C17==null))
+                { ap2.Remove(item); }
+                else if (date.Day == 18 && (item.Attendance.C18=="0" || item.Attendance.C18==null))
+                { ap2.Remove(item); }
+                else if (date.Day == 19 && (item.Attendance.C19=="0" || item.Attendance.C19==null))
+                { ap2.Remove(item); }
+                else if (date.Day == 20 && (item.Attendance.C20=="0" || item.Attendance.C20==null))
+                { ap2.Remove(item); }
+                else if (date.Day == 21 && (item.Attendance.C21=="0" || item.Attendance.C21==null))
+                { ap2.Remove(item); }
+                else if (date.Day == 22 && (item.Attendance.C22=="0" || item.Attendance.C22==null))
+                { ap2.Remove(item); }
+                else if (date.Day == 23 && (item.Attendance.C23=="0" || item.Attendance.C23==null))
+                { ap2.Remove(item); }
+                else if (date.Day == 24 && (item.Attendance.C24=="0" || item.Attendance.C24==null))
+                { ap2.Remove(item); }
+                else if (date.Day == 25 && (item.Attendance.C25=="0" || item.Attendance.C25==null))
+                { ap2.Remove(item); }
+                else if (date.Day == 26 && (item.Attendance.C26=="0" || item.Attendance.C26==null))
+                { ap2.Remove(item); }
+                else if (date.Day == 27 && (item.Attendance.C27=="0" || item.Attendance.C27==null))
+                { ap2.Remove(item); }
+                else if (date.Day == 28 && (item.Attendance.C28=="0" || item.Attendance.C28==null))
+                { ap2.Remove(item); }
+                else if (date.Day == 29 && (item.Attendance.C29=="0" || item.Attendance.C29==null))
+                { ap2.Remove(item); }
+                else if (date.Day == 30 && (item.Attendance.C30=="0" || item.Attendance.C30==null))
+                { ap2.Remove(item); }
+                else if (date.Day == 31 && (item.Attendance.C31=="0" || item.Attendance.C31==null))
+                { ap2.Remove(item); }
+            }
             return this.View(ap2);
         }
 

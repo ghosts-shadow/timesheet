@@ -38,8 +38,12 @@ namespace onlygodknows.Models
         public virtual DbSet<Holiday> Holidays { get; set; }
         public virtual DbSet<LabourMaster> LabourMasters { get; set; }
         public virtual DbSet<MainTimeSheet> MainTimeSheets { get; set; }
+        public virtual DbSet<Manpowerinoutform> Manpowerinoutforms { get; set; }
         public virtual DbSet<ManPowerSupplier> ManPowerSuppliers { get; set; }
+        public virtual DbSet<overtimeemployeelist> overtimeemployeelists { get; set; }
+        public virtual DbSet<overtimeref> overtimerefs { get; set; }
         public virtual DbSet<ProjectList> ProjectLists { get; set; }
+        public virtual DbSet<promanlist> promanlists { get; set; }
         public virtual DbSet<towemp> towemps { get; set; }
         public virtual DbSet<towref> towrefs { get; set; }
         public virtual DbSet<trattfile> trattfiles { get; set; }
@@ -60,7 +64,5 @@ namespace onlygodknows.Models
         public virtual DbSet<tblUser> tblUsers { get; set; }
         public virtual DbSet<USER_ROLES> USER_ROLES { get; set; }
         public virtual DbSet<UserInfo> UserInfoes { get; set; }
-        public virtual DbSet<Manpowerinoutform> Manpowerinoutforms { get; set; }
-        public virtual DbSet<promanlist> promanlists { get; set; }
     }
 }

@@ -476,6 +476,28 @@ warning 6002: The table/view 'LogisticsSoft.dbo.MyCompanyInfo' does not have a p
           <Property Name="Application_Icon_Location" Type="nvarchar" MaxLength="255" />
           <Property Name="FileName" Type="nvarchar" MaxLength="255" />
         </EntityType>
+        <EntityType Name="overtimeemployeelist">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="lab_no" Type="bigint" />
+          <Property Name="effectivedate" Type="date" />
+          <Property Name="hrs" Type="int" />
+          <Property Name="otref" Type="int" />
+          <Property Name="hopAP" Type="nvarchar(max)" />
+          <Property Name="HRAP" Type="nvarchar(max)" />
+          <Property Name="status" Type="nvarchar(max)" />
+        </EntityType>
+        <EntityType Name="overtimeref">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="overtimedate" Type="date" />
+          <Property Name="overtimeref" Type="nvarchar(max)" />
+          <Property Name="overtimepro" Type="bigint" />
+        </EntityType>
         <!--Errors Found During Generation:
 warning 6002: The table/view 'LogisticsSoft.dbo.PPP' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
         <EntityType Name="PPP">
@@ -890,6 +912,46 @@ warning 6002: The table/view 'LogisticsSoft.dbo.UserInfo' does not have a primar
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_overtimeemp_Tolab">
+          <End Role="LabourMaster" Type="Self.LabourMaster" Multiplicity="0..1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="overtimeemployeelist" Type="Self.overtimeemployeelist" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="LabourMaster">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="overtimeemployeelist">
+              <PropertyRef Name="lab_no" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_overtimeemp_Tootref">
+          <End Role="overtimeref" Type="Self.overtimeref" Multiplicity="0..1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="overtimeemployeelist" Type="Self.overtimeemployeelist" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="overtimeref">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="overtimeemployeelist">
+              <PropertyRef Name="otref" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_overtimeref_Topro1">
+          <End Role="ProjectList" Type="Self.ProjectList" Multiplicity="0..1" />
+          <End Role="overtimeref" Type="Self.overtimeref" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ProjectList">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="overtimeref">
+              <PropertyRef Name="overtimepro" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_towemp_To">
           <End Role="towref" Type="Self.towref" Multiplicity="0..1">
             <OnDelete Action="Cascade" />
@@ -973,6 +1035,8 @@ warning 6002: The table/view 'LogisticsSoft.dbo.UserInfo' does not have a primar
           <EntitySet Name="MainTimeSheet" EntityType="Self.MainTimeSheet" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Manpowerinoutform" EntityType="Self.Manpowerinoutform" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ManPowerSupplier" EntityType="Self.ManPowerSupplier" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="overtimeemployeelist" EntityType="Self.overtimeemployeelist" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="overtimeref" EntityType="Self.overtimeref" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ProjectList" EntityType="Self.ProjectList" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="promanlist" EntityType="Self.promanlist" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="towemp" EntityType="Self.towemp" Schema="dbo" store:Type="Tables" />
@@ -1283,6 +1347,18 @@ warning 6002: The table/view 'LogisticsSoft.dbo.UserInfo' does not have a primar
             <End Role="ProjectList" EntitySet="ProjectList" />
             <End Role="Manpowerinoutform" EntitySet="Manpowerinoutform" />
           </AssociationSet>
+          <AssociationSet Name="FK_overtimeemp_Tolab" Association="Self.FK_overtimeemp_Tolab">
+            <End Role="LabourMaster" EntitySet="LabourMaster" />
+            <End Role="overtimeemployeelist" EntitySet="overtimeemployeelist" />
+          </AssociationSet>
+          <AssociationSet Name="FK_overtimeemp_Tootref" Association="Self.FK_overtimeemp_Tootref">
+            <End Role="overtimeref" EntitySet="overtimeref" />
+            <End Role="overtimeemployeelist" EntitySet="overtimeemployeelist" />
+          </AssociationSet>
+          <AssociationSet Name="FK_overtimeref_Topro1" Association="Self.FK_overtimeref_Topro1">
+            <End Role="ProjectList" EntitySet="ProjectList" />
+            <End Role="overtimeref" EntitySet="overtimeref" />
+          </AssociationSet>
           <AssociationSet Name="FK_towemp_To" Association="Self.FK_towemp_To">
             <End Role="towref" EntitySet="towref" />
             <End Role="trattfile" EntitySet="trattfile" />
@@ -1330,9 +1406,9 @@ warning 6002: The table/view 'LogisticsSoft.dbo.UserInfo' does not have a primar
           <Property Name="A_id" Type="Int64" />
           <Property Name="Susername" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="Ausername" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Husername" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="Empno" Type="Int64" />
           <NavigationProperty Name="Attendance" Relationship="Self.FK_approval_Toattendance" FromRole="approval" ToRole="Attendance" />
-          <Property Name="Husername" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="AspNetRole">
           <Key>
@@ -1459,10 +1535,10 @@ warning 6002: The table/view 'LogisticsSoft.dbo.UserInfo' does not have a primar
           <Property Name="Skilledthours" Type="Int32" />
           <Property Name="Unskilledthours" Type="Int32" />
           <Property Name="TotalWorkers" Type="Int32" />
+          <Property Name="absapproved_" Type="Boolean" />
           <NavigationProperty Name="approvals" Relationship="Self.FK_approval_Toattendance" FromRole="Attendance" ToRole="approval" />
           <NavigationProperty Name="LabourMaster" Relationship="Self.FK_Attendance_ToLabourMaster" FromRole="Attendance" ToRole="LabourMaster" />
           <NavigationProperty Name="MainTimeSheet" Relationship="Self.FK_Attendance_ToMainTimeSheet" FromRole="Attendance" ToRole="MainTimeSheet" />
-          <Property Name="absapproved_" Type="Boolean" />
         </EntityType>
         <EntityType Name="AttendanceFreq">
           <Key>
@@ -1551,8 +1627,9 @@ warning 6002: The table/view 'LogisticsSoft.dbo.UserInfo' does not have a primar
           <Property Name="Workflow_Instance_ID" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="File_Type" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="Attendances" Relationship="Self.FK_Attendance_ToLabourMaster" FromRole="LabourMaster" ToRole="Attendance" />
+          <NavigationProperty Name="Manpowerinoutforms" Relationship="Self.FK_Manpowerinoutform_ToLabourMaster" FromRole="LabourMaster" ToRole="Manpowerinoutform" />
+          <NavigationProperty Name="overtimeemployeelists" Relationship="Self.FK_overtimeemp_Tolab" FromRole="LabourMaster" ToRole="overtimeemployeelist" />
           <NavigationProperty Name="towemps" Relationship="Self.FK_towemp_Tolab" FromRole="LabourMaster" ToRole="towemp" />
-          <NavigationProperty Name="Manpowerinoutforms" Relationship="LogisticsSoftModel.FK_Manpowerinoutform_ToLabourMaster" FromRole="LabourMaster" ToRole="Manpowerinoutform" />
         </EntityType>
         <EntityType Name="MainTimeSheet">
           <Key>
@@ -1581,6 +1658,34 @@ warning 6002: The table/view 'LogisticsSoft.dbo.UserInfo' does not have a primar
           <NavigationProperty Name="ManPowerSupplier1" Relationship="Self.FK_MainTimeSheet_ToTable" FromRole="MainTimeSheet" ToRole="ManPowerSupplier" />
           <NavigationProperty Name="ProjectList" Relationship="Self.FK_MainTimeSheet_ToTable_1" FromRole="MainTimeSheet" ToRole="ProjectList" />
         </EntityType>
+        <EntityType Name="Manpowerinoutform">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="camp" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="companyName" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="EmpID" Type="Int64" Nullable="false" />
+          <Property Name="mobileNo" Type="Int32" />
+          <Property Name="roomNo" Type="Int32" />
+          <Property Name="Project" Type="Int64" Nullable="false" />
+          <Property Name="SSg" Type="Boolean" Nullable="false" />
+          <Property Name="SSp" Type="Boolean" Nullable="false" />
+          <Property Name="blanket" Type="Boolean" Nullable="false" />
+          <Property Name="bs" Type="Boolean" Nullable="false" />
+          <Property Name="fs" Type="Boolean" Nullable="false" />
+          <Property Name="pillow" Type="Boolean" Nullable="false" />
+          <Property Name="pc" Type="Boolean" Nullable="false" />
+          <Property Name="ck" Type="Boolean" Nullable="false" />
+          <Property Name="rk" Type="Boolean" Nullable="false" />
+          <Property Name="cic" Type="Boolean" Nullable="false" />
+          <Property Name="copon" Type="Boolean" Nullable="false" />
+          <Property Name="check_in" Type="DateTime" Precision="0" />
+          <Property Name="check_out" Type="DateTime" Precision="0" />
+          <Property Name="date_" Type="DateTime" Precision="0" />
+          <NavigationProperty Name="LabourMaster" Relationship="Self.FK_Manpowerinoutform_ToLabourMaster" FromRole="Manpowerinoutform" ToRole="LabourMaster" />
+          <NavigationProperty Name="ProjectList" Relationship="Self.FK_Manpowerinoutform_ToTable_1" FromRole="Manpowerinoutform" ToRole="ProjectList" />
+        </EntityType>
         <EntityType Name="ManPowerSupplier">
           <Key>
             <PropertyRef Name="ID" />
@@ -1599,7 +1704,33 @@ warning 6002: The table/view 'LogisticsSoft.dbo.UserInfo' does not have a primar
           <Property Name="Workflow_Instance_ID" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="File_Type" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="MainTimeSheets" Relationship="Self.FK_MainTimeSheet_ToTable" FromRole="ManPowerSupplier" ToRole="MainTimeSheet" />
-          <NavigationProperty Name="promanlists" Relationship="LogisticsSoftModel.FK_MainTimeSheet_Tomps" FromRole="ManPowerSupplier" ToRole="promanlist" />
+          <NavigationProperty Name="promanlists" Relationship="Self.FK_MainTimeSheet_Tomps" FromRole="ManPowerSupplier" ToRole="promanlist" />
+        </EntityType>
+        <EntityType Name="overtimeemployeelist">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="lab_no" Type="Int64" />
+          <Property Name="effectivedate" Type="DateTime" Precision="0" />
+          <Property Name="hrs" Type="Int32" />
+          <Property Name="otref" Type="Int32" />
+          <NavigationProperty Name="LabourMaster" Relationship="Self.FK_overtimeemp_Tolab" FromRole="overtimeemployeelist" ToRole="LabourMaster" />
+          <NavigationProperty Name="overtimeref" Relationship="Self.FK_overtimeemp_Tootref" FromRole="overtimeemployeelist" ToRole="overtimeref" />
+          <Property Name="hopAP" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="HRAP" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="status" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="overtimeref">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="overtimedate" Type="DateTime" Precision="0" />
+          <Property Name="overtimeref1" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="overtimepro" Type="Int64" />
+          <NavigationProperty Name="overtimeemployeelists" Relationship="Self.FK_overtimeemp_Tootref" FromRole="overtimeref" ToRole="overtimeemployeelist" />
+          <NavigationProperty Name="ProjectList" Relationship="Self.FK_overtimeref_Topro1" FromRole="overtimeref" ToRole="ProjectList" />
         </EntityType>
         <EntityType Name="ProjectList">
           <Key>
@@ -1638,10 +1769,21 @@ warning 6002: The table/view 'LogisticsSoft.dbo.UserInfo' does not have a primar
           <Property Name="man_power_budget" Type="Decimal" Precision="19" Scale="4" />
           <Property Name="rate_w_wo_at" Type="Boolean" />
           <NavigationProperty Name="MainTimeSheets" Relationship="Self.FK_MainTimeSheet_ToTable_1" FromRole="ProjectList" ToRole="MainTimeSheet" />
+          <NavigationProperty Name="Manpowerinoutforms" Relationship="Self.FK_Manpowerinoutform_ToTable_1" FromRole="ProjectList" ToRole="Manpowerinoutform" />
+          <NavigationProperty Name="overtimerefs" Relationship="Self.FK_overtimeref_Topro1" FromRole="ProjectList" ToRole="overtimeref" />
+          <NavigationProperty Name="promanlists" Relationship="Self.FK_MainTimeSheet_Topro" FromRole="ProjectList" ToRole="promanlist" />
           <NavigationProperty Name="towrefs" Relationship="Self.FK_towref_Topro1" FromRole="ProjectList" ToRole="towref" />
           <NavigationProperty Name="towrefs1" Relationship="Self.FK_towref_Topro2" FromRole="ProjectList" ToRole="towref" />
-          <NavigationProperty Name="Manpowerinoutforms" Relationship="LogisticsSoftModel.FK_Manpowerinoutform_ToTable_1" FromRole="ProjectList" ToRole="Manpowerinoutform" />
-          <NavigationProperty Name="promanlists" Relationship="LogisticsSoftModel.FK_MainTimeSheet_Topro" FromRole="ProjectList" ToRole="promanlist" />
+        </EntityType>
+        <EntityType Name="promanlist">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ManPowerSupplier" Type="Int64" Nullable="false" />
+          <Property Name="Project" Type="Int64" Nullable="false" />
+          <NavigationProperty Name="ManPowerSupplier1" Relationship="Self.FK_MainTimeSheet_Tomps" FromRole="promanlist" ToRole="ManPowerSupplier" />
+          <NavigationProperty Name="ProjectList" Relationship="Self.FK_MainTimeSheet_Topro" FromRole="promanlist" ToRole="ProjectList" />
         </EntityType>
         <EntityType Name="towemp">
           <Key>
@@ -1651,10 +1793,10 @@ warning 6002: The table/view 'LogisticsSoft.dbo.UserInfo' does not have a primar
           <Property Name="lab_no" Type="Int64" />
           <Property Name="effectivedate" Type="DateTime" Precision="0" />
           <Property Name="rowref" Type="Int32" />
-          <NavigationProperty Name="LabourMaster" Relationship="Self.FK_towemp_Tolab" FromRole="towemp" ToRole="LabourMaster" />
-          <NavigationProperty Name="towref" Relationship="Self.FK_towemp_Toref" FromRole="towemp" ToRole="towref" />
           <Property Name="ARstatus" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="app_by" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="LabourMaster" Relationship="Self.FK_towemp_Tolab" FromRole="towemp" ToRole="LabourMaster" />
+          <NavigationProperty Name="towref" Relationship="Self.FK_towemp_Toref" FromRole="towemp" ToRole="towref" />
         </EntityType>
         <EntityType Name="towref">
           <Key>
@@ -2037,6 +2179,34 @@ warning 6002: The table/view 'LogisticsSoft.dbo.UserInfo' does not have a primar
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_Manpowerinoutform_ToLabourMaster">
+          <End Role="LabourMaster" Type="Self.LabourMaster" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="Manpowerinoutform" Type="Self.Manpowerinoutform" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="LabourMaster">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="Manpowerinoutform">
+              <PropertyRef Name="EmpID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_overtimeemp_Tolab">
+          <End Role="LabourMaster" Type="Self.LabourMaster" Multiplicity="0..1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="overtimeemployeelist" Type="Self.overtimeemployeelist" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="LabourMaster">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="overtimeemployeelist">
+              <PropertyRef Name="lab_no" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_towemp_Tolab">
           <End Role="LabourMaster" Type="Self.LabourMaster" Multiplicity="0..1">
             <OnDelete Action="Cascade" />
@@ -2075,6 +2245,74 @@ warning 6002: The table/view 'LogisticsSoft.dbo.UserInfo' does not have a primar
               <PropertyRef Name="ID" />
             </Principal>
             <Dependent Role="MainTimeSheet">
+              <PropertyRef Name="Project" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Manpowerinoutform_ToTable_1">
+          <End Role="ProjectList" Type="Self.ProjectList" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="Manpowerinoutform" Type="Self.Manpowerinoutform" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ProjectList">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="Manpowerinoutform">
+              <PropertyRef Name="Project" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_MainTimeSheet_Tomps">
+          <End Role="ManPowerSupplier" Type="Self.ManPowerSupplier" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="promanlist" Type="Self.promanlist" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ManPowerSupplier">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="promanlist">
+              <PropertyRef Name="ManPowerSupplier" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_overtimeemp_Tootref">
+          <End Role="overtimeref" Type="Self.overtimeref" Multiplicity="0..1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="overtimeemployeelist" Type="Self.overtimeemployeelist" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="overtimeref">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="overtimeemployeelist">
+              <PropertyRef Name="otref" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_overtimeref_Topro1">
+          <End Role="ProjectList" Type="Self.ProjectList" Multiplicity="0..1" />
+          <End Role="overtimeref" Type="Self.overtimeref" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ProjectList">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="overtimeref">
+              <PropertyRef Name="overtimepro" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_MainTimeSheet_Topro">
+          <End Role="ProjectList" Type="Self.ProjectList" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="promanlist" Type="Self.promanlist" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ProjectList">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="promanlist">
               <PropertyRef Name="Project" />
             </Dependent>
           </ReferentialConstraint>
@@ -2149,8 +2387,12 @@ warning 6002: The table/view 'LogisticsSoft.dbo.UserInfo' does not have a primar
           <EntitySet Name="Holidays" EntityType="Self.Holiday" />
           <EntitySet Name="LabourMasters" EntityType="Self.LabourMaster" />
           <EntitySet Name="MainTimeSheets" EntityType="Self.MainTimeSheet" />
+          <EntitySet Name="Manpowerinoutforms" EntityType="Self.Manpowerinoutform" />
           <EntitySet Name="ManPowerSuppliers" EntityType="Self.ManPowerSupplier" />
+          <EntitySet Name="overtimeemployeelists" EntityType="Self.overtimeemployeelist" />
+          <EntitySet Name="overtimerefs" EntityType="Self.overtimeref" />
           <EntitySet Name="ProjectLists" EntityType="Self.ProjectList" />
+          <EntitySet Name="promanlists" EntityType="Self.promanlist" />
           <EntitySet Name="towemps" EntityType="Self.towemp" />
           <EntitySet Name="towrefs" EntityType="Self.towref" />
           <EntitySet Name="trattfiles" EntityType="Self.trattfile" />
@@ -2191,6 +2433,14 @@ warning 6002: The table/view 'LogisticsSoft.dbo.UserInfo' does not have a primar
             <End Role="MainTimeSheet" EntitySet="MainTimeSheets" />
             <End Role="Attendance" EntitySet="Attendances" />
           </AssociationSet>
+          <AssociationSet Name="FK_Manpowerinoutform_ToLabourMaster" Association="Self.FK_Manpowerinoutform_ToLabourMaster">
+            <End Role="LabourMaster" EntitySet="LabourMasters" />
+            <End Role="Manpowerinoutform" EntitySet="Manpowerinoutforms" />
+          </AssociationSet>
+          <AssociationSet Name="FK_overtimeemp_Tolab" Association="Self.FK_overtimeemp_Tolab">
+            <End Role="LabourMaster" EntitySet="LabourMasters" />
+            <End Role="overtimeemployeelist" EntitySet="overtimeemployeelists" />
+          </AssociationSet>
           <AssociationSet Name="FK_towemp_Tolab" Association="Self.FK_towemp_Tolab">
             <End Role="LabourMaster" EntitySet="LabourMasters" />
             <End Role="towemp" EntitySet="towemps" />
@@ -2202,6 +2452,26 @@ warning 6002: The table/view 'LogisticsSoft.dbo.UserInfo' does not have a primar
           <AssociationSet Name="FK_MainTimeSheet_ToTable_1" Association="Self.FK_MainTimeSheet_ToTable_1">
             <End Role="ProjectList" EntitySet="ProjectLists" />
             <End Role="MainTimeSheet" EntitySet="MainTimeSheets" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Manpowerinoutform_ToTable_1" Association="Self.FK_Manpowerinoutform_ToTable_1">
+            <End Role="ProjectList" EntitySet="ProjectLists" />
+            <End Role="Manpowerinoutform" EntitySet="Manpowerinoutforms" />
+          </AssociationSet>
+          <AssociationSet Name="FK_MainTimeSheet_Tomps" Association="Self.FK_MainTimeSheet_Tomps">
+            <End Role="ManPowerSupplier" EntitySet="ManPowerSuppliers" />
+            <End Role="promanlist" EntitySet="promanlists" />
+          </AssociationSet>
+          <AssociationSet Name="FK_overtimeemp_Tootref" Association="Self.FK_overtimeemp_Tootref">
+            <End Role="overtimeref" EntitySet="overtimerefs" />
+            <End Role="overtimeemployeelist" EntitySet="overtimeemployeelists" />
+          </AssociationSet>
+          <AssociationSet Name="FK_overtimeref_Topro1" Association="Self.FK_overtimeref_Topro1">
+            <End Role="ProjectList" EntitySet="ProjectLists" />
+            <End Role="overtimeref" EntitySet="overtimerefs" />
+          </AssociationSet>
+          <AssociationSet Name="FK_MainTimeSheet_Topro" Association="Self.FK_MainTimeSheet_Topro">
+            <End Role="ProjectList" EntitySet="ProjectLists" />
+            <End Role="promanlist" EntitySet="promanlists" />
           </AssociationSet>
           <AssociationSet Name="FK_towref_Topro1" Association="Self.FK_towref_Topro1">
             <End Role="ProjectList" EntitySet="ProjectLists" />
@@ -2223,119 +2493,7 @@ warning 6002: The table/view 'LogisticsSoft.dbo.UserInfo' does not have a primar
             <End Role="AspNetRoles" EntitySet="AspNetRoles" />
             <End Role="AspNetUsers" EntitySet="AspNetUsers" />
           </AssociationSet>
-          <EntitySet Name="Manpowerinoutforms" EntityType="LogisticsSoftModel.Manpowerinoutform" />
-          <AssociationSet Name="FK_Manpowerinoutform_ToLabourMaster" Association="LogisticsSoftModel.FK_Manpowerinoutform_ToLabourMaster">
-            <End Role="LabourMaster" EntitySet="LabourMasters" />
-            <End Role="Manpowerinoutform" EntitySet="Manpowerinoutforms" />
-          </AssociationSet>
-          <AssociationSet Name="FK_Manpowerinoutform_ToTable_1" Association="LogisticsSoftModel.FK_Manpowerinoutform_ToTable_1">
-            <End Role="ProjectList" EntitySet="ProjectLists" />
-            <End Role="Manpowerinoutform" EntitySet="Manpowerinoutforms" />
-          </AssociationSet>
-          <EntitySet Name="promanlists" EntityType="LogisticsSoftModel.promanlist" />
-          <AssociationSet Name="FK_MainTimeSheet_Tomps" Association="LogisticsSoftModel.FK_MainTimeSheet_Tomps">
-            <End Role="ManPowerSupplier" EntitySet="ManPowerSuppliers" />
-            <End Role="promanlist" EntitySet="promanlists" />
-          </AssociationSet>
-          <AssociationSet Name="FK_MainTimeSheet_Topro" Association="LogisticsSoftModel.FK_MainTimeSheet_Topro">
-            <End Role="ProjectList" EntitySet="ProjectLists" />
-            <End Role="promanlist" EntitySet="promanlists" />
-          </AssociationSet>
         </EntityContainer>
-        <EntityType Name="Manpowerinoutform">
-          <Key>
-            <PropertyRef Name="Id" />
-          </Key>
-          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="camp" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="companyName" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="EmpID" Type="Int64" Nullable="false" />
-          <Property Name="mobileNo" Type="Int32" />
-          <Property Name="roomNo" Type="Int32" />
-          <Property Name="Project" Type="Int64" Nullable="false" />
-          <Property Name="SSg" Type="Boolean" Nullable="false" />
-          <Property Name="SSp" Type="Boolean" Nullable="false" />
-          <Property Name="blanket" Type="Boolean" Nullable="false" />
-          <Property Name="bs" Type="Boolean" Nullable="false" />
-          <Property Name="fs" Type="Boolean" Nullable="false" />
-          <Property Name="pillow" Type="Boolean" Nullable="false" />
-          <Property Name="pc" Type="Boolean" Nullable="false" />
-          <Property Name="ck" Type="Boolean" Nullable="false" />
-          <Property Name="rk" Type="Boolean" Nullable="false" />
-          <Property Name="cic" Type="Boolean" Nullable="false" />
-          <Property Name="copon" Type="Boolean" Nullable="false" />
-          <NavigationProperty Name="LabourMaster" Relationship="LogisticsSoftModel.FK_Manpowerinoutform_ToLabourMaster" FromRole="Manpowerinoutform" ToRole="LabourMaster" />
-          <NavigationProperty Name="ProjectList" Relationship="LogisticsSoftModel.FK_Manpowerinoutform_ToTable_1" FromRole="Manpowerinoutform" ToRole="ProjectList" />
-          <Property Name="check_in" Type="DateTime" Precision="0" />
-          <Property Name="check_out" Type="DateTime" Precision="0" />
-          <Property Name="date_" Type="DateTime" Precision="0" />
-        </EntityType>
-        <Association Name="FK_Manpowerinoutform_ToLabourMaster">
-          <End Type="LogisticsSoftModel.LabourMaster" Role="LabourMaster" Multiplicity="1">
-            <OnDelete Action="Cascade" />
-          </End>
-          <End Type="LogisticsSoftModel.Manpowerinoutform" Role="Manpowerinoutform" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="LabourMaster">
-              <PropertyRef Name="ID" />
-            </Principal>
-            <Dependent Role="Manpowerinoutform">
-              <PropertyRef Name="EmpID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_Manpowerinoutform_ToTable_1">
-          <End Type="LogisticsSoftModel.ProjectList" Role="ProjectList" Multiplicity="1">
-            <OnDelete Action="Cascade" />
-          </End>
-          <End Type="LogisticsSoftModel.Manpowerinoutform" Role="Manpowerinoutform" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="ProjectList">
-              <PropertyRef Name="ID" />
-            </Principal>
-            <Dependent Role="Manpowerinoutform">
-              <PropertyRef Name="Project" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <EntityType Name="promanlist">
-          <Key>
-            <PropertyRef Name="Id" />
-          </Key>
-          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="ManPowerSupplier" Type="Int64" Nullable="false" />
-          <Property Name="Project" Type="Int64" Nullable="false" />
-          <NavigationProperty Name="ManPowerSupplier1" Relationship="LogisticsSoftModel.FK_MainTimeSheet_Tomps" FromRole="promanlist" ToRole="ManPowerSupplier" />
-          <NavigationProperty Name="ProjectList" Relationship="LogisticsSoftModel.FK_MainTimeSheet_Topro" FromRole="promanlist" ToRole="ProjectList" />
-        </EntityType>
-        <Association Name="FK_MainTimeSheet_Tomps">
-          <End Type="LogisticsSoftModel.ManPowerSupplier" Role="ManPowerSupplier" Multiplicity="1">
-            <OnDelete Action="Cascade" />
-          </End>
-          <End Type="LogisticsSoftModel.promanlist" Role="promanlist" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="ManPowerSupplier">
-              <PropertyRef Name="ID" />
-            </Principal>
-            <Dependent Role="promanlist">
-              <PropertyRef Name="ManPowerSupplier" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_MainTimeSheet_Topro">
-          <End Type="LogisticsSoftModel.ProjectList" Role="ProjectList" Multiplicity="1">
-            <OnDelete Action="Cascade" />
-          </End>
-          <End Type="LogisticsSoftModel.promanlist" Role="promanlist" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="ProjectList">
-              <PropertyRef Name="ID" />
-            </Principal>
-            <Dependent Role="promanlist">
-              <PropertyRef Name="Project" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -2355,7 +2513,6 @@ warning 6002: The table/view 'LogisticsSoft.dbo.UserInfo' does not have a primar
           <EntitySetMapping Name="approvals">
             <EntityTypeMapping TypeName="LogisticsSoftModel.approval">
               <MappingFragment StoreEntitySet="approval">
-                <ScalarProperty Name="Husername" ColumnName="Husername" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="adate" ColumnName="adate" />
                 <ScalarProperty Name="P_id" ColumnName="P_id" />
@@ -2364,6 +2521,7 @@ warning 6002: The table/view 'LogisticsSoft.dbo.UserInfo' does not have a primar
                 <ScalarProperty Name="A_id" ColumnName="A_id" />
                 <ScalarProperty Name="Susername" ColumnName="Susername" />
                 <ScalarProperty Name="Ausername" ColumnName="Ausername" />
+                <ScalarProperty Name="Husername" ColumnName="Husername" />
                 <ScalarProperty Name="Empno" ColumnName="Empno" />
               </MappingFragment>
             </EntityTypeMapping>
@@ -2417,7 +2575,6 @@ warning 6002: The table/view 'LogisticsSoft.dbo.UserInfo' does not have a primar
           <EntitySetMapping Name="Attendances">
             <EntityTypeMapping TypeName="LogisticsSoftModel.Attendance">
               <MappingFragment StoreEntitySet="Attendance">
-                <ScalarProperty Name="absapproved_" ColumnName="absapproved " />
                 <ScalarProperty Name="ID" ColumnName="ID" />
                 <ScalarProperty Name="EmpID" ColumnName="EmpID" />
                 <ScalarProperty Name="SubMain" ColumnName="SubMain" />
@@ -2489,6 +2646,7 @@ warning 6002: The table/view 'LogisticsSoft.dbo.UserInfo' does not have a primar
                 <ScalarProperty Name="Skilledthours" ColumnName="Skilledthours" />
                 <ScalarProperty Name="Unskilledthours" ColumnName="Unskilledthours" />
                 <ScalarProperty Name="TotalWorkers" ColumnName="TotalWorkers" />
+                <ScalarProperty Name="absapproved_" ColumnName="absapproved " />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -2609,6 +2767,33 @@ warning 6002: The table/view 'LogisticsSoft.dbo.UserInfo' does not have a primar
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
+          <EntitySetMapping Name="Manpowerinoutforms">
+            <EntityTypeMapping TypeName="LogisticsSoftModel.Manpowerinoutform">
+              <MappingFragment StoreEntitySet="Manpowerinoutform">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="camp" ColumnName="camp" />
+                <ScalarProperty Name="companyName" ColumnName="companyName" />
+                <ScalarProperty Name="EmpID" ColumnName="EmpID" />
+                <ScalarProperty Name="mobileNo" ColumnName="mobileNo" />
+                <ScalarProperty Name="roomNo" ColumnName="roomNo" />
+                <ScalarProperty Name="Project" ColumnName="Project" />
+                <ScalarProperty Name="SSg" ColumnName="SSg" />
+                <ScalarProperty Name="SSp" ColumnName="SSp" />
+                <ScalarProperty Name="blanket" ColumnName="blanket" />
+                <ScalarProperty Name="bs" ColumnName="bs" />
+                <ScalarProperty Name="fs" ColumnName="fs" />
+                <ScalarProperty Name="pillow" ColumnName="pillow" />
+                <ScalarProperty Name="pc" ColumnName="pc" />
+                <ScalarProperty Name="ck" ColumnName="ck" />
+                <ScalarProperty Name="rk" ColumnName="rk" />
+                <ScalarProperty Name="cic" ColumnName="cic" />
+                <ScalarProperty Name="copon" ColumnName="copon" />
+                <ScalarProperty Name="check_in" ColumnName="check-in" />
+                <ScalarProperty Name="check_out" ColumnName="check-out" />
+                <ScalarProperty Name="date_" ColumnName="date_" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
           <EntitySetMapping Name="ManPowerSuppliers">
             <EntityTypeMapping TypeName="LogisticsSoftModel.ManPowerSupplier">
               <MappingFragment StoreEntitySet="ManPowerSupplier">
@@ -2625,6 +2810,30 @@ warning 6002: The table/view 'LogisticsSoft.dbo.UserInfo' does not have a primar
                 <ScalarProperty Name="URL_Path" ColumnName="URL Path" />
                 <ScalarProperty Name="Workflow_Instance_ID" ColumnName="Workflow Instance ID" />
                 <ScalarProperty Name="File_Type" ColumnName="File Type" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="overtimeemployeelists">
+            <EntityTypeMapping TypeName="LogisticsSoftModel.overtimeemployeelist">
+              <MappingFragment StoreEntitySet="overtimeemployeelist">
+                <ScalarProperty Name="status" ColumnName="status" />
+                <ScalarProperty Name="HRAP" ColumnName="HRAP" />
+                <ScalarProperty Name="hopAP" ColumnName="hopAP" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="lab_no" ColumnName="lab_no" />
+                <ScalarProperty Name="effectivedate" ColumnName="effectivedate" />
+                <ScalarProperty Name="hrs" ColumnName="hrs" />
+                <ScalarProperty Name="otref" ColumnName="otref" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="overtimerefs">
+            <EntityTypeMapping TypeName="LogisticsSoftModel.overtimeref">
+              <MappingFragment StoreEntitySet="overtimeref">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="overtimedate" ColumnName="overtimedate" />
+                <ScalarProperty Name="overtimeref1" ColumnName="overtimeref" />
+                <ScalarProperty Name="overtimepro" ColumnName="overtimepro" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -2666,15 +2875,24 @@ warning 6002: The table/view 'LogisticsSoft.dbo.UserInfo' does not have a primar
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
+          <EntitySetMapping Name="promanlists">
+            <EntityTypeMapping TypeName="LogisticsSoftModel.promanlist">
+              <MappingFragment StoreEntitySet="promanlist">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="ManPowerSupplier" ColumnName="ManPowerSupplier" />
+                <ScalarProperty Name="Project" ColumnName="Project" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
           <EntitySetMapping Name="towemps">
             <EntityTypeMapping TypeName="LogisticsSoftModel.towemp">
               <MappingFragment StoreEntitySet="towemp">
-                <ScalarProperty Name="app_by" ColumnName="app_by" />
-                <ScalarProperty Name="ARstatus" ColumnName="ARstatus" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="lab_no" ColumnName="lab_no" />
                 <ScalarProperty Name="effectivedate" ColumnName="effectivedate" />
                 <ScalarProperty Name="rowref" ColumnName="rowref" />
+                <ScalarProperty Name="ARstatus" ColumnName="ARstatus" />
+                <ScalarProperty Name="app_by" ColumnName="app_by" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -3001,42 +3219,6 @@ warning 6002: The table/view 'LogisticsSoft.dbo.UserInfo' does not have a primar
               <ScalarProperty Name="Id" ColumnName="UserId" />
             </EndProperty>
           </AssociationSetMapping>
-          <EntitySetMapping Name="Manpowerinoutforms">
-            <EntityTypeMapping TypeName="LogisticsSoftModel.Manpowerinoutform">
-              <MappingFragment StoreEntitySet="Manpowerinoutform">
-                <ScalarProperty Name="date_" ColumnName="date_" />
-                <ScalarProperty Name="check_out" ColumnName="check-out" />
-                <ScalarProperty Name="check_in" ColumnName="check-in" />
-                <ScalarProperty Name="copon" ColumnName="copon" />
-                <ScalarProperty Name="cic" ColumnName="cic" />
-                <ScalarProperty Name="rk" ColumnName="rk" />
-                <ScalarProperty Name="ck" ColumnName="ck" />
-                <ScalarProperty Name="pc" ColumnName="pc" />
-                <ScalarProperty Name="pillow" ColumnName="pillow" />
-                <ScalarProperty Name="fs" ColumnName="fs" />
-                <ScalarProperty Name="bs" ColumnName="bs" />
-                <ScalarProperty Name="blanket" ColumnName="blanket" />
-                <ScalarProperty Name="SSp" ColumnName="SSp" />
-                <ScalarProperty Name="SSg" ColumnName="SSg" />
-                <ScalarProperty Name="Project" ColumnName="Project" />
-                <ScalarProperty Name="roomNo" ColumnName="roomNo" />
-                <ScalarProperty Name="mobileNo" ColumnName="mobileNo" />
-                <ScalarProperty Name="EmpID" ColumnName="EmpID" />
-                <ScalarProperty Name="companyName" ColumnName="companyName" />
-                <ScalarProperty Name="camp" ColumnName="camp" />
-                <ScalarProperty Name="Id" ColumnName="Id" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="promanlists">
-            <EntityTypeMapping TypeName="LogisticsSoftModel.promanlist">
-              <MappingFragment StoreEntitySet="promanlist">
-                <ScalarProperty Name="Project" ColumnName="Project" />
-                <ScalarProperty Name="ManPowerSupplier" ColumnName="ManPowerSupplier" />
-                <ScalarProperty Name="Id" ColumnName="Id" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
         </EntityContainerMapping>
       </Mapping>
     </edmx:Mappings>

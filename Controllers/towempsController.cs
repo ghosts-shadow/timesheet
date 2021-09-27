@@ -31,12 +31,12 @@ namespace onlygodknows.Controllers
             {
                 var scid = this.db.CsPermissions.Where(x => x.CsUser == uid1.csid).ToList();
                 foreach (var i in scid) t.Add(this.db.ProjectLists.Find(i.Project));
-
             }
             else
             {
                 t = this.db.ProjectLists.ToList();
             }
+
             var towemps = db.towemps.Include(t1 => t1.LabourMaster).Include(t1 => t1.towref).ToList();
             var tr = this.db.towrefs.Find(id);
             ViewBag.tw = tr.Id;
@@ -48,11 +48,12 @@ namespace onlygodknows.Controllers
             var tow = towemps.FindAll(x => x.rowref == id);
             foreach (var towemp in tow)
             {
-                if (t.Exists(x=>x.ID == tr.mp_to))
+                if (t.Exists(x => x.ID == tr.mp_to))
                 {
                     towemp.towref.AR = true;
                 }
             }
+
             return View(tow);
         }
 
@@ -279,6 +280,9 @@ namespace onlygodknows.Controllers
                     case 8:
                         Sheet.Cells[string.Format("E{0}", i)].Value = "GROVE";
                         break;
+                    case 9:
+                        Sheet.Cells[string.Format("E{0}", i)].Value = "COMMON";
+                        break;
                 }
 
                 i++;
@@ -316,8 +320,8 @@ namespace onlygodknows.Controllers
                         te.app_by = this.User.Identity.Name;
                         this.db.Entry(te).State = EntityState.Modified;
                         this.db.SaveChanges();
-                        if(i == 1)
-                            SendMail("", "approved",tr);
+                        if (i == 1)
+                            SendMail("", "approved", tr);
                     }
                     else
                     {
@@ -327,7 +331,7 @@ namespace onlygodknows.Controllers
                         this.db.Entry(te).State = EntityState.Modified;
                         this.db.SaveChanges();
                         if (i == 1)
-                            SendMail(message, "rejected",tr);
+                            SendMail(message, "rejected", tr);
                     }
                 }
             }
@@ -342,9 +346,11 @@ namespace onlygodknows.Controllers
             var asa = new List<AspNetUser>();
             var context = new ApplicationDbContext();
             var users = context.Users
-                .Where(x => x.Roles.Select(y => y.RoleId).Contains("6023f0a5-8d24-45d3-9641-b3c2e39aa763") || x.Roles.Select(y => y.RoleId).Contains("4d175b2a-31a2-448d-8a2e-cde6c328c721")).ToList();
+                .Where(x => x.Roles.Select(y => y.RoleId).Contains("6023f0a5-8d24-45d3-9641-b3c2e39aa763") ||
+                            x.Roles.Select(y => y.RoleId).Contains("4d175b2a-31a2-448d-8a2e-cde6c328c721")).ToList();
             var users1 = context.Users
-                .Where(x => x.Roles.Select(y => y.RoleId).Contains("8840f8c3-862d-4b1e-9205-47e84c85696e") || x.Roles.Select(y => y.RoleId).Contains("4d175b2a-31a2-448d-8a2e-cde6c328c721")).ToList();
+                .Where(x => x.Roles.Select(y => y.RoleId).Contains("8840f8c3-862d-4b1e-9205-47e84c85696e") ||
+                            x.Roles.Select(y => y.RoleId).Contains("4d175b2a-31a2-448d-8a2e-cde6c328c721")).ToList();
             var cper = this.db.CsPermissions.Where(x => x.Project == trvar.mp_to).ToList();
             var cper1 = this.db.CsPermissions.Where(x => x.Project == trvar.mp_from).ToList();
             var userslist = new List<AspNetUser>();
@@ -355,24 +361,26 @@ namespace onlygodknows.Controllers
                 foreach (var csp in cper)
                 {
                     var manvar = man.Find(x => x.csid == csp.CsUser);
-                    if (users.Exists(x=>x.Id == manvar.Id))
+                    if (manvar != null && users.Exists(x => x.Id == manvar.Id))
                     {
                         userslist.Add(manvar);
                     }
-
                 }
 
                 foreach (var netUser in userslist)
                 {
-                    message.To.Add((new MailboxAddress(netUser.UserName,netUser.Email)));
+                    message.To.Add((new MailboxAddress(netUser.UserName, netUser.Email)));
                 }
 
                 message.Subject = "remobilization of staff";
                 message.Body = new TextPart("plain")
                 {
-                    Text = @"Dear Sir/ma'am," + "\n\n" + "Please note that the transfer of workers from perject " + trvar.ProjectList1.PROJECT_NAME + " to project " + trvar.ProjectList.PROJECT_NAME + "has been submitted for ur approval/rejection" + "\n\n\n" + "http://cstimesheet.ddns.net:6333/timesheet/towrefs" + "\n\n\n" + "Thanks Best Regards, "
+                    Text = @"Dear Sir/ma'am," + "\n\n" + "Please note that the transfer of workers from perject " +
+                           trvar.ProjectList1.PROJECT_NAME + " to project " + trvar.ProjectList.PROJECT_NAME +
+                           "has been submitted for ur approval/rejection" + "\n\n\n" +
+                           "http://cstimesheet.ddns.net:6333/timesheet/towrefs" + "\n\n\n" + "Thanks Best Regards, "
                 };
-                if (message.To != null)
+                if (message.To.Count != 0)
                 {
                     using (var client = new SmtpClient())
                     {
@@ -392,19 +400,24 @@ namespace onlygodknows.Controllers
                 foreach (var csp in cper1)
                 {
                     var manvar = man.Find(x => x.csid == csp.CsUser);
-                    if (users1.Exists(x => x.Id == manvar.Id))
+                    if (manvar != null && users1.Exists(x => x.Id == manvar.Id))
                     {
                         userslist.Add(manvar);
                     }
                 }
+
                 foreach (var netUser in userslist)
                 {
                     message.To.Add((new MailboxAddress(netUser.UserName, netUser.Email)));
                 }
+
                 message.Subject = "remobilization of staff";
                 message.Body = new TextPart("plain")
                 {
-                    Text = @"Dear Sir/ma'am," + "\n\n" +"Please note that the transfer of workers from perject " + trvar.ProjectList1.PROJECT_NAME + " to project " + trvar.ProjectList.PROJECT_NAME + "has been approvaled" + "\n\n\n" + "http://cstimesheet.ddns.net:6333/timesheet/towrefs" + "\n\n\n" + "Thanks Best Regards, "
+                    Text = @"Dear Sir/ma'am," + "\n\n" + "Please note that the transfer of workers from perject " +
+                           trvar.ProjectList1.PROJECT_NAME + " to project " + trvar.ProjectList.PROJECT_NAME +
+                           "has been approvaled" + "\n\n\n" + "http://cstimesheet.ddns.net:6333/timesheet/towrefs" +
+                           "\n\n\n" + "Thanks Best Regards, "
                 };
                 if (message.To != null)
                 {
@@ -430,14 +443,19 @@ namespace onlygodknows.Controllers
                         userslist.Add(manvar);
                     }
                 }
+
                 foreach (var netUser in userslist)
                 {
                     message.To.Add((new MailboxAddress(netUser.UserName, netUser.Email)));
                 }
+
                 message.Subject = "remobilization of staff";
                 message.Body = new TextPart("plain")
                 {
-                    Text = @"Dear Sir/ma'am," + "\n\n" + "Please note that the transfer of workers from perject " + trvar.ProjectList1.PROJECT_NAME + " to project " + trvar.ProjectList.PROJECT_NAME + "has been rejected for "+msg + "\n\n\n" + "http://cstimesheet.ddns.net:6333/timesheet/towrefs" + "\n\n\n"+"Thanks Best Regards, "
+                    Text = @"Dear Sir/ma'am," + "\n\n" + "Please note that the transfer of workers from perject " +
+                           trvar.ProjectList1.PROJECT_NAME + " to project " + trvar.ProjectList.PROJECT_NAME +
+                           "has been rejected for " + msg + "\n\n\n" +
+                           "http://cstimesheet.ddns.net:6333/timesheet/towrefs" + "\n\n\n" + "Thanks Best Regards, "
                 };
                 if (message.To != null)
                 {

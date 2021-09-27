@@ -1,0 +1,43 @@
+﻿@model onlygodknows.Models.overtimeref
+
+@{
+    ViewBag.Title = "Details";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>overtimeref</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.overtimedate)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.overtimedate)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.overtimeref1)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.overtimeref1)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.ProjectList.ProjectCode)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.ProjectList.ProjectCode)
+        </dd>
+
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.Id }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>

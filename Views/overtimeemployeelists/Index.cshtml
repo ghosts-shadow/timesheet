@@ -1,0 +1,119 @@
+﻿@using Microsoft.Ajax.Utilities
+@model IEnumerable<onlygodknows.Models.overtimeemployeelist>
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var trid = 0;
+    string stat = null;
+    var i = 0;
+}
+
+<h2>Index</h2>
+
+<p>
+    @Html.ActionLink("Create New", "Create", "overtimerefs")
+    <b style="float: right">
+        @Html.ActionLink("back to main", "Index", "overtimerefs")
+    </b>
+</p>
+<table class="table">
+    <tr>
+        <th>
+            date
+        </th>
+        <th>
+            ref
+        </th>
+        <th>project</th>
+    </tr>
+    <tr>
+        <td>
+            @ViewBag.overtimedatw
+        </td>
+        <td>
+            @ViewBag.to
+        </td>
+        <td>
+            @ViewBag.overtimepro
+        </td>
+    </tr>
+</table>
+<br />
+<br />
+<br />
+<br />
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.LabourMaster.EMPNO)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.LabourMaster.Person_Name)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.effectivedate)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.hrs)
+        </th>
+        <th></th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.LabourMaster.EMPNO)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.LabourMaster.Person_Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.effectivedate)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.hrs)
+            </td>
+            @if (item.status.IsNullOrWhiteSpace())
+            {
+                <td>
+                    @Html.ActionLink("Delete", "Delete", new { id = item.Id })
+                </td>
+            }
+            else
+            {
+                <td></td>
+            }
+        </tr>
+        if (i == 0)
+        {
+            trid = item.otref.Value;
+            stat = item.hopAP;
+        }
+
+    }
+
+</table>
+@if (stat.IsNullOrWhiteSpace())
+{
+    <div class="row">
+        <div class="col-md-2">
+            <input type="submit" value="Approve" class="btn btn-default" style="color: green;" onclick="window.location.href = '@Url.Action("aprestatus", "overtimeemployeelists", new {tr = trid, message = "approved"})'" />
+        </div>
+        <div class="col-md-6">
+            @using (Html.BeginForm("aprestatus", "overtimeemployeelists", new { tr = trid }))
+            {
+                <div class="col-md-3">
+                    <input type="submit" class="btn btn-default" value="Reject" style="color: red;" />
+                </div>
+                <div class="col-md-7">
+                    <p>
+                        <input type="text" name="message" required class="form-control" placeholder="comment" />
+                    </p>
+                </div>
+            }
+        </div>
+    </div>
+
+}

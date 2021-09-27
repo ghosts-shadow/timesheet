@@ -108,7 +108,7 @@
                         {
                             if (User.IsInRole("Project_manager") || User.IsInRole("HR_manager"))
                             {
-                                if (!item.AR)
+                                if (item.AR)
                                 {
                                     if (item.towemps.First().app_by == null)
                                     {
