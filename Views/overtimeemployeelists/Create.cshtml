@@ -12,7 +12,7 @@
 <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
 <script>
     $(function() {
-        $("#effectivedate0").datepicker();
+        $("#effectivedate0").datepicker({ minDate: 1});
     });
     var counter = 1;
     var number = 0;
@@ -23,7 +23,6 @@
             chosendestroy();
             number = counter++;
             if (counter < 25) {
-                if (number < $('#lab_no0').children('option').length - 1) {
                     container = $('#tablerow1');
                     template = $('#tr0');
                     var no = number - 1;
@@ -41,9 +40,7 @@
                             number +
                             "\"/> ");
                     container.append(clone).before(clone);
-                }
             }
-            name("lab_no" + number);
             $("#" + (number - 1)).remove();
             createchosen();
         });
@@ -58,7 +55,7 @@
         for (var i = 0; i < counter; i++) {
             if ($("#lab_no" + i).length !== 0) {
                 $("#lab_no" + i).chosen({ no_results_text: "Oops, nothing found!" });
-                $("#effectivedate" + i).datepicker();
+                $("#effectivedate" + i).datepicker({ minDate: 1});
             }
         }
     }
@@ -84,11 +81,11 @@
         <hr/>
         @Html.ValidationSummary(true, "", new {@class = "text-danger"})
         <div class="form-group">
-            <div class="col-md-offset-2 col-md-10">
+            <div class="col-md-10">
                 <input type="submit" value="Save" class="btn btn-default"/>
             </div>
         </div>
-        <table>
+        <table  class="table table-bordered" >
             <thead>
             <tr>
                 <th>
@@ -100,6 +97,7 @@
                 <th>
                     @Html.LabelFor(model => model.hrs, htmlAttributes: new {@class = "control-label col-md-2"})
                 </th>
+                <th></th>
             </tr>
             </thead>
             <tbody>
@@ -109,7 +107,7 @@
                     @Html.ValidationMessageFor(model => model.lab_no, "", new {@class = "text-danger"})
                 </td>
                 <td>
-                    <input type="text" name="overtimeemployeelist[0].effectivedate" class="form-control" id="effectivedate0"/>
+                    <input type="text" name="overtimeemployeelist[0].effectivedate" class="form-control" id="effectivedate0" readonly="readonly"/>
                     @Html.ValidationMessageFor(model => model.effectivedate, "", new {@class = "text-danger"})
                 </td>
                 <td>

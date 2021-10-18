@@ -22,6 +22,7 @@ namespace onlygodknows.Models
             this.towemps = new HashSet<towemp>();
             this.Manpowerinoutforms = new HashSet<Manpowerinoutform>();
             this.overtimeemployeelists = new HashSet<overtimeemployeelist>();
+            this.asignprojects = new HashSet<asignproject>();
         }
     
         public long ID { get; set; }
@@ -52,10 +53,12 @@ namespace onlygodknows.Models
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Attendance> Attendances { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<towemp> towemps { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Manpowerinoutform> Manpowerinoutforms { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<overtimeemployeelist> overtimeemployeelists { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<towemp> towemps { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<asignproject> asignprojects { get; set; }
     }
 }

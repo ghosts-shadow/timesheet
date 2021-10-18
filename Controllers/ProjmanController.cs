@@ -25,6 +25,7 @@ namespace onlygodknows.Controllers
     using MimeKit;
     using SmtpClient = MailKit.Net.Smtp.SmtpClient;
 
+    [Authorize]
     public class ProjmanController : Controller
     {
         private readonly LogisticsSoftEntities db = new LogisticsSoftEntities();

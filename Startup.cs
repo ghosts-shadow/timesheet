@@ -89,6 +89,13 @@ namespace onlygodknows
                 roleManager.Create(role);
 
             }
+            if (!roleManager.RoleExists("HR_assist"))
+            {
+                var role = new Microsoft.AspNet.Identity.EntityFramework.IdentityRole();
+                role.Name = "HR_assist";
+                roleManager.Create(role);
+
+            }
 
             if (!roleManager.RoleExists("Project_manager"))
             {

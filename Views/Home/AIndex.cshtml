@@ -298,6 +298,12 @@
             @Html.DisplayNameFor(model => model.attendance.LabourMaster.EMPNO)
         </th>
         <th>
+            @Html.DisplayNameFor(model => model.attendance.LabourMaster.Person_Name)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.attendance.LabourMaster.Position)
+        </th>
+        <th>
             @Html.DisplayNameFor(model => model.attendance.LabourMaster.ManPowerSupply)
         </th>
         <th id="d1">
@@ -425,6 +431,12 @@
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.LabourMaster.EMPNO)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.LabourMaster.Person_Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.LabourMaster.Position)
             </td>
             <td>
                 @switch (item.LabourMaster.ManPowerSupply)

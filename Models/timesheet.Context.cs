@@ -64,5 +64,6 @@ namespace onlygodknows.Models
         public virtual DbSet<tblUser> tblUsers { get; set; }
         public virtual DbSet<USER_ROLES> USER_ROLES { get; set; }
         public virtual DbSet<UserInfo> UserInfoes { get; set; }
+        public virtual DbSet<asignproject> asignprojects { get; set; }
     }
 }

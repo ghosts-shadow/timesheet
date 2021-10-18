@@ -14,6 +14,7 @@ namespace onlygodknows.Controllers
 
     using PagedList;
 
+    [Authorize]
     public class summaryController : Controller
     {
         private LogisticsSoftEntities db = new LogisticsSoftEntities();

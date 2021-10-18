@@ -37,6 +37,7 @@ namespace onlygodknows.Controllers
             }
 
             var towrefs = new List<towref>();
+            var towrefs1 = new List<towref>();
             foreach (var list in t)
             {
                 var trlist = towrlist.FindAll(x => x.mp_to == list.ID);
@@ -50,12 +51,33 @@ namespace onlygodknows.Controllers
                 towrefs.AddRange(trlist1);
             }
 
-            if (Request.IsAjaxRequest())
+            foreach (var tw in towrefs)
             {
-                return PartialView(towrefs.ToPagedList(1, 100));
+                // if (tw.towemps.Count == 0)
+                // {
+                //     var torfind = db.towrefs.ToList().Find(x=>x.Id == tw.Id);
+                //     if (torfind != null)
+                //     {
+                //         db.towrefs.Remove(torfind);
+                //         db.SaveChanges();
+                //     }
+                // }
+                // else
+                {
+                    if (!towrefs1.Exists(x=>x.Id == tw.Id))
+                    {
+                        towrefs1.Add(tw);
+                    }
+                    
+                }
             }
+            //
+            // if (Request.IsAjaxRequest())
+            // {
+            //     return PartialView(towrefs1.FindAll(x => x.towemps.First().app_by != "default").OrderByDescending(x=>x.mpcdate).ToPagedList(1, 100));
+            // }
 
-            return View(towrefs.ToPagedList(1, 100));
+            return View(towrefs1.FindAll(x=>x.towemps.First().app_by != "default").OrderByDescending(x => x.mpcdate).ToPagedList(1, 100));
         }
 
         // GET: towrefs/Details/5
@@ -93,7 +115,7 @@ namespace onlygodknows.Controllers
                 t = this.db.ProjectLists.ToList();
             }
 
-            ViewBag.mp_from = new SelectList(t, "ID", "PROJECT_NAME");
+            ViewBag.mp_from = new SelectList(t.OrderBy(x=>x.PROJECT_NAME).ToList(), "ID", "PROJECT_NAME");
             if (t.Count == 1)
             {
                 foreach (var list in t)
@@ -102,7 +124,7 @@ namespace onlygodknows.Controllers
                 }
             }
 
-            ViewBag.mp_to = new SelectList(prolist, "ID", "PROJECT_NAME");
+            ViewBag.mp_to = new SelectList(prolist.OrderBy(x => x.PROJECT_NAME).ToList(), "ID", "PROJECT_NAME");
             return View();
         }
 
@@ -136,6 +158,7 @@ namespace onlygodknows.Controllers
 
             if (ModelState.IsValid)
             {
+                towref.mpcdate = DateTime.Now;
                 db.towrefs.Add(towref);
                 db.SaveChanges();
                 if (postedFile != null)

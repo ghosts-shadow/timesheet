@@ -201,6 +201,7 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\Startup.Auth.cs" />
     <Compile Include="Controllers\AccountController.cs" />
+    <Compile Include="Controllers\asignprojectsController.cs" />
     <Compile Include="Controllers\AttendancesController.cs" />
     <Compile Include="Controllers\datacorrectionController.cs" />
     <Compile Include="Controllers\ManpowerinoutformsController.cs" />
@@ -225,6 +226,9 @@
       <DependentUpon>timesheet.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\approvalnonsence.cs" />
+    <Compile Include="Models\asignproject.cs">
+      <DependentUpon>timesheet.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\AspNetRole.cs">
       <DependentUpon>timesheet.tt</DependentUpon>
     </Compile>
@@ -586,6 +590,11 @@
     <Content Include="Views\Attendances\Details.cshtml" />
     <Content Include="Views\Attendances\Edit.cshtml" />
     <Content Include="Views\Attendances\Index.cshtml" />
+    <Content Include="Views\asignprojects\Create.cshtml" />
+    <Content Include="Views\asignprojects\Delete.cshtml" />
+    <Content Include="Views\asignprojects\Details.cshtml" />
+    <Content Include="Views\asignprojects\Edit.cshtml" />
+    <Content Include="Views\asignprojects\Index.cshtml" />
     <None Include="Views\Home\Class1.cshtml" />
     <Content Include="Views\Home\tests.cshtml" />
     <Content Include="Views\Home\csearch.cshtml" />
@@ -641,6 +650,7 @@
     <Content Include="Views\overtimeemployeelists\Details.cshtml" />
     <Content Include="Views\overtimeemployeelists\Edit.cshtml" />
     <Content Include="Views\overtimeemployeelists\Index.cshtml" />
+    <Content Include="Views\towemps\search.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\bootstrap.css" />

@@ -64,6 +64,9 @@
         <AssociationConnector Association="LogisticsSoftModel.FK_towemp_Toref" ManuallyRouted="false" />
         <AssociationConnector Association="LogisticsSoftModel.FK_towemp_To" ManuallyRouted="false" />
         <AssociationConnector Association="LogisticsSoftModel.AspNetUserRoles" ManuallyRouted="false" />
+        <EntityTypeShape EntityType="LogisticsSoftModel.asignproject" Width="1.5" PointX="3" PointY="23.5" />
+        <AssociationConnector Association="LogisticsSoftModel.FKasignproject__ToProject" />
+        <AssociationConnector Association="LogisticsSoftModel.FK_asignproject_ToLabourMaster" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

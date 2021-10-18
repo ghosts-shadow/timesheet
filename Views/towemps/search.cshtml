@@ -1,0 +1,68 @@
+﻿@model onlygodknows.Models.towemp
+
+<div>
+    @using (Html.BeginForm())
+    {
+        <div>
+            employee no
+            <br/>
+            <input type="text" name="searchemp" class="form-control"/>
+            <br/>
+            <input type="submit" value="search" class="btn btn-default"/>
+            <br/>
+            <p style="font-size: 150%; color: red; text-transform: uppercase">
+                <b>
+                    @ViewBag.errormsg
+                </b>
+            </p>
+            <br/>
+            <hr/>
+        </div>
+    }
+    @if (Model != null)
+    {
+        <dl class="dl-horizontal">
+
+            <dt>
+                @Html.DisplayNameFor(model => model.LabourMaster.EMPNO) :-
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.LabourMaster.EMPNO)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.LabourMaster.Person_Name) :-
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.LabourMaster.Person_Name)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.LabourMaster.Position) :-
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.LabourMaster.Position)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.effectivedate) :-
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.effectivedate)
+            </dd>
+            <dt>
+                working in project :-
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.towref.ProjectList.PROJECT_NAME)
+            </dd>
+
+
+        </dl>
+    }
+</div>

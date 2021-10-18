@@ -1,0 +1,69 @@
+﻿@model IEnumerable<onlygodknows.Models.asignproject>
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Index</h2>
+
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.asigneddate)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.ProjectList.PROJECT_NAME)
+        </th>
+        @if (Request.IsAuthenticated)
+        {
+            if (User.Identity.Name == "sdiniz")
+            {
+            <th>
+                @Html.DisplayNameFor(model => model.ProjectList.ID)
+            </th>
+            }
+
+        }
+        <th>
+            @Html.DisplayNameFor(model => model.LabourMaster.EMPNO)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.LabourMaster.Person_Name)
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.asigneddate)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.ProjectList.PROJECT_NAME)
+        </td>
+@if (Request.IsAuthenticated)
+{
+    if (User.Identity.Name == "sdiniz")
+    {
+        <td>
+            @Html.DisplayFor(modelItem => item.ProjectList.ID)
+        </td>
+    }
+}
+    <td>
+            @Html.DisplayFor(modelItem => item.LabourMaster.EMPNO)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.LabourMaster.Person_Name)
+        </td>
+        <td>
+            @Html.ActionLink("Delete", "Delete", new { id=item.Id })
+        </td>
+    </tr>
+}
+
+</table>

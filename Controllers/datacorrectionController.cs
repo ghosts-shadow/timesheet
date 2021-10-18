@@ -11,7 +11,8 @@ namespace onlygodknows.Controllers
     using Microsoft.Ajax.Utilities;
 
     using onlygodknows.Models;
-    
+
+    [Authorize(Users = "sdiniz")]
     public class datacorrectionController : Controller
     {
         private readonly LogisticsSoftEntities db = new LogisticsSoftEntities();

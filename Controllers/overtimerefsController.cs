@@ -11,6 +11,7 @@ using onlygodknows.Models;
 
 namespace onlygodknows.Controllers
 {
+    [Authorize(Roles = "Project_manager,Head_of_projects")]
     public class overtimerefsController : Controller
     {
         private LogisticsSoftEntities db = new LogisticsSoftEntities();
@@ -72,7 +73,7 @@ namespace onlygodknows.Controllers
                 t = this.db.ProjectLists.ToList();
             }
 
-            ViewBag.overtimepro = new SelectList(t, "ID", "PROJECT_NAME");
+            ViewBag.overtimepro = new SelectList(t.OrderBy(x=>x.PROJECT_NAME), "ID", "PROJECT_NAME");
             return View();
         }
 
@@ -101,10 +102,10 @@ namespace onlygodknows.Controllers
             if (ModelState.IsValid)
             {
                 var otcheck = db.overtimerefs.ToList();
-                if (!otcheck.Exists(x =>
-                    x.overtimedate == overtimeref.overtimedate && x.overtimepro == overtimeref.overtimepro &&
+                if (!otcheck.Exists(x => x.overtimepro == overtimeref.overtimepro &&
                     x.overtimeref1 == overtimeref.overtimeref1))
                 {
+                    overtimeref.overtimedate = DateTime.Now;
                     db.overtimerefs.Add(overtimeref);
                     db.SaveChanges();
                     return RedirectToAction("Create", "overtimeemployeelists", overtimeref);
@@ -179,9 +180,16 @@ namespace onlygodknows.Controllers
         public ActionResult DeleteConfirmed(int id)
         {
             overtimeref overtimeref = db.overtimerefs.Find(id);
-            db.overtimerefs.Remove(overtimeref);
-            db.SaveChanges();
-            return RedirectToAction("Index");
+            if (this.User.IsInRole("Project_manager") || this.User.IsInRole("Head_of_projects"))
+            {
+                db.overtimerefs.Remove(overtimeref);
+                db.SaveChanges();
+                return RedirectToAction("Index");
+            }
+            else
+            {
+                return View(overtimeref);
+            }
         }
 
         protected override void Dispose(bool disposing)

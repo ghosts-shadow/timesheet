@@ -11,21 +11,24 @@
         vertical-align: middle;
     }
 </style>
+@*
 <script>
 
-    setInterval(function() {
-            $.ajax({
-                url: '/towrefs/index',
-                type: "POST",
-                success: function(result) {
-                    $("#charts").html(result);
-                }
-            });
-        },
+    setInterval(function () {
+        $.ajax({
+            url: '/towrefs/index',
+            type: "POST",
+            success: function (result) {
+                $("#charts").html(result);
+            }
+        });
+    },
         30000);
-</script>
+</script>*@
+
 <div id="charts">
-    <h2>transfred workers</h2>
+    <h2>transferred workers</h2>
+
     <p>
         @if (User.Identity.IsAuthenticated)
         {
@@ -35,8 +38,21 @@
             }
         }
     </p>
+
     <table class="table" id="tttttt">
         <tr>
+            @if (User.Identity.IsAuthenticated)
+            {
+                if (User.Identity.Name.Contains("sneden") || User.Identity.Name.Contains("sdiniz"))
+                {
+                    <th>
+                        @Html.DisplayNameFor(model => model.Id)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.towemps.First().app_by)
+                    </th>
+                }
+            }
             <th>
                 @Html.DisplayNameFor(model => model.refe1)
             </th>
@@ -62,6 +78,21 @@
         @foreach (var item in Model)
         {
             <tr style="text-align: center;">
+                @if (User.Identity.IsAuthenticated)
+                {
+                    if (User.Identity.Name.Contains("sneden") || User.Identity.Name.Contains("sdiniz"))
+                    {
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Id)
+                        </td>
+                        <td>
+                            @if (item.towemps.Count != 0)
+                            {
+                                @Html.DisplayFor(modelItem => item.towemps.First().app_by)
+                            }
+                        </td>
+                    }
+                }
                 <td>
                     @Html.DisplayFor(modelItem => item.refe1)
                 </td>
@@ -84,7 +115,8 @@
                             var postedFileExtension = Path.GetExtension(item.trattfiles.First().name);
                             if (string.Equals(postedFileExtension, ".pdf", StringComparison.OrdinalIgnoreCase))
                             {
-                                <a href="data:@item.trattfiles.First().content_type;base64,@Convert.ToBase64String(item.trattfiles.First().data)" target="_blank" name="@item.trattfiles.First().name">
+                                var filename = item.trattfiles.First().name + ".pdf";
+                                <a href="data:@item.trattfiles.First().content_type;base64,@Convert.ToBase64String(item.trattfiles.First().data)" target="_blank" name="@filename">
                                     view
                                 </a>
                             }

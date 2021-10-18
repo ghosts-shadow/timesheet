@@ -54,7 +54,7 @@ namespace onlygodknows.Controllers
                 }
             }
 
-            return View(tow);
+            return View(tow.OrderBy(x=>x.LabourMaster.EMPNO).ToList());
         }
 
         // GET: towemps/Details/5
@@ -119,7 +119,9 @@ namespace onlygodknows.Controllers
                         db.SaveChanges();
                         SendMail("", "submitted", tw.Id);
                     }
-                    else if (towemp[i - 1].lab_no != towemp1.lab_no)
+
+                    var checkemplist = db.towemps.Where(x => x.rowref == tw.Id).ToList();
+                    if (!checkemplist.Exists(x => x.lab_no == towemp1.lab_no))
                     {
                         towemp1.rowref = tw.Id;
                         db.towemps.Add(towemp1);
@@ -210,14 +212,14 @@ namespace onlygodknows.Controllers
             db.SaveChanges();
             return RedirectToAction("Index");
         }
-
-        [Authorize(Roles = "Admin")]
+        
         public void DownloadExcel(int tr)
         {
             var Ep = new ExcelPackage();
             var Sheet = Ep.Workbook.Worksheets.Add("transferred_workers");
             var towemps = db.towemps.Include(t => t.LabourMaster).Include(t => t.towref).ToList();
             var tw = this.db.towrefs.Find(tr);
+            var mansuplierlist = db.ManPowerSuppliers.ToList();
             Sheet.Cells["A1"].Value = "from";
             Sheet.Cells["B1"].Value = "to";
             Sheet.Cells["C1"].Value = "R no";
@@ -254,7 +256,7 @@ namespace onlygodknows.Controllers
                 Sheet.Cells[string.Format("B{0}", i)].Value = tw1.LabourMaster.EMPNO;
                 Sheet.Cells[string.Format("C{0}", i)].Value = tw1.LabourMaster.Person_Name;
                 Sheet.Cells[string.Format("D{0}", i)].Value = tw1.LabourMaster.Position;
-                switch (tw1.LabourMaster.ManPowerSupply)
+                /*switch (tw1.LabourMaster.ManPowerSupply)
                 {
                     case 1:
                         Sheet.Cells[string.Format("E{0}", i)].Value = "CITISCAPE";
@@ -283,8 +285,9 @@ namespace onlygodknows.Controllers
                     case 9:
                         Sheet.Cells[string.Format("E{0}", i)].Value = "COMMON";
                         break;
-                }
-
+                }*/
+                var mansup = mansuplierlist.Find(x => x.ID == tw1.LabourMaster.ManPowerSupply);
+                Sheet.Cells[string.Format("E{0}", i)].Value = mansup.Supplier;
                 i++;
             }
 
@@ -375,7 +378,7 @@ namespace onlygodknows.Controllers
                 message.Subject = "remobilization of staff";
                 message.Body = new TextPart("plain")
                 {
-                    Text = @"Dear Sir/ma'am," + "\n\n" + "Please note that the transfer of workers from perject " +
+                    Text = @"Dear Sir/ma'am," + "\n\n" + "Please note that the transfer of workers from project " +
                            trvar.ProjectList1.PROJECT_NAME + " to project " + trvar.ProjectList.PROJECT_NAME +
                            "has been submitted for ur approval/rejection" + "\n\n\n" +
                            "http://cstimesheet.ddns.net:6333/timesheet/towrefs" + "\n\n\n" + "Thanks Best Regards, "
@@ -414,7 +417,7 @@ namespace onlygodknows.Controllers
                 message.Subject = "remobilization of staff";
                 message.Body = new TextPart("plain")
                 {
-                    Text = @"Dear Sir/ma'am," + "\n\n" + "Please note that the transfer of workers from perject " +
+                    Text = @"Dear Sir/ma'am," + "\n\n" + "Please note that the transfer of workers from project " +
                            trvar.ProjectList1.PROJECT_NAME + " to project " + trvar.ProjectList.PROJECT_NAME +
                            "has been approvaled" + "\n\n\n" + "http://cstimesheet.ddns.net:6333/timesheet/towrefs" +
                            "\n\n\n" + "Thanks Best Regards, "
@@ -452,7 +455,7 @@ namespace onlygodknows.Controllers
                 message.Subject = "remobilization of staff";
                 message.Body = new TextPart("plain")
                 {
-                    Text = @"Dear Sir/ma'am," + "\n\n" + "Please note that the transfer of workers from perject " +
+                    Text = @"Dear Sir/ma'am," + "\n\n" + "Please note that the transfer of workers from project " +
                            trvar.ProjectList1.PROJECT_NAME + " to project " + trvar.ProjectList.PROJECT_NAME +
                            "has been rejected for " + msg + "\n\n\n" +
                            "http://cstimesheet.ddns.net:6333/timesheet/towrefs" + "\n\n\n" + "Thanks Best Regards, "
@@ -471,6 +474,39 @@ namespace onlygodknows.Controllers
                     }
                 }
             }
+        }
+
+        [Authorize(Roles = "Admin")]
+        public ActionResult search(string searchemp)
+        {
+            var searchlist = db.towemps.OrderByDescending(x=>x.effectivedate).ThenBy(x=>x.LabourMaster.EMPNO).ToList();
+            var emplist = db.LabourMasters.OrderBy(x=>x.EMPNO).ThenBy(x=>x.ManPowerSupply).ToList();
+            var searchvar = new towemp();
+            ViewBag.errormsg = "";
+            if (searchemp != null)
+            {
+                if (long.TryParse(searchemp,out var empid))
+                {
+                    var empno = emplist.Find(x => x.EMPNO == empid);
+                    if (empno != null)
+                    {
+                        if (searchlist.Exists(x => x.lab_no == empno.ID))
+                        {
+                            searchvar = searchlist.Find(x => x.lab_no == empno.ID);
+                        }
+                        else
+                        {
+                            ViewBag.errormsg = "employee no " + empno.EMPNO + " is not assigned to any projects";
+                        }
+                    }
+                    else
+                    {
+                        ViewBag.errormsg = "no such employee exist in the data base,plz check again with proper employee no";
+                    }
+
+                }
+            }
+            return View(searchvar);
         }
 
         protected override void Dispose(bool disposing)

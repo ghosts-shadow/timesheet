@@ -10,6 +10,7 @@ using onlygodknows.Models;
 
 namespace onlygodknows.Controllers
 {
+    [Authorize]
     public class ManpowerinoutformsController : Controller
     {
         private LogisticsSoftEntities db = new LogisticsSoftEntities();

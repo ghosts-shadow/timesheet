@@ -12,6 +12,7 @@ namespace onlygodknows.Controllers
 {
     using Microsoft.Ajax.Utilities;
 
+    [Authorize]
     public class LabourMastersController : Controller
     {
         private LogisticsSoftEntities db = new LogisticsSoftEntities();
