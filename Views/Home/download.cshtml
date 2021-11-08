@@ -3,6 +3,8 @@
 @{
     ViewBag.Title = "download";
     Layout = "~/Views/Shared/_Layout.cshtml";
+    int totalhrs=0;
+    int totalemp=0;
 }
 <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
 <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
@@ -72,31 +74,34 @@
 using (Html.BeginForm("download", "Home", FormMethod.Get, new { id = "form1" }))
 {
 <div id="printarea">
-    <div >
+    <div>
         <div class="row">
             <div class="col-lg-3"><input id="datepicker" name="mtsmonth2" type="text" value="@ViewBag.dateee" placeholder="select date" class="form-control"></div>
             <div class="col-lg-3"> @Html.DropDownList("csp2", new List<SelectListItem>(ViewBag.csp), new { @class = "form-control" })</div>
             <div class="col-lg-3"> @Html.DropDownList("csmps2", new List<SelectListItem>(ViewBag.csmps), new { @class = "form-control" })</div>
-            
-           
-           
+
+
+
         </div>
-        
+
         <div class="row" style="margin-top: 10px">
             <div class="col-xs-1">
                 <input type="submit" value="Search" name="search" class="btn1 btn btn-default" id="search" />
             </div>
             <div class="col-xs-1">
-            @if (User.Identity.IsAuthenticated)
-            {
-                if (User.IsInRole("Employee"))
+                @if (User.Identity.IsAuthenticated)
                 {
-                    <input type="submit" value="Submit" name="approval" class="btn1 btn btn-default" formaction="@Url.Action("approval")"/>
+                    if (User.IsInRole("Employee"))
+                    {
+                        if (Model.Count != 0)
+                        {
+                            <input type="submit" value="Submit" name="approval" class="btn1 btn btn-default" formaction="@Url.Action("approval")"/>
+                        }
+                    }
                 }
-            }
             </div>
             <div class="col-xs-1">
-                <input type="button" value="Print" class="btn1 btn btn-default" onclick="PrintDoc()"/>
+                <input type="button" value="Print" class="btn1 btn btn-default" onclick="PrintDoc()" />
             </div>
             <div class="col-lg-5">
                 @if (Model.Count > 0)
@@ -157,12 +162,19 @@ using (Html.BeginForm("download", "Home", FormMethod.Get, new { id = "form1" }))
                 <th>
                     @Html.Label("Hours")
                 </th>
+                <th>
+                    @Html.DisplayName("EMP ID")
+                </th>
+                <th>
+                    @Html.Label("Hours")
+                </th>
             </tr>
             @{
                 var i = 0;
                 foreach (var item in Model)
                 {
-                    if (i % 7 == 0)
+                    totalemp++;
+                    if (i % 8 == 0)
                     {
                         <tr />
 
@@ -174,6 +186,8 @@ using (Html.BeginForm("download", "Home", FormMethod.Get, new { id = "form1" }))
                     <td>
                         @Html.DisplayFor(modelItem => item.hours)
                     </td>
+                    int.TryParse(item.hours, out var hrsto);
+                    totalhrs += hrsto;
                     i++;
                 }
 
@@ -182,19 +196,21 @@ using (Html.BeginForm("download", "Home", FormMethod.Get, new { id = "form1" }))
     </div>
     <br />
     <br />
-    <br/>
-    <br/>
+    <br />
+    <br />
+    <input type="text" value="@totalemp" name="totalemp" style="display: none"/>
+    <input type="text" value="@totalhrs" name="totalhrs" style="display: none"/>
     <div class="row">
         @*<div class="col-sm-3">
-            Prepared by: @User.Identity.Name
-        </div>
-        <div class="col-sm-3">
-            
-        </div>
-        <div class="col-sm-4">
-            Approved by:
-        </div>*@
-        <pre>Prepared by:@if (Model.Count > 0){if (!Model[0].submitted_by.IsNullOrWhiteSpace()){@Model[0].submitted_by}else{@User.Identity.Name}}else{@User.Identity.Name}                              Reviewed by:                                     Approved by:@if (Model.Count > 0){@Model[0].approved_by} </pre>
+                Prepared by: @User.Identity.Name
+            </div>
+            <div class="col-sm-3">
+
+            </div>
+            <div class="col-sm-4">
+                Approved by:
+            </div>*@
+        <pre>Prepared by:@if (Model.Count > 0){if (!Model[0].submitted_by.IsNullOrWhiteSpace()){@Model[0].submitted_by}else{@User.Identity.Name}}else{@User.Identity.Name}                                     Reviewed by:                                              Approved by:@if (Model.Count > 0){@Model[0].approved_by} </pre>
     </div>
 </div>
 }}

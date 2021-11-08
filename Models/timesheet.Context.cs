@@ -27,6 +27,7 @@ namespace onlygodknows.Models
     
         public virtual DbSet<C__MigrationHistory> C__MigrationHistory { get; set; }
         public virtual DbSet<approval> approvals { get; set; }
+        public virtual DbSet<asignproject> asignprojects { get; set; }
         public virtual DbSet<AspNetRole> AspNetRoles { get; set; }
         public virtual DbSet<AspNetUserClaim> AspNetUserClaims { get; set; }
         public virtual DbSet<AspNetUserLogin> AspNetUserLogins { get; set; }
@@ -64,6 +65,5 @@ namespace onlygodknows.Models
         public virtual DbSet<tblUser> tblUsers { get; set; }
         public virtual DbSet<USER_ROLES> USER_ROLES { get; set; }
         public virtual DbSet<UserInfo> UserInfoes { get; set; }
-        public virtual DbSet<asignproject> asignprojects { get; set; }
     }
 }

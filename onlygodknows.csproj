@@ -205,6 +205,7 @@
     <Compile Include="Controllers\AttendancesController.cs" />
     <Compile Include="Controllers\datacorrectionController.cs" />
     <Compile Include="Controllers\ManpowerinoutformsController.cs" />
+    <Compile Include="Controllers\ManPowerSuppliersController.cs" />
     <Compile Include="Controllers\overtimeemployeelistsController.cs" />
     <Compile Include="Controllers\overtimerefsController.cs" />
     <Compile Include="Controllers\promanlistsController.cs" />
@@ -651,6 +652,12 @@
     <Content Include="Views\overtimeemployeelists\Edit.cshtml" />
     <Content Include="Views\overtimeemployeelists\Index.cshtml" />
     <Content Include="Views\towemps\search.cshtml" />
+    <Content Include="Views\ManPowerSuppliers\Create.cshtml" />
+    <Content Include="Views\ManPowerSuppliers\Delete.cshtml" />
+    <Content Include="Views\ManPowerSuppliers\Details.cshtml" />
+    <Content Include="Views\ManPowerSuppliers\Edit.cshtml" />
+    <Content Include="Views\ManPowerSuppliers\Index.cshtml" />
+    <Content Include="Views\Projman\details.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\bootstrap.css" />

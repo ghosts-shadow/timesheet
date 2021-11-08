@@ -102,7 +102,7 @@
                 this.db.Entry(attendance).State = EntityState.Modified;
                 this.db.SaveChanges();
                 var mtsid = this.db.MainTimeSheets.Find(attendance.MainTimeSheet.ID);
-                return this.RedirectToAction("AIndex",mtsid);
+                return this.RedirectToAction("AIndex", mtsid);
             }
 
             return this.View(attendance);
@@ -129,18 +129,21 @@
             var tflist = new List<towemp>();
             var tflist1 = new List<towemp>();
             var a = this.db.MainTimeSheets.OrderByDescending(m => m.ID).ToList();
-            var aa = a.FindAll(x => x.TMonth.Year == ids.TMonth.Year && x.TMonth.Month == ids.TMonth.Month && x.Project == ids.Project);
+            var aa = a.FindAll(x =>
+                x.TMonth.Year == ids.TMonth.Year && x.TMonth.Month == ids.TMonth.Month && x.Project == ids.Project);
             var atlist = new List<Attendance>();
             foreach (var sheet in aa)
             {
                 atlist.AddRange(this.db.Attendances.Where(x => x.SubMain.Equals(sheet.ID)).ToList());
             }
+
             if (dateat.Day == 1) tflist1 = this.fillfromtransfer(ids);
             else
             {
                 var atl = new List<Attendance>();
                 a = this.db.MainTimeSheets.OrderByDescending(m => m.ID).ToList();
-                aa = a.FindAll(x => x.TMonth.Year == ids.TMonth.Year && x.TMonth.Month == ids.TMonth.Month && x.Project == ids.Project);
+                aa = a.FindAll(x =>
+                    x.TMonth.Year == ids.TMonth.Year && x.TMonth.Month == ids.TMonth.Month && x.Project == ids.Project);
                 foreach (var sheet in aa)
                 {
                     atl.AddRange(atlist.FindAll(x => x.SubMain == sheet.ID));
@@ -150,29 +153,33 @@
                 {
                     sheet.TMonth = ids.TMonth;
                 }
+
                 if (atl.Count != 0)
                 {
                     var filleddate = atlist.Find(x => x.SubMain == aa.First().ID).Path;
-                    if (filleddate.IsNullOrWhiteSpace() || !filleddate.Contains(ids.TMonth.ToString("d")))
-                    {
-                        filldate(aa);
-                    }
+                    DateTime.TryParse(filleddate, out var filldates);
+                        if (!filleddate.IsNullOrWhiteSpace() && !filleddate.Contains(ids.TMonth.ToString("d")))
+                        {
+                            if(ids.TMonth > filldates)
+                                filldate(aa);
+                        }
                 }
                 else
                 {
                     tflist1 = fillfromtransfer(ids);
                 }
-                tflist1 = fillfromtransfer(ids);
             }
+
             a = this.db.MainTimeSheets.OrderByDescending(m => m.ID).ToList();
             this.TempData["mcreateid"] = ids;
             ViewBag.mid = ids.ID;
-            
+
             var c = this.db.ProjectLists.Find(ids.Project);
             this.ViewBag.pid = c.PROJECT_NAME;
             this.ViewBag.mdate = ids.TMonth.ToLongDateString();
             this.ViewBag.mdate1 = ids.TMonth.ToString("MM/dd/yyyy");
-            aa = a.FindAll(x => x.TMonth.Year == ids.TMonth.Year && x.TMonth.Month == ids.TMonth.Month && x.Project == ids.Project);
+            aa = a.FindAll(x =>
+                x.TMonth.Year == ids.TMonth.Year && x.TMonth.Month == ids.TMonth.Month && x.Project == ids.Project);
             foreach (var sheet in aa)
             {
                 atlist.AddRange(this.db.Attendances.Where(x => x.SubMain.Equals(sheet.ID)).ToList());
@@ -183,13 +190,16 @@
             //     select LabourMaster;
             if (tflist.Count == 0)
             {
-                var tfdbl = db.towemps.Where(x => x.towref.mp_to == ids.Project && x.app_by != null).OrderByDescending(x => x.effectivedate).ToList();
-                var tfdbl2 = db.towemps.Where(x => x.towref.mp_from == ids.Project && x.app_by != null).OrderByDescending(x=>x.effectivedate).ToList();
+                var tfdbl = db.towemps.Where(x => x.towref.mp_to == ids.Project && x.app_by != null)
+                    .OrderByDescending(x => x.effectivedate).ToList();
+                var tfdbl2 = db.towemps.Where(x => x.towref.mp_from == ids.Project && x.app_by != null)
+                    .OrderByDescending(x => x.effectivedate).ToList();
                 foreach (var towemp in tfdbl)
                 {
-                    if (tfdbl2.Exists(x=>x.lab_no == towemp.lab_no))
+                    if (tfdbl2.Exists(x => x.lab_no == towemp.lab_no))
                     {
-                        var tfed = tfdbl2.OrderByDescending(x => x.effectivedate).ToList().Find(x => x.lab_no == towemp.lab_no);
+                        var tfed = tfdbl2.OrderByDescending(x => x.effectivedate).ToList()
+                            .Find(x => x.lab_no == towemp.lab_no);
                         if (towemp.effectivedate > tfed.effectivedate)
                         {
                             if (!tflist.Exists(x => x.lab_no == towemp.lab_no))
@@ -210,7 +220,7 @@
                     }
                     else
                     {
-                        if (!tflist.Exists(x=>x.lab_no == towemp.lab_no) && towemp.effectivedate <= ids.TMonth)
+                        if (!tflist.Exists(x => x.lab_no == towemp.lab_no) && towemp.effectivedate <= ids.TMonth)
                         {
                             tflist.Add(towemp);
                         }
@@ -218,38 +228,38 @@
                 }
             }
 
-            var d = db.LabourMasters.Where(x=>x.EMPNO >= 4).ToList();
+            var d = db.LabourMasters.Where(x => x.EMPNO >= 4).ToList();
             var d1 = new List<LabourMaster>();
             foreach (var towemp in tflist)
             {
-                if (d.Exists(x=>x.ID == towemp.lab_no))
+                if (d.Exists(x => x.ID == towemp.lab_no))
                 {
-                    d1.Add(d.Find(x=>x.ID == towemp.lab_no));
+                    d1.Add(d.Find(x => x.ID == towemp.lab_no));
                 }
             }
 
             var assignedemplist = db.asignprojects.OrderByDescending(x => x.asigneddate == ids.TMonth).ToList();
             var assignlistfinal = new List<asignproject>();
-            foreach(var asqw in assignedemplist)
+            foreach (var asqw in assignedemplist)
             {
-                if (assignlistfinal.Exists(x=>x.lab_no == asqw.lab_no))
+                if (assignlistfinal.Exists(x => x.lab_no == asqw.lab_no))
                 {
                     var ascheckvar = assignlistfinal.Find(x => x.lab_no == asqw.lab_no);
                     if (ascheckvar.asigneddate < asqw.asigneddate)
                     {
                         assignlistfinal.Remove(ascheckvar);
                         assignlistfinal.Add(asqw);
-                    } 
+                    }
                     else if (ascheckvar.asigneddate == asqw.asigneddate && asqw.Project == ids.Project)
                     {
                         assignlistfinal.Remove(ascheckvar);
                         assignlistfinal.Add(asqw);
                     }
                 }
-                    else
-                    {
-                        assignlistfinal.Add(asqw);
-                    }
+                else
+                {
+                    assignlistfinal.Add(asqw);
+                }
             }
 
             foreach (var asignproject in assignlistfinal)
@@ -265,6 +275,7 @@
                     }
                 }
             }
+
             this.ViewBag.EmpID = new SelectList(d1.OrderBy(m => m.EMPNO), "ID", "EMPNO");
             this.ViewBag.empno = new SelectList(d1.OrderBy(m => m.EMPNO), "ID", "EMPNO");
             this.ViewBag.pos = new SelectList(d1.OrderBy(m => m.EMPNO), "ID", "Position");
@@ -342,6 +353,7 @@
             {
                 atlist.AddRange(this.db.Attendances.Where(x => x.SubMain.Equals(sheet.ID)).ToList());
             }
+
             var listat = new List<Attendance>();
 
 
@@ -357,7 +369,7 @@
 
             var model1 = new timesheetViewModel
             {
-                Attendancecollection = listat.OrderBy(x=>x.LabourMaster.EMPNO)
+                Attendancecollection = listat.OrderBy(x => x.LabourMaster.EMPNO)
             };
 
             return this.View(model1);
@@ -596,11 +608,11 @@
                 {
                     foreach (var sd in atp)
                     {
-                        if (!tflist.Exists(x=>x.lab_no == sd.EmpID))
+                        if (!tflist.Exists(x => x.lab_no == sd.EmpID))
                         {
                             goto fi;
                         }
-                        
+
                         var overtimelist = db.overtimeemployeelists.Where(x => x.lab_no == sd.EmpID)
                             .OrderByDescending(x => x.effectivedate).ToList();
                         var change = false;
@@ -620,10 +632,13 @@
                                     {
                                         double.TryParse(sd.C1, out var nt);
                                         if (overtimelist.Exists(x =>
-                                            x.effectivedate.Value == new DateTime(mid.TMonth.Year, mid.TMonth.Month, 3) && x.status == "approved"))
+                                            x.effectivedate.Value ==
+                                            new DateTime(mid.TMonth.Year, mid.TMonth.Month, 3) &&
+                                            x.status == "approved"))
                                         {
                                             var otfind = overtimelist.Find(x =>
-                                                x.effectivedate.Value == new DateTime(mid.TMonth.Year, mid.TMonth.Month, 3)).hrs;
+                                                x.effectivedate.Value ==
+                                                new DateTime(mid.TMonth.Year, mid.TMonth.Month, 3)).hrs;
                                             var otlimit = ntup + otfind;
                                             if (otlimit < nt)
                                             {
@@ -640,7 +655,7 @@
                                         {
                                             if (nt > ntup)
                                             {
-                                                sd.C3 =  ntup.ToString();
+                                                sd.C3 = ntup.ToString();
                                                 change = true;
                                             }
                                             else
@@ -658,10 +673,13 @@
                                     {
                                         double.TryParse(sd.C2, out var nt);
                                         if (overtimelist.Exists(x =>
-                                            x.effectivedate.Value == new DateTime(mid.TMonth.Year, mid.TMonth.Month, 4) && x.status == "approved"))
+                                            x.effectivedate.Value ==
+                                            new DateTime(mid.TMonth.Year, mid.TMonth.Month, 4) &&
+                                            x.status == "approved"))
                                         {
                                             var otfind = overtimelist.Find(x =>
-                                                x.effectivedate.Value == new DateTime(mid.TMonth.Year, mid.TMonth.Month, 4)).hrs;
+                                                x.effectivedate.Value ==
+                                                new DateTime(mid.TMonth.Year, mid.TMonth.Month, 4)).hrs;
                                             var otlimit = ntup + otfind;
                                             if (otlimit < nt)
                                             {
@@ -696,10 +714,13 @@
                                     {
                                         double.TryParse(sd.C3, out var nt);
                                         if (overtimelist.Exists(x =>
-                                            x.effectivedate.Value == new DateTime(mid.TMonth.Year, mid.TMonth.Month, 5) && x.status == "approved"))
+                                            x.effectivedate.Value ==
+                                            new DateTime(mid.TMonth.Year, mid.TMonth.Month, 5) &&
+                                            x.status == "approved"))
                                         {
                                             var otfind = overtimelist.Find(x =>
-                                                x.effectivedate.Value == new DateTime(mid.TMonth.Year, mid.TMonth.Month, 5)).hrs;
+                                                x.effectivedate.Value ==
+                                                new DateTime(mid.TMonth.Year, mid.TMonth.Month, 5)).hrs;
                                             var otlimit = ntup + otfind;
                                             if (otlimit < nt)
                                             {
@@ -734,10 +755,13 @@
                                     {
                                         double.TryParse(sd.C4, out var nt);
                                         if (overtimelist.Exists(x =>
-                                            x.effectivedate.Value == new DateTime(mid.TMonth.Year, mid.TMonth.Month, 6) && x.status == "approved"))
+                                            x.effectivedate.Value ==
+                                            new DateTime(mid.TMonth.Year, mid.TMonth.Month, 6) &&
+                                            x.status == "approved"))
                                         {
                                             var otfind = overtimelist.Find(x =>
-                                                x.effectivedate.Value == new DateTime(mid.TMonth.Year, mid.TMonth.Month, 6)).hrs;
+                                                x.effectivedate.Value ==
+                                                new DateTime(mid.TMonth.Year, mid.TMonth.Month, 6)).hrs;
                                             var otlimit = ntup + otfind;
                                             if (otlimit < nt)
                                             {
@@ -772,10 +796,13 @@
                                     {
                                         double.TryParse(sd.C5, out var nt);
                                         if (overtimelist.Exists(x =>
-                                            x.effectivedate.Value == new DateTime(mid.TMonth.Year, mid.TMonth.Month, 7) && x.status == "approved"))
+                                            x.effectivedate.Value ==
+                                            new DateTime(mid.TMonth.Year, mid.TMonth.Month, 7) &&
+                                            x.status == "approved"))
                                         {
                                             var otfind = overtimelist.Find(x =>
-                                                x.effectivedate.Value == new DateTime(mid.TMonth.Year, mid.TMonth.Month, 7)).hrs;
+                                                x.effectivedate.Value ==
+                                                new DateTime(mid.TMonth.Year, mid.TMonth.Month, 7)).hrs;
                                             var otlimit = ntup + otfind;
                                             if (otlimit < nt)
                                             {
@@ -810,10 +837,13 @@
                                     {
                                         double.TryParse(sd.C6, out var nt);
                                         if (overtimelist.Exists(x =>
-                                            x.effectivedate.Value == new DateTime(mid.TMonth.Year, mid.TMonth.Month, 8) && x.status == "approved"))
+                                            x.effectivedate.Value ==
+                                            new DateTime(mid.TMonth.Year, mid.TMonth.Month, 8) &&
+                                            x.status == "approved"))
                                         {
                                             var otfind = overtimelist.Find(x =>
-                                                x.effectivedate.Value == new DateTime(mid.TMonth.Year, mid.TMonth.Month, 8)).hrs;
+                                                x.effectivedate.Value ==
+                                                new DateTime(mid.TMonth.Year, mid.TMonth.Month, 8)).hrs;
                                             var otlimit = ntup + otfind;
                                             if (otlimit < nt)
                                             {
@@ -848,10 +878,13 @@
                                     {
                                         double.TryParse(sd.C7, out var nt);
                                         if (overtimelist.Exists(x =>
-                                            x.effectivedate.Value == new DateTime(mid.TMonth.Year, mid.TMonth.Month, 9) && x.status == "approved"))
+                                            x.effectivedate.Value ==
+                                            new DateTime(mid.TMonth.Year, mid.TMonth.Month, 9) &&
+                                            x.status == "approved"))
                                         {
                                             var otfind = overtimelist.Find(x =>
-                                                x.effectivedate.Value == new DateTime(mid.TMonth.Year, mid.TMonth.Month, 9)).hrs;
+                                                x.effectivedate.Value ==
+                                                new DateTime(mid.TMonth.Year, mid.TMonth.Month, 9)).hrs;
                                             var otlimit = ntup + otfind;
                                             if (otlimit < nt)
                                             {
@@ -886,10 +919,13 @@
                                     {
                                         double.TryParse(sd.C8, out var nt);
                                         if (overtimelist.Exists(x =>
-                                            x.effectivedate.Value == new DateTime(mid.TMonth.Year, mid.TMonth.Month, 10) && x.status == "approved"))
+                                            x.effectivedate.Value ==
+                                            new DateTime(mid.TMonth.Year, mid.TMonth.Month, 10) &&
+                                            x.status == "approved"))
                                         {
                                             var otfind = overtimelist.Find(x =>
-                                                x.effectivedate.Value == new DateTime(mid.TMonth.Year, mid.TMonth.Month, 10)).hrs;
+                                                x.effectivedate.Value == new DateTime(mid.TMonth.Year, mid.TMonth.Month,
+                                                    10)).hrs;
                                             var otlimit = ntup + otfind;
                                             if (otlimit < nt)
                                             {
@@ -915,7 +951,6 @@
                                                 change = true;
                                             }
                                         }
-
                                     }
                                 }
 
@@ -925,10 +960,13 @@
                                     {
                                         double.TryParse(sd.C9, out var nt);
                                         if (overtimelist.Exists(x =>
-                                            x.effectivedate.Value == new DateTime(mid.TMonth.Year, mid.TMonth.Month, 11) && x.status == "approved"))
+                                            x.effectivedate.Value ==
+                                            new DateTime(mid.TMonth.Year, mid.TMonth.Month, 11) &&
+                                            x.status == "approved"))
                                         {
                                             var otfind = overtimelist.Find(x =>
-                                                x.effectivedate.Value == new DateTime(mid.TMonth.Year, mid.TMonth.Month, 11)).hrs;
+                                                x.effectivedate.Value == new DateTime(mid.TMonth.Year, mid.TMonth.Month,
+                                                    11)).hrs;
                                             var otlimit = ntup + otfind;
                                             if (otlimit < nt)
                                             {
@@ -954,7 +992,6 @@
                                                 change = true;
                                             }
                                         }
-
                                     }
                                 }
 
@@ -964,10 +1001,13 @@
                                     {
                                         double.TryParse(sd.C10, out var nt);
                                         if (overtimelist.Exists(x =>
-                                            x.effectivedate.Value == new DateTime(mid.TMonth.Year, mid.TMonth.Month, 12) && x.status == "approved"))
+                                            x.effectivedate.Value ==
+                                            new DateTime(mid.TMonth.Year, mid.TMonth.Month, 12) &&
+                                            x.status == "approved"))
                                         {
                                             var otfind = overtimelist.Find(x =>
-                                                x.effectivedate.Value == new DateTime(mid.TMonth.Year, mid.TMonth.Month, 12)).hrs;
+                                                x.effectivedate.Value == new DateTime(mid.TMonth.Year, mid.TMonth.Month,
+                                                    12)).hrs;
                                             var otlimit = ntup + otfind;
                                             if (otlimit < nt)
                                             {
@@ -993,7 +1033,6 @@
                                                 change = true;
                                             }
                                         }
-
                                     }
                                 }
 
@@ -1003,10 +1042,13 @@
                                     {
                                         double.TryParse(sd.C11, out var nt);
                                         if (overtimelist.Exists(x =>
-                                            x.effectivedate.Value == new DateTime(mid.TMonth.Year, mid.TMonth.Month, 13) && x.status == "approved"))
+                                            x.effectivedate.Value ==
+                                            new DateTime(mid.TMonth.Year, mid.TMonth.Month, 13) &&
+                                            x.status == "approved"))
                                         {
                                             var otfind = overtimelist.Find(x =>
-                                                x.effectivedate.Value == new DateTime(mid.TMonth.Year, mid.TMonth.Month, 13)).hrs;
+                                                x.effectivedate.Value == new DateTime(mid.TMonth.Year, mid.TMonth.Month,
+                                                    13)).hrs;
                                             var otlimit = ntup + otfind;
                                             if (otlimit < nt)
                                             {
@@ -1032,7 +1074,6 @@
                                                 change = true;
                                             }
                                         }
-
                                     }
                                 }
 
@@ -1042,10 +1083,13 @@
                                     {
                                         double.TryParse(sd.C12, out var nt);
                                         if (overtimelist.Exists(x =>
-                                            x.effectivedate.Value == new DateTime(mid.TMonth.Year, mid.TMonth.Month, 14) && x.status == "approved"))
+                                            x.effectivedate.Value ==
+                                            new DateTime(mid.TMonth.Year, mid.TMonth.Month, 14) &&
+                                            x.status == "approved"))
                                         {
                                             var otfind = overtimelist.Find(x =>
-                                                x.effectivedate.Value == new DateTime(mid.TMonth.Year, mid.TMonth.Month, 14)).hrs;
+                                                x.effectivedate.Value == new DateTime(mid.TMonth.Year, mid.TMonth.Month,
+                                                    14)).hrs;
                                             var otlimit = ntup + otfind;
                                             if (otlimit < nt)
                                             {
@@ -1071,7 +1115,6 @@
                                                 change = true;
                                             }
                                         }
-
                                     }
                                 }
 
@@ -1081,10 +1124,13 @@
                                     {
                                         double.TryParse(sd.C13, out var nt);
                                         if (overtimelist.Exists(x =>
-                                            x.effectivedate.Value == new DateTime(mid.TMonth.Year, mid.TMonth.Month, 15) && x.status == "approved"))
+                                            x.effectivedate.Value ==
+                                            new DateTime(mid.TMonth.Year, mid.TMonth.Month, 15) &&
+                                            x.status == "approved"))
                                         {
                                             var otfind = overtimelist.Find(x =>
-                                                x.effectivedate.Value == new DateTime(mid.TMonth.Year, mid.TMonth.Month, 15)).hrs;
+                                                x.effectivedate.Value == new DateTime(mid.TMonth.Year, mid.TMonth.Month,
+                                                    15)).hrs;
                                             var otlimit = ntup + otfind;
                                             if (otlimit < nt)
                                             {
@@ -1110,7 +1156,6 @@
                                                 change = true;
                                             }
                                         }
-
                                     }
                                 }
 
@@ -1120,10 +1165,13 @@
                                     {
                                         double.TryParse(sd.C14, out var nt);
                                         if (overtimelist.Exists(x =>
-                                            x.effectivedate.Value == new DateTime(mid.TMonth.Year, mid.TMonth.Month, 16) && x.status == "approved"))
+                                            x.effectivedate.Value ==
+                                            new DateTime(mid.TMonth.Year, mid.TMonth.Month, 16) &&
+                                            x.status == "approved"))
                                         {
                                             var otfind = overtimelist.Find(x =>
-                                                x.effectivedate.Value == new DateTime(mid.TMonth.Year, mid.TMonth.Month, 16)).hrs;
+                                                x.effectivedate.Value == new DateTime(mid.TMonth.Year, mid.TMonth.Month,
+                                                    16)).hrs;
                                             var otlimit = ntup + otfind;
                                             if (otlimit < nt)
                                             {
@@ -1149,7 +1197,6 @@
                                                 change = true;
                                             }
                                         }
-
                                     }
                                 }
 
@@ -1159,10 +1206,13 @@
                                     {
                                         double.TryParse(sd.C15, out var nt);
                                         if (overtimelist.Exists(x =>
-                                            x.effectivedate.Value == new DateTime(mid.TMonth.Year, mid.TMonth.Month, 17) && x.status == "approved"))
+                                            x.effectivedate.Value ==
+                                            new DateTime(mid.TMonth.Year, mid.TMonth.Month, 17) &&
+                                            x.status == "approved"))
                                         {
                                             var otfind = overtimelist.Find(x =>
-                                                x.effectivedate.Value == new DateTime(mid.TMonth.Year, mid.TMonth.Month, 17)).hrs;
+                                                x.effectivedate.Value == new DateTime(mid.TMonth.Year, mid.TMonth.Month,
+                                                    17)).hrs;
                                             var otlimit = ntup + otfind;
                                             if (otlimit < nt)
                                             {
@@ -1188,9 +1238,7 @@
                                                 change = true;
                                             }
                                         }
-
                                     }
-
                                 }
 
                                 if (sy == 16)
@@ -1199,10 +1247,13 @@
                                     {
                                         double.TryParse(sd.C16, out var nt);
                                         if (overtimelist.Exists(x =>
-                                            x.effectivedate.Value == new DateTime(mid.TMonth.Year, mid.TMonth.Month, 18) && x.status == "approved"))
+                                            x.effectivedate.Value ==
+                                            new DateTime(mid.TMonth.Year, mid.TMonth.Month, 18) &&
+                                            x.status == "approved"))
                                         {
                                             var otfind = overtimelist.Find(x =>
-                                                x.effectivedate.Value == new DateTime(mid.TMonth.Year, mid.TMonth.Month, 18)).hrs;
+                                                x.effectivedate.Value == new DateTime(mid.TMonth.Year, mid.TMonth.Month,
+                                                    18)).hrs;
                                             var otlimit = ntup + otfind;
                                             if (otlimit < nt)
                                             {
@@ -1228,7 +1279,6 @@
                                                 change = true;
                                             }
                                         }
-
                                     }
                                 }
 
@@ -1238,10 +1288,13 @@
                                     {
                                         double.TryParse(sd.C17, out var nt);
                                         if (overtimelist.Exists(x =>
-                                            x.effectivedate.Value == new DateTime(mid.TMonth.Year, mid.TMonth.Month, 19) && x.status == "approved"))
+                                            x.effectivedate.Value ==
+                                            new DateTime(mid.TMonth.Year, mid.TMonth.Month, 19) &&
+                                            x.status == "approved"))
                                         {
                                             var otfind = overtimelist.Find(x =>
-                                                x.effectivedate.Value == new DateTime(mid.TMonth.Year, mid.TMonth.Month, 19)).hrs;
+                                                x.effectivedate.Value == new DateTime(mid.TMonth.Year, mid.TMonth.Month,
+                                                    19)).hrs;
                                             var otlimit = ntup + otfind;
                                             if (otlimit < nt)
                                             {
@@ -1267,7 +1320,6 @@
                                                 change = true;
                                             }
                                         }
-
                                     }
                                 }
 
@@ -1277,10 +1329,13 @@
                                     {
                                         double.TryParse(sd.C18, out var nt);
                                         if (overtimelist.Exists(x =>
-                                            x.effectivedate.Value == new DateTime(mid.TMonth.Year, mid.TMonth.Month, 20) && x.status == "approved"))
+                                            x.effectivedate.Value ==
+                                            new DateTime(mid.TMonth.Year, mid.TMonth.Month, 20) &&
+                                            x.status == "approved"))
                                         {
                                             var otfind = overtimelist.Find(x =>
-                                                x.effectivedate.Value == new DateTime(mid.TMonth.Year, mid.TMonth.Month, 20)).hrs;
+                                                x.effectivedate.Value == new DateTime(mid.TMonth.Year, mid.TMonth.Month,
+                                                    20)).hrs;
                                             var otlimit = ntup + otfind;
                                             if (otlimit < nt)
                                             {
@@ -1306,7 +1361,6 @@
                                                 change = true;
                                             }
                                         }
-
                                     }
                                 }
 
@@ -1316,10 +1370,13 @@
                                     {
                                         double.TryParse(sd.C19, out var nt);
                                         if (overtimelist.Exists(x =>
-                                            x.effectivedate.Value == new DateTime(mid.TMonth.Year, mid.TMonth.Month, 21) && x.status == "approved"))
+                                            x.effectivedate.Value ==
+                                            new DateTime(mid.TMonth.Year, mid.TMonth.Month, 21) &&
+                                            x.status == "approved"))
                                         {
                                             var otfind = overtimelist.Find(x =>
-                                                x.effectivedate.Value == new DateTime(mid.TMonth.Year, mid.TMonth.Month, 21)).hrs;
+                                                x.effectivedate.Value == new DateTime(mid.TMonth.Year, mid.TMonth.Month,
+                                                    21)).hrs;
                                             var otlimit = ntup + otfind;
                                             if (otlimit < nt)
                                             {
@@ -1345,7 +1402,6 @@
                                                 change = true;
                                             }
                                         }
-
                                     }
                                 }
 
@@ -1355,10 +1411,13 @@
                                     {
                                         double.TryParse(sd.C20, out var nt);
                                         if (overtimelist.Exists(x =>
-                                            x.effectivedate.Value == new DateTime(mid.TMonth.Year, mid.TMonth.Month, 22) && x.status == "approved"))
+                                            x.effectivedate.Value ==
+                                            new DateTime(mid.TMonth.Year, mid.TMonth.Month, 22) &&
+                                            x.status == "approved"))
                                         {
                                             var otfind = overtimelist.Find(x =>
-                                                x.effectivedate.Value == new DateTime(mid.TMonth.Year, mid.TMonth.Month, 22)).hrs;
+                                                x.effectivedate.Value == new DateTime(mid.TMonth.Year, mid.TMonth.Month,
+                                                    22)).hrs;
                                             var otlimit = ntup + otfind;
                                             if (otlimit < nt)
                                             {
@@ -1384,7 +1443,6 @@
                                                 change = true;
                                             }
                                         }
-
                                     }
                                 }
 
@@ -1394,10 +1452,13 @@
                                     {
                                         double.TryParse(sd.C21, out var nt);
                                         if (overtimelist.Exists(x =>
-                                            x.effectivedate.Value == new DateTime(mid.TMonth.Year, mid.TMonth.Month, 23) && x.status == "approved"))
+                                            x.effectivedate.Value ==
+                                            new DateTime(mid.TMonth.Year, mid.TMonth.Month, 23) &&
+                                            x.status == "approved"))
                                         {
                                             var otfind = overtimelist.Find(x =>
-                                                x.effectivedate.Value == new DateTime(mid.TMonth.Year, mid.TMonth.Month, 23)).hrs;
+                                                x.effectivedate.Value == new DateTime(mid.TMonth.Year, mid.TMonth.Month,
+                                                    23)).hrs;
                                             var otlimit = ntup + otfind;
                                             if (otlimit < nt)
                                             {
@@ -1423,7 +1484,6 @@
                                                 change = true;
                                             }
                                         }
-
                                     }
                                 }
 
@@ -1433,10 +1493,13 @@
                                     {
                                         double.TryParse(sd.C22, out var nt);
                                         if (overtimelist.Exists(x =>
-                                            x.effectivedate.Value == new DateTime(mid.TMonth.Year, mid.TMonth.Month, 24) && x.status == "approved"))
+                                            x.effectivedate.Value ==
+                                            new DateTime(mid.TMonth.Year, mid.TMonth.Month, 24) &&
+                                            x.status == "approved"))
                                         {
                                             var otfind = overtimelist.Find(x =>
-                                                x.effectivedate.Value == new DateTime(mid.TMonth.Year, mid.TMonth.Month, 24)).hrs;
+                                                x.effectivedate.Value == new DateTime(mid.TMonth.Year, mid.TMonth.Month,
+                                                    24)).hrs;
                                             var otlimit = ntup + otfind;
                                             if (otlimit < nt)
                                             {
@@ -1462,7 +1525,6 @@
                                                 change = true;
                                             }
                                         }
-
                                     }
                                 }
 
@@ -1472,10 +1534,13 @@
                                     {
                                         double.TryParse(sd.C23, out var nt);
                                         if (overtimelist.Exists(x =>
-                                            x.effectivedate.Value == new DateTime(mid.TMonth.Year, mid.TMonth.Month, 25) && x.status == "approved"))
+                                            x.effectivedate.Value ==
+                                            new DateTime(mid.TMonth.Year, mid.TMonth.Month, 25) &&
+                                            x.status == "approved"))
                                         {
                                             var otfind = overtimelist.Find(x =>
-                                                x.effectivedate.Value == new DateTime(mid.TMonth.Year, mid.TMonth.Month, 25)).hrs;
+                                                x.effectivedate.Value == new DateTime(mid.TMonth.Year, mid.TMonth.Month,
+                                                    25)).hrs;
                                             var otlimit = ntup + otfind;
                                             if (otlimit < nt)
                                             {
@@ -1501,7 +1566,6 @@
                                                 change = true;
                                             }
                                         }
-
                                     }
                                 }
 
@@ -1511,10 +1575,13 @@
                                     {
                                         double.TryParse(sd.C24, out var nt);
                                         if (overtimelist.Exists(x =>
-                                            x.effectivedate.Value == new DateTime(mid.TMonth.Year, mid.TMonth.Month, 26) && x.status == "approved"))
+                                            x.effectivedate.Value ==
+                                            new DateTime(mid.TMonth.Year, mid.TMonth.Month, 26) &&
+                                            x.status == "approved"))
                                         {
                                             var otfind = overtimelist.Find(x =>
-                                                x.effectivedate.Value == new DateTime(mid.TMonth.Year, mid.TMonth.Month, 26)).hrs;
+                                                x.effectivedate.Value == new DateTime(mid.TMonth.Year, mid.TMonth.Month,
+                                                    26)).hrs;
                                             var otlimit = ntup + otfind;
                                             if (otlimit < nt)
                                             {
@@ -1540,7 +1607,6 @@
                                                 change = true;
                                             }
                                         }
-
                                     }
                                 }
 
@@ -1550,10 +1616,13 @@
                                     {
                                         double.TryParse(sd.C25, out var nt);
                                         if (overtimelist.Exists(x =>
-                                            x.effectivedate.Value == new DateTime(mid.TMonth.Year, mid.TMonth.Month, 27) && x.status == "approved"))
+                                            x.effectivedate.Value ==
+                                            new DateTime(mid.TMonth.Year, mid.TMonth.Month, 27) &&
+                                            x.status == "approved"))
                                         {
                                             var otfind = overtimelist.Find(x =>
-                                                x.effectivedate.Value == new DateTime(mid.TMonth.Year, mid.TMonth.Month, 27)).hrs;
+                                                x.effectivedate.Value == new DateTime(mid.TMonth.Year, mid.TMonth.Month,
+                                                    27)).hrs;
                                             var otlimit = ntup + otfind;
                                             if (otlimit < nt)
                                             {
@@ -1579,7 +1648,6 @@
                                                 change = true;
                                             }
                                         }
-
                                     }
                                 }
 
@@ -1589,10 +1657,13 @@
                                     {
                                         double.TryParse(sd.C26, out var nt);
                                         if (overtimelist.Exists(x =>
-                                            x.effectivedate.Value == new DateTime(mid.TMonth.Year, mid.TMonth.Month, 28) && x.status == "approved"))
+                                            x.effectivedate.Value ==
+                                            new DateTime(mid.TMonth.Year, mid.TMonth.Month, 28) &&
+                                            x.status == "approved"))
                                         {
                                             var otfind = overtimelist.Find(x =>
-                                                x.effectivedate.Value == new DateTime(mid.TMonth.Year, mid.TMonth.Month, 28)).hrs;
+                                                x.effectivedate.Value == new DateTime(mid.TMonth.Year, mid.TMonth.Month,
+                                                    28)).hrs;
                                             var otlimit = ntup + otfind;
                                             if (otlimit < nt)
                                             {
@@ -1618,7 +1689,6 @@
                                                 change = true;
                                             }
                                         }
-
                                     }
                                 }
 
@@ -1628,10 +1698,13 @@
                                     {
                                         double.TryParse(sd.C27, out var nt);
                                         if (overtimelist.Exists(x =>
-                                            x.effectivedate.Value == new DateTime(mid.TMonth.Year, mid.TMonth.Month, 29) && x.status == "approved"))
+                                            x.effectivedate.Value ==
+                                            new DateTime(mid.TMonth.Year, mid.TMonth.Month, 29) &&
+                                            x.status == "approved"))
                                         {
                                             var otfind = overtimelist.Find(x =>
-                                                x.effectivedate.Value == new DateTime(mid.TMonth.Year, mid.TMonth.Month, 29)).hrs;
+                                                x.effectivedate.Value == new DateTime(mid.TMonth.Year, mid.TMonth.Month,
+                                                    29)).hrs;
                                             var otlimit = ntup + otfind;
                                             if (otlimit < nt)
                                             {
@@ -1657,7 +1730,6 @@
                                                 change = true;
                                             }
                                         }
-
                                     }
                                 }
 
@@ -1667,10 +1739,13 @@
                                     {
                                         double.TryParse(sd.C28, out var nt);
                                         if (overtimelist.Exists(x =>
-                                            x.effectivedate.Value == new DateTime(mid.TMonth.Year, mid.TMonth.Month, 30) && x.status == "approved"))
+                                            x.effectivedate.Value ==
+                                            new DateTime(mid.TMonth.Year, mid.TMonth.Month, 30) &&
+                                            x.status == "approved"))
                                         {
                                             var otfind = overtimelist.Find(x =>
-                                                x.effectivedate.Value == new DateTime(mid.TMonth.Year, mid.TMonth.Month, 30)).hrs;
+                                                x.effectivedate.Value == new DateTime(mid.TMonth.Year, mid.TMonth.Month,
+                                                    30)).hrs;
                                             var otlimit = ntup + otfind;
                                             if (otlimit < nt)
                                             {
@@ -1696,7 +1771,6 @@
                                                 change = true;
                                             }
                                         }
-
                                     }
                                 }
 
@@ -1706,10 +1780,13 @@
                                     {
                                         double.TryParse(sd.C29, out var nt);
                                         if (overtimelist.Exists(x =>
-                                            x.effectivedate.Value == new DateTime(mid.TMonth.Year, mid.TMonth.Month, 31) && x.status == "approved"))
+                                            x.effectivedate.Value ==
+                                            new DateTime(mid.TMonth.Year, mid.TMonth.Month, 31) &&
+                                            x.status == "approved"))
                                         {
                                             var otfind = overtimelist.Find(x =>
-                                                x.effectivedate.Value == new DateTime(mid.TMonth.Year, mid.TMonth.Month, 31)).hrs;
+                                                x.effectivedate.Value == new DateTime(mid.TMonth.Year, mid.TMonth.Month,
+                                                    31)).hrs;
                                             var otlimit = ntup + otfind;
                                             if (otlimit < nt)
                                             {
@@ -1735,7 +1812,6 @@
                                                 change = true;
                                             }
                                         }
-
                                     }
                                 }
 
@@ -2245,10 +2321,13 @@
                                 {
                                     double.TryParse(sd.C1, out var nt);
                                     if (overtimelist.Exists(x =>
-                                        x.effectivedate.Value == new DateTime(mid.TMonth.Year, mid.TMonth.Month, 2) && x.status == "approved"))
+                                        x.effectivedate.Value == new DateTime(mid.TMonth.Year, mid.TMonth.Month, 2) &&
+                                        x.status == "approved"))
                                     {
                                         var otfind = overtimelist.Find(x =>
-                                            x.effectivedate.Value == new DateTime(mid.TMonth.Year, mid.TMonth.Month, 2)).hrs;
+                                                x.effectivedate.Value ==
+                                                new DateTime(mid.TMonth.Year, mid.TMonth.Month, 2))
+                                            .hrs;
                                         var otlimit = ntup + otfind;
                                         if (otlimit < nt)
                                         {
@@ -2283,10 +2362,13 @@
                                 {
                                     double.TryParse(sd.C2, out var nt);
                                     if (overtimelist.Exists(x =>
-                                        x.effectivedate.Value == new DateTime(mid.TMonth.Year, mid.TMonth.Month, 3) && x.status == "approved"))
+                                        x.effectivedate.Value == new DateTime(mid.TMonth.Year, mid.TMonth.Month, 3) &&
+                                        x.status == "approved"))
                                     {
                                         var otfind = overtimelist.Find(x =>
-                                            x.effectivedate.Value == new DateTime(mid.TMonth.Year, mid.TMonth.Month, 3)).hrs;
+                                                x.effectivedate.Value ==
+                                                new DateTime(mid.TMonth.Year, mid.TMonth.Month, 3))
+                                            .hrs;
                                         var otlimit = ntup + otfind;
                                         if (otlimit < nt)
                                         {
@@ -2321,10 +2403,13 @@
                                 {
                                     double.TryParse(sd.C3, out var nt);
                                     if (overtimelist.Exists(x =>
-                                        x.effectivedate.Value == new DateTime(mid.TMonth.Year, mid.TMonth.Month, 4) && x.status == "approved"))
+                                        x.effectivedate.Value == new DateTime(mid.TMonth.Year, mid.TMonth.Month, 4) &&
+                                        x.status == "approved"))
                                     {
                                         var otfind = overtimelist.Find(x =>
-                                            x.effectivedate.Value == new DateTime(mid.TMonth.Year, mid.TMonth.Month, 4)).hrs;
+                                                x.effectivedate.Value ==
+                                                new DateTime(mid.TMonth.Year, mid.TMonth.Month, 4))
+                                            .hrs;
                                         var otlimit = ntup + otfind;
                                         if (otlimit < nt)
                                         {
@@ -2359,10 +2444,13 @@
                                 {
                                     double.TryParse(sd.C4, out var nt);
                                     if (overtimelist.Exists(x =>
-                                        x.effectivedate.Value == new DateTime(mid.TMonth.Year, mid.TMonth.Month, 5) && x.status == "approved"))
+                                        x.effectivedate.Value == new DateTime(mid.TMonth.Year, mid.TMonth.Month, 5) &&
+                                        x.status == "approved"))
                                     {
                                         var otfind = overtimelist.Find(x =>
-                                            x.effectivedate.Value == new DateTime(mid.TMonth.Year, mid.TMonth.Month, 5)).hrs;
+                                                x.effectivedate.Value ==
+                                                new DateTime(mid.TMonth.Year, mid.TMonth.Month, 5))
+                                            .hrs;
                                         var otlimit = ntup + otfind;
                                         if (otlimit < nt)
                                         {
@@ -2397,10 +2485,13 @@
                                 {
                                     double.TryParse(sd.C5, out var nt);
                                     if (overtimelist.Exists(x =>
-                                        x.effectivedate.Value == new DateTime(mid.TMonth.Year, mid.TMonth.Month, 6) && x.status == "approved"))
+                                        x.effectivedate.Value == new DateTime(mid.TMonth.Year, mid.TMonth.Month, 6) &&
+                                        x.status == "approved"))
                                     {
                                         var otfind = overtimelist.Find(x =>
-                                            x.effectivedate.Value == new DateTime(mid.TMonth.Year, mid.TMonth.Month, 6)).hrs;
+                                                x.effectivedate.Value ==
+                                                new DateTime(mid.TMonth.Year, mid.TMonth.Month, 6))
+                                            .hrs;
                                         var otlimit = ntup + otfind;
                                         if (otlimit < nt)
                                         {
@@ -2435,10 +2526,13 @@
                                 {
                                     double.TryParse(sd.C6, out var nt);
                                     if (overtimelist.Exists(x =>
-                                        x.effectivedate.Value == new DateTime(mid.TMonth.Year, mid.TMonth.Month, 7) && x.status == "approved"))
+                                        x.effectivedate.Value == new DateTime(mid.TMonth.Year, mid.TMonth.Month, 7) &&
+                                        x.status == "approved"))
                                     {
                                         var otfind = overtimelist.Find(x =>
-                                            x.effectivedate.Value == new DateTime(mid.TMonth.Year, mid.TMonth.Month, 7)).hrs;
+                                                x.effectivedate.Value ==
+                                                new DateTime(mid.TMonth.Year, mid.TMonth.Month, 7))
+                                            .hrs;
                                         var otlimit = ntup + otfind;
                                         if (otlimit < nt)
                                         {
@@ -2473,10 +2567,13 @@
                                 {
                                     double.TryParse(sd.C7, out var nt);
                                     if (overtimelist.Exists(x =>
-                                        x.effectivedate.Value == new DateTime(mid.TMonth.Year, mid.TMonth.Month, 8) && x.status == "approved"))
+                                        x.effectivedate.Value == new DateTime(mid.TMonth.Year, mid.TMonth.Month, 8) &&
+                                        x.status == "approved"))
                                     {
                                         var otfind = overtimelist.Find(x =>
-                                            x.effectivedate.Value == new DateTime(mid.TMonth.Year, mid.TMonth.Month, 8)).hrs;
+                                                x.effectivedate.Value ==
+                                                new DateTime(mid.TMonth.Year, mid.TMonth.Month, 8))
+                                            .hrs;
                                         var otlimit = ntup + otfind;
                                         if (otlimit < nt)
                                         {
@@ -2511,10 +2608,13 @@
                                 {
                                     double.TryParse(sd.C8, out var nt);
                                     if (overtimelist.Exists(x =>
-                                        x.effectivedate.Value == new DateTime(mid.TMonth.Year, mid.TMonth.Month, 9) && x.status == "approved"))
+                                        x.effectivedate.Value == new DateTime(mid.TMonth.Year, mid.TMonth.Month, 9) &&
+                                        x.status == "approved"))
                                     {
                                         var otfind = overtimelist.Find(x =>
-                                            x.effectivedate.Value == new DateTime(mid.TMonth.Year, mid.TMonth.Month, 9)).hrs;
+                                                x.effectivedate.Value ==
+                                                new DateTime(mid.TMonth.Year, mid.TMonth.Month, 9))
+                                            .hrs;
                                         var otlimit = ntup + otfind;
                                         if (otlimit < nt)
                                         {
@@ -2549,10 +2649,12 @@
                                 {
                                     double.TryParse(sd.C9, out var nt);
                                     if (overtimelist.Exists(x =>
-                                        x.effectivedate.Value == new DateTime(mid.TMonth.Year, mid.TMonth.Month, 10) && x.status == "approved"))
+                                        x.effectivedate.Value == new DateTime(mid.TMonth.Year, mid.TMonth.Month, 10) &&
+                                        x.status == "approved"))
                                     {
                                         var otfind = overtimelist.Find(x =>
-                                            x.effectivedate.Value == new DateTime(mid.TMonth.Year, mid.TMonth.Month, 10)).hrs;
+                                            x.effectivedate.Value ==
+                                            new DateTime(mid.TMonth.Year, mid.TMonth.Month, 10)).hrs;
                                         var otlimit = ntup + otfind;
                                         if (otlimit < nt)
                                         {
@@ -2587,10 +2689,12 @@
                                 {
                                     double.TryParse(sd.C10, out var nt);
                                     if (overtimelist.Exists(x =>
-                                        x.effectivedate.Value == new DateTime(mid.TMonth.Year, mid.TMonth.Month, 11) && x.status == "approved"))
+                                        x.effectivedate.Value == new DateTime(mid.TMonth.Year, mid.TMonth.Month, 11) &&
+                                        x.status == "approved"))
                                     {
                                         var otfind = overtimelist.Find(x =>
-                                            x.effectivedate.Value == new DateTime(mid.TMonth.Year, mid.TMonth.Month, 11)).hrs;
+                                            x.effectivedate.Value ==
+                                            new DateTime(mid.TMonth.Year, mid.TMonth.Month, 11)).hrs;
                                         var otlimit = ntup + otfind;
                                         if (otlimit < nt)
                                         {
@@ -2625,10 +2729,12 @@
                                 {
                                     double.TryParse(sd.C11, out var nt);
                                     if (overtimelist.Exists(x =>
-                                        x.effectivedate.Value == new DateTime(mid.TMonth.Year, mid.TMonth.Month, 12) && x.status == "approved"))
+                                        x.effectivedate.Value == new DateTime(mid.TMonth.Year, mid.TMonth.Month, 12) &&
+                                        x.status == "approved"))
                                     {
                                         var otfind = overtimelist.Find(x =>
-                                            x.effectivedate.Value == new DateTime(mid.TMonth.Year, mid.TMonth.Month, 12)).hrs;
+                                            x.effectivedate.Value ==
+                                            new DateTime(mid.TMonth.Year, mid.TMonth.Month, 12)).hrs;
                                         var otlimit = ntup + otfind;
                                         if (otlimit < nt)
                                         {
@@ -2663,10 +2769,12 @@
                                 {
                                     double.TryParse(sd.C12, out var nt);
                                     if (overtimelist.Exists(x =>
-                                        x.effectivedate.Value == new DateTime(mid.TMonth.Year, mid.TMonth.Month, 13) && x.status == "approved"))
+                                        x.effectivedate.Value == new DateTime(mid.TMonth.Year, mid.TMonth.Month, 13) &&
+                                        x.status == "approved"))
                                     {
                                         var otfind = overtimelist.Find(x =>
-                                            x.effectivedate.Value == new DateTime(mid.TMonth.Year, mid.TMonth.Month, 13)).hrs;
+                                            x.effectivedate.Value ==
+                                            new DateTime(mid.TMonth.Year, mid.TMonth.Month, 13)).hrs;
                                         var otlimit = ntup + otfind;
                                         if (otlimit < nt)
                                         {
@@ -2701,10 +2809,12 @@
                                 {
                                     double.TryParse(sd.C13, out var nt);
                                     if (overtimelist.Exists(x =>
-                                        x.effectivedate.Value == new DateTime(mid.TMonth.Year, mid.TMonth.Month, 14) && x.status == "approved"))
+                                        x.effectivedate.Value == new DateTime(mid.TMonth.Year, mid.TMonth.Month, 14) &&
+                                        x.status == "approved"))
                                     {
                                         var otfind = overtimelist.Find(x =>
-                                            x.effectivedate.Value == new DateTime(mid.TMonth.Year, mid.TMonth.Month, 14)).hrs;
+                                            x.effectivedate.Value ==
+                                            new DateTime(mid.TMonth.Year, mid.TMonth.Month, 14)).hrs;
                                         var otlimit = ntup + otfind;
                                         if (otlimit < nt)
                                         {
@@ -2739,10 +2849,12 @@
                                 {
                                     double.TryParse(sd.C14, out var nt);
                                     if (overtimelist.Exists(x =>
-                                        x.effectivedate.Value == new DateTime(mid.TMonth.Year, mid.TMonth.Month, 15) && x.status == "approved"))
+                                        x.effectivedate.Value == new DateTime(mid.TMonth.Year, mid.TMonth.Month, 15) &&
+                                        x.status == "approved"))
                                     {
                                         var otfind = overtimelist.Find(x =>
-                                            x.effectivedate.Value == new DateTime(mid.TMonth.Year, mid.TMonth.Month, 15)).hrs;
+                                            x.effectivedate.Value ==
+                                            new DateTime(mid.TMonth.Year, mid.TMonth.Month, 15)).hrs;
                                         var otlimit = ntup + otfind;
                                         if (otlimit < nt)
                                         {
@@ -2777,10 +2889,12 @@
                                 {
                                     double.TryParse(sd.C15, out var nt);
                                     if (overtimelist.Exists(x =>
-                                        x.effectivedate.Value == new DateTime(mid.TMonth.Year, mid.TMonth.Month, 16) && x.status == "approved"))
+                                        x.effectivedate.Value == new DateTime(mid.TMonth.Year, mid.TMonth.Month, 16) &&
+                                        x.status == "approved"))
                                     {
                                         var otfind = overtimelist.Find(x =>
-                                            x.effectivedate.Value == new DateTime(mid.TMonth.Year, mid.TMonth.Month, 16)).hrs;
+                                            x.effectivedate.Value ==
+                                            new DateTime(mid.TMonth.Year, mid.TMonth.Month, 16)).hrs;
                                         var otlimit = ntup + otfind;
                                         if (otlimit < nt)
                                         {
@@ -2815,10 +2929,12 @@
                                 {
                                     double.TryParse(sd.C16, out var nt);
                                     if (overtimelist.Exists(x =>
-                                        x.effectivedate.Value == new DateTime(mid.TMonth.Year, mid.TMonth.Month, 17) && x.status == "approved"))
+                                        x.effectivedate.Value == new DateTime(mid.TMonth.Year, mid.TMonth.Month, 17) &&
+                                        x.status == "approved"))
                                     {
                                         var otfind = overtimelist.Find(x =>
-                                            x.effectivedate.Value == new DateTime(mid.TMonth.Year, mid.TMonth.Month, 17)).hrs;
+                                            x.effectivedate.Value ==
+                                            new DateTime(mid.TMonth.Year, mid.TMonth.Month, 17)).hrs;
                                         var otlimit = ntup + otfind;
                                         if (otlimit < nt)
                                         {
@@ -2853,10 +2969,12 @@
                                 {
                                     double.TryParse(sd.C17, out var nt);
                                     if (overtimelist.Exists(x =>
-                                        x.effectivedate.Value == new DateTime(mid.TMonth.Year, mid.TMonth.Month, 18) && x.status == "approved"))
+                                        x.effectivedate.Value == new DateTime(mid.TMonth.Year, mid.TMonth.Month, 18) &&
+                                        x.status == "approved"))
                                     {
                                         var otfind = overtimelist.Find(x =>
-                                            x.effectivedate.Value == new DateTime(mid.TMonth.Year, mid.TMonth.Month, 18)).hrs;
+                                            x.effectivedate.Value ==
+                                            new DateTime(mid.TMonth.Year, mid.TMonth.Month, 18)).hrs;
                                         var otlimit = ntup + otfind;
                                         if (otlimit < nt)
                                         {
@@ -2891,10 +3009,12 @@
                                 {
                                     double.TryParse(sd.C18, out var nt);
                                     if (overtimelist.Exists(x =>
-                                        x.effectivedate.Value == new DateTime(mid.TMonth.Year, mid.TMonth.Month, 19) && x.status == "approved"))
+                                        x.effectivedate.Value == new DateTime(mid.TMonth.Year, mid.TMonth.Month, 19) &&
+                                        x.status == "approved"))
                                     {
                                         var otfind = overtimelist.Find(x =>
-                                            x.effectivedate.Value == new DateTime(mid.TMonth.Year, mid.TMonth.Month, 19)).hrs;
+                                            x.effectivedate.Value ==
+                                            new DateTime(mid.TMonth.Year, mid.TMonth.Month, 19)).hrs;
                                         var otlimit = ntup + otfind;
                                         if (otlimit < nt)
                                         {
@@ -2929,10 +3049,12 @@
                                 {
                                     double.TryParse(sd.C19, out var nt);
                                     if (overtimelist.Exists(x =>
-                                        x.effectivedate.Value == new DateTime(mid.TMonth.Year, mid.TMonth.Month, 20) && x.status == "approved"))
+                                        x.effectivedate.Value == new DateTime(mid.TMonth.Year, mid.TMonth.Month, 20) &&
+                                        x.status == "approved"))
                                     {
                                         var otfind = overtimelist.Find(x =>
-                                            x.effectivedate.Value == new DateTime(mid.TMonth.Year, mid.TMonth.Month, 20)).hrs;
+                                            x.effectivedate.Value ==
+                                            new DateTime(mid.TMonth.Year, mid.TMonth.Month, 20)).hrs;
                                         var otlimit = ntup + otfind;
                                         if (otlimit < nt)
                                         {
@@ -2967,10 +3089,12 @@
                                 {
                                     double.TryParse(sd.C20, out var nt);
                                     if (overtimelist.Exists(x =>
-                                        x.effectivedate.Value == new DateTime(mid.TMonth.Year, mid.TMonth.Month, 21) && x.status == "approved"))
+                                        x.effectivedate.Value == new DateTime(mid.TMonth.Year, mid.TMonth.Month, 21) &&
+                                        x.status == "approved"))
                                     {
                                         var otfind = overtimelist.Find(x =>
-                                            x.effectivedate.Value == new DateTime(mid.TMonth.Year, mid.TMonth.Month, 21)).hrs;
+                                            x.effectivedate.Value ==
+                                            new DateTime(mid.TMonth.Year, mid.TMonth.Month, 21)).hrs;
                                         var otlimit = ntup + otfind;
                                         if (otlimit < nt)
                                         {
@@ -3005,10 +3129,12 @@
                                 {
                                     double.TryParse(sd.C21, out var nt);
                                     if (overtimelist.Exists(x =>
-                                        x.effectivedate.Value == new DateTime(mid.TMonth.Year, mid.TMonth.Month, 22) && x.status == "approved"))
+                                        x.effectivedate.Value == new DateTime(mid.TMonth.Year, mid.TMonth.Month, 22) &&
+                                        x.status == "approved"))
                                     {
                                         var otfind = overtimelist.Find(x =>
-                                            x.effectivedate.Value == new DateTime(mid.TMonth.Year, mid.TMonth.Month, 22)).hrs;
+                                            x.effectivedate.Value ==
+                                            new DateTime(mid.TMonth.Year, mid.TMonth.Month, 22)).hrs;
                                         var otlimit = ntup + otfind;
                                         if (otlimit < nt)
                                         {
@@ -3043,10 +3169,12 @@
                                 {
                                     double.TryParse(sd.C22, out var nt);
                                     if (overtimelist.Exists(x =>
-                                        x.effectivedate.Value == new DateTime(mid.TMonth.Year, mid.TMonth.Month, 23) && x.status == "approved"))
+                                        x.effectivedate.Value == new DateTime(mid.TMonth.Year, mid.TMonth.Month, 23) &&
+                                        x.status == "approved"))
                                     {
                                         var otfind = overtimelist.Find(x =>
-                                            x.effectivedate.Value == new DateTime(mid.TMonth.Year, mid.TMonth.Month, 23)).hrs;
+                                            x.effectivedate.Value ==
+                                            new DateTime(mid.TMonth.Year, mid.TMonth.Month, 23)).hrs;
                                         var otlimit = ntup + otfind;
                                         if (otlimit < nt)
                                         {
@@ -3081,10 +3209,12 @@
                                 {
                                     double.TryParse(sd.C23, out var nt);
                                     if (overtimelist.Exists(x =>
-                                        x.effectivedate.Value == new DateTime(mid.TMonth.Year, mid.TMonth.Month, 24) && x.status == "approved"))
+                                        x.effectivedate.Value == new DateTime(mid.TMonth.Year, mid.TMonth.Month, 24) &&
+                                        x.status == "approved"))
                                     {
                                         var otfind = overtimelist.Find(x =>
-                                            x.effectivedate.Value == new DateTime(mid.TMonth.Year, mid.TMonth.Month, 24)).hrs;
+                                            x.effectivedate.Value ==
+                                            new DateTime(mid.TMonth.Year, mid.TMonth.Month, 24)).hrs;
                                         var otlimit = ntup + otfind;
                                         if (otlimit < nt)
                                         {
@@ -3119,10 +3249,12 @@
                                 {
                                     double.TryParse(sd.C24, out var nt);
                                     if (overtimelist.Exists(x =>
-                                        x.effectivedate.Value == new DateTime(mid.TMonth.Year, mid.TMonth.Month, 25) && x.status == "approved"))
+                                        x.effectivedate.Value == new DateTime(mid.TMonth.Year, mid.TMonth.Month, 25) &&
+                                        x.status == "approved"))
                                     {
                                         var otfind = overtimelist.Find(x =>
-                                            x.effectivedate.Value == new DateTime(mid.TMonth.Year, mid.TMonth.Month, 25)).hrs;
+                                            x.effectivedate.Value ==
+                                            new DateTime(mid.TMonth.Year, mid.TMonth.Month, 25)).hrs;
                                         var otlimit = ntup + otfind;
                                         if (otlimit < nt)
                                         {
@@ -3157,10 +3289,12 @@
                                 {
                                     double.TryParse(sd.C25, out var nt);
                                     if (overtimelist.Exists(x =>
-                                        x.effectivedate.Value == new DateTime(mid.TMonth.Year, mid.TMonth.Month, 26) && x.status == "approved"))
+                                        x.effectivedate.Value == new DateTime(mid.TMonth.Year, mid.TMonth.Month, 26) &&
+                                        x.status == "approved"))
                                     {
                                         var otfind = overtimelist.Find(x =>
-                                            x.effectivedate.Value == new DateTime(mid.TMonth.Year, mid.TMonth.Month, 26)).hrs;
+                                            x.effectivedate.Value ==
+                                            new DateTime(mid.TMonth.Year, mid.TMonth.Month, 26)).hrs;
                                         var otlimit = ntup + otfind;
                                         if (otlimit < nt)
                                         {
@@ -3195,10 +3329,12 @@
                                 {
                                     double.TryParse(sd.C26, out var nt);
                                     if (overtimelist.Exists(x =>
-                                        x.effectivedate.Value == new DateTime(mid.TMonth.Year, mid.TMonth.Month, 27) && x.status == "approved"))
+                                        x.effectivedate.Value == new DateTime(mid.TMonth.Year, mid.TMonth.Month, 27) &&
+                                        x.status == "approved"))
                                     {
                                         var otfind = overtimelist.Find(x =>
-                                            x.effectivedate.Value == new DateTime(mid.TMonth.Year, mid.TMonth.Month, 27)).hrs;
+                                            x.effectivedate.Value ==
+                                            new DateTime(mid.TMonth.Year, mid.TMonth.Month, 27)).hrs;
                                         var otlimit = ntup + otfind;
                                         if (otlimit < nt)
                                         {
@@ -3233,10 +3369,12 @@
                                 {
                                     double.TryParse(sd.C27, out var nt);
                                     if (overtimelist.Exists(x =>
-                                        x.effectivedate.Value == new DateTime(mid.TMonth.Year, mid.TMonth.Month, 28) && x.status == "approved"))
+                                        x.effectivedate.Value == new DateTime(mid.TMonth.Year, mid.TMonth.Month, 28) &&
+                                        x.status == "approved"))
                                     {
                                         var otfind = overtimelist.Find(x =>
-                                            x.effectivedate.Value == new DateTime(mid.TMonth.Year, mid.TMonth.Month, 28)).hrs;
+                                            x.effectivedate.Value ==
+                                            new DateTime(mid.TMonth.Year, mid.TMonth.Month, 28)).hrs;
                                         var otlimit = ntup + otfind;
                                         if (otlimit < nt)
                                         {
@@ -3271,10 +3409,12 @@
                                 {
                                     double.TryParse(sd.C28, out var nt);
                                     if (overtimelist.Exists(x =>
-                                        x.effectivedate.Value == new DateTime(mid.TMonth.Year, mid.TMonth.Month, 29) && x.status == "approved"))
+                                        x.effectivedate.Value == new DateTime(mid.TMonth.Year, mid.TMonth.Month, 29) &&
+                                        x.status == "approved"))
                                     {
                                         var otfind = overtimelist.Find(x =>
-                                            x.effectivedate.Value == new DateTime(mid.TMonth.Year, mid.TMonth.Month, 29)).hrs;
+                                            x.effectivedate.Value ==
+                                            new DateTime(mid.TMonth.Year, mid.TMonth.Month, 29)).hrs;
                                         var otlimit = ntup + otfind;
                                         if (otlimit < nt)
                                         {
@@ -3309,10 +3449,12 @@
                                 {
                                     double.TryParse(sd.C29, out var nt);
                                     if (overtimelist.Exists(x =>
-                                        x.effectivedate.Value == new DateTime(mid.TMonth.Year, mid.TMonth.Month, 30) && x.status == "approved"))
+                                        x.effectivedate.Value == new DateTime(mid.TMonth.Year, mid.TMonth.Month, 30) &&
+                                        x.status == "approved"))
                                     {
                                         var otfind = overtimelist.Find(x =>
-                                            x.effectivedate.Value == new DateTime(mid.TMonth.Year, mid.TMonth.Month, 30)).hrs;
+                                            x.effectivedate.Value ==
+                                            new DateTime(mid.TMonth.Year, mid.TMonth.Month, 30)).hrs;
                                         var otlimit = ntup + otfind;
                                         if (otlimit < nt)
                                         {
@@ -3347,10 +3489,12 @@
                                 {
                                     double.TryParse(sd.C30, out var nt);
                                     if (overtimelist.Exists(x =>
-                                        x.effectivedate.Value == new DateTime(mid.TMonth.Year, mid.TMonth.Month, 31) && x.status == "approved"))
+                                        x.effectivedate.Value == new DateTime(mid.TMonth.Year, mid.TMonth.Month, 31) &&
+                                        x.status == "approved"))
                                     {
                                         var otfind = overtimelist.Find(x =>
-                                            x.effectivedate.Value == new DateTime(mid.TMonth.Year, mid.TMonth.Month, 31)).hrs;
+                                            x.effectivedate.Value ==
+                                            new DateTime(mid.TMonth.Year, mid.TMonth.Month, 31)).hrs;
                                         var otlimit = ntup + otfind;
                                         if (otlimit < nt)
                                         {
@@ -4142,7 +4286,8 @@
         public List<towemp> fillfromtransfer(MainTimeSheet mainTimeSheet)
         {
             var transferreflist = db.towrefs.Where(x => x.mp_to == mainTimeSheet.Project).ToList();
-            var transfredfromList = db.towrefs.Where(x => x.mp_from == mainTimeSheet.Project).OrderByDescending(x => x.mpcdate).ToList();
+            var transfredfromList = db.towrefs.Where(x => x.mp_from == mainTimeSheet.Project)
+                .OrderByDescending(x => x.mpcdate).ToList();
             var tfelist = new List<towemp>();
             var tfelist2 = new List<towemp>();
             var tfelist1 = new List<towemp>();
@@ -4151,13 +4296,15 @@
             {
                 tfedlist.AddRange(towref.towemps);
             }
+
             foreach (var towref in transferreflist)
                 tfelist1.AddRange(towref.towemps);
             foreach (var tf in tfelist1)
             {
                 if (tfedlist.Exists(x => x.lab_no == tf.lab_no))
                 {
-                    var tfed = tfedlist.OrderByDescending(x => x.effectivedate).ToList().Find(x => x.lab_no == tf.lab_no);
+                    var tfed = tfedlist.OrderByDescending(x => x.effectivedate).ToList()
+                        .Find(x => x.lab_no == tf.lab_no);
                     if (tf.effectivedate > tfed.effectivedate)
                     {
                         if (!tfelist2.Exists(x => x.lab_no == tf.lab_no))
@@ -4192,6 +4339,7 @@
                     tfelist.Add(tf);
                 }
             }
+
             var fday2 = new DateTime(mainTimeSheet.TMonth.Year, mainTimeSheet.TMonth.Month, 1);
             var fdaylist2 = this.GetAll(fday2);
             var attpelist = db.Attendances.ToList();
@@ -4239,6 +4387,7 @@
                                                                          towemp.LabourMaster.ManPowerSupply);
                         ids = te2;
                     }
+
                     attp.SubMain = ids.ID;
                     attp.MainTimeSheet = ids;
                     if (towemp.lab_no.HasValue)
@@ -4249,7 +4398,7 @@
                     {
                         goto a;
                     }
-                    
+
                     if (ids.TMonth.Day == 1)
                     {
                         if (fdaylist2.Exists(x => x == 1))
@@ -4325,7 +4474,6 @@
                     }
                     else
                     {
-
                         attp.C1 = "0";
                         attp.C2 = "0";
                         attp.C3 = "0";
@@ -4369,9 +4517,10 @@
                         }
                     }
 
-                    a:;
+                    a: ;
                 }
             }
+
             return (tfelist);
         }
 
@@ -4391,7 +4540,8 @@
             var ids = this.TempData["mcreateid"] as MainTimeSheet;
             var a = this.db.MainTimeSheets.OrderByDescending(m => m.ID).ToList();
             var labid = db.LabourMasters.ToList().Find(x => x.ID == attendance.EmpID);
-            var aa = a.Find(x=>x.TMonth == ids.TMonth && x.Project == ids.Project && x.ManPowerSupplier == labid.ManPowerSupply);
+            var aa = a.Find(x =>
+                x.TMonth == ids.TMonth && x.Project == ids.Project && x.ManPowerSupplier == labid.ManPowerSupply);
             if (aa == null)
             {
                 var ids2 = new MainTimeSheet();
@@ -4402,8 +4552,10 @@
                 db.Entry(ids2).State = EntityState.Added;
                 db.SaveChanges();
             }
+
             a = this.db.MainTimeSheets.OrderByDescending(m => m.ID).ToList();
-            aa = a.Find(x => x.TMonth == ids.TMonth && x.Project == ids.Project && x.ManPowerSupplier == labid.ManPowerSupply);
+            aa = a.Find(x =>
+                x.TMonth == ids.TMonth && x.Project == ids.Project && x.ManPowerSupplier == labid.ManPowerSupply);
             this.ViewBag.mid = aa.ID;
             var b = this.db.ManPowerSuppliers.Find(aa.ManPowerSupplier);
             var c = this.db.ProjectLists.Find(aa.Project);
@@ -4457,6 +4609,7 @@
                     }
                 }
             }
+
             var d = db.LabourMasters.Where(x => x.ManPowerSupply == b.ID && x.EMPNO >= 4).ToList();
             var d1 = new List<LabourMaster>();
             foreach (var towemp in tflist)
@@ -4577,11 +4730,15 @@
                         tfed.lab_no = at.EmpID;
                         tfed.effectivedate = new DateTime(aa.TMonth.Year, aa.TMonth.Month, 1);
                     }
+
                     var date = new DateTime(aa.TMonth.Year, aa.TMonth.Month, 1);
                     var overtimelist = db.overtimeemployeelists.Where(x => x.lab_no == attendance.EmpID)
                         .OrderByDescending(x => x.effectivedate).ToList();
                     if (at != null)
                     {
+                        date = new DateTime(aa.TMonth.Year, aa.TMonth.Month, 1);
+                        var fdate = GetAll(date);
+                        var hdate = GetAllholi(date);
                         var ntup = attendance.MainTimeSheet.ManPowerSupplier1.NormalTimeUpto;
                         if (attendance.C1 != "0" && attendance.C1 != null && tfed.effectivedate.Value <=
                             new DateTime(aa.TMonth.Year, aa.TMonth.Month, 1))
@@ -4591,7 +4748,8 @@
                             {
                                 double.TryParse(attendance.C1, out var nt);
                                 if (overtimelist.Exists(x =>
-                                    x.effectivedate.Value == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 1) && x.status == "approved"))
+                                    x.effectivedate.Value == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 1) &&
+                                    x.status == "approved"))
                                 {
                                     var otfind = overtimelist.Find(x =>
                                         x.effectivedate.Value == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 1)).hrs;
@@ -4604,6 +4762,12 @@
                                     {
                                         at.C1 = attendance.C1;
                                     }
+
+
+                                    if (fdate.Contains(1) || hdate.Contains(1))
+                                    {
+                                        at.C1 = otfind.Value.ToString();
+                                    }
                                 }
                                 else
                                 {
@@ -4614,6 +4778,12 @@
                                     else
                                     {
                                         at.C1 = attendance.C1;
+                                    }
+
+
+                                    if (fdate.Contains(1) || hdate.Contains(1))
+                                    {
+                                        at.C2 = "0";
                                     }
                                 }
                             }
@@ -4626,7 +4796,8 @@
                             {
                                 double.TryParse(attendance.C2, out var nt);
                                 if (overtimelist.Exists(x =>
-                                    x.effectivedate.Value == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 2) && x.status == "approved"))
+                                    x.effectivedate.Value == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 2) &&
+                                    x.status == "approved"))
                                 {
                                     var otfind = overtimelist.Find(x =>
                                         x.effectivedate.Value == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 2)).hrs;
@@ -4639,6 +4810,11 @@
                                     {
                                         at.C2 = attendance.C2;
                                     }
+
+                                    if (fdate.Contains(2) || hdate.Contains(2))
+                                    {
+                                        at.C2 = otfind.Value.ToString();
+                                    }
                                 }
                                 else
                                 {
@@ -4649,6 +4825,11 @@
                                     else
                                     {
                                         at.C2 = attendance.C2;
+                                    }
+
+                                    if (fdate.Contains(2) || hdate.Contains(2))
+                                    {
+                                        at.C2 = "0";
                                     }
                                 }
                             }
@@ -4662,7 +4843,8 @@
                             {
                                 double.TryParse(attendance.C3, out var nt);
                                 if (overtimelist.Exists(x =>
-                                    x.effectivedate.Value == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 3) && x.status == "approved"))
+                                    x.effectivedate.Value == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 3) &&
+                                    x.status == "approved"))
                                 {
                                     var otfind = overtimelist.Find(x =>
                                         x.effectivedate.Value == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 3)).hrs;
@@ -4675,6 +4857,12 @@
                                     {
                                         at.C3 = attendance.C3;
                                     }
+
+                                    if (fdate.Contains(3) || hdate.Contains(3))
+                                    {
+                                        at.C3 = otfind.Value.ToString();
+                                        ;
+                                    }
                                 }
                                 else
                                 {
@@ -4685,6 +4873,11 @@
                                     else
                                     {
                                         at.C3 = attendance.C3;
+                                    }
+
+                                    if (fdate.Contains(3) || hdate.Contains(3))
+                                    {
+                                        at.C3 = "0";
                                     }
                                 }
                             }
@@ -4698,7 +4891,8 @@
                             {
                                 double.TryParse(attendance.C4, out var nt);
                                 if (overtimelist.Exists(x =>
-                                    x.effectivedate.Value == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 4) && x.status == "approved"))
+                                    x.effectivedate.Value == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 4) &&
+                                    x.status == "approved"))
                                 {
                                     var otfind = overtimelist.Find(x =>
                                         x.effectivedate.Value == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 4)).hrs;
@@ -4711,6 +4905,11 @@
                                     {
                                         at.C4 = attendance.C4;
                                     }
+
+                                    if (fdate.Contains(4) || hdate.Contains(4))
+                                    {
+                                        at.C4 = otfind.Value.ToString();
+                                    }
                                 }
                                 else
                                 {
@@ -4721,6 +4920,11 @@
                                     else
                                     {
                                         at.C4 = attendance.C4;
+                                    }
+
+                                    if (fdate.Contains(4) || hdate.Contains(4))
+                                    {
+                                        at.C4 = "0";
                                     }
                                 }
                             }
@@ -4734,7 +4938,8 @@
                             {
                                 double.TryParse(attendance.C5, out var nt);
                                 if (overtimelist.Exists(x =>
-                                    x.effectivedate.Value == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 5) && x.status == "approved"))
+                                    x.effectivedate.Value == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 5) &&
+                                    x.status == "approved"))
                                 {
                                     var otfind = overtimelist.Find(x =>
                                         x.effectivedate.Value == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 5)).hrs;
@@ -4747,6 +4952,11 @@
                                     {
                                         at.C5 = attendance.C5;
                                     }
+
+                                    if (fdate.Contains(5) || hdate.Contains(5))
+                                    {
+                                        at.C5 = otfind.Value.ToString();
+                                    }
                                 }
                                 else
                                 {
@@ -4757,6 +4967,11 @@
                                     else
                                     {
                                         at.C5 = attendance.C5;
+                                    }
+
+                                    if (fdate.Contains(5) || hdate.Contains(5))
+                                    {
+                                        at.C5 = "0";
                                     }
                                 }
                             }
@@ -4769,7 +4984,8 @@
                             {
                                 double.TryParse(attendance.C6, out var nt);
                                 if (overtimelist.Exists(x =>
-                                    x.effectivedate.Value == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 6) && x.status == "approved"))
+                                    x.effectivedate.Value == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 6) &&
+                                    x.status == "approved"))
                                 {
                                     var otfind = overtimelist.Find(x =>
                                         x.effectivedate.Value == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 6)).hrs;
@@ -4782,6 +4998,11 @@
                                     {
                                         at.C6 = attendance.C6;
                                     }
+
+                                    if (fdate.Contains(6) || hdate.Contains(6))
+                                    {
+                                        at.C6 = otfind.Value.ToString();
+                                    }
                                 }
                                 else
                                 {
@@ -4792,6 +5013,11 @@
                                     else
                                     {
                                         at.C6 = attendance.C6;
+                                    }
+
+                                    if (fdate.Contains(6) || hdate.Contains(6))
+                                    {
+                                        at.C6 = "0";
                                     }
                                 }
                             }
@@ -4805,7 +5031,8 @@
                             {
                                 double.TryParse(attendance.C7, out var nt);
                                 if (overtimelist.Exists(x =>
-                                    x.effectivedate.Value == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 7) && x.status == "approved"))
+                                    x.effectivedate.Value == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 7) &&
+                                    x.status == "approved"))
                                 {
                                     var otfind = overtimelist.Find(x =>
                                         x.effectivedate.Value == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 7)).hrs;
@@ -4818,6 +5045,11 @@
                                     {
                                         at.C7 = attendance.C7;
                                     }
+
+                                    if (fdate.Contains(7) || hdate.Contains(7))
+                                    {
+                                        at.C7 = otfind.Value.ToString();
+                                    }
                                 }
                                 else
                                 {
@@ -4828,6 +5060,11 @@
                                     else
                                     {
                                         at.C7 = attendance.C7;
+                                    }
+
+                                    if (fdate.Contains(7) || hdate.Contains(7))
+                                    {
+                                        at.C7 = "0";
                                     }
                                 }
                             }
@@ -4841,7 +5078,8 @@
                             {
                                 double.TryParse(attendance.C8, out var nt);
                                 if (overtimelist.Exists(x =>
-                                    x.effectivedate.Value == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 8) && x.status == "approved"))
+                                    x.effectivedate.Value == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 8) &&
+                                    x.status == "approved"))
                                 {
                                     var otfind = overtimelist.Find(x =>
                                         x.effectivedate.Value == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 8)).hrs;
@@ -4854,6 +5092,11 @@
                                     {
                                         at.C8 = attendance.C8;
                                     }
+
+                                    if (fdate.Contains(8) || hdate.Contains(8))
+                                    {
+                                        at.C8 = otfind.Value.ToString();
+                                    }
                                 }
                                 else
                                 {
@@ -4864,6 +5107,11 @@
                                     else
                                     {
                                         at.C8 = attendance.C8;
+                                    }
+
+                                    if (fdate.Contains(8) || hdate.Contains(8))
+                                    {
+                                        at.C8 = "0";
                                     }
                                 }
                             }
@@ -4877,7 +5125,8 @@
                             {
                                 double.TryParse(attendance.C9, out var nt);
                                 if (overtimelist.Exists(x =>
-                                    x.effectivedate.Value == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 9) && x.status == "approved"))
+                                    x.effectivedate.Value == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 9) &&
+                                    x.status == "approved"))
                                 {
                                     var otfind = overtimelist.Find(x =>
                                         x.effectivedate.Value == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 9)).hrs;
@@ -4890,6 +5139,11 @@
                                     {
                                         at.C9 = attendance.C9;
                                     }
+
+                                    if (fdate.Contains(9) || hdate.Contains(9))
+                                    {
+                                        at.C9 = otfind.Value.ToString();
+                                    }
                                 }
                                 else
                                 {
@@ -4900,6 +5154,11 @@
                                     else
                                     {
                                         at.C9 = attendance.C9;
+                                    }
+
+                                    if (fdate.Contains(9) || hdate.Contains(9))
+                                    {
+                                        at.C9 = "0";
                                     }
                                 }
                             }
@@ -4913,7 +5172,8 @@
                             {
                                 double.TryParse(attendance.C10, out var nt);
                                 if (overtimelist.Exists(x =>
-                                    x.effectivedate.Value == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 10) && x.status == "approved"))
+                                    x.effectivedate.Value == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 10) &&
+                                    x.status == "approved"))
                                 {
                                     var otfind = overtimelist.Find(x =>
                                         x.effectivedate.Value == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 10)).hrs;
@@ -4926,6 +5186,11 @@
                                     {
                                         at.C10 = attendance.C10;
                                     }
+
+                                    if (fdate.Contains(10) || hdate.Contains(10))
+                                    {
+                                        at.C10 = otfind.Value.ToString();
+                                    }
                                 }
                                 else
                                 {
@@ -4936,6 +5201,11 @@
                                     else
                                     {
                                         at.C10 = attendance.C10;
+                                    }
+
+                                    if (fdate.Contains(10) || hdate.Contains(10))
+                                    {
+                                        at.C10 = "0";
                                     }
                                 }
                             }
@@ -4949,7 +5219,8 @@
                             {
                                 double.TryParse(attendance.C11, out var nt);
                                 if (overtimelist.Exists(x =>
-                                    x.effectivedate.Value == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 11) && x.status == "approved"))
+                                    x.effectivedate.Value == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 11) &&
+                                    x.status == "approved"))
                                 {
                                     var otfind = overtimelist.Find(x =>
                                         x.effectivedate.Value == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 11)).hrs;
@@ -4962,6 +5233,11 @@
                                     {
                                         at.C11 = attendance.C11;
                                     }
+
+                                    if (fdate.Contains(11) || hdate.Contains(11))
+                                    {
+                                        at.C11 = otfind.Value.ToString();
+                                    }
                                 }
                                 else
                                 {
@@ -4972,6 +5248,11 @@
                                     else
                                     {
                                         at.C11 = attendance.C11;
+                                    }
+
+                                    if (fdate.Contains(11) || hdate.Contains(11))
+                                    {
+                                        at.C11 = "0";
                                     }
                                 }
                             }
@@ -4985,7 +5266,8 @@
                             {
                                 double.TryParse(attendance.C12, out var nt);
                                 if (overtimelist.Exists(x =>
-                                    x.effectivedate.Value == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 12) && x.status == "approved"))
+                                    x.effectivedate.Value == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 12) &&
+                                    x.status == "approved"))
                                 {
                                     var otfind = overtimelist.Find(x =>
                                         x.effectivedate.Value == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 12)).hrs;
@@ -4998,6 +5280,11 @@
                                     {
                                         at.C12 = attendance.C12;
                                     }
+
+                                    if (fdate.Contains(12) || hdate.Contains(12))
+                                    {
+                                        at.C12 = otfind.Value.ToString();
+                                    }
                                 }
                                 else
                                 {
@@ -5008,6 +5295,11 @@
                                     else
                                     {
                                         at.C12 = attendance.C12;
+                                    }
+
+                                    if (fdate.Contains(12) || hdate.Contains(12))
+                                    {
+                                        at.C12 = "0";
                                     }
                                 }
                             }
@@ -5021,7 +5313,8 @@
                             {
                                 double.TryParse(attendance.C13, out var nt);
                                 if (overtimelist.Exists(x =>
-                                    x.effectivedate.Value == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 13) && x.status == "approved"))
+                                    x.effectivedate.Value == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 13) &&
+                                    x.status == "approved"))
                                 {
                                     var otfind = overtimelist.Find(x =>
                                         x.effectivedate.Value == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 13)).hrs;
@@ -5034,6 +5327,11 @@
                                     {
                                         at.C13 = attendance.C13;
                                     }
+
+                                    if (fdate.Contains(13) || hdate.Contains(13))
+                                    {
+                                        at.C13 = otfind.Value.ToString();
+                                    }
                                 }
                                 else
                                 {
@@ -5044,6 +5342,11 @@
                                     else
                                     {
                                         at.C13 = attendance.C13;
+                                    }
+
+                                    if (fdate.Contains(13) || hdate.Contains(13))
+                                    {
+                                        at.C13 = "0";
                                     }
                                 }
                             }
@@ -5057,7 +5360,8 @@
                             {
                                 double.TryParse(attendance.C14, out var nt);
                                 if (overtimelist.Exists(x =>
-                                    x.effectivedate.Value == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 14) && x.status == "approved"))
+                                    x.effectivedate.Value == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 14) &&
+                                    x.status == "approved"))
                                 {
                                     var otfind = overtimelist.Find(x =>
                                         x.effectivedate.Value == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 14)).hrs;
@@ -5070,6 +5374,11 @@
                                     {
                                         at.C14 = attendance.C14;
                                     }
+
+                                    if (fdate.Contains(14) || hdate.Contains(14))
+                                    {
+                                        at.C14 = otfind.Value.ToString();
+                                    }
                                 }
                                 else
                                 {
@@ -5080,6 +5389,11 @@
                                     else
                                     {
                                         at.C14 = attendance.C14;
+                                    }
+
+                                    if (fdate.Contains(14) || hdate.Contains(14))
+                                    {
+                                        at.C14 = "0";
                                     }
                                 }
                             }
@@ -5093,7 +5407,8 @@
                             {
                                 double.TryParse(attendance.C15, out var nt);
                                 if (overtimelist.Exists(x =>
-                                    x.effectivedate.Value == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 15) && x.status == "approved"))
+                                    x.effectivedate.Value == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 15) &&
+                                    x.status == "approved"))
                                 {
                                     var otfind = overtimelist.Find(x =>
                                         x.effectivedate.Value == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 15)).hrs;
@@ -5106,6 +5421,11 @@
                                     {
                                         at.C15 = attendance.C15;
                                     }
+
+                                    if (fdate.Contains(15) || hdate.Contains(15))
+                                    {
+                                        at.C15 = otfind.Value.ToString();
+                                    }
                                 }
                                 else
                                 {
@@ -5116,6 +5436,11 @@
                                     else
                                     {
                                         at.C15 = attendance.C15;
+                                    }
+
+                                    if (fdate.Contains(15) || hdate.Contains(15))
+                                    {
+                                        at.C15 = "0";
                                     }
                                 }
                             }
@@ -5129,7 +5454,8 @@
                             {
                                 double.TryParse(attendance.C16, out var nt);
                                 if (overtimelist.Exists(x =>
-                                    x.effectivedate.Value == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 16) && x.status == "approved"))
+                                    x.effectivedate.Value == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 16) &&
+                                    x.status == "approved"))
                                 {
                                     var otfind = overtimelist.Find(x =>
                                         x.effectivedate.Value == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 16)).hrs;
@@ -5142,6 +5468,11 @@
                                     {
                                         at.C16 = attendance.C16;
                                     }
+
+                                    if (fdate.Contains(16) || hdate.Contains(16))
+                                    {
+                                        at.C16 = otfind.Value.ToString();
+                                    }
                                 }
                                 else
                                 {
@@ -5152,6 +5483,11 @@
                                     else
                                     {
                                         at.C16 = attendance.C16;
+                                    }
+
+                                    if (fdate.Contains(16) || hdate.Contains(16))
+                                    {
+                                        at.C16 = "0";
                                     }
                                 }
                             }
@@ -5165,7 +5501,8 @@
                             {
                                 double.TryParse(attendance.C17, out var nt);
                                 if (overtimelist.Exists(x =>
-                                    x.effectivedate.Value == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 17) && x.status == "approved"))
+                                    x.effectivedate.Value == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 17) &&
+                                    x.status == "approved"))
                                 {
                                     var otfind = overtimelist.Find(x =>
                                         x.effectivedate.Value == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 17)).hrs;
@@ -5178,6 +5515,11 @@
                                     {
                                         at.C17 = attendance.C17;
                                     }
+
+                                    if (fdate.Contains(17) || hdate.Contains(17))
+                                    {
+                                        at.C17 = otfind.Value.ToString();
+                                    }
                                 }
                                 else
                                 {
@@ -5188,6 +5530,11 @@
                                     else
                                     {
                                         at.C17 = attendance.C17;
+                                    }
+
+                                    if (fdate.Contains(17) || hdate.Contains(17))
+                                    {
+                                        at.C17 = "0";
                                     }
                                 }
                             }
@@ -5201,7 +5548,8 @@
                             {
                                 double.TryParse(attendance.C18, out var nt);
                                 if (overtimelist.Exists(x =>
-                                    x.effectivedate.Value == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 18) && x.status == "approved"))
+                                    x.effectivedate.Value == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 18) &&
+                                    x.status == "approved"))
                                 {
                                     var otfind = overtimelist.Find(x =>
                                         x.effectivedate.Value == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 18)).hrs;
@@ -5214,6 +5562,11 @@
                                     {
                                         at.C18 = attendance.C18;
                                     }
+
+                                    if (fdate.Contains(18) || hdate.Contains(18))
+                                    {
+                                        at.C18 = otfind.Value.ToString();
+                                    }
                                 }
                                 else
                                 {
@@ -5224,6 +5577,11 @@
                                     else
                                     {
                                         at.C18 = attendance.C18;
+                                    }
+
+                                    if (fdate.Contains(18) || hdate.Contains(18))
+                                    {
+                                        at.C18 = "0";
                                     }
                                 }
                             }
@@ -5237,7 +5595,8 @@
                             {
                                 double.TryParse(attendance.C19, out var nt);
                                 if (overtimelist.Exists(x =>
-                                    x.effectivedate.Value == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 19) && x.status == "approved"))
+                                    x.effectivedate.Value == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 19) &&
+                                    x.status == "approved"))
                                 {
                                     var otfind = overtimelist.Find(x =>
                                         x.effectivedate.Value == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 19)).hrs;
@@ -5250,6 +5609,11 @@
                                     {
                                         at.C19 = attendance.C19;
                                     }
+
+                                    if (fdate.Contains(19) || hdate.Contains(19))
+                                    {
+                                        at.C19 = otfind.Value.ToString();
+                                    }
                                 }
                                 else
                                 {
@@ -5260,6 +5624,11 @@
                                     else
                                     {
                                         at.C19 = attendance.C19;
+                                    }
+
+                                    if (fdate.Contains(19) || hdate.Contains(19))
+                                    {
+                                        at.C19 = "0";
                                     }
                                 }
                             }
@@ -5273,7 +5642,8 @@
                             {
                                 double.TryParse(attendance.C20, out var nt);
                                 if (overtimelist.Exists(x =>
-                                    x.effectivedate.Value == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 20) && x.status == "approved"))
+                                    x.effectivedate.Value == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 20) &&
+                                    x.status == "approved"))
                                 {
                                     var otfind = overtimelist.Find(x =>
                                         x.effectivedate.Value == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 20)).hrs;
@@ -5286,6 +5656,11 @@
                                     {
                                         at.C20 = attendance.C20;
                                     }
+
+                                    if (fdate.Contains(20) || hdate.Contains(20))
+                                    {
+                                        at.C20 = otfind.Value.ToString();
+                                    }
                                 }
                                 else
                                 {
@@ -5296,6 +5671,11 @@
                                     else
                                     {
                                         at.C20 = attendance.C20;
+                                    }
+
+                                    if (fdate.Contains(20) || hdate.Contains(20))
+                                    {
+                                        at.C20 = "0";
                                     }
                                 }
                             }
@@ -5309,7 +5689,8 @@
                             {
                                 double.TryParse(attendance.C21, out var nt);
                                 if (overtimelist.Exists(x =>
-                                    x.effectivedate.Value == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 21) && x.status == "approved"))
+                                    x.effectivedate.Value == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 21) &&
+                                    x.status == "approved"))
                                 {
                                     var otfind = overtimelist.Find(x =>
                                         x.effectivedate.Value == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 21)).hrs;
@@ -5322,6 +5703,11 @@
                                     {
                                         at.C21 = attendance.C21;
                                     }
+
+                                    if (fdate.Contains(21) || hdate.Contains(21))
+                                    {
+                                        at.C21 = otfind.Value.ToString();
+                                    }
                                 }
                                 else
                                 {
@@ -5332,6 +5718,11 @@
                                     else
                                     {
                                         at.C21 = attendance.C21;
+                                    }
+
+                                    if (fdate.Contains(21) || hdate.Contains(21))
+                                    {
+                                        at.C21 = "0";
                                     }
                                 }
                             }
@@ -5345,7 +5736,8 @@
                             {
                                 double.TryParse(attendance.C22, out var nt);
                                 if (overtimelist.Exists(x =>
-                                    x.effectivedate.Value == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 22) && x.status == "approved"))
+                                    x.effectivedate.Value == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 22) &&
+                                    x.status == "approved"))
                                 {
                                     var otfind = overtimelist.Find(x =>
                                         x.effectivedate.Value == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 22)).hrs;
@@ -5358,6 +5750,11 @@
                                     {
                                         at.C22 = attendance.C22;
                                     }
+
+                                    if (fdate.Contains(22) || hdate.Contains(22))
+                                    {
+                                        at.C22 = otfind.Value.ToString();
+                                    }
                                 }
                                 else
                                 {
@@ -5368,6 +5765,11 @@
                                     else
                                     {
                                         at.C22 = attendance.C22;
+                                    }
+
+                                    if (fdate.Contains(22) || hdate.Contains(22))
+                                    {
+                                        at.C22 = "0";
                                     }
                                 }
                             }
@@ -5381,7 +5783,8 @@
                             {
                                 double.TryParse(attendance.C23, out var nt);
                                 if (overtimelist.Exists(x =>
-                                    x.effectivedate.Value == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 23) && x.status == "approved"))
+                                    x.effectivedate.Value == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 23) &&
+                                    x.status == "approved"))
                                 {
                                     var otfind = overtimelist.Find(x =>
                                         x.effectivedate.Value == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 23)).hrs;
@@ -5394,6 +5797,11 @@
                                     {
                                         at.C23 = attendance.C23;
                                     }
+
+                                    if (fdate.Contains(23) || hdate.Contains(23))
+                                    {
+                                        at.C23 = otfind.Value.ToString();
+                                    }
                                 }
                                 else
                                 {
@@ -5404,6 +5812,11 @@
                                     else
                                     {
                                         at.C23 = attendance.C23;
+                                    }
+
+                                    if (fdate.Contains(23) || hdate.Contains(23))
+                                    {
+                                        at.C23 = "0";
                                     }
                                 }
                             }
@@ -5417,7 +5830,8 @@
                             {
                                 double.TryParse(attendance.C24, out var nt);
                                 if (overtimelist.Exists(x =>
-                                    x.effectivedate.Value == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 24) && x.status == "approved"))
+                                    x.effectivedate.Value == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 24) &&
+                                    x.status == "approved"))
                                 {
                                     var otfind = overtimelist.Find(x =>
                                         x.effectivedate.Value == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 24)).hrs;
@@ -5430,6 +5844,11 @@
                                     {
                                         at.C24 = attendance.C24;
                                     }
+
+                                    if (fdate.Contains(24) || hdate.Contains(24))
+                                    {
+                                        at.C24 = otfind.Value.ToString();
+                                    }
                                 }
                                 else
                                 {
@@ -5440,6 +5859,11 @@
                                     else
                                     {
                                         at.C24 = attendance.C24;
+                                    }
+
+                                    if (fdate.Contains(24) || hdate.Contains(24))
+                                    {
+                                        at.C24 = "0";
                                     }
                                 }
                             }
@@ -5453,7 +5877,8 @@
                             {
                                 double.TryParse(attendance.C25, out var nt);
                                 if (overtimelist.Exists(x =>
-                                    x.effectivedate.Value == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 25) && x.status == "approved"))
+                                    x.effectivedate.Value == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 25) &&
+                                    x.status == "approved"))
                                 {
                                     var otfind = overtimelist.Find(x =>
                                         x.effectivedate.Value == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 25)).hrs;
@@ -5466,6 +5891,11 @@
                                     {
                                         at.C25 = attendance.C25;
                                     }
+
+                                    if (fdate.Contains(25) || hdate.Contains(25))
+                                    {
+                                        at.C25 = otfind.Value.ToString();
+                                    }
                                 }
                                 else
                                 {
@@ -5476,6 +5906,11 @@
                                     else
                                     {
                                         at.C25 = attendance.C25;
+                                    }
+
+                                    if (fdate.Contains(25) || hdate.Contains(25))
+                                    {
+                                        at.C25 = "0";
                                     }
                                 }
                             }
@@ -5489,7 +5924,8 @@
                             {
                                 double.TryParse(attendance.C26, out var nt);
                                 if (overtimelist.Exists(x =>
-                                    x.effectivedate.Value == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 26) && x.status == "approved"))
+                                    x.effectivedate.Value == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 26) &&
+                                    x.status == "approved"))
                                 {
                                     var otfind = overtimelist.Find(x =>
                                         x.effectivedate.Value == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 26)).hrs;
@@ -5502,6 +5938,11 @@
                                     {
                                         at.C26 = attendance.C26;
                                     }
+
+                                    if (fdate.Contains(26) || hdate.Contains(26))
+                                    {
+                                        at.C26 = otfind.Value.ToString();
+                                    }
                                 }
                                 else
                                 {
@@ -5512,6 +5953,11 @@
                                     else
                                     {
                                         at.C26 = attendance.C26;
+                                    }
+
+                                    if (fdate.Contains(26) || hdate.Contains(26))
+                                    {
+                                        at.C26 = "0";
                                     }
                                 }
                             }
@@ -5525,7 +5971,8 @@
                             {
                                 double.TryParse(attendance.C27, out var nt);
                                 if (overtimelist.Exists(x =>
-                                    x.effectivedate.Value == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 27) && x.status == "approved"))
+                                    x.effectivedate.Value == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 27) &&
+                                    x.status == "approved"))
                                 {
                                     var otfind = overtimelist.Find(x =>
                                         x.effectivedate.Value == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 27)).hrs;
@@ -5538,6 +5985,11 @@
                                     {
                                         at.C27 = attendance.C27;
                                     }
+
+                                    if (fdate.Contains(27) || hdate.Contains(27))
+                                    {
+                                        at.C27 = otfind.Value.ToString();
+                                    }
                                 }
                                 else
                                 {
@@ -5548,6 +6000,11 @@
                                     else
                                     {
                                         at.C27 = attendance.C27;
+                                    }
+
+                                    if (fdate.Contains(27) || hdate.Contains(27))
+                                    {
+                                        at.C27 = "0";
                                     }
                                 }
                             }
@@ -5561,7 +6018,8 @@
                             {
                                 double.TryParse(attendance.C28, out var nt);
                                 if (overtimelist.Exists(x =>
-                                    x.effectivedate.Value == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 28) && x.status == "approved"))
+                                    x.effectivedate.Value == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 28) &&
+                                    x.status == "approved"))
                                 {
                                     var otfind = overtimelist.Find(x =>
                                         x.effectivedate.Value == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 28)).hrs;
@@ -5574,6 +6032,11 @@
                                     {
                                         at.C28 = attendance.C28;
                                     }
+
+                                    if (fdate.Contains(28) || hdate.Contains(28))
+                                    {
+                                        at.C28 = otfind.Value.ToString();
+                                    }
                                 }
                                 else
                                 {
@@ -5584,6 +6047,11 @@
                                     else
                                     {
                                         at.C28 = attendance.C28;
+                                    }
+
+                                    if (fdate.Contains(28) || hdate.Contains(28))
+                                    {
+                                        at.C28 = "0";
                                     }
                                 }
                             }
@@ -5597,7 +6065,8 @@
                             {
                                 double.TryParse(attendance.C29, out var nt);
                                 if (overtimelist.Exists(x =>
-                                    x.effectivedate.Value == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 29) && x.status == "approved"))
+                                    x.effectivedate.Value == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 29) &&
+                                    x.status == "approved"))
                                 {
                                     var otfind = overtimelist.Find(x =>
                                         x.effectivedate.Value == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 29)).hrs;
@@ -5610,6 +6079,11 @@
                                     {
                                         at.C29 = attendance.C29;
                                     }
+
+                                    if (fdate.Contains(29) || hdate.Contains(29))
+                                    {
+                                        at.C29 = otfind.Value.ToString();
+                                    }
                                 }
                                 else
                                 {
@@ -5620,6 +6094,11 @@
                                     else
                                     {
                                         at.C29 = attendance.C29;
+                                    }
+
+                                    if (fdate.Contains(29) || hdate.Contains(29))
+                                    {
+                                        at.C29 = "0";
                                     }
                                 }
                             }
@@ -5633,7 +6112,8 @@
                             {
                                 double.TryParse(attendance.C30, out var nt);
                                 if (overtimelist.Exists(x =>
-                                    x.effectivedate.Value == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 30) && x.status == "approved"))
+                                    x.effectivedate.Value == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 30) &&
+                                    x.status == "approved"))
                                 {
                                     var otfind = overtimelist.Find(x =>
                                         x.effectivedate.Value == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 30)).hrs;
@@ -5646,6 +6126,11 @@
                                     {
                                         at.C30 = attendance.C30;
                                     }
+
+                                    if (fdate.Contains(30) || hdate.Contains(30))
+                                    {
+                                        at.C30 = otfind.Value.ToString();
+                                    }
                                 }
                                 else
                                 {
@@ -5656,6 +6141,11 @@
                                     else
                                     {
                                         at.C30 = attendance.C30;
+                                    }
+
+                                    if (fdate.Contains(30) || hdate.Contains(30))
+                                    {
+                                        at.C30 = "0";
                                     }
                                 }
                             }
@@ -5669,7 +6159,8 @@
                             {
                                 double.TryParse(attendance.C31, out var nt);
                                 if (overtimelist.Exists(x =>
-                                    x.effectivedate.Value == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 31) && x.status == "approved"))
+                                    x.effectivedate.Value == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 31) &&
+                                    x.status == "approved"))
                                 {
                                     var otfind = overtimelist.Find(x =>
                                         x.effectivedate.Value == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 31)).hrs;
@@ -5682,6 +6173,11 @@
                                     {
                                         at.C31 = attendance.C31;
                                     }
+
+                                    if (fdate.Contains(31) || hdate.Contains(31))
+                                    {
+                                        at.C31 = otfind.Value.ToString();
+                                    }
                                 }
                                 else
                                 {
@@ -5693,6 +6189,11 @@
                                     {
                                         at.C31 = attendance.C31;
                                     }
+
+                                    if (fdate.Contains(31) || hdate.Contains(31))
+                                    {
+                                        at.C31 = "0";
+                                    }
                                 }
                             }
 
@@ -5700,8 +6201,8 @@
                         this.db.Entry(at).State = EntityState.Modified;
                         this.db.SaveChanges();
                         date = new DateTime(aa.TMonth.Year, aa.TMonth.Month, 1);
-                        var fdate = GetAll(date);
-                        var hdate = GetAllholi(date);
+                        fdate = GetAll(date);
+                        hdate = GetAllholi(date);
                         if (fdate.Contains(1) && !hdate.Contains(1))
                         {
                             long.TryParse(at.C1, out var tl);
@@ -7316,6 +7817,7 @@
                         tfed.lab_no = at.EmpID;
                         tfed.effectivedate = new DateTime(aa.TMonth.Year, aa.TMonth.Month, 1);
                     }
+
                     var date = new DateTime(aa.TMonth.Year, aa.TMonth.Month, 1);
                     var fdate = GetAll(date);
                     var hdate = GetAllholi(date);
@@ -7330,7 +7832,8 @@
                         {
                             double.TryParse(attendance.C1, out var nt);
                             if (overtimelist.Exists(x =>
-                                x.effectivedate.Value == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 1) && x.status == "approved"))
+                                x.effectivedate.Value == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 1) &&
+                                x.status == "approved"))
                             {
                                 var otfind = overtimelist.Find(x =>
                                     x.effectivedate.Value == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 1)).hrs;
@@ -7343,6 +7846,12 @@
                                 {
                                     at.C1 = attendance.C1;
                                 }
+
+
+                                if (fdate.Contains(1) || hdate.Contains(1))
+                                {
+                                    at.C1 = otfind.Value.ToString();
+                                }
                             }
                             else
                             {
@@ -7353,6 +7862,12 @@
                                 else
                                 {
                                     at.C1 = attendance.C1;
+                                }
+
+
+                                if (fdate.Contains(1) || hdate.Contains(1))
+                                {
+                                    at.C2 = "0";
                                 }
                             }
                         }
@@ -7365,7 +7880,8 @@
                         {
                             double.TryParse(attendance.C2, out var nt);
                             if (overtimelist.Exists(x =>
-                                x.effectivedate.Value == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 2) && x.status == "approved"))
+                                x.effectivedate.Value == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 2) &&
+                                x.status == "approved"))
                             {
                                 var otfind = overtimelist.Find(x =>
                                     x.effectivedate.Value == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 2)).hrs;
@@ -7378,6 +7894,11 @@
                                 {
                                     at.C2 = attendance.C2;
                                 }
+
+                                if (fdate.Contains(2) || hdate.Contains(2))
+                                {
+                                    at.C2 = otfind.Value.ToString();
+                                }
                             }
                             else
                             {
@@ -7388,6 +7909,11 @@
                                 else
                                 {
                                     at.C2 = attendance.C2;
+                                }
+
+                                if (fdate.Contains(2) || hdate.Contains(2))
+                                {
+                                    at.C2 = "0";
                                 }
                             }
                         }
@@ -7401,7 +7927,8 @@
                         {
                             double.TryParse(attendance.C3, out var nt);
                             if (overtimelist.Exists(x =>
-                                x.effectivedate.Value == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 3) && x.status == "approved"))
+                                x.effectivedate.Value == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 3) &&
+                                x.status == "approved"))
                             {
                                 var otfind = overtimelist.Find(x =>
                                     x.effectivedate.Value == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 3)).hrs;
@@ -7414,6 +7941,12 @@
                                 {
                                     at.C3 = attendance.C3;
                                 }
+
+                                if (fdate.Contains(3) || hdate.Contains(3))
+                                {
+                                    at.C3 = otfind.Value.ToString();
+                                    ;
+                                }
                             }
                             else
                             {
@@ -7424,6 +7957,11 @@
                                 else
                                 {
                                     at.C3 = attendance.C3;
+                                }
+
+                                if (fdate.Contains(3) || hdate.Contains(3))
+                                {
+                                    at.C3 = "0";
                                 }
                             }
                         }
@@ -7437,7 +7975,8 @@
                         {
                             double.TryParse(attendance.C4, out var nt);
                             if (overtimelist.Exists(x =>
-                                x.effectivedate.Value == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 4) && x.status == "approved"))
+                                x.effectivedate.Value == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 4) &&
+                                x.status == "approved"))
                             {
                                 var otfind = overtimelist.Find(x =>
                                     x.effectivedate.Value == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 4)).hrs;
@@ -7450,6 +7989,11 @@
                                 {
                                     at.C4 = attendance.C4;
                                 }
+
+                                if (fdate.Contains(4) || hdate.Contains(4))
+                                {
+                                    at.C4 = otfind.Value.ToString();
+                                }
                             }
                             else
                             {
@@ -7460,6 +8004,11 @@
                                 else
                                 {
                                     at.C4 = attendance.C4;
+                                }
+
+                                if (fdate.Contains(4) || hdate.Contains(4))
+                                {
+                                    at.C4 = "0";
                                 }
                             }
                         }
@@ -7473,7 +8022,8 @@
                         {
                             double.TryParse(attendance.C5, out var nt);
                             if (overtimelist.Exists(x =>
-                                x.effectivedate.Value == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 5) && x.status == "approved"))
+                                x.effectivedate.Value == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 5) &&
+                                x.status == "approved"))
                             {
                                 var otfind = overtimelist.Find(x =>
                                     x.effectivedate.Value == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 5)).hrs;
@@ -7486,6 +8036,11 @@
                                 {
                                     at.C5 = attendance.C5;
                                 }
+
+                                if (fdate.Contains(5) || hdate.Contains(5))
+                                {
+                                    at.C5 = otfind.Value.ToString();
+                                }
                             }
                             else
                             {
@@ -7496,6 +8051,11 @@
                                 else
                                 {
                                     at.C5 = attendance.C5;
+                                }
+
+                                if (fdate.Contains(5) || hdate.Contains(5))
+                                {
+                                    at.C5 = "0";
                                 }
                             }
                         }
@@ -7508,7 +8068,8 @@
                         {
                             double.TryParse(attendance.C6, out var nt);
                             if (overtimelist.Exists(x =>
-                                x.effectivedate.Value == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 6) && x.status == "approved"))
+                                x.effectivedate.Value == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 6) &&
+                                x.status == "approved"))
                             {
                                 var otfind = overtimelist.Find(x =>
                                     x.effectivedate.Value == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 6)).hrs;
@@ -7521,6 +8082,11 @@
                                 {
                                     at.C6 = attendance.C6;
                                 }
+
+                                if (fdate.Contains(6) || hdate.Contains(6))
+                                {
+                                    at.C6 = otfind.Value.ToString();
+                                }
                             }
                             else
                             {
@@ -7531,6 +8097,11 @@
                                 else
                                 {
                                     at.C6 = attendance.C6;
+                                }
+
+                                if (fdate.Contains(6) || hdate.Contains(6))
+                                {
+                                    at.C6 = "0";
                                 }
                             }
                         }
@@ -7544,7 +8115,8 @@
                         {
                             double.TryParse(attendance.C7, out var nt);
                             if (overtimelist.Exists(x =>
-                                x.effectivedate.Value == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 7) && x.status == "approved"))
+                                x.effectivedate.Value == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 7) &&
+                                x.status == "approved"))
                             {
                                 var otfind = overtimelist.Find(x =>
                                     x.effectivedate.Value == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 7)).hrs;
@@ -7557,6 +8129,11 @@
                                 {
                                     at.C7 = attendance.C7;
                                 }
+
+                                if (fdate.Contains(7) || hdate.Contains(7))
+                                {
+                                    at.C7 = otfind.Value.ToString();
+                                }
                             }
                             else
                             {
@@ -7567,6 +8144,11 @@
                                 else
                                 {
                                     at.C7 = attendance.C7;
+                                }
+
+                                if (fdate.Contains(7) || hdate.Contains(7))
+                                {
+                                    at.C7 = "0";
                                 }
                             }
                         }
@@ -7580,7 +8162,8 @@
                         {
                             double.TryParse(attendance.C8, out var nt);
                             if (overtimelist.Exists(x =>
-                                x.effectivedate.Value == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 8) && x.status == "approved"))
+                                x.effectivedate.Value == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 8) &&
+                                x.status == "approved"))
                             {
                                 var otfind = overtimelist.Find(x =>
                                     x.effectivedate.Value == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 8)).hrs;
@@ -7593,6 +8176,11 @@
                                 {
                                     at.C8 = attendance.C8;
                                 }
+
+                                if (fdate.Contains(8) || hdate.Contains(8))
+                                {
+                                    at.C8 = otfind.Value.ToString();
+                                }
                             }
                             else
                             {
@@ -7603,6 +8191,11 @@
                                 else
                                 {
                                     at.C8 = attendance.C8;
+                                }
+
+                                if (fdate.Contains(8) || hdate.Contains(8))
+                                {
+                                    at.C8 = "0";
                                 }
                             }
                         }
@@ -7616,7 +8209,8 @@
                         {
                             double.TryParse(attendance.C9, out var nt);
                             if (overtimelist.Exists(x =>
-                                x.effectivedate.Value == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 9) && x.status == "approved"))
+                                x.effectivedate.Value == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 9) &&
+                                x.status == "approved"))
                             {
                                 var otfind = overtimelist.Find(x =>
                                     x.effectivedate.Value == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 9)).hrs;
@@ -7629,6 +8223,11 @@
                                 {
                                     at.C9 = attendance.C9;
                                 }
+
+                                if (fdate.Contains(9) || hdate.Contains(9))
+                                {
+                                    at.C9 = otfind.Value.ToString();
+                                }
                             }
                             else
                             {
@@ -7639,6 +8238,11 @@
                                 else
                                 {
                                     at.C9 = attendance.C9;
+                                }
+
+                                if (fdate.Contains(9) || hdate.Contains(9))
+                                {
+                                    at.C9 = "0";
                                 }
                             }
                         }
@@ -7652,7 +8256,8 @@
                         {
                             double.TryParse(attendance.C10, out var nt);
                             if (overtimelist.Exists(x =>
-                                x.effectivedate.Value == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 10) && x.status == "approved"))
+                                x.effectivedate.Value == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 10) &&
+                                x.status == "approved"))
                             {
                                 var otfind = overtimelist.Find(x =>
                                     x.effectivedate.Value == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 10)).hrs;
@@ -7665,6 +8270,11 @@
                                 {
                                     at.C10 = attendance.C10;
                                 }
+
+                                if (fdate.Contains(10) || hdate.Contains(10))
+                                {
+                                    at.C10 = otfind.Value.ToString();
+                                }
                             }
                             else
                             {
@@ -7675,6 +8285,11 @@
                                 else
                                 {
                                     at.C10 = attendance.C10;
+                                }
+
+                                if (fdate.Contains(10) || hdate.Contains(10))
+                                {
+                                    at.C10 = "0";
                                 }
                             }
                         }
@@ -7688,7 +8303,8 @@
                         {
                             double.TryParse(attendance.C11, out var nt);
                             if (overtimelist.Exists(x =>
-                                x.effectivedate.Value == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 11) && x.status == "approved"))
+                                x.effectivedate.Value == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 11) &&
+                                x.status == "approved"))
                             {
                                 var otfind = overtimelist.Find(x =>
                                     x.effectivedate.Value == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 11)).hrs;
@@ -7701,6 +8317,11 @@
                                 {
                                     at.C11 = attendance.C11;
                                 }
+
+                                if (fdate.Contains(11) || hdate.Contains(11))
+                                {
+                                    at.C11 = otfind.Value.ToString();
+                                }
                             }
                             else
                             {
@@ -7711,6 +8332,11 @@
                                 else
                                 {
                                     at.C11 = attendance.C11;
+                                }
+
+                                if (fdate.Contains(11) || hdate.Contains(11))
+                                {
+                                    at.C11 = "0";
                                 }
                             }
                         }
@@ -7724,7 +8350,8 @@
                         {
                             double.TryParse(attendance.C12, out var nt);
                             if (overtimelist.Exists(x =>
-                                x.effectivedate.Value == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 12) && x.status == "approved"))
+                                x.effectivedate.Value == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 12) &&
+                                x.status == "approved"))
                             {
                                 var otfind = overtimelist.Find(x =>
                                     x.effectivedate.Value == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 12)).hrs;
@@ -7737,6 +8364,11 @@
                                 {
                                     at.C12 = attendance.C12;
                                 }
+
+                                if (fdate.Contains(12) || hdate.Contains(12))
+                                {
+                                    at.C12 = otfind.Value.ToString();
+                                }
                             }
                             else
                             {
@@ -7747,6 +8379,11 @@
                                 else
                                 {
                                     at.C12 = attendance.C12;
+                                }
+
+                                if (fdate.Contains(12) || hdate.Contains(12))
+                                {
+                                    at.C12 = "0";
                                 }
                             }
                         }
@@ -7760,7 +8397,8 @@
                         {
                             double.TryParse(attendance.C13, out var nt);
                             if (overtimelist.Exists(x =>
-                                x.effectivedate.Value == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 13) && x.status == "approved"))
+                                x.effectivedate.Value == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 13) &&
+                                x.status == "approved"))
                             {
                                 var otfind = overtimelist.Find(x =>
                                     x.effectivedate.Value == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 13)).hrs;
@@ -7773,6 +8411,11 @@
                                 {
                                     at.C13 = attendance.C13;
                                 }
+
+                                if (fdate.Contains(13) || hdate.Contains(13))
+                                {
+                                    at.C13 = otfind.Value.ToString();
+                                }
                             }
                             else
                             {
@@ -7783,6 +8426,11 @@
                                 else
                                 {
                                     at.C13 = attendance.C13;
+                                }
+
+                                if (fdate.Contains(13) || hdate.Contains(13))
+                                {
+                                    at.C13 = "0";
                                 }
                             }
                         }
@@ -7796,7 +8444,8 @@
                         {
                             double.TryParse(attendance.C14, out var nt);
                             if (overtimelist.Exists(x =>
-                                x.effectivedate.Value == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 14) && x.status == "approved"))
+                                x.effectivedate.Value == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 14) &&
+                                x.status == "approved"))
                             {
                                 var otfind = overtimelist.Find(x =>
                                     x.effectivedate.Value == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 14)).hrs;
@@ -7809,6 +8458,11 @@
                                 {
                                     at.C14 = attendance.C14;
                                 }
+
+                                if (fdate.Contains(14) || hdate.Contains(14))
+                                {
+                                    at.C14 = otfind.Value.ToString();
+                                }
                             }
                             else
                             {
@@ -7819,6 +8473,11 @@
                                 else
                                 {
                                     at.C14 = attendance.C14;
+                                }
+
+                                if (fdate.Contains(14) || hdate.Contains(14))
+                                {
+                                    at.C14 = "0";
                                 }
                             }
                         }
@@ -7832,7 +8491,8 @@
                         {
                             double.TryParse(attendance.C15, out var nt);
                             if (overtimelist.Exists(x =>
-                                x.effectivedate.Value == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 15) && x.status == "approved"))
+                                x.effectivedate.Value == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 15) &&
+                                x.status == "approved"))
                             {
                                 var otfind = overtimelist.Find(x =>
                                     x.effectivedate.Value == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 15)).hrs;
@@ -7845,6 +8505,11 @@
                                 {
                                     at.C15 = attendance.C15;
                                 }
+
+                                if (fdate.Contains(15) || hdate.Contains(15))
+                                {
+                                    at.C15 = otfind.Value.ToString();
+                                }
                             }
                             else
                             {
@@ -7855,6 +8520,11 @@
                                 else
                                 {
                                     at.C15 = attendance.C15;
+                                }
+
+                                if (fdate.Contains(15) || hdate.Contains(15))
+                                {
+                                    at.C15 = "0";
                                 }
                             }
                         }
@@ -7868,7 +8538,8 @@
                         {
                             double.TryParse(attendance.C16, out var nt);
                             if (overtimelist.Exists(x =>
-                                x.effectivedate.Value == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 16) && x.status == "approved"))
+                                x.effectivedate.Value == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 16) &&
+                                x.status == "approved"))
                             {
                                 var otfind = overtimelist.Find(x =>
                                     x.effectivedate.Value == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 16)).hrs;
@@ -7881,6 +8552,11 @@
                                 {
                                     at.C16 = attendance.C16;
                                 }
+
+                                if (fdate.Contains(16) || hdate.Contains(16))
+                                {
+                                    at.C16 = otfind.Value.ToString();
+                                }
                             }
                             else
                             {
@@ -7891,6 +8567,11 @@
                                 else
                                 {
                                     at.C16 = attendance.C16;
+                                }
+
+                                if (fdate.Contains(16) || hdate.Contains(16))
+                                {
+                                    at.C16 = "0";
                                 }
                             }
                         }
@@ -7904,7 +8585,8 @@
                         {
                             double.TryParse(attendance.C17, out var nt);
                             if (overtimelist.Exists(x =>
-                                x.effectivedate.Value == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 17) && x.status == "approved"))
+                                x.effectivedate.Value == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 17) &&
+                                x.status == "approved"))
                             {
                                 var otfind = overtimelist.Find(x =>
                                     x.effectivedate.Value == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 17)).hrs;
@@ -7917,6 +8599,11 @@
                                 {
                                     at.C17 = attendance.C17;
                                 }
+
+                                if (fdate.Contains(17) || hdate.Contains(17))
+                                {
+                                    at.C17 = otfind.Value.ToString();
+                                }
                             }
                             else
                             {
@@ -7927,6 +8614,11 @@
                                 else
                                 {
                                     at.C17 = attendance.C17;
+                                }
+
+                                if (fdate.Contains(17) || hdate.Contains(17))
+                                {
+                                    at.C17 = "0";
                                 }
                             }
                         }
@@ -7940,7 +8632,8 @@
                         {
                             double.TryParse(attendance.C18, out var nt);
                             if (overtimelist.Exists(x =>
-                                x.effectivedate.Value == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 18) && x.status == "approved"))
+                                x.effectivedate.Value == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 18) &&
+                                x.status == "approved"))
                             {
                                 var otfind = overtimelist.Find(x =>
                                     x.effectivedate.Value == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 18)).hrs;
@@ -7953,6 +8646,11 @@
                                 {
                                     at.C18 = attendance.C18;
                                 }
+
+                                if (fdate.Contains(18) || hdate.Contains(18))
+                                {
+                                    at.C18 = otfind.Value.ToString();
+                                }
                             }
                             else
                             {
@@ -7963,6 +8661,11 @@
                                 else
                                 {
                                     at.C18 = attendance.C18;
+                                }
+
+                                if (fdate.Contains(18) || hdate.Contains(18))
+                                {
+                                    at.C18 = "0";
                                 }
                             }
                         }
@@ -7976,7 +8679,8 @@
                         {
                             double.TryParse(attendance.C19, out var nt);
                             if (overtimelist.Exists(x =>
-                                x.effectivedate.Value == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 19) && x.status == "approved"))
+                                x.effectivedate.Value == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 19) &&
+                                x.status == "approved"))
                             {
                                 var otfind = overtimelist.Find(x =>
                                     x.effectivedate.Value == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 19)).hrs;
@@ -7989,6 +8693,11 @@
                                 {
                                     at.C19 = attendance.C19;
                                 }
+
+                                if (fdate.Contains(19) || hdate.Contains(19))
+                                {
+                                    at.C19 = otfind.Value.ToString();
+                                }
                             }
                             else
                             {
@@ -7999,6 +8708,11 @@
                                 else
                                 {
                                     at.C19 = attendance.C19;
+                                }
+
+                                if (fdate.Contains(19) || hdate.Contains(19))
+                                {
+                                    at.C19 = "0";
                                 }
                             }
                         }
@@ -8012,7 +8726,8 @@
                         {
                             double.TryParse(attendance.C20, out var nt);
                             if (overtimelist.Exists(x =>
-                                x.effectivedate.Value == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 20) && x.status == "approved"))
+                                x.effectivedate.Value == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 20) &&
+                                x.status == "approved"))
                             {
                                 var otfind = overtimelist.Find(x =>
                                     x.effectivedate.Value == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 20)).hrs;
@@ -8025,6 +8740,11 @@
                                 {
                                     at.C20 = attendance.C20;
                                 }
+
+                                if (fdate.Contains(20) || hdate.Contains(20))
+                                {
+                                    at.C20 = otfind.Value.ToString();
+                                }
                             }
                             else
                             {
@@ -8035,6 +8755,11 @@
                                 else
                                 {
                                     at.C20 = attendance.C20;
+                                }
+
+                                if (fdate.Contains(20) || hdate.Contains(20))
+                                {
+                                    at.C20 = "0";
                                 }
                             }
                         }
@@ -8048,7 +8773,8 @@
                         {
                             double.TryParse(attendance.C21, out var nt);
                             if (overtimelist.Exists(x =>
-                                x.effectivedate.Value == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 21) && x.status == "approved"))
+                                x.effectivedate.Value == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 21) &&
+                                x.status == "approved"))
                             {
                                 var otfind = overtimelist.Find(x =>
                                     x.effectivedate.Value == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 21)).hrs;
@@ -8061,6 +8787,11 @@
                                 {
                                     at.C21 = attendance.C21;
                                 }
+
+                                if (fdate.Contains(21) || hdate.Contains(21))
+                                {
+                                    at.C21 = otfind.Value.ToString();
+                                }
                             }
                             else
                             {
@@ -8071,6 +8802,11 @@
                                 else
                                 {
                                     at.C21 = attendance.C21;
+                                }
+
+                                if (fdate.Contains(21) || hdate.Contains(21))
+                                {
+                                    at.C21 = "0";
                                 }
                             }
                         }
@@ -8084,7 +8820,8 @@
                         {
                             double.TryParse(attendance.C22, out var nt);
                             if (overtimelist.Exists(x =>
-                                x.effectivedate.Value == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 22) && x.status == "approved"))
+                                x.effectivedate.Value == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 22) &&
+                                x.status == "approved"))
                             {
                                 var otfind = overtimelist.Find(x =>
                                     x.effectivedate.Value == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 22)).hrs;
@@ -8097,6 +8834,11 @@
                                 {
                                     at.C22 = attendance.C22;
                                 }
+
+                                if (fdate.Contains(22) || hdate.Contains(22))
+                                {
+                                    at.C22 = otfind.Value.ToString();
+                                }
                             }
                             else
                             {
@@ -8107,6 +8849,11 @@
                                 else
                                 {
                                     at.C22 = attendance.C22;
+                                }
+
+                                if (fdate.Contains(22) || hdate.Contains(22))
+                                {
+                                    at.C22 = "0";
                                 }
                             }
                         }
@@ -8120,7 +8867,8 @@
                         {
                             double.TryParse(attendance.C23, out var nt);
                             if (overtimelist.Exists(x =>
-                                x.effectivedate.Value == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 23) && x.status == "approved"))
+                                x.effectivedate.Value == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 23) &&
+                                x.status == "approved"))
                             {
                                 var otfind = overtimelist.Find(x =>
                                     x.effectivedate.Value == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 23)).hrs;
@@ -8133,6 +8881,11 @@
                                 {
                                     at.C23 = attendance.C23;
                                 }
+
+                                if (fdate.Contains(23) || hdate.Contains(23))
+                                {
+                                    at.C23 = otfind.Value.ToString();
+                                }
                             }
                             else
                             {
@@ -8143,6 +8896,11 @@
                                 else
                                 {
                                     at.C23 = attendance.C23;
+                                }
+
+                                if (fdate.Contains(23) || hdate.Contains(23))
+                                {
+                                    at.C23 = "0";
                                 }
                             }
                         }
@@ -8156,7 +8914,8 @@
                         {
                             double.TryParse(attendance.C24, out var nt);
                             if (overtimelist.Exists(x =>
-                                x.effectivedate.Value == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 24) && x.status == "approved"))
+                                x.effectivedate.Value == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 24) &&
+                                x.status == "approved"))
                             {
                                 var otfind = overtimelist.Find(x =>
                                     x.effectivedate.Value == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 24)).hrs;
@@ -8169,6 +8928,11 @@
                                 {
                                     at.C24 = attendance.C24;
                                 }
+
+                                if (fdate.Contains(24) || hdate.Contains(24))
+                                {
+                                    at.C24 = otfind.Value.ToString();
+                                }
                             }
                             else
                             {
@@ -8179,6 +8943,11 @@
                                 else
                                 {
                                     at.C24 = attendance.C24;
+                                }
+
+                                if (fdate.Contains(24) || hdate.Contains(24))
+                                {
+                                    at.C24 = "0";
                                 }
                             }
                         }
@@ -8192,7 +8961,8 @@
                         {
                             double.TryParse(attendance.C25, out var nt);
                             if (overtimelist.Exists(x =>
-                                x.effectivedate.Value == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 25) && x.status == "approved"))
+                                x.effectivedate.Value == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 25) &&
+                                x.status == "approved"))
                             {
                                 var otfind = overtimelist.Find(x =>
                                     x.effectivedate.Value == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 25)).hrs;
@@ -8205,6 +8975,11 @@
                                 {
                                     at.C25 = attendance.C25;
                                 }
+
+                                if (fdate.Contains(25) || hdate.Contains(25))
+                                {
+                                    at.C25 = otfind.Value.ToString();
+                                }
                             }
                             else
                             {
@@ -8215,6 +8990,11 @@
                                 else
                                 {
                                     at.C25 = attendance.C25;
+                                }
+
+                                if (fdate.Contains(25) || hdate.Contains(25))
+                                {
+                                    at.C25 = "0";
                                 }
                             }
                         }
@@ -8228,7 +9008,8 @@
                         {
                             double.TryParse(attendance.C26, out var nt);
                             if (overtimelist.Exists(x =>
-                                x.effectivedate.Value == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 26) && x.status == "approved"))
+                                x.effectivedate.Value == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 26) &&
+                                x.status == "approved"))
                             {
                                 var otfind = overtimelist.Find(x =>
                                     x.effectivedate.Value == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 26)).hrs;
@@ -8241,6 +9022,11 @@
                                 {
                                     at.C26 = attendance.C26;
                                 }
+
+                                if (fdate.Contains(26) || hdate.Contains(26))
+                                {
+                                    at.C26 = otfind.Value.ToString();
+                                }
                             }
                             else
                             {
@@ -8251,6 +9037,11 @@
                                 else
                                 {
                                     at.C26 = attendance.C26;
+                                }
+
+                                if (fdate.Contains(26) || hdate.Contains(26))
+                                {
+                                    at.C26 = "0";
                                 }
                             }
                         }
@@ -8264,7 +9055,8 @@
                         {
                             double.TryParse(attendance.C27, out var nt);
                             if (overtimelist.Exists(x =>
-                                x.effectivedate.Value == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 27) && x.status == "approved"))
+                                x.effectivedate.Value == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 27) &&
+                                x.status == "approved"))
                             {
                                 var otfind = overtimelist.Find(x =>
                                     x.effectivedate.Value == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 27)).hrs;
@@ -8277,6 +9069,11 @@
                                 {
                                     at.C27 = attendance.C27;
                                 }
+
+                                if (fdate.Contains(27) || hdate.Contains(27))
+                                {
+                                    at.C27 = otfind.Value.ToString();
+                                }
                             }
                             else
                             {
@@ -8287,6 +9084,11 @@
                                 else
                                 {
                                     at.C27 = attendance.C27;
+                                }
+
+                                if (fdate.Contains(27) || hdate.Contains(27))
+                                {
+                                    at.C27 = "0";
                                 }
                             }
                         }
@@ -8300,7 +9102,8 @@
                         {
                             double.TryParse(attendance.C28, out var nt);
                             if (overtimelist.Exists(x =>
-                                x.effectivedate.Value == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 28) && x.status == "approved"))
+                                x.effectivedate.Value == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 28) &&
+                                x.status == "approved"))
                             {
                                 var otfind = overtimelist.Find(x =>
                                     x.effectivedate.Value == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 28)).hrs;
@@ -8313,6 +9116,11 @@
                                 {
                                     at.C28 = attendance.C28;
                                 }
+
+                                if (fdate.Contains(28) || hdate.Contains(28))
+                                {
+                                    at.C28 = otfind.Value.ToString();
+                                }
                             }
                             else
                             {
@@ -8323,6 +9131,11 @@
                                 else
                                 {
                                     at.C28 = attendance.C28;
+                                }
+
+                                if (fdate.Contains(28) || hdate.Contains(28))
+                                {
+                                    at.C28 = "0";
                                 }
                             }
                         }
@@ -8336,7 +9149,8 @@
                         {
                             double.TryParse(attendance.C29, out var nt);
                             if (overtimelist.Exists(x =>
-                                x.effectivedate.Value == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 29) && x.status == "approved"))
+                                x.effectivedate.Value == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 29) &&
+                                x.status == "approved"))
                             {
                                 var otfind = overtimelist.Find(x =>
                                     x.effectivedate.Value == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 29)).hrs;
@@ -8349,6 +9163,11 @@
                                 {
                                     at.C29 = attendance.C29;
                                 }
+
+                                if (fdate.Contains(29) || hdate.Contains(29))
+                                {
+                                    at.C29 = otfind.Value.ToString();
+                                }
                             }
                             else
                             {
@@ -8359,6 +9178,11 @@
                                 else
                                 {
                                     at.C29 = attendance.C29;
+                                }
+
+                                if (fdate.Contains(29) || hdate.Contains(29))
+                                {
+                                    at.C29 = "0";
                                 }
                             }
                         }
@@ -8372,7 +9196,8 @@
                         {
                             double.TryParse(attendance.C30, out var nt);
                             if (overtimelist.Exists(x =>
-                                x.effectivedate.Value == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 30) && x.status == "approved"))
+                                x.effectivedate.Value == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 30) &&
+                                x.status == "approved"))
                             {
                                 var otfind = overtimelist.Find(x =>
                                     x.effectivedate.Value == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 30)).hrs;
@@ -8385,6 +9210,11 @@
                                 {
                                     at.C30 = attendance.C30;
                                 }
+
+                                if (fdate.Contains(30) || hdate.Contains(30))
+                                {
+                                    at.C30 = otfind.Value.ToString();
+                                }
                             }
                             else
                             {
@@ -8395,6 +9225,11 @@
                                 else
                                 {
                                     at.C30 = attendance.C30;
+                                }
+
+                                if (fdate.Contains(30) || hdate.Contains(30))
+                                {
+                                    at.C30 = "0";
                                 }
                             }
                         }
@@ -8408,7 +9243,8 @@
                         {
                             double.TryParse(attendance.C31, out var nt);
                             if (overtimelist.Exists(x =>
-                                x.effectivedate.Value == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 31) && x.status == "approved"))
+                                x.effectivedate.Value == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 31) &&
+                                x.status == "approved"))
                             {
                                 var otfind = overtimelist.Find(x =>
                                     x.effectivedate.Value == new DateTime(aa.TMonth.Year, aa.TMonth.Month, 31)).hrs;
@@ -8421,6 +9257,11 @@
                                 {
                                     at.C31 = attendance.C31;
                                 }
+
+                                if (fdate.Contains(31) || hdate.Contains(31))
+                                {
+                                    at.C31 = otfind.Value.ToString();
+                                }
                             }
                             else
                             {
@@ -8432,8 +9273,14 @@
                                 {
                                     at.C31 = attendance.C31;
                                 }
+
+                                if (fdate.Contains(31) || hdate.Contains(31))
+                                {
+                                    at.C31 = "0";
+                                }
                             }
                         }
+
                     if (fdate.Contains(1) && !hdate.Contains(1))
                     {
                         long.TryParse(at.C1, out var tl);
@@ -8809,7 +9656,7 @@
                     }
 
                     at.Holidays = holi;
-                    
+
 
                     if (attendance.TotalHours != 0)
                     {
@@ -10024,7 +10871,7 @@
             return this.RedirectToAction("AIndex", "Home", ids);
         }
 
-        [Authorize(Roles = "Admin,Manager")]
+        [Authorize(Roles = "Admin,Manager,logistics_officer,Admin_View")]
         public ActionResult Asearch(int? page, int? pagesize, string search)
         {
             var a = this.db.MainTimeSheets.OrderByDescending(m => m.ID);
@@ -10075,7 +10922,7 @@
             return this.View();
         }
 
-        [Authorize(Roles = "Admin,Manager,Employee")]
+        [Authorize(Roles = "Admin,Manager,Employee,logistics_officer,Admin_View")]
         public ActionResult csearch(DateTime? mtsmonth, long? csmps, string MM)
         {
             var ll = new List<Attendance>();
@@ -10223,50 +11070,50 @@
             this.pid = mainTimeSheet.Project;
             var ids = new MainTimeSheet();
             if (this.ModelState.IsValid)
-            {/*
-                var apall = this.db.approvals.ToList();
-                if (!apall.Exists(
-                    x => x.MPS_id == mainTimeSheet.ManPowerSupplier && x.P_id == mainTimeSheet.Project
-                                                                    && x.adate == mainTimeSheet.TMonth
-                                                                    && (x.status.Equals("submitted")
-                                                                        || x.status.Equals("approved"))))
-                {
-                    var te = this.db.MainTimeSheets.OrderByDescending(x => x.ID).ToList();
-                    if (te.Exists(x =>
-                        x.TMonth.Month == mainTimeSheet.TMonth.Month && x.TMonth.Year == mainTimeSheet.TMonth.Year &&
-                        x.Project == mainTimeSheet.Project && x.ManPowerSupplier == mainTimeSheet.ManPowerSupplier))
-                    {
-                        var te1 = te.Find(x =>
-                            x.TMonth.Month == mainTimeSheet.TMonth.Month && x.TMonth.Year == mainTimeSheet.TMonth.Year
-                                                                         && x.Project == mainTimeSheet.Project &&
-                                                                         x.ManPowerSupplier ==
-                                                                         mainTimeSheet.ManPowerSupplier);
-                        te1.TMonth = mainTimeSheet.TMonth;
-                        this.db.Entry(te1).State = EntityState.Modified;
-                        this.db.SaveChanges();
-                        ids = te1;
-                        return this.RedirectToAction("AIndex", "Home", ids);
-                    }
-                    else
-                    {
-                        this.db.MainTimeSheets.Add(mainTimeSheet);
-                        this.db.SaveChanges();
-                        var te2 = this.db.MainTimeSheets.ToList().OrderBy(x => x.ID).Last();
-                        ids = te2;
-                        return this.RedirectToAction("AIndex", "Home", ids);
-                    }
-                }
-                else
-                {
-                    var errr1 = "timesheet already " + apall.Find(
-                            x => x.MPS_id == mainTimeSheet.ManPowerSupplier
-                                 && x.P_id == mainTimeSheet.Project
-                                 && x.adate == mainTimeSheet.TMonth)
-                        .status;
-                    this.ModelState.AddModelError(string.Empty, errr1);
-                }*/
+            {
+                /*
+                                var apall = this.db.approvals.ToList();
+                                if (!apall.Exists(
+                                    x => x.MPS_id == mainTimeSheet.ManPowerSupplier && x.P_id == mainTimeSheet.Project
+                                                                                    && x.adate == mainTimeSheet.TMonth
+                                                                                    && (x.status.Equals("submitted")
+                                                                                        || x.status.Equals("approved"))))
+                                {
+                                    var te = this.db.MainTimeSheets.OrderByDescending(x => x.ID).ToList();
+                                    if (te.Exists(x =>
+                                        x.TMonth.Month == mainTimeSheet.TMonth.Month && x.TMonth.Year == mainTimeSheet.TMonth.Year &&
+                                        x.Project == mainTimeSheet.Project && x.ManPowerSupplier == mainTimeSheet.ManPowerSupplier))
+                                    {
+                                        var te1 = te.Find(x =>
+                                            x.TMonth.Month == mainTimeSheet.TMonth.Month && x.TMonth.Year == mainTimeSheet.TMonth.Year
+                                                                                         && x.Project == mainTimeSheet.Project &&
+                                                                                         x.ManPowerSupplier ==
+                                                                                         mainTimeSheet.ManPowerSupplier);
+                                        te1.TMonth = mainTimeSheet.TMonth;
+                                        this.db.Entry(te1).State = EntityState.Modified;
+                                        this.db.SaveChanges();
+                                        ids = te1;
+                                        return this.RedirectToAction("AIndex", "Home", ids);
+                                    }
+                                    else
+                                    {
+                                        this.db.MainTimeSheets.Add(mainTimeSheet);
+                                        this.db.SaveChanges();
+                                        var te2 = this.db.MainTimeSheets.ToList().OrderBy(x => x.ID).Last();
+                                        ids = te2;
+                                        return this.RedirectToAction("AIndex", "Home", ids);
+                                    }
+                                }
+                                else
+                                {
+                                    var errr1 = "timesheet already " + apall.Find(
+                                            x => x.MPS_id == mainTimeSheet.ManPowerSupplier
+                                                 && x.P_id == mainTimeSheet.Project
+                                                 && x.adate == mainTimeSheet.TMonth)
+                                        .status;
+                                    this.ModelState.AddModelError(string.Empty, errr1);
+                                }*/
                 return this.RedirectToAction("AIndex", "Home", mainTimeSheet);
-
             }
 
             return this.View(mainTimeSheet);
@@ -11888,7 +12735,7 @@
             return this.View(final1.OrderBy(x => x.empno).ToPagedList(1, 100));
         }
 
-        public void SendMail(string sup, string prop, DateTime da, string na)
+        public void SendMail(string sup, string prop, DateTime da, string na, int? totalhrs, int? totalemp)
         {
             var man = this.db.AspNetUsers.ToList();
             var context = new ApplicationDbContext();
@@ -11950,7 +12797,7 @@
                     Text = @"Dear Sir,
 
 Please note that I have sent a new Time-Sheet for the date " + da.ToShortDateString() + ", ManPowerSupplier: " + sup +
-                           " and Project name: " + prop + " for you to  approve / reject\n\nBest regards\n" + na +
+                           " and Project name: " + prop + " with total employees"+totalemp+" and total hrs "+totalhrs+" for you to  approve / reject\n\nBest regards\n" + na +
                            "\n\n\n\n"
                 };
 
@@ -11968,7 +12815,7 @@ Please note that I have sent a new Time-Sheet for the date " + da.ToShortDateStr
         }
 
         [Authorize(Roles = "Employee")]
-        public ActionResult approval(DateTime? mtsmonth2, long? csp2, long? csmps2)
+        public ActionResult approval(DateTime? mtsmonth2, long? csp2, long? csmps2,int? totalhrs,int? totalemp)
         {
             var final1 = new List<test>();
             if (csmps2.HasValue && csp2.HasValue && mtsmonth2.HasValue)
@@ -11984,6 +12831,9 @@ Please note that I have sent a new Time-Sheet for the date " + da.ToShortDateStr
                 var apall = this.db.approvals.ToList();
                 var i = 0;
                 var j = 0;
+                var sentmail = false;
+                var supstr = "";
+                var prostr = "";
                 foreach (var abis in ab)
                 {
                     var ass = this.db.Attendances.Where(x => x.SubMain.Equals(abis.ID)).Include(x => x.LabourMaster)
@@ -12007,11 +12857,11 @@ Please note that I have sent a new Time-Sheet for the date " + da.ToShortDateStr
                                 ap.Empno = attendance.LabourMaster.EMPNO;
                                 this.db.approvals.Add(ap);
                                 if (i == 1)
-                                    this.SendMail(
-                                        attendance.MainTimeSheet.ManPowerSupplier1.Supplier,
-                                        attendance.MainTimeSheet.ProjectList.PROJECT_NAME,
-                                        dm,
-                                        this.User.Identity.Name);
+                                {
+                                    prostr = attendance.MainTimeSheet.ProjectList.PROJECT_NAME;
+                                    supstr = attendance.MainTimeSheet.ManPowerSupplier1.Supplier;
+                                    sentmail = true;
+                                }
                                 this.db.SaveChanges();
                             }
                         }
@@ -12037,11 +12887,11 @@ Please note that I have sent a new Time-Sheet for the date " + da.ToShortDateStr
                                         aa1.status = "submitted";
                                         this.db.Entry(aa1).State = EntityState.Modified;
                                         if (j == 1)
-                                            this.SendMail(
-                                                attendance.MainTimeSheet.ManPowerSupplier1.Supplier,
-                                                attendance.MainTimeSheet.ProjectList.PROJECT_NAME,
-                                                dm,
-                                                this.User.Identity.Name);
+                                        {
+                                            prostr = attendance.MainTimeSheet.ProjectList.PROJECT_NAME;
+                                            supstr = attendance.MainTimeSheet.ManPowerSupplier1.Supplier;
+                                            sentmail = true;
+                                        }
                                         this.db.SaveChanges();
                                     }
 
@@ -12053,6 +12903,16 @@ Please note that I have sent a new Time-Sheet for the date " + da.ToShortDateStr
                                 }
                             }
                         }
+                }
+
+                if (sentmail)
+                {
+
+                    this.SendMail(
+                        supstr,
+                        prostr,
+                        dm,
+                        this.User.Identity.Name,totalemp,totalhrs);
                 }
             }
 

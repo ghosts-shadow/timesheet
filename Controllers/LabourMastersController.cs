@@ -24,6 +24,7 @@ namespace onlygodknows.Controllers
             return View(db.LabourMasters.ToList());
         }
 
+        [Authorize(Roles = "Admin,Employee,Head_of_projects,HR_manager,Project_manager,logistics_officer")]
         // GET: LabourMasters/Create
         public ActionResult Create()
         {
@@ -59,6 +60,7 @@ namespace onlygodknows.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin,Employee,Head_of_projects,HR_manager,Project_manager,logistics_officer")]
         public ActionResult Create([Bind(Include = "ID,EMPNO,ManPowerSupply,VisaSponser,Person_Name,Position,Nationality,UID_No,ResidenceVisaExpiry,LaborCardNumber,LaborCardExpiry,PassportNo,Passportexpiry,EID,EIDExpiry,Status,Photo,Encoded_Absolute_URL,Item_Type,Path,URL_Path,Workflow_Instance_ID,File_Type")] LabourMaster labourMaster)
         {
             var po = this.db.LabourMasters.ToList();

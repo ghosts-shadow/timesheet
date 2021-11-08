@@ -1,0 +1,157 @@
+﻿@using Microsoft.Ajax.Utilities
+@model PagedList.IPagedList<onlygodknows.Models.test>
+@{
+    ViewBag.Title = "details";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    int totalhrs = 0;
+    int totalemp = 0;
+}
+@if (Request.IsAuthenticated)
+{
+    
+    {
+        <div id="printarea">
+            <div>
+                <div class="row">
+                    <table class="table" style="border: 1px solid black; border-collapse: collapse;">
+                        <tr>
+                            <th>
+                                date
+                            </th>
+                            <th>
+                                manpower supplier
+                            </th>
+                            <th>
+                                project
+                            </th>
+                        </tr>
+                        <tr>
+                            <td>
+                                
+                                @this.ViewBag.mtsmonth1.ToString("dd MMMM yyyy")
+                            </td>
+                            <td>
+                                @this.ViewBag.csmps1
+                            </td>
+                            <td>
+                                @this.ViewBag.csp1
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+            <br />
+            <br />
+            <div class="row">
+                <table class="table" style="border: 1px solid black; border-collapse: collapse; ">
+                    <tr>
+                        <th>
+                            @Html.DisplayName("EMP ID")
+                        </th>
+                        <th>
+                            @Html.Label("Hours")
+                        </th>
+                        <th>
+                            @Html.DisplayName("EMP ID")
+                        </th>
+                        <th>
+                            @Html.Label("Hours")
+                        </th>
+                        <th>
+                            @Html.DisplayName("EMP ID")
+                        </th>
+                        <th>
+                            @Html.Label("Hours")
+                        </th>
+                        <th>
+                            @Html.DisplayName("EMP ID")
+                        </th>
+                        <th>
+                            @Html.Label("Hours")
+                        </th>
+                        <th>
+                            @Html.DisplayName("EMP ID")
+                        </th>
+                        <th>
+                            @Html.Label("Hours")
+                        </th>
+                        <th>
+                            @Html.DisplayName("EMP ID")
+                        </th>
+                        <th>
+                            @Html.Label("Hours")
+                        </th>
+                        <th>
+                            @Html.DisplayName("EMP ID")
+                        </th>
+                        <th>
+                            @Html.Label("Hours")
+                        </th>
+                        <th>
+                            @Html.DisplayName("EMP ID")
+                        </th>
+                        <th>
+                            @Html.Label("Hours")
+                        </th>
+                        <th>
+                            @Html.DisplayName("EMP ID")
+                        </th>
+                        <th>
+                            @Html.Label("Hours")
+                        </th>
+                        <th>
+                            @Html.DisplayName("EMP ID")
+                        </th>
+                        <th>
+                            @Html.Label("Hours")
+                        </th>
+                        @*<th>total</th>*@
+                    </tr>
+                    @{
+                        var sidetotal = 0;
+                        var i = 0;
+                        foreach (var item in Model)
+                        {
+                            totalemp++;
+                            if (i % 10 == 0)
+                            {
+                                <tr />
+
+                            }
+                            <td>
+                                @Html.DisplayFor(modelItem => item.empno)
+                            </td>
+
+                            <td>
+                                @Html.DisplayFor(modelItem => item.hours)
+                            </td>
+                            @*if ((q == 9 && i != 0)|| Model.Count <= i + 1)
+                            {
+                                int linki = ((i+1) / 10);
+                                for (int k = linki; k > 0; k--)
+                                {
+                                    <td>@k</td>
+                                }
+                                <td>
+                                    @sidetotal
+                                </td>
+                                sidetotal = 0;
+                            }*@
+                            int.TryParse(item.hours, out var hrsto);
+                            totalhrs += hrsto;
+                            sidetotal += hrsto;
+
+                            i++;
+                        }
+
+                    }
+                </table>
+            </div>
+            <br />
+            <br />
+            <br />
+            <br />
+            @Html.ActionLink("back to main", "timesheetsub",new{ subdate= this.ViewBag.mtsmonth1 })
+        </div>
+    }
+}

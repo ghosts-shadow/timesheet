@@ -18,16 +18,16 @@ namespace onlygodknows.Models
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public LabourMaster()
         {
+            this.asignprojects = new HashSet<asignproject>();
             this.Attendances = new HashSet<Attendance>();
             this.towemps = new HashSet<towemp>();
             this.Manpowerinoutforms = new HashSet<Manpowerinoutform>();
             this.overtimeemployeelists = new HashSet<overtimeemployeelist>();
-            this.asignprojects = new HashSet<asignproject>();
         }
     
         public long ID { get; set; }
         public long EMPNO { get; set; }
-        public int ManPowerSupply { get; set; }
+        public long ManPowerSupply { get; set; }
         public string VisaSponser { get; set; }
         [Display(Name = "employee name")]
         public string Person_Name { get; set; }
@@ -49,7 +49,7 @@ namespace onlygodknows.Models
         public string URL_Path { get; set; }
         public string Workflow_Instance_ID { get; set; }
         public string File_Type { get; set; }
-    
+
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Attendance> Attendances { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
@@ -60,5 +60,7 @@ namespace onlygodknows.Models
         public virtual ICollection<towemp> towemps { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<asignproject> asignprojects { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ManPowerSupplier ManPowerSupplier { get; set; }
     }
 }

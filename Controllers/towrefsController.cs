@@ -14,7 +14,7 @@ namespace onlygodknows.Controllers
     using System.IO;
     using PagedList;
 
-    [Authorize(Roles = "Admin,Employee,Head_of_projects,HR_manager,Project_manager")]
+    [Authorize(Roles = "Admin,Employee,Head_of_projects,HR_manager,Project_manager,logistics_officer,Admin_View")]
     public class towrefsController : Controller
     {
         private LogisticsSoftEntities db = new LogisticsSoftEntities();
@@ -26,7 +26,7 @@ namespace onlygodknows.Controllers
             var uid1 = this.db.AspNetUsers.Find(uid);
             var t = new List<ProjectList>();
             var towrlist = db.towrefs.ToList();
-            if (uid1.csid != 0 && !this.User.IsInRole("Admin"))
+            if (uid1.csid != 0 && !(this.User.IsInRole("Admin") || this.User.IsInRole("logistics_officer") || this.User.IsInRole("Admin_View")))
             {
                 var scid = this.db.CsPermissions.Where(x => x.CsUser == uid1.csid).ToList();
                 foreach (var i in scid) t.Add(this.db.ProjectLists.Find(i.Project));
@@ -64,7 +64,7 @@ namespace onlygodknows.Controllers
                 // }
                 // else
                 {
-                    if (!towrefs1.Exists(x=>x.Id == tw.Id))
+                    if (!towrefs1.Exists(x=>x.Id == tw.Id) && tw.towemps.Count != 0)
                     {
                         towrefs1.Add(tw);
                     }
@@ -98,7 +98,7 @@ namespace onlygodknows.Controllers
         }
 
         // GET: towrefs/Create
-        [Authorize(Roles = "HR_manager,Project_manager")]
+        [Authorize(Roles = "HR_manager,Project_manager,logistics_officer")]
         public ActionResult Create()
         {
             var prolist = db.ProjectLists.ToList();
@@ -133,13 +133,20 @@ namespace onlygodknows.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = "HR_manager,Project_manager")]
+        [Authorize(Roles = "HR_manager,Project_manager,logistics_officer")]
         public ActionResult Create([Bind(Include = "Id,refe1,mp_to,mp_from,R_no,mpcdate")]
             towref towref, HttpPostedFileBase postedFile)
         {
             var checktow = this.db.towrefs.ToList();
             if (checktow.Exists(x => x.R_no == towref.R_no || x.refe1 == towref.refe1))
             {
+                var emptrext = checktow.Find(x => x.R_no == towref.R_no || x.refe1 == towref.refe1);
+                if (emptrext.towemps.Count == 0)
+                {
+                    db.towrefs.Remove(emptrext);
+                    db.SaveChanges();
+                    goto renew;
+                }
                 ModelState.AddModelError("refe1", " already exists");
                 ModelState.AddModelError("R_no", " already exists");
                 if (towref.mp_from == towref.mp_to)
@@ -147,6 +154,7 @@ namespace onlygodknows.Controllers
                     ModelState.AddModelError("mp_to", "please select different projects");
                 }
 
+                
                 goto ass;
             }
 
@@ -155,7 +163,7 @@ namespace onlygodknows.Controllers
                 ModelState.AddModelError("mp_to", "please select different projects");
                 goto ass;
             }
-
+            renew: ;
             if (ModelState.IsValid)
             {
                 towref.mpcdate = DateTime.Now;

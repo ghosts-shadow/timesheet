@@ -13,7 +13,7 @@ using onlygodknows.Models;
 
 namespace onlygodknows.Controllers
 {
-    [Authorize(Roles = "Project_manager,Head_of_projects")]
+    [Authorize(Roles = "Admin,Head_of_projects,HR_manager,Project_manager,logistics_officer,Admin_View")]
     public class overtimeemployeelistsController : Controller
     {
         private LogisticsSoftEntities db = new LogisticsSoftEntities();
@@ -47,6 +47,7 @@ namespace onlygodknows.Controllers
         }
 
         // GET: overtimeemployeelists/Create
+        [Authorize(Roles = "Project_manager,Head_of_projects,Admin")]
         public ActionResult Create(overtimeref otr)
         {
             var data = new[]
@@ -171,6 +172,7 @@ namespace onlygodknows.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Project_manager,Head_of_projects,Admin")]
         public ActionResult Create(overtimeemployeelist[] overtimeemployeelist)
         {
             var otref2 = TempData["mydata"] as overtimeref;
@@ -476,6 +478,7 @@ namespace onlygodknows.Controllers
         }
 
         // GET: overtimeemployeelists/Edit/5
+        [Authorize(Roles = "Project_manager,Head_of_projects")]
         public ActionResult Edit(int? id)
         {
             if (id == null)
@@ -498,6 +501,7 @@ namespace onlygodknows.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Project_manager,Head_of_projects")]
         public ActionResult Edit(overtimeemployeelist overtimeemployeelist)
         {
             if (overtimeemployeelist.status.IsNullOrWhiteSpace())
@@ -535,6 +539,7 @@ namespace onlygodknows.Controllers
         // POST: overtimeemployeelists/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize(Users = "sdiniz")]
         public ActionResult DeleteConfirmed(int id)
         {
             overtimeemployeelist overtimeemployeelist = db.overtimeemployeelists.Find(id);

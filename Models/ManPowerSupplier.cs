@@ -17,6 +17,7 @@ namespace onlygodknows.Models
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public ManPowerSupplier()
         {
+            this.LabourMasters = new HashSet<LabourMaster>();
             this.MainTimeSheets = new HashSet<MainTimeSheet>();
             this.promanlists = new HashSet<promanlist>();
         }
@@ -35,6 +36,8 @@ namespace onlygodknows.Models
         public string Workflow_Instance_ID { get; set; }
         public string File_Type { get; set; }
     
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<LabourMaster> LabourMasters { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<MainTimeSheet> MainTimeSheets { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]

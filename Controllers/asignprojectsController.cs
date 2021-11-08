@@ -10,7 +10,7 @@ using onlygodknows.Models;
 
 namespace onlygodknows.Controllers
 {
-    [Authorize(Roles = "HR_assist,admin")]
+    [Authorize(Roles = "HR_assist,Admin")]
     public class asignprojectsController : Controller
     {
         private LogisticsSoftEntities db = new LogisticsSoftEntities();

@@ -4,51 +4,55 @@
   <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
-      <Diagram DiagramId="bd478eeed1fe462fa103be3ecef2e119" Name="Diagram1" ZoomLevel="34">
-        <EntityTypeShape EntityType="LogisticsSoftModel.C__MigrationHistory" Width="1.5" PointX="0.75" PointY="6.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="LogisticsSoftModel.approval" Width="1.5" PointX="10.5" PointY="17.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="LogisticsSoftModel.AspNetRole" Width="1.5" PointX="0.75" PointY="2.5" IsExpanded="true" />
-        <EntityTypeShape EntityType="LogisticsSoftModel.AspNetUserClaim" Width="1.5" PointX="5.25" PointY="1" IsExpanded="true" />
-        <EntityTypeShape EntityType="LogisticsSoftModel.AspNetUserLogin" Width="1.5" PointX="5.25" PointY="3.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="LogisticsSoftModel.AspNetUser" Width="1.5" PointX="3" PointY="1.25" IsExpanded="true" />
-        <EntityTypeShape EntityType="LogisticsSoftModel.Attendance" Width="1.5" PointX="8.25" PointY="11.625" IsExpanded="true" />
-        <EntityTypeShape EntityType="LogisticsSoftModel.AttendanceFreq" Width="1.5" PointX="2.75" PointY="6.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="LogisticsSoftModel.Camp_Details" Width="1.5" PointX="7.75" PointY="0.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="LogisticsSoftModel.CsPermission" Width="1.5" PointX="7.75" PointY="4.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="LogisticsSoftModel.Holiday" Width="1.5" PointX="9.75" PointY="0.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="LogisticsSoftModel.LabourMaster" Width="1.5" PointX="6" PointY="9.25" IsExpanded="true" />
-        <EntityTypeShape EntityType="LogisticsSoftModel.MainTimeSheet" Width="1.5" PointX="3" PointY="16.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="LogisticsSoftModel.Manpowerinoutform" Width="1.5" PointX="6" PointY="16.625" IsExpanded="true" />
-        <EntityTypeShape EntityType="LogisticsSoftModel.ManPowerSupplier" Width="1.5" PointX="0.75" PointY="10.375" IsExpanded="true" />
-        <EntityTypeShape EntityType="LogisticsSoftModel.overtimeemployeelist" Width="1.5" PointX="5.25" PointY="28.5" IsExpanded="true" />
-        <EntityTypeShape EntityType="LogisticsSoftModel.overtimeref" Width="1.5" PointX="3" PointY="28.625" IsExpanded="true" />
-        <EntityTypeShape EntityType="LogisticsSoftModel.ProjectList" Width="1.5" PointX="0.75" PointY="15.25" IsExpanded="true" />
-        <EntityTypeShape EntityType="LogisticsSoftModel.promanlist" Width="1.5" PointX="3" PointY="13.375" IsExpanded="true" />
-        <EntityTypeShape EntityType="LogisticsSoftModel.towemp" Width="1.5" PointX="5.25" PointY="34.5" IsExpanded="true" />
-        <EntityTypeShape EntityType="LogisticsSoftModel.towref" Width="1.5" PointX="3" PointY="34.25" IsExpanded="true" />
-        <EntityTypeShape EntityType="LogisticsSoftModel.trattfile" Width="1.5" PointX="5.25" PointY="38" IsExpanded="true" />
-        <EntityTypeShape EntityType="LogisticsSoftModel.username" Width="1.5" PointX="4.75" PointY="6.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="LogisticsSoftModel.ControlRoom" Width="1.5" PointX="8.75" PointY="8.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="LogisticsSoftModel.Copy_of_Attendance" Width="1.5" PointX="10.75" PointY="5.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="LogisticsSoftModel.EmpPromise" Width="1.5" PointX="11.75" PointY="0.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="LogisticsSoftModel.LogIn" Width="1.5" PointX="2.75" PointY="10.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="LogisticsSoftModel.MainShifting" Width="1.5" PointX="12.75" PointY="4.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="LogisticsSoftModel.Mnth" Width="1.5" PointX="12.75" PointY="10.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="LogisticsSoftModel.MyCompanyInfo" Width="1.5" PointX="12.75" PointY="13.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="LogisticsSoftModel.PPP" Width="1.5" PointX="13.75" PointY="0.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="LogisticsSoftModel.Pprint" Width="1.5" PointX="14.75" PointY="3.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="LogisticsSoftModel.RefsList" Width="1.5" PointX="14.75" PointY="6.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="LogisticsSoftModel.Room_Details" Width="1.5" PointX="14.75" PointY="9.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="LogisticsSoftModel.ShiftingFile" Width="1.5" PointX="14.75" PointY="12.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="LogisticsSoftModel.Switchboard_Item" Width="1.5" PointX="15.75" PointY="0.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="LogisticsSoftModel.tblUser" Width="1.5" PointX="16.75" PointY="3.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="LogisticsSoftModel.USER_ROLES" Width="1.5" PointX="16.75" PointY="10.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="LogisticsSoftModel.UserInfo" Width="1.5" PointX="16.75" PointY="13.75" IsExpanded="true" />
+      <Diagram DiagramId="d9f362e48d9b45ceb3c5535f893848e3" Name="Diagram1" ZoomLevel="60">
+        <EntityTypeShape EntityType="LogisticsSoftModel.C__MigrationHistory" Width="1.5" PointX="3.75" PointY="6.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="LogisticsSoftModel.approval" Width="1.5" PointX="10.5" PointY="19.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="LogisticsSoftModel.asignproject" Width="1.5" PointX="3" PointY="20.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="LogisticsSoftModel.AspNetRole" Width="1.5" PointX="3.75" PointY="2.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="LogisticsSoftModel.AspNetUserClaim" Width="1.5" PointX="8.25" PointY="1" IsExpanded="true" />
+        <EntityTypeShape EntityType="LogisticsSoftModel.AspNetUserLogin" Width="1.5" PointX="8.25" PointY="3.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="LogisticsSoftModel.AspNetUser" Width="1.5" PointX="6" PointY="1.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="LogisticsSoftModel.Attendance" Width="1.5" PointX="8.25" PointY="13.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="LogisticsSoftModel.AttendanceFreq" Width="1.5" PointX="5.75" PointY="6.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="LogisticsSoftModel.Camp_Details" Width="1.5" PointX="7.75" PointY="6.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="LogisticsSoftModel.CsPermission" Width="1.5" PointX="9.75" PointY="6.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="LogisticsSoftModel.Holiday" Width="1.5" PointX="10.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="LogisticsSoftModel.LabourMaster" Width="1.5" PointX="0.75" PointY="9" IsExpanded="true" />
+        <EntityTypeShape EntityType="LogisticsSoftModel.MainTimeSheet" Width="1.5" PointX="6" PointY="18.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="LogisticsSoftModel.Manpowerinoutform" Width="1.5" PointX="3" PointY="13.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="LogisticsSoftModel.ManPowerSupplier" Width="1.5" PointX="1.5" PointY="3.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="LogisticsSoftModel.overtimeemployeelist" Width="1.5" PointX="5.25" PointY="33.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="LogisticsSoftModel.overtimeref" Width="1.5" PointX="3" PointY="33.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="LogisticsSoftModel.ProjectList" Width="1.5" PointX="0.75" PointY="17" IsExpanded="true" />
+        <EntityTypeShape EntityType="LogisticsSoftModel.promanlist" Width="1.5" PointX="3" PointY="23.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="LogisticsSoftModel.towemp" Width="1.5" PointX="5.25" PointY="39.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="LogisticsSoftModel.towref" Width="1.5" PointX="3" PointY="39.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="LogisticsSoftModel.trattfile" Width="1.5" PointX="5.25" PointY="42.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="LogisticsSoftModel.username" Width="1.5" PointX="0.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="LogisticsSoftModel.ControlRoom" Width="1.5" PointX="2.75" PointY="9.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="LogisticsSoftModel.Copy_of_Attendance" Width="1.5" PointX="11.75" PointY="5.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="LogisticsSoftModel.EmpPromise" Width="1.5" PointX="12.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="LogisticsSoftModel.LogIn" Width="1.5" PointX="4.75" PointY="10.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="LogisticsSoftModel.MainShifting" Width="1.5" PointX="13.75" PointY="4.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="LogisticsSoftModel.Mnth" Width="1.5" PointX="6.75" PointY="10.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="LogisticsSoftModel.MyCompanyInfo" Width="1.5" PointX="13.75" PointY="10.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="LogisticsSoftModel.PPP" Width="1.5" PointX="8.75" PointY="10.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="LogisticsSoftModel.Pprint" Width="1.5" PointX="14.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="LogisticsSoftModel.RefsList" Width="1.5" PointX="15.75" PointY="3.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="LogisticsSoftModel.Room_Details" Width="1.5" PointX="15.75" PointY="6.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="LogisticsSoftModel.ShiftingFile" Width="1.5" PointX="15.75" PointY="9.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="LogisticsSoftModel.Switchboard_Item" Width="1.5" PointX="13.75" PointY="15.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="LogisticsSoftModel.tblUser" Width="1.5" PointX="15.75" PointY="14.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="LogisticsSoftModel.USER_ROLES" Width="1.5" PointX="16.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="LogisticsSoftModel.UserInfo" Width="1.5" PointX="17.75" PointY="3.75" IsExpanded="true" />
         <AssociationConnector Association="LogisticsSoftModel.FK_approval_Toattendance" ManuallyRouted="false" />
+        <AssociationConnector Association="LogisticsSoftModel.FK_asignproject_ToLabourMaster" ManuallyRouted="false" />
+        <AssociationConnector Association="LogisticsSoftModel.FKasignproject__ToProject" ManuallyRouted="false" />
         <AssociationConnector Association="LogisticsSoftModel.FK_dbo_AspNetUserClaims_dbo_AspNetUsers_UserId" ManuallyRouted="false" />
         <AssociationConnector Association="LogisticsSoftModel.FK_dbo_AspNetUserLogins_dbo_AspNetUsers_UserId" ManuallyRouted="false" />
         <AssociationConnector Association="LogisticsSoftModel.FK_Attendance_ToLabourMaster" ManuallyRouted="false" />
         <AssociationConnector Association="LogisticsSoftModel.FK_Attendance_ToMainTimeSheet" ManuallyRouted="false" />
+        <AssociationConnector Association="LogisticsSoftModel.FK_LabourMaster_ToManPowerSupply" ManuallyRouted="false" />
         <AssociationConnector Association="LogisticsSoftModel.FK_Manpowerinoutform_ToLabourMaster" ManuallyRouted="false" />
         <AssociationConnector Association="LogisticsSoftModel.FK_overtimeemp_Tolab" ManuallyRouted="false" />
         <AssociationConnector Association="LogisticsSoftModel.FK_towemp_Tolab" ManuallyRouted="false" />
@@ -64,9 +68,6 @@
         <AssociationConnector Association="LogisticsSoftModel.FK_towemp_Toref" ManuallyRouted="false" />
         <AssociationConnector Association="LogisticsSoftModel.FK_towemp_To" ManuallyRouted="false" />
         <AssociationConnector Association="LogisticsSoftModel.AspNetUserRoles" ManuallyRouted="false" />
-        <EntityTypeShape EntityType="LogisticsSoftModel.asignproject" Width="1.5" PointX="3" PointY="23.5" />
-        <AssociationConnector Association="LogisticsSoftModel.FKasignproject__ToProject" />
-        <AssociationConnector Association="LogisticsSoftModel.FK_asignproject_ToLabourMaster" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

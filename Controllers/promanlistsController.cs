@@ -10,7 +10,7 @@ using onlygodknows.Models;
 
 namespace onlygodknows.Controllers
 {
-    [Authorize(Roles = "admin")]
+    [Authorize(Roles = "Admin")]
     public class promanlistsController : Controller
     {
         private LogisticsSoftEntities db = new LogisticsSoftEntities();

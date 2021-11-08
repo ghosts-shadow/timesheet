@@ -8,7 +8,7 @@
     using System.Web.Mvc;
 
     using onlygodknows.Models;
-    [Authorize(Roles = "Admin")]
+    [Authorize(Roles = "Admin,logistics_officer")]
     public class HolidaysController : Controller
     {
         private readonly LogisticsSoftEntities db = new LogisticsSoftEntities();

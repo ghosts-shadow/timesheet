@@ -15,7 +15,7 @@ namespace onlygodknows.Controllers
 {
     using OfficeOpenXml;
 
-    [Authorize(Roles = "Admin,Employee,Head_of_projects,HR_manager,Project_manager")]
+    [Authorize(Roles = "Admin,Employee,Head_of_projects,HR_manager,Project_manager,logistics_officer,Admin_View")]
     public class towempsController : Controller
     {
         private LogisticsSoftEntities db = new LogisticsSoftEntities();
@@ -75,7 +75,7 @@ namespace onlygodknows.Controllers
         }
 
         // GET: towemps/Create
-        [Authorize(Roles = "HR_manager,Project_manager")]
+        [Authorize(Roles = "HR_manager,Project_manager,logistics_officer")]
         public ActionResult Create(towref tw1)
         {
             ViewBag.lab_no = new SelectList(db.LabourMasters.Where(x => x.EMPNO > 3).OrderBy(x => x.EMPNO), "ID",
@@ -86,6 +86,7 @@ namespace onlygodknows.Controllers
                 "Position");
             ViewBag.lab_mps = new SelectList(db.LabourMasters.Where(x => x.EMPNO > 3).OrderBy(x => x.EMPNO), "ID",
                 "ManPowerSupply");
+            ViewBag.lab_mpslist = new SelectList(db.ManPowerSuppliers, "ID", "Supplier");
             var tr = this.db.towrefs.Find(tw1.Id);
             ViewBag.tw = tr.Id;
             ViewBag.form = tr.ProjectList1.PROJECT_NAME;
@@ -102,7 +103,7 @@ namespace onlygodknows.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = "HR_manager,Project_manager")]
+        [Authorize(Roles = "HR_manager,Project_manager,logistics_officer")]
         public ActionResult Create([Bind(Include = "Id,lab_no,effectivedate,rowref")]
             towemp[] towemp)
         {
@@ -147,6 +148,7 @@ namespace onlygodknows.Controllers
         }
 
         // GET: towemps/Edit/5
+        [Authorize(Roles = "HR_manager,Project_manager,logistics_officer")]
         public ActionResult Edit(int? id)
         {
             if (id == null)
@@ -170,6 +172,7 @@ namespace onlygodknows.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "HR_manager,Project_manager,logistics_officer")]
         public ActionResult Edit([Bind(Include = "Id,lab_no,effectivedate,rowref")]
             towemp towemp)
         {
@@ -186,6 +189,7 @@ namespace onlygodknows.Controllers
         }
 
         // GET: towemps/Delete/5
+        [Authorize(Roles = "HR_manager,Project_manager,logistics_officer")]
         public ActionResult Delete(int? id)
         {
             if (id == null)
@@ -205,6 +209,7 @@ namespace onlygodknows.Controllers
         // POST: towemps/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "HR_manager,Project_manager,logistics_officer")]
         public ActionResult DeleteConfirmed(int id)
         {
             towemp towemp = db.towemps.Find(id);
@@ -460,7 +465,7 @@ namespace onlygodknows.Controllers
                            "has been rejected for " + msg + "\n\n\n" +
                            "http://cstimesheet.ddns.net:6333/timesheet/towrefs" + "\n\n\n" + "Thanks Best Regards, "
                 };
-                if (message.To != null)
+                if (message.To.Count != 0)
                 {
                     using (var client = new SmtpClient())
                     {

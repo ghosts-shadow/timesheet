@@ -11,12 +11,12 @@ using onlygodknows.Models;
 
 namespace onlygodknows.Controllers
 {
-    [Authorize(Roles = "Project_manager,Head_of_projects")]
     public class overtimerefsController : Controller
     {
         private LogisticsSoftEntities db = new LogisticsSoftEntities();
 
         // GET: overtimerefs
+        [Authorize(Roles = "Admin,Head_of_projects,HR_manager,Project_manager,logistics_officer,Admin_View")]
         public ActionResult Index()
         {
             var uid = this.User.Identity.GetUserId();
@@ -55,6 +55,7 @@ namespace onlygodknows.Controllers
             return View(overtimeref);
         }
 
+        [Authorize(Roles = "Project_manager,Head_of_projects,Admin")]
         // GET: overtimerefs/Create
         public ActionResult Create()
         {
@@ -82,6 +83,7 @@ namespace onlygodknows.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Project_manager,Head_of_projects,Admin")]
         public ActionResult Create(overtimeref overtimeref)
         {
             var uid = this.User.Identity.GetUserId();
@@ -121,6 +123,7 @@ namespace onlygodknows.Controllers
         }
 
         // GET: overtimerefs/Edit/5
+        [Authorize(Roles = "Project_manager,Head_of_projects")]
         public ActionResult Edit(int? id)
         {
             if (id == null)
@@ -143,6 +146,7 @@ namespace onlygodknows.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Project_manager,Head_of_projects")]
         public ActionResult Edit([Bind(Include = "Id,overtimedate,overtimeref1,overtimepro")]
             overtimeref overtimeref)
         {
@@ -158,6 +162,7 @@ namespace onlygodknows.Controllers
         }
 
         // GET: overtimerefs/Delete/5
+        [Authorize(Roles = "Project_manager,Head_of_projects")]
         public ActionResult Delete(int? id)
         {
             if (id == null)

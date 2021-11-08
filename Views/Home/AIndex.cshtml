@@ -439,54 +439,7 @@
                 @Html.DisplayFor(modelItem => item.LabourMaster.Position)
             </td>
             <td>
-                @switch (item.LabourMaster.ManPowerSupply)
-                {
-                    case 1:
-                        <p>
-                            CITISCAPE
-                        </p>
-                        break;
-                    case 2:
-                        <p>
-                            CALIBERS
-                        </p>
-                        break;
-                    case 3:
-                        <p>
-                            SAWAEED
-                        </p>
-                        break;
-                    case 4:
-                        <p>
-                            TAKATOF
-                        </p>
-                        break;
-                    case 5:
-                        <p>
-                            Shorook
-                        </p>
-                        break;
-                    case 6:
-                        <p>
-                            ARABTEC
-                        </p>
-                        break;
-                    case 7:
-                        <p>
-                            Fibrex
-                        </p>
-                        break;
-                    case 8:
-                        <p>
-                            GROVE
-                        </p>
-                        break;
-                    case 9:
-                        <p>
-                            COMMON
-                        </p>
-                        break;
-                }
+                @Html.DisplayFor(modelItem => item.LabourMaster.ManPowerSupplier.Supplier)
             </td>
             <td id="d1_1_@ae">
                 @Html.DisplayFor(modelItem => item.C1)

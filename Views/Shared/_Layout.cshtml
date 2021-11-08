@@ -168,7 +168,7 @@
                     @if (User.Identity.IsAuthenticated)
                     {
                         <li class="dropdown">
-                            @if (User.IsInRole("Admin"))
+                            @if (User.IsInRole("Admin") || User.IsInRole("logistics_officer"))
                             {
                                 <a class="dropdown-toggle" data-toggle="dropdown" href="#">add users/Labors/holidays/in&out</a>
                                 <ul class="dropdown-menu" style="background-color: #2c6faa; color: white">
@@ -177,6 +177,7 @@
                                     <li>@Html.ActionLink("add new holiday", "Create", "Holidays")</li>
                                     <li>@Html.ActionLink("add in&out", "Create", "Manpowerinoutforms")</li>
                                     <li>@Html.ActionLink("add supplier to project", "Create", "promanlists")</li>
+                                    <li>@Html.ActionLink("add manpower supplier", "Create", "ManPowerSuppliers")</li>
                                 </ul>
                             }
                         </li>
@@ -191,13 +192,16 @@
                             }
                         </li>
                         <li class="dropdown">
-                            @if (User.IsInRole("Admin") || User.IsInRole("Employee"))
+                            @if (User.IsInRole("Admin") || User.IsInRole("Employee") || User.IsInRole("logistics_officer") || User.IsInRole("Admin_View"))
                             {
                                 <a class="dropdown-toggle" data-toggle="dropdown" href="#">search/Print/submit</a>
                                 <ul class="dropdown-menu" style="background-color: #2c6faa; color: white">
                                     <li>@Html.ActionLink("search by month", "csearch", "Home")</li>
-                                    <li>@Html.ActionLink("Print/Submit Timesheet", "download", "Home")</li>
-                                    @if (User.IsInRole("Admin"))
+                                    @if (!(User.IsInRole("logistics_officer") || User.IsInRole("Admin_View")))
+                                    {
+                                        <li>@Html.ActionLink("Print/Submit Timesheet", "download", "Home")</li>
+                                    }
+                                    @if (User.IsInRole("Admin") || User.IsInRole("logistics_officer") || User.IsInRole("Admin_View"))
                                     {
                                         <li>@Html.ActionLink("search by employee", "Asearch", "Home")</li>
                                     }
@@ -205,7 +209,7 @@
                             }
                         </li>
                         <li class="dropdown">
-                            @if (User.IsInRole("Project_manager") || User.IsInRole("Admin") || User.IsInRole("HR_manager"))
+                            @if (User.IsInRole("Project_manager") || User.IsInRole("Admin") || User.IsInRole("HR_manager") || User.IsInRole("logistics_officer") || User.IsInRole("Admin_View"))
                             {
                                 <a class="dropdown-toggle" data-toggle="dropdown" href="#">approvals</a>
                                 <ul class="dropdown-menu" style="background-color: #2c6faa; color: white">
@@ -219,7 +223,7 @@
                                 </ul>
                             }
                         </li>
-                        if (User.IsInRole("Project_manager") || User.IsInRole("Admin") || User.IsInRole("HR_manager"))
+                        if (User.IsInRole("Project_manager") || User.IsInRole("Admin") || User.IsInRole("HR_manager") || User.IsInRole("logistics_officer") || User.IsInRole("Admin_View"))
                         {
                             <li>@Html.ActionLink("summary", "Index", "summary")</li>
                             <li style="position: absolute; left: 77%; top: 10px; display: none">
@@ -244,7 +248,7 @@
                         {
                             <li>@Html.ActionLink("Add new Time-sheet", "MCreate", "Home")</li>
                         }
-                        if (User.Identity.Name == "sdiniz" || User.Identity.Name == "sherif" || User.Identity.Name == "Hiba" || User.Identity.Name == "ameer" || User.Identity.Name == "amohamed" || User.Identity.Name == "yahya")
+                        if (User.Identity.Name == "sdiniz" || User.Identity.Name == "sherif" || User.Identity.Name == "Hiba" || User.Identity.Name == "ameer" || User.Identity.Name == "amohamed" || User.Identity.Name == "yahya" || User.Identity.Name == "mkhairy" || User.Identity.Name == "znader")
                         {
                             <li>@Html.ActionLink("timesheet submission ", "timesheetsub", "Projman")</li>
                         }

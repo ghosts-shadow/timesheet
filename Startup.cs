@@ -104,6 +104,19 @@ namespace onlygodknows
                 roleManager.Create(role);
 
             }
+            if (!roleManager.RoleExists("logistics_officer"))
+            {
+                var role = new Microsoft.AspNet.Identity.EntityFramework.IdentityRole();
+                role.Name = "logistics_officer";
+                roleManager.Create(role);
+
+            }
+            if (!roleManager.RoleExists("Admin_View"))
+            {
+                var role = new Microsoft.AspNet.Identity.EntityFramework.IdentityRole();
+                role.Name = "Admin_View";
+                roleManager.Create(role);
+            }
         }
     }
 }

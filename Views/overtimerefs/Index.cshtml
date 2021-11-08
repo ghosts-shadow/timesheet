@@ -12,11 +12,10 @@
         if (User.IsInRole("Project_manager"))
         {
             <h2>overtime request</h2>
-            <input type="submit" value="Create new" class="btn btn-default" onclick="window.location.href = '@Url.Action("Create", "overtimerefs")'" />
+            <input type="submit" value="Create new" class="btn btn-default" onclick="window.location.href = '@Url.Action("Create", "overtimerefs")'"/>
         }
-        else if(User.IsInRole("Head_of_projects"))
+        else if (User.IsInRole("Head_of_projects"))
         {
-            
             <h2>overtime approval</h2>
         }
         else
@@ -36,67 +35,87 @@
         <th>
             @Html.DisplayNameFor(model => model.ProjectList.PROJECT_NAME)
         </th>
+        <th>
+            @Html.DisplayNameFor(model => model.overtimeemployeelists.First().status)
+        </th>
         <th></th>
     </tr>
 
-@foreach (var item in Model) {
-<tr>
-    <td>
-        @Html.DisplayFor(modelItem => item.overtimedate)
-    </td>
-    <td>
-        @Html.DisplayFor(modelItem => item.overtimeref1)
-    </td>
-    <td>
-        @Html.DisplayFor(modelItem => item.ProjectList.PROJECT_NAME)
-    </td>
-    @if (User.IsInRole("Head_of_projects"))
+    @foreach (var item in Model)
     {
-
-        if (item.overtimeemployeelists.Count != 0 && item.overtimeemployeelists.First().hopAP == null)
-        {
+        <tr>
             <td>
-                <div class="row">
-                    <div class="col-md-2">
-                        <input type="submit" value="Approve" class="btn btn-default" style="color: green;" onclick="window.location.href = '@Url.Action("aprestatus", "overtimeemployeelists", new { tr = item.Id, message = "approved" })'" />
-                    </div>
-                    <div class="col-md-6">
-                        @using (Html.BeginForm("aprestatus", "overtimeemployeelists", new { tr = item.Id }))
-                        {
-                            <div class="col-md-3">
-                                <input type="submit" class="btn btn-default" value="Reject" style="color: red;" />
-                            </div>
-                            <div class="col-md-7">
-                                <p>
-                                    <input type="text" name="message" required class="form-control" placeholder="comment" />
-                                </p>
-                            </div>
-                        }
-                    </div>
-                    <div class="col-md-2">@Html.ActionLink("Details", "Index", "overtimeemployeelists", new { id = item.Id }, new { id = item.Id });</div>
-                </div>
+                @Html.DisplayFor(modelItem => item.overtimedate)
             </td>
-        }
-        else
-        {<td>@Html.ActionLink("Details", "Index", "overtimeemployeelists", new { id = item.Id }, new { id = item.Id });</td>
+            <td>
+                @Html.DisplayFor(modelItem => item.overtimeref1)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ProjectList.PROJECT_NAME)
+            </td>
+            @if (item.overtimeemployeelists.Count != 0)
+            {
+                <td>@Html.DisplayFor(modelItem => item.overtimeemployeelists.First().status)</td>
+            }
+            else
+            {
+                <td></td>
+            }
+            @if (User.IsInRole("Head_of_projects"))
+            {
+                if (item.overtimeemployeelists.Count != 0)
+                {
+                   
+                    if (item.overtimeemployeelists.First().hopAP == null)
+                    {
+                        <td>
+                            <div class="row">
+                                <div class="col-md-2">
+                                    <input type="submit" value="Approve" class="btn btn-default" style="color: green;" onclick="window.location.href = '@Url.Action("aprestatus", "overtimeemployeelists", new {tr = item.Id, message = "approved"})'"/>
+                                </div>
+                                <div class="col-md-6">
+                                    @using (Html.BeginForm("aprestatus", "overtimeemployeelists", new {tr = item.Id}))
+                                    {
+                                        <div class="col-md-3">
+                                            <input type="submit" class="btn btn-default" value="Reject" style="color: red;"/>
+                                        </div>
+                                        <div class="col-md-7">
+                                            <p>
+                                                <input type="text" name="message" required class="form-control" placeholder="comment"/>
+                                            </p>
+                                        </div>
+                                    }
+                                </div>
+                                <div class="col-md-2">@Html.ActionLink("Details", "Index", "overtimeemployeelists", new {id = item.Id}, new {id = item.Id})</div>
+                            </div>
+                        </td>
+                    }
+                    else
+                    {
+                        <td></td>
+                    }
+                }
+                else
+                {
+                    <td>@Html.ActionLink("delete", "Delete", "overtimerefs", new { id = item.Id }, new { id = item.Id })</td>
+                }
+            }
+            else
+            {
+                if (item.overtimeemployeelists.Count != 0)
+                {
+                    <td>@Html.ActionLink("Details", "Index", "overtimeemployeelists", new {id = item.Id}, new {id = item.Id})</td>
+                }
+                else if (item.overtimeemployeelists.Count == 0)
+                {
+                    <td>@Html.ActionLink("delete", "Delete", "overtimerefs", new {id = item.Id}, new {id = item.Id})</td>
+                }
+                else
+                {
+                    <td></td>
+                }
+            }
+        </tr>
     }
-}
-else
-{
-    if (item.overtimeemployeelists.Count != 0)
-    {
-        <td>@Html.ActionLink("Details", "Index", "overtimeemployeelists", new { id = item.Id }, new { id = item.Id })</td>
-    }
-    else if (item.overtimeemployeelists.Count == 0)
-    {
-        <td>@Html.ActionLink("delete", "Delete", "overtimerefs", new { id = item.Id }, new { id = item.Id })</td>
-    }
-    else
-    {
-        <td></td>
-    }
-}
-</tr>
-}
 
 </table>

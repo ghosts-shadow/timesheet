@@ -10,7 +10,7 @@ using onlygodknows.Models;
 
 namespace onlygodknows.Controllers
 {
-    [Authorize]
+    [Authorize(Roles = "Admin,Employee,Head_of_projects,HR_manager,Project_manager,logistics_officer,Admin_View")]
     public class ManpowerinoutformsController : Controller
     {
         private LogisticsSoftEntities db = new LogisticsSoftEntities();
@@ -38,6 +38,7 @@ namespace onlygodknows.Controllers
         }
 
         // GET: Manpowerinoutforms/Create
+        [Authorize(Roles = "Admin,Employee,Head_of_projects,HR_manager,Project_manager,logistics_officer")]
         public ActionResult Create()
         {
             ViewBag.camp = new List<SelectListItem>()
@@ -65,6 +66,7 @@ namespace onlygodknows.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin,Employee,Head_of_projects,HR_manager,Project_manager,logistics_officer")]
         public ActionResult Create( Manpowerinoutform manpowerinoutform)
         {
             ViewBag.camp = new List<SelectListItem>()
@@ -113,6 +115,7 @@ namespace onlygodknows.Controllers
         }
 
         // GET: Manpowerinoutforms/Edit/5
+        [Authorize(Roles = "Admin,Employee,Head_of_projects,HR_manager,Project_manager")]
         public ActionResult Edit(int? id)
         {
             if (id == null)
@@ -142,6 +145,7 @@ namespace onlygodknows.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin,Employee,Head_of_projects,HR_manager,Project_manager")]
         public ActionResult Edit( Manpowerinoutform manpowerinoutform)
         {
             if (ModelState.IsValid)
@@ -163,6 +167,7 @@ namespace onlygodknows.Controllers
             return View(manpowerinoutform);
         }
 
+        [Authorize(Roles = "Admin,Employee,Head_of_projects,HR_manager,Project_manager")]
         // GET: Manpowerinoutforms/Delete/5
         public ActionResult Delete(int? id)
         {
@@ -180,6 +185,7 @@ namespace onlygodknows.Controllers
 
         // POST: Manpowerinoutforms/Delete/5
         [HttpPost, ActionName("Delete")]
+        [Authorize(Roles = "Admin,Employee,Head_of_projects,HR_manager,Project_manager")]
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {

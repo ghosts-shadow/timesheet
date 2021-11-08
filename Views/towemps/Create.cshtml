@@ -10,12 +10,29 @@
 <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
 <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
+
+@if (User.Identity.IsAuthenticated)
+{
+    if (User.Identity.Name == "stest" || User.Identity.Name.Contains("sneden") || User.Identity.Name.Contains("sdiniz"))
+    {
+        <script>
+            $(function () {
+                $("#effectivedate0").datepicker();
+            });
+        </script>
+    }
+    else
+    {
+        <script>
+            $(function () {
+                $("#effectivedate0").datepicker({
+                    minDate: 0
+                });
+            });
+        </script>
+    }
+}
 <script>
-    $(function () {
-        $("#effectivedate0").datepicker({
-            minDate: 0
-        });
-    });
     var counter = 1;
     var number = 0;
 
@@ -34,10 +51,11 @@
                     clone.find('#effectivedate' + 0).attr('name', 'towemp[' + number + '].effectivedate');
                     clone.find('#effectivedate' + 0).attr('id', 'effectivedate' + number);
                     clone.find('#lab_no0').attr('name', 'towemp[' + number + '].lab_no');
-                    clone.find('#lab_no0').attr('id', 'lab_no'+ number);
+                    clone.find('#lab_no0').attr('id', 'lab_no' + number);
                     clone.find('#lab_name0').attr('id', 'lab_name' + number);
                     clone.find('#lab_position0').attr('id', 'lab_position' + number);
                     clone.find('#lab_mps0').attr('id', 'lab_mps' + number);
+                    clone.find('#lab_mpslist0').attr('id', 'lab_mpslist' + number);
                     clone.find('#lab_name0_1').attr('id', 'lab_name' + number + '_1');
                     clone.find('#lab_position0_2').attr('id', 'lab_position' + number + '_2');
                     clone.find('#lab_mps0_3').attr('id', 'lab_mps' + number + '_3');
@@ -80,7 +98,7 @@
                     (id - 1) +
                     "\"/> ");
         }
-        
+
     }
 
     function trial(id) {
@@ -98,35 +116,12 @@
         $('#lab_name' + id1).val(x).change();
         $('#lab_position' + id1).val(x).change();
         $('#lab_mps' + id1).val(x).change();
-        $('#lab_name' + id1 + '_1').val($('#lab_name' + id1 +' :selected').text());
+        var z = $('#lab_mps' + id1 + ' :selected').text();
+        $('#lab_mpslist' + id1).val(z).change();
+        $('#lab_name' + id1 + '_1').val($('#lab_name' + id1 + ' :selected').text());
         $('#lab_position' + id1 + '_2').val($('#lab_position' + id1 + ' :selected').text());
-        var a = parseInt($('#lab_mps' + id1 + ' :selected').text());
-        switch (a) {
-        case 1:
-                $('#lab_mps' + id1 + '_3').val("CITISCAPE")  ;
-            break;
-        case 2:
-                $('#lab_mps' + id1 + '_3').val("CALIBERS") ;
-            break;
-        case 3:
-                $('#lab_mps' + id1 + '_3').val("SAWAEED")  ;
-            break;
-        case 4:
-                $('#lab_mps' + id1 + '_3').val("TAKATOF")  ;
-            break;
-        case 5:
-                $('#lab_mps' + id1 + '_3').val("Shorook")  ;
-            break;
-        case 6:
-                $('#lab_mps' + id1 + '_3').val("ARABTEC")  ;
-            break;
-        case 7:
-                $('#lab_mps' + id1 + '_3').val("Fibrex")  ;
-            break;
-        case 8:
-                $('#lab_mps' + id1 + '_3').val("GROVE")  ;
-            break;
-        }
+        var a = $('#lab_mpslist' + id1 + ' :selected').text();
+        $('#lab_mps' + id1 + '_3').val(a);
 
     }
 </script>
@@ -139,6 +134,7 @@
         var y = document.getElementById('lab_name' + id1);
         var z = document.getElementById('lab_position' + id1);
         var m = document.getElementById('lab_mps' + id1);
+        var n = document.getElementById('lab_mpslist' + id1);
         var y1 = document.getElementById('lab_name' + id1 + '_1');
         var z1 = document.getElementById('lab_position' + id1 + '_2');
         var m1 = document.getElementById('lab_mps' + id1 + '_3');
@@ -147,33 +143,7 @@
         m.value = x.value;
         y1.value = y.options[y.value].text;
         z1.value = z.options[z.value].text;
-        var a = parseInt(m.options[m.value].text);
-        switch (a) {
-        case 1:
-            m1.value = "CITISCAPE";
-            break;
-        case 2:
-            m1.value = "CALIBERS";
-            break;
-        case 3:
-            m1.value = "SAWAEED";
-            break;
-        case 4:
-            m1.value = "TAKATOF";
-            break;
-        case 5:
-            m1.value = "Shorook";
-            break;
-        case 6:
-            m1.value = "ARABTEC";
-            break;
-        case 7:
-            m1.value = "Fibrex";
-            break;
-        case 8:
-            m1.value = "GROVE";
-            break;
-        }
+        m1.value = n.options[m.value].text;
     }
 </script>
 @using (Html.BeginForm())
@@ -224,23 +194,24 @@
         <thead style="text-transform: capitalize">
         <th> employee no</th>
         <th>effective date</th>
-        <th ></th>
+        <th></th>
         </thead>
         <tbody>
             <tr id="tr0">
                 <td>
-                    @Html.DropDownList("towemp[0].lab_no", new List<SelectListItem>(ViewBag.lab_no), htmlAttributes: new { @class = "form-control" ,@id="lab_no0", @onchange = "trial(this.id)" })
-                    @Html.DropDownList("a", new List<SelectListItem>(ViewBag.lab_name), htmlAttributes: new { @class = "form-control" ,@id="lab_name0", @style = "display: none" })
-                    @Html.DropDownList("b", new List<SelectListItem>(ViewBag.lab_position), htmlAttributes: new { @class = "form-control" ,@id="lab_position0", @style = "display: none" })
-                    @Html.DropDownList("c", new List<SelectListItem>(ViewBag.lab_mps), htmlAttributes: new { @class = "form-control" ,@id="lab_mps0", @style = "display: none" })
-                    <input type="text" id="lab_name0_1" disabled="disabled"/>
-                    <input type="text" id="lab_position0_2" disabled="disabled"/>
-                    <input type="text" id="lab_mps0_3" disabled="disabled"/>
+                    @Html.DropDownList("towemp[0].lab_no", new List<SelectListItem>(ViewBag.lab_no), htmlAttributes: new { @class = "form-control", @id = "lab_no0", @onchange = "trial(this.id)" })
+                    @Html.DropDownList("a", new List<SelectListItem>(ViewBag.lab_name), htmlAttributes: new { @class = "form-control", @id = "lab_name0", @style = "display: none" })
+                    @Html.DropDownList("b", new List<SelectListItem>(ViewBag.lab_position), htmlAttributes: new { @class = "form-control", @id = "lab_position0", @style = "display: none" })
+                    @Html.DropDownList("c", new List<SelectListItem>(ViewBag.lab_mps), htmlAttributes: new { @class = "form-control", @id = "lab_mps0", @style = "display: none" })
+                    @Html.DropDownList("c", new List<SelectListItem>(ViewBag.lab_mpslist), htmlAttributes: new { @class = "form-control", @id = "lab_mpslist0", @style = "display: none" })
+                    <input type="text" id="lab_name0_1" disabled="disabled" />
+                    <input type="text" id="lab_position0_2" disabled="disabled" />
+                    <input type="text" id="lab_mps0_3" disabled="disabled" />
                     @Html.ValidationMessageFor(model => model.lab_no, "", new { @class = "text-danger" })
                 </td>
                 <td>
-                    <input class="form-control "  id="effectivedate0" name="towemp[0].effectivedate" value="" type="text" required="true"  readonly="readonly">
-                    @Html.ValidationMessageFor(model => model.effectivedate, "", new { @class = "text-danger"})
+                    <input class="form-control " id="effectivedate0" name="towemp[0].effectivedate" value="" type="text" required="true" readonly="readonly">
+                    @Html.ValidationMessageFor(model => model.effectivedate, "", new { @class = "text-danger" })
                 </td>
                 <td id="re"></td>
             </tr>
@@ -248,6 +219,6 @@
         </tbody>
     </table>
     <div class="col-sm-2">
-        <input type="button" class="btn btn-default" value="add" id="add" name="add"  />
+        <input type="button" class="btn btn-default" value="add" id="add" name="add" />
     </div>
 }

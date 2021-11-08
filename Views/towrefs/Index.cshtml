@@ -32,7 +32,7 @@
     <p>
         @if (User.Identity.IsAuthenticated)
         {
-            if (User.IsInRole("Project_manager") || User.IsInRole("HR_manager"))
+            if (User.IsInRole("Project_manager") || User.IsInRole("HR_manager") || User.IsInRole("logistics_officer"))
             {
                 <input type="submit" value="Create new" class="btn btn-default" onclick="window.location.href = '@Url.Action("Create", "towrefs")'" />
             }
