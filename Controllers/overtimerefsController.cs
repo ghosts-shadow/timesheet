@@ -34,8 +34,17 @@ namespace onlygodknows.Controllers
                 t = this.db.ProjectLists.ToList();
             }
 
-            var overtimerefs = db.overtimerefs.Include(o => o.ProjectList);
-            return View(overtimerefs.ToList());
+            var overtimerefs = new List<overtimeref>();
+            foreach (var list in t)
+            {
+                var ov = db.overtimerefs.Where(x => x.overtimepro == list.ID).ToList();
+                var reap = ov.FindAll(x =>x.overtimeemployeelists.Count > 0 && x.overtimeemployeelists.First().status == null);
+                if (reap != null && reap.Any())
+                {
+                    overtimerefs.AddRange(reap);
+                }
+            }
+            return View(overtimerefs.OrderByDescending(x=>x.overtimedate).ToList());
         }
 
         // GET: overtimerefs/Details/5

@@ -18,6 +18,8 @@ namespace onlygodknows.Models
         public string hours { get; set; }
         public DateTime date { get; set; }
         public string status { get; set; }
+        public string name { get; set; }
+        public string position { get; set; }
 
         public string approved_by { get; set; }
 

@@ -351,6 +351,35 @@ namespace onlygodknows.Controllers
             return RedirectToAction("Index", "overtimerefs");
         }
 
+        public ActionResult approveall()
+        {
+            var notapprovedlist = db.overtimeemployeelists.Where(x => x.status == null).ToList();
+            var pertr = new int?();
+            pertr = null;
+            foreach (var nota in notapprovedlist)
+            {
+                var te = new overtimeemployeelist();
+                te = nota;
+                if (pertr == null)
+                {
+                    pertr = te.otref;
+                    if (pertr != null) SendMail("", "approved", pertr.Value);
+                }
+                else if(pertr != te.otref)
+                {
+                    pertr = te.otref;
+                    if (pertr != null) SendMail("", "approved", pertr.Value);
+                }
+                te.status = "approved";
+                te.hopAP = this.User.Identity.Name;
+                te.HRAP = "not needed";
+                this.db.Entry(te).State = EntityState.Modified;
+                this.db.SaveChanges();
+            }
+
+            return RedirectToAction("Index", "overtimerefs");
+        }
+
         public void SendMail(string msg, string action, int tr)
         {
             var context = new ApplicationDbContext();
@@ -367,7 +396,7 @@ namespace onlygodknows.Controllers
                 foreach (var csp in cper)
                 {
                     var manvar = man.Find(x => x.csid == csp.CsUser);
-                    if (users.Exists(x => x.Id == manvar.Id))
+                    if (manvar != null && users.Exists(x => x.Id == manvar.Id))
                     {
                         userslist.Add(manvar);
                     }

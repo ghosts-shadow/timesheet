@@ -5,6 +5,11 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
     int totalhrs = 0;
     int totalemp = 0;
+    int totalsick = 0;
+    int totalabsent = 0;
+    int totalleave = 0;
+    int totaloff = 0;
+    int totaltransfer = 0;
 }
 @if (Request.IsAuthenticated)
 {
@@ -45,75 +50,30 @@
             <div class="row">
                 <table class="table" style="border: 1px solid black; border-collapse: collapse; ">
                     <tr>
-                        <th>
-                            @Html.DisplayName("EMP ID")
-                        </th>
-                        <th>
-                            @Html.Label("Hours")
-                        </th>
-                        <th>
-                            @Html.DisplayName("EMP ID")
-                        </th>
-                        <th>
-                            @Html.Label("Hours")
-                        </th>
-                        <th>
-                            @Html.DisplayName("EMP ID")
-                        </th>
-                        <th>
-                            @Html.Label("Hours")
-                        </th>
-                        <th>
-                            @Html.DisplayName("EMP ID")
-                        </th>
-                        <th>
-                            @Html.Label("Hours")
-                        </th>
-                        <th>
-                            @Html.DisplayName("EMP ID")
-                        </th>
-                        <th>
-                            @Html.Label("Hours")
-                        </th>
-                        <th>
-                            @Html.DisplayName("EMP ID")
-                        </th>
-                        <th>
-                            @Html.Label("Hours")
-                        </th>
-                        <th>
-                            @Html.DisplayName("EMP ID")
-                        </th>
-                        <th>
-                            @Html.Label("Hours")
-                        </th>
-                        <th>
-                            @Html.DisplayName("EMP ID")
-                        </th>
-                        <th>
-                            @Html.Label("Hours")
-                        </th>
-                        <th>
-                            @Html.DisplayName("EMP ID")
-                        </th>
-                        <th>
-                            @Html.Label("Hours")
-                        </th>
-                        <th>
-                            @Html.DisplayName("EMP ID")
-                        </th>
-                        <th>
-                            @Html.Label("Hours")
-                        </th>
-                        @*<th>total</th>*@
+                        @for (int ij = 0; ij < 5; ij++)
+                        {
+                            <th>
+                                @Html.DisplayName("EMP ID")
+                            </th>
+                            <th>
+                                @Html.Label("name")
+                            </th>
+                            <th>
+                                @Html.Label("position")
+                            </th>
+                            <th>
+                                @Html.Label("Hours")
+                            </th>
+                        }
                     </tr>
                     @{
                         var sidetotal = 0;
+                        var sidetotalem = 0;
                         var i = 0;
                         foreach (var item in Model)
                         {
                             totalemp++;
-                            if (i % 10 == 0)
+                            if (i % 5 == 0)
                             {
                                 <tr />
 
@@ -123,28 +83,98 @@
                             </td>
 
                             <td>
+                                @Html.DisplayFor(modelItem => item.name)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.position)
+                            </td>
+                            <td>
                                 @Html.DisplayFor(modelItem => item.hours)
                             </td>
-                            @*if ((q == 9 && i != 0)|| Model.Count <= i + 1)
-                            {
-                                int linki = ((i+1) / 10);
-                                for (int k = linki; k > 0; k--)
-                                {
-                                    <td>@k</td>
-                                }
-                                <td>
-                                    @sidetotal
-                                </td>
-                                sidetotal = 0;
-                            }*@
-                            int.TryParse(item.hours, out var hrsto);
+                            var trycheck = int.TryParse(item.hours, out var hrsto);
                             totalhrs += hrsto;
-                            sidetotal += hrsto;
-
                             i++;
+                            if (trycheck == false)
+                            {
+                                switch (item.hours)
+                                {
+                                    case "A":
+                                        totalabsent++;
+                                        break;
+                                    case "O":
+                                        totaloff++;
+                                        break;
+                                    case "T":
+                                        totaltransfer++;
+                                        break;
+                                    case "S":
+                                        totalsick++;
+                                        break;
+                                    case "V":
+                                        totalleave++;
+                                        break;
+                                }
+                            }
                         }
-
                     }
+                </table>
+                <br/>
+                <br/>
+                <br/>
+                <table class="table" style="border: 1px solid black; border-collapse: collapse;">
+                    <tr>
+                        <th>total employees</th>
+                        <th> hours</th>
+                        <th> absent</th>
+                        <th> sick</th>
+                        <th> transfer</th>
+                        <th> off</th>
+                        <th> vacation</th>
+                    </tr>
+                    <tr>
+                        <td>@totalemp</td>
+                        <td>@totalhrs</td>
+                        @if (totalabsent == 0)
+                            {
+                                <td>N/A</td>
+                            }
+                        else
+                        {
+                            <td>@totalabsent</td>
+                        }
+                        @if (totalsick == 0)
+                            {
+                                <td>N/A</td>
+                            }
+                        else
+                        {
+                            <td>@totalsick</td>
+                        }
+                        @if (totaltransfer == 0)
+                            {
+                                <td>N/A</td>
+                            }
+                        else
+                        {
+                            <td>@totaltransfer</td>
+                        }
+                        @if (totaloff == 0)
+                            {
+                                <td>N/A</td>
+                            }
+                        else
+                        {
+                            <td>@totaloff</td>
+                        }
+                        @if (totalleave == 0)
+                            {
+                                <td>N/A</td>
+                            }
+                        else
+                        {
+                            <td>@totalleave</td>
+                        }
+                    </tr>
                 </table>
             </div>
             <br />

@@ -65,10 +65,17 @@ namespace onlygodknows
 
             }
      
-            if (!roleManager.RoleExists("Head_of_projects"))
+            if (!roleManager.RoleExists("Head_of_projects(citiscape)"))
             {
                 var role = new Microsoft.AspNet.Identity.EntityFramework.IdentityRole();
-                role.Name = "Head_of_projects";
+                role.Name = "Head_of_projects(citiscape)";
+                roleManager.Create(role);
+
+            }
+            if (!roleManager.RoleExists("Head_of_projects(grove)"))
+            {
+                var role = new Microsoft.AspNet.Identity.EntityFramework.IdentityRole();
+                role.Name = "Head_of_projects(grove)";
                 roleManager.Create(role);
 
             }

@@ -11,12 +11,10 @@ namespace onlygodknows.Models
 {
     using System;
     using System.Collections.Generic;
-    using System.ComponentModel.DataAnnotations;
-
+    
     public partial class approval
     {
         public int Id { get; set; }
-        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:d}")]
         public Nullable<System.DateTime> adate { get; set; }
         public Nullable<long> P_id { get; set; }
         public Nullable<long> MPS_id { get; set; }
@@ -24,8 +22,12 @@ namespace onlygodknows.Models
         public Nullable<long> A_id { get; set; }
         public string Susername { get; set; }
         public string Ausername { get; set; }
-        public Nullable<long> Empno { get; set; }
         public string Husername { get; set; }
+        public Nullable<long> Empno { get; set; }
+        public string name { get; set; }
+        public string position { get; set; }
+        public Nullable<long> nt { get; set; }
+        public Nullable<long> ot { get; set; }
     
         public virtual Attendance Attendance { get; set; }
     }

@@ -18,6 +18,19 @@
 </script>
 <div id="charts">
     <h1>approval</h1>
+    
+    @if (User.Identity.IsAuthenticated)
+    {
+        
+        if (User.IsInRole("Project_manager")||User.IsInRole("HR_manager"))
+        {
+        <div class="row">
+        <div class="col-md-2" style="align-items:end">
+        <input type="submit" value="Approve ALL" class="btn btn-default" style="color: green;" onclick="window.location.href = '@Url.Action("approveall")'" />
+        </div>
+        </div>
+        }
+    }
     <table class="table">
         <tr>
             <th></th>

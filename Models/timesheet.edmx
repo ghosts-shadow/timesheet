@@ -4,7 +4,7 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-      <Schema Namespace="LogisticsSoftModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+    <Schema Namespace="LogisticsSoftModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
         <EntityType Name="__MigrationHistory">
           <Key>
             <PropertyRef Name="MigrationId" />
@@ -29,6 +29,10 @@
           <Property Name="Ausername" Type="nvarchar(max)" />
           <Property Name="Husername" Type="nvarchar(max)" />
           <Property Name="Empno" Type="bigint" />
+          <Property Name="name" Type="nvarchar(max)" />
+          <Property Name="position" Type="nvarchar(max)" />
+          <Property Name="nt" Type="bigint" />
+          <Property Name="ot" Type="bigint" />
         </EntityType>
         <EntityType Name="asignproject">
           <Key>
@@ -195,14 +199,6 @@
           <Property Name="Remark" Type="nvarchar(max)" />
         </EntityType>
         <!--Errors Found During Generation:
-warning 6013: The table/view 'LogisticsSoft.dbo.Citynames' does not have a primary key defined and no valid primary key could be inferred. This table/view has been excluded. To use the entity, you will need to review your schema, add the correct keys, and uncomment it.
-        <EntityType Name="Citynames">
-          <Property Name="English name" Type="nvarchar" MaxLength="255" />
-          <Property Name="Local name" Type="nvarchar" MaxLength="255" />
-          <Property Name="Past English or local names" Type="nvarchar" MaxLength="255" />
-          <Property Name="Country" Type="nvarchar" MaxLength="255" />
-        </EntityType>-->
-        <!--Errors Found During Generation:
 warning 6002: The table/view 'LogisticsSoft.dbo.ControlRoom' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
         <EntityType Name="ControlRoom">
           <Key>
@@ -328,16 +324,6 @@ warning 6002: The table/view 'LogisticsSoft.dbo.EmpPromise' does not have a prim
           <Property Name="Workflow Instance ID" Type="nvarchar" MaxLength="255" />
           <Property Name="File Type" Type="nvarchar" MaxLength="255" />
         </EntityType>
-        <!--Errors Found During Generation:
-warning 6013: The table/view 'LogisticsSoft.dbo.Info' does not have a primary key defined and no valid primary key could be inferred. This table/view has been excluded. To use the entity, you will need to review your schema, add the correct keys, and uncomment it.
-        <EntityType Name="Info">
-          <Property Name="Name" Type="nvarchar(max)" />
-          <Property Name="Adress" Type="nvarchar(max)" />
-          <Property Name="Logo" Type="image" />
-          <Property Name="Adress_OLE" Type="image" />
-          <Property Name="Namearab" Type="nvarchar(max)" />
-          <Property Name="EditDate" Type="datetime" />
-        </EntityType>-->
         <EntityType Name="LabourMaster">
           <Key>
             <PropertyRef Name="ID" />
@@ -618,15 +604,6 @@ warning 6002: The table/view 'LogisticsSoft.dbo.Room_Details' does not have a pr
           <Property Name="Camp" Type="int" />
         </EntityType>
         <!--Errors Found During Generation:
-warning 6013: The table/view 'LogisticsSoft.dbo.Segate_Users' does not have a primary key defined and no valid primary key could be inferred. This table/view has been excluded. To use the entity, you will need to review your schema, add the correct keys, and uncomment it.
-        <EntityType Name="Segate_Users">
-          <Property Name="Seagate Username" Type="nvarchar" MaxLength="255" />
-          <Property Name="Password" Type="nvarchar" MaxLength="255" />
-          <Property Name="Link Access 1" Type="nvarchar" MaxLength="255" />
-          <Property Name="Link Access 2" Type="nvarchar" MaxLength="255" />
-          <Property Name="Quote Size" Type="nvarchar" MaxLength="255" />
-        </EntityType>-->
-        <!--Errors Found During Generation:
 warning 6002: The table/view 'LogisticsSoft.dbo.ShiftingFile' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
         <EntityType Name="ShiftingFile">
           <Key>
@@ -766,17 +743,6 @@ warning 6002: The table/view 'LogisticsSoft.dbo.UserInfo' does not have a primar
           <Property Name="full_name" Type="nvarchar(max)" Nullable="false" />
           <Property Name="aspnet_uid" Type="nvarchar" MaxLength="128" Nullable="false" />
         </EntityType>
-        <!--Errors Found During Generation:
-warning 6013: The table/view 'LogisticsSoft.dbo.Users_Email' does not have a primary key defined and no valid primary key could be inferred. This table/view has been excluded. To use the entity, you will need to review your schema, add the correct keys, and uncomment it.
-        <EntityType Name="Users_Email">
-          <Property Name="Display Name" Type="nvarchar" MaxLength="255" />
-          <Property Name="Database" Type="nvarchar" MaxLength="255" />
-          <Property Name="Alias" Type="nvarchar" MaxLength="255" />
-          <Property Name="Organizational Unit" Type="nvarchar" MaxLength="255" />
-          <Property Name="Recipient Type Details" Type="nvarchar" MaxLength="255" />
-          <Property Name="PrimarySMTP_Address" Type="nvarchar" MaxLength="255" />
-          <Property Name="EmpId" Type="float" />
-        </EntityType>-->
         <Association Name="FK_approval_Toattendance">
           <End Role="Attendance" Type="Self.Attendance" Multiplicity="0..1">
             <OnDelete Action="Cascade" />
@@ -1482,8 +1448,7 @@ warning 6013: The table/view 'LogisticsSoft.dbo.Users_Email' does not have a pri
             <End Role="asignproject" EntitySet="asignproject" />
           </AssociationSet>
         </EntityContainer>
-      </Schema>
-    </edmx:StorageModels>
+      </Schema></edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="LogisticsSoftModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
@@ -1512,6 +1477,10 @@ warning 6013: The table/view 'LogisticsSoft.dbo.Users_Email' does not have a pri
           <Property Name="Husername" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="Empno" Type="Int64" />
           <NavigationProperty Name="Attendance" Relationship="Self.FK_approval_Toattendance" FromRole="approval" ToRole="Attendance" />
+          <Property Name="name" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="position" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="nt" Type="Int64" />
+          <Property Name="ot" Type="Int64" />
         </EntityType>
         <EntityType Name="asignproject">
           <Key>
@@ -2686,6 +2655,10 @@ warning 6013: The table/view 'LogisticsSoft.dbo.Users_Email' does not have a pri
           <EntitySetMapping Name="approvals">
             <EntityTypeMapping TypeName="LogisticsSoftModel.approval">
               <MappingFragment StoreEntitySet="approval">
+                <ScalarProperty Name="ot" ColumnName="ot" />
+                <ScalarProperty Name="nt" ColumnName="nt" />
+                <ScalarProperty Name="position" ColumnName="position" />
+                <ScalarProperty Name="name" ColumnName="name" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="adate" ColumnName="adate" />
                 <ScalarProperty Name="P_id" ColumnName="P_id" />

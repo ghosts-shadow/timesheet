@@ -3,6 +3,7 @@
 @{
     ViewBag.Title = "csearch";
     Layout = "~/Views/Shared/_Layout.cshtml";
+    var i = 0;
 }
 <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
 <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
@@ -74,14 +75,11 @@ using (Html.BeginForm("csearch", "Home", FormMethod.Get, new { id = "form1" }))
         @Html.ValidationSummary(false, string.Empty, new { @class = "text-danger" })
     </div>
     <br/>
-    if (User.Identity.IsAuthenticated)
+    if (Model.Count() != 0)
     {
-        if (User.IsInRole("Admin"))
-        {
-            <div>
-                <b><a href="@Url.Action("DownloadExcelfull", "home", new { mtsmonth1 = ViewBag.mtsmonth1, csp1 = ViewBag.csp1, csmps1 = ViewBag.csmps1 })">Download Excel</a></b>
-            </div>
-        }
+        <div>
+            <b><a href="@Url.Action("DownloadExcelfull", "home", new {mtsmonth1 = ViewBag.mtsmonth1, csp1 = ViewBag.csp1, csmps1 = ViewBag.csmps1})">Download Excel</a></b>
+        </div>
     }
     <div>
     <br/>
@@ -105,6 +103,7 @@ using (Html.BeginForm("csearch", "Home", FormMethod.Get, new { id = "form1" }))
                     </th>
                 }
             }
+            <th>SR#</th>
             <th>project name</th>
             <th>
                 @Html.DisplayNameFor(model => model.LabourMaster.EMPNO)
@@ -268,6 +267,12 @@ using (Html.BeginForm("csearch", "Home", FormMethod.Get, new { id = "form1" }))
                 </td>
             }
         }
+    <td>
+        @{
+            i++;
+            @i
+        }
+    </td>
         <td>
             @Html.DisplayFor(modelItem => item.MainTimeSheet.ProjectList.PROJECT_NAME)
         </td>
@@ -511,13 +516,17 @@ using (Html.BeginForm("csearch", "Home", FormMethod.Get, new { id = "form1" }))
         {
             if (User.Identity.Name == "sdiniz")
             {
-                <td colspan="37">total</td>
+                <td colspan="38">total</td>
+            }
+            else
+            {
+                <td colspan="36">total</td>
             }
         }
         else
         {
 
-            <td colspan="35">total</td>
+            <td colspan="36">total</td>
         }
         <td>@tth</td>
         <td>@ttnt</td>

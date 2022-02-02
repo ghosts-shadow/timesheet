@@ -78,15 +78,112 @@ namespace onlygodknows.Controllers
         [Authorize(Roles = "HR_manager,Project_manager,logistics_officer")]
         public ActionResult Create(towref tw1)
         {
-            ViewBag.lab_no = new SelectList(db.LabourMasters.Where(x => x.EMPNO > 3).OrderBy(x => x.EMPNO), "ID",
-                "EMPNO");
-            ViewBag.lab_name = new SelectList(db.LabourMasters.Where(x => x.EMPNO > 3).OrderBy(x => x.EMPNO), "ID",
-                "Person_Name");
-            ViewBag.lab_position = new SelectList(db.LabourMasters.Where(x => x.EMPNO > 3).OrderBy(x => x.EMPNO), "ID",
-                "Position");
-            ViewBag.lab_mps = new SelectList(db.LabourMasters.Where(x => x.EMPNO > 3).OrderBy(x => x.EMPNO), "ID",
-                "ManPowerSupply");
-            ViewBag.lab_mpslist = new SelectList(db.ManPowerSuppliers, "ID", "Supplier");
+            var d = db.LabourMasters.Where(x => x.EMPNO >= 4).ToList();
+            var d1 = new List<LabourMaster>();
+            if (tw1.mp_from == 698)
+            {
+                d1 = d;
+            }
+            else
+            {
+                var dateids = new DateTime(tw1.mpcdate.Value.Year, tw1.mpcdate.Value.Month, 1);
+                var tflist = new List<towemp>();
+                var tflist1 = new List<towemp>();
+                var tfdbl = db.towemps.Where(x => x.towref.mp_to == tw1.mp_from && x.app_by != null)
+                    .OrderByDescending(x => x.effectivedate).ToList();
+                var tfdbl2 = db.towemps.Where(x => x.towref.mp_from == tw1.mp_from && x.app_by != null)
+                    .OrderByDescending(x => x.effectivedate).ToList();
+                foreach (var towemp in tfdbl)
+                {
+                    if (tfdbl2.Exists(x => x.lab_no == towemp.lab_no))
+                    {
+                        var tfed = tfdbl2.OrderByDescending(x => x.effectivedate).ToList()
+                            .Find(x => x.lab_no == towemp.lab_no);
+                        if (towemp.effectivedate > tfed.effectivedate)
+                        {
+                            if (!tflist.Exists(x => x.lab_no == towemp.lab_no))
+                            {
+                                tflist.Add(towemp);
+                            }
+                        }
+                        else
+                        {
+                            if (tfed.effectivedate > dateids)
+                            {
+                                if (!tflist.Exists(x => x.lab_no == towemp.lab_no))
+                                {
+                                    tflist.Add(towemp);
+                                }
+                            }
+                        }
+                    }
+                    else
+                    {
+                        if (!tflist.Exists(x => x.lab_no == towemp.lab_no))
+                        {
+                            tflist.Add(towemp);
+                        }
+                    }
+                }
+
+
+                foreach (var towemp in tflist)
+                {
+                    if (d.Exists(x => x.ID == towemp.lab_no))
+                    {
+                        d1.Add(d.Find(x => x.ID == towemp.lab_no));
+                    }
+                }
+
+                var assignedemplist = db.asignprojects.OrderByDescending(x => x.asigneddate).ToList();
+                var assignlistfinal = new List<asignproject>();
+                foreach (var asqw in assignedemplist)
+                {
+                    if (assignlistfinal.Exists(x => x.lab_no == asqw.lab_no))
+                    {
+                        var ascheckvar = assignlistfinal.Find(x => x.lab_no == asqw.lab_no);
+                        if (ascheckvar.asigneddate < asqw.asigneddate)
+                        {
+                            assignlistfinal.Remove(ascheckvar);
+                            assignlistfinal.Add(asqw);
+                        }
+                        else if (ascheckvar.asigneddate == asqw.asigneddate && asqw.Project == tw1.mp_from)
+                        {
+                            assignlistfinal.Remove(ascheckvar);
+                            assignlistfinal.Add(asqw);
+                        }
+                    }
+                    else
+                    {
+                        assignlistfinal.Add(asqw);
+                    }
+                }
+
+                foreach (var asignproject in assignlistfinal)
+                {
+                    if (asignproject.Project == tw1.mp_from)
+                    {
+                        if (d.Exists(x => x.ID == asignproject.lab_no))
+                        {
+                            if (!d1.Exists(x => x.ID == asignproject.lab_no))
+                            {
+                                d1.Add(d.Find(x => x.ID == asignproject.lab_no));
+                            }
+                        }
+                    }
+                }
+            }
+                ViewBag.lab_no = new SelectList(d1.OrderBy(x => x.EMPNO), "ID",
+                    "EMPNO");
+                ViewBag.lab_name = new SelectList(d1.OrderBy(x => x.EMPNO), "ID",
+                    "Person_Name");
+                ViewBag.lab_position = new SelectList(d1.OrderBy(x => x.EMPNO),
+                    "ID",
+                    "Position");
+                ViewBag.lab_mps = new SelectList(d1.OrderBy(x => x.EMPNO), "ID",
+                    "ManPowerSupply");
+                ViewBag.lab_mpslist = new SelectList(db.ManPowerSuppliers, "ID", "Supplier");
+
             var tr = this.db.towrefs.Find(tw1.Id);
             ViewBag.tw = tr.Id;
             ViewBag.form = tr.ProjectList1.PROJECT_NAME;
@@ -135,15 +232,112 @@ namespace onlygodknows.Controllers
                 return RedirectToAction("Index", "towrefs");
             }
 
-            ViewBag.lab_no = new SelectList(db.LabourMasters.Where(x => x.EMPNO > 3).OrderBy(x => x.EMPNO), "ID",
-                "EMPNO", towemp[0].lab_no);
-            ViewBag.rowref = new SelectList(db.towrefs, "Id", "Id", towemp[0].rowref);
-            ViewBag.lab_name = new SelectList(db.LabourMasters.Where(x => x.EMPNO > 3).OrderBy(x => x.EMPNO), "ID",
+            var tw1 = tw;
+            var d = db.LabourMasters.Where(x => x.EMPNO >= 4).ToList();
+            var d1 = new List<LabourMaster>();
+            if (tw1.mp_from == 698)
+            {
+                d1 = d;
+            }
+            else
+            {
+                var dateids = new DateTime(tw1.mpcdate.Value.Year, tw1.mpcdate.Value.Month, 1);
+                var tflist = new List<towemp>();
+                var tflist1 = new List<towemp>();
+                var tfdbl = db.towemps.Where(x => x.towref.mp_to == tw1.mp_from && x.app_by != null)
+                    .OrderByDescending(x => x.effectivedate).ToList();
+                var tfdbl2 = db.towemps.Where(x => x.towref.mp_from == tw1.mp_from && x.app_by != null)
+                    .OrderByDescending(x => x.effectivedate).ToList();
+                foreach (var towemp1 in tfdbl)
+                {
+                    if (tfdbl2.Exists(x => x.lab_no == towemp1.lab_no))
+                    {
+                        var tfed = tfdbl2.OrderByDescending(x => x.effectivedate).ToList()
+                            .Find(x => x.lab_no == towemp1.lab_no);
+                        if (towemp1.effectivedate > tfed.effectivedate)
+                        {
+                            if (!tflist.Exists(x => x.lab_no == towemp1.lab_no))
+                            {
+                                tflist.Add(towemp1);
+                            }
+                        }
+                        else
+                        {
+                            if (tfed.effectivedate > dateids)
+                            {
+                                if (!tflist.Exists(x => x.lab_no == towemp1.lab_no))
+                                {
+                                    tflist.Add(towemp1);
+                                }
+                            }
+                        }
+                    }
+                    else
+                    {
+                        if (!tflist.Exists(x => x.lab_no == towemp1.lab_no) && towemp1.effectivedate <= dateids)
+                        {
+                            tflist.Add(towemp1);
+                        }
+                    }
+                }
+
+
+                foreach (var towemp1 in tflist)
+                {
+                    if (d.Exists(x => x.ID == towemp1.lab_no))
+                    {
+                        d1.Add(d.Find(x => x.ID == towemp1.lab_no));
+                    }
+                }
+
+                var assignedemplist = db.asignprojects.OrderByDescending(x => x.asigneddate).ToList();
+                var assignlistfinal = new List<asignproject>();
+                foreach (var asqw in assignedemplist)
+                {
+                    if (assignlistfinal.Exists(x => x.lab_no == asqw.lab_no))
+                    {
+                        var ascheckvar = assignlistfinal.Find(x => x.lab_no == asqw.lab_no);
+                        if (ascheckvar.asigneddate < asqw.asigneddate)
+                        {
+                            assignlistfinal.Remove(ascheckvar);
+                            assignlistfinal.Add(asqw);
+                        }
+                        else if (ascheckvar.asigneddate == asqw.asigneddate && asqw.Project == tw1.mp_from)
+                        {
+                            assignlistfinal.Remove(ascheckvar);
+                            assignlistfinal.Add(asqw);
+                        }
+                    }
+                    else
+                    {
+                        assignlistfinal.Add(asqw);
+                    }
+                }
+
+                foreach (var asignproject in assignlistfinal)
+                {
+                    if (asignproject.Project == tw1.mp_from)
+                    {
+                        if (d.Exists(x => x.ID == asignproject.lab_no))
+                        {
+                            if (!d1.Exists(x => x.ID == asignproject.lab_no))
+                            {
+                                d1.Add(d.Find(x => x.ID == asignproject.lab_no));
+                            }
+                        }
+                    }
+                }
+            }
+            ViewBag.lab_no = new SelectList(d1.OrderBy(x => x.EMPNO), "ID",
+                "EMPNO");
+            ViewBag.lab_name = new SelectList(d1.OrderBy(x => x.EMPNO), "ID",
                 "Person_Name");
-            ViewBag.lab_position = new SelectList(db.LabourMasters.Where(x => x.EMPNO > 3).OrderBy(x => x.EMPNO), "ID",
+            ViewBag.lab_position = new SelectList(d1.OrderBy(x => x.EMPNO),
+                "ID",
                 "Position");
-            ViewBag.lab_mps = new SelectList(db.LabourMasters.Where(x => x.EMPNO > 3).OrderBy(x => x.EMPNO), "ID",
+            ViewBag.lab_mps = new SelectList(d1.OrderBy(x => x.EMPNO), "ID",
                 "ManPowerSupply");
+            ViewBag.lab_mpslist = new SelectList(db.ManPowerSuppliers, "ID", "Supplier");
             return View(towemp[1]);
         }
 
@@ -446,7 +640,7 @@ namespace onlygodknows.Controllers
                 foreach (var csp in cper1)
                 {
                     var manvar = man.Find(x => x.csid == csp.CsUser);
-                    if (users1.Exists(x => x.Id == manvar.Id))
+                    if (manvar != null && users1.Exists(x => x.Id == manvar.Id))
                     {
                         userslist.Add(manvar);
                     }

@@ -19,6 +19,16 @@
             $(function () {
                 $("#effectivedate0").datepicker();
             });
+            
+            function createchosen() {
+                for (var i = 0; i < counter; i++) {
+                    if ($("#lab_no" + i).length !== 0) {
+                        $("#lab_no" + i).chosen({ no_results_text: "Oops, nothing found!" });
+                        $("#effectivedate" + i).datepicker({
+                        });
+                    }
+                }
+            }
         </script>
     }
     else
@@ -29,6 +39,16 @@
                     minDate: 0
                 });
             });
+            function createchosen() {
+                for (var i = 0; i < counter; i++) {
+                    if ($("#lab_no" + i).length !== 0) {
+                        $("#lab_no" + i).chosen({ no_results_text: "Oops, nothing found!" });
+                        $("#effectivedate" + i).datepicker({
+                            minDate: 0
+                        });
+                    }
+                }
+            }
         </script>
     }
 }
@@ -78,16 +98,6 @@
         $("#effectivedate0").datepicker("destroy");
     }
 
-    function createchosen() {
-        for (var i = 0; i < counter; i++) {
-            if ($("#lab_no" + i).length !== 0) {
-                $("#lab_no" + i).chosen({ no_results_text: "Oops, nothing found!" });
-                $("#effectivedate" + i).datepicker({
-                    minDate: 0
-                });
-            }
-        }
-    }
 
     function remove(id) {
         $("#tr" + id).remove();

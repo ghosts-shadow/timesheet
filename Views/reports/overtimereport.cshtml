@@ -1,0 +1,140 @@
+﻿@model IEnumerable<onlygodknows.Models.overtimeemployeelist>
+@if (Request.IsAuthenticated)
+{
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/css/select2.min.css" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="~/Content/Style.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <script>
+        $(function () {
+            $("#proto").chosen();
+            $("#profrom").chosen();
+            $("#datepicker1").datepicker({
+                altField: "#alternate",
+                altFormat: "MM,yy",
+                changeMonth: true,
+                changeYear: true,
+                showOtherMonths: true,
+                selectOtherMonths: true,
+                showButtonPanel: true,
+                dateFormat: "dd M yy"
+            });
+            $("#datepicker").datepicker({
+                altField: "#alternate",
+                altFormat: "MM,yy",
+                changeMonth: true,
+                changeYear: true,
+                showOtherMonths: true,
+                selectOtherMonths: true,
+                showButtonPanel: true,
+                dateFormat: "dd M yy",
+                onSelect: function (date) {
+                    var selectedDate = new Date(date);
+                    var msecsInADay = 86400000;
+                    var endDate = new Date(selectedDate.getTime() + msecsInADay);
+                    $("#datepicker1").datepicker("option", "minDate", endDate);
+                }
+            });
+        });
+
+        function enddatereset() {
+            if ($("#datepicker").val) {
+                $("#datepicker1").datepicker();
+            }
+        }
+    </script>
+    using (Html.BeginForm("overtimereport", "reports", FormMethod.Get, new { id = "form1" }))
+    {
+
+        <h1>
+            overtime report
+        </h1>
+        <div class="row" onclick="enddatereset()">
+            <div class="col-md-3">
+                @Html.Label("employee no:", new { @class = "control-label" })
+                @Html.TextBox("search", "", new { @class = "form-control" })
+            </div>
+            <div class="col-md-3">
+                @Html.Label("date from:", new { @class = "control-label" })
+                @Html.TextBox("datefrom", "", new { @class = "form-control", @id = "datepicker" })
+            </div>
+            <div class="col-md-3">
+                @Html.Label("to:", new { @class = "control-label " })
+                @Html.TextBox("dateto", "", new { @class = "form-control", @id = "datepicker1" })
+
+            </div>
+            <div class="col-md-3">
+                @Html.Label("project from:", new { @class = "control-label" })<br />
+                @Html.DropDownList("profrom", new List<SelectListItem>(ViewBag.profromlist), new { @class = "form-control", @id = "profrom", @multiple = "" })
+            </div>
+            <div class="col-md-1" style="margin-top: 1.2%">
+                <input type="submit" value="search" class="btn btn-default" />
+            </div>
+        </div>
+        <br />
+        <br />
+        <br />
+        if (Model.Count() != 0)
+        {
+            <div>
+                <b><a href="@Url.Action("overtimereportexel", "reports", new {search = ViewBag.search, datefrom = ViewBag.datefrom, dateto = ViewBag.dateto,profrom = ViewBag.profrom})">Download Excel</a></b>
+            </div>
+        }
+    }
+    <table class="table">
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.LabourMaster.EMPNO)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.LabourMaster.Person_Name)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.LabourMaster.Position)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.overtimeref.ProjectList.PROJECT_NAME)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.effectivedate)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.hrs)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.status)
+            </th>
+        </tr>
+
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.LabourMaster.EMPNO)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.LabourMaster.Person_Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.LabourMaster.Position)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.overtimeref.ProjectList.PROJECT_NAME)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.effectivedate)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.hrs)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.status)
+                </td>
+            </tr>
+        }
+
+    </table>
+}

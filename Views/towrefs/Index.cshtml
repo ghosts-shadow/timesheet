@@ -144,6 +144,8 @@
                                 {
                                     if (item.towemps.First().app_by == null)
                                     {
+                                        if (item.towemps.First().ARstatus == null || !item.towemps.First().ARstatus.Contains("rejected for"))
+                                        {
                                         <div class="row">
                                             <div class="col-md-2">
                                                 <input type="submit" value="Approve" class="btn btn-default" style="color: green;" onclick="window.location.href = '@Url.Action("aprestatus", "towemps", new {tr = item.Id, message = "approved"})'" />
@@ -162,6 +164,8 @@
                                                 }
                                             </div>
                                         </div>
+
+                                        }
                                     }
                                 }
                             }

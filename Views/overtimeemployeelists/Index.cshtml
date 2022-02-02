@@ -75,7 +75,7 @@
                 @Html.DisplayFor(modelItem => item.hrs)
             </td>
         </tr>
-        if (i == 0)
+        if (i == Model.Count()-1)
         {
             trid = item.otref.Value;
             stat = item.hopAP;

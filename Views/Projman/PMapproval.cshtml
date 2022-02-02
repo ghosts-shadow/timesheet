@@ -3,6 +3,13 @@
 @{
     ViewBag.Title = "PMapproval";
     Layout = "~/Views/Shared/_Layout.cshtml";
+    int totalhrs = 0;
+    int totalemp = 0;
+    int totalsick = 0;
+    int totalabsent = 0;
+    int totalleave = 0;
+    int totaloff = 0;
+    int totaltransfer = 0;
 }
 @if (Request.IsAuthenticated)
 {
@@ -65,257 +72,1071 @@
     <br />
     <br />
     <br />
-    <table class="table">
-        <tr>
-            <th>
-                @Html.DisplayName("EMP ID")
-            </th>
-            <th>
-                @Html.Label("Hours")
-            </th>
-            <th>
-                @Html.DisplayName("EMP ID")
-            </th>
-            <th>
-                @Html.Label("Hours")
-            </th>
-            <th>
-                @Html.DisplayName("EMP ID")
-            </th>
-            <th>
-                @Html.Label("Hours")
-            </th>
-            <th>
-                @Html.DisplayName("EMP ID")
-            </th>
-            <th>
-                @Html.Label("Hours")
-            </th>
-            <th>
-                @Html.DisplayName("EMP ID")
-            </th>
-            <th>
-                @Html.Label("Hours")
-            </th>
-            <th>
-                @Html.DisplayName("EMP ID")
-            </th>
-            <th>
-                @Html.Label("Hours")
-            </th>
-            <th>
-                @Html.DisplayName("EMP ID")
-            </th>
-            <th>
-                @Html.Label("Hours")
-            </th>
-        </tr>
-        @{
-            DateTime date;
-            DateTime.TryParse(ViewBag.csdate, out date);
-            var i = 0;
-            foreach (var item in Model)
-            {
-                if (i % 7 == 0)
+    
+    
+    <div>
+        <div class="row">
+            <table class="table" style="border: 1px solid black; border-collapse: collapse;">
+                <tr>
+                    <th>
+                        date
+                    </th>
+                    <th>
+                        manpower supplier
+                    </th>
+                    <th>
+                        project
+                    </th>
+                </tr>
+                <tr>
+                    <td>
+                                
+                        @this.ViewBag.mtsmonth1.ToString("dd MMMM yyyy")
+                    </td>
+                    <td>
+                        @this.ViewBag.csmps1
+                    </td>
+                    <td>
+                        @this.ViewBag.csp1
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+    <br />
+    <br />
+    <div class="row">
+        <table class="table">
+            <tr>
+                @for (var j = 0; j < 5; j++)
                 {
-                    <tr />
+                    <th>
+                        @Html.DisplayName("EMP ID")
+                    </th>
+                    <th>name</th>
+                    <th>position</th>
+                    <th>
+                        @Html.Label("Hours")
+                    </th>
+                }
+            </tr>
+            @{
+                DateTime date;
+                DateTime.TryParse(ViewBag.csdate, out date);
+                var i = 0;
+                foreach (var item in Model)
+                {
+                    totalemp++;
+                    if (i % 5 == 0)
+                    {
+                        <tr />
+                    }
+
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Empno)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.name)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.position)
+                    </td>
+                    if (date.Day == 1)
+                    {
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Attendance.C1)
+                        </td>
+                        var trycheck = int.TryParse(item.Attendance.C1, out var hrsto);
+                        totalhrs += hrsto;
+                        i++;
+                        if (trycheck == false)
+                        {
+                            switch (item.Attendance.C1)
+                            {
+                                case "A":
+                                    totalabsent++;
+                                    break;
+                                case "O":
+                                    totaloff++;
+                                    break;
+                                case "T":
+                                    totaltransfer++;
+                                    break;
+                                case "S":
+                                    totalsick++;
+                                    break;
+                                case "V":
+                                    totalleave++;
+                                    break;
+                            }
+                        }
+                    }
+                    else if (date.Day == 2)
+                    {
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Attendance.C2)
+                        </td>
+                        var trycheck = int.TryParse(item.Attendance.C2, out var hrsto);
+                        totalhrs += hrsto;
+                        i++;
+                        if (trycheck == false)
+                        {
+                            switch (item.Attendance.C2)
+                            {
+                                case "A":
+                                    totalabsent++;
+                                    break;
+                                case "O":
+                                    totaloff++;
+                                    break;
+                                case "T":
+                                    totaltransfer++;
+                                    break;
+                                case "S":
+                                    totalsick++;
+                                    break;
+                                case "V":
+                                    totalleave++;
+                                    break;
+                            }
+                        }
+                    }
+                    else if (date.Day == 3)
+                    {
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Attendance.C3)
+                        </td>
+                        var trycheck = int.TryParse(item.Attendance.C3, out var hrsto);
+                        totalhrs += hrsto;
+                        i++;
+                        if (trycheck == false)
+                        {
+                            switch (item.Attendance.C3)
+                            {
+                                case "A":
+                                    totalabsent++;
+                                    break;
+                                case "O":
+                                    totaloff++;
+                                    break;
+                                case "T":
+                                    totaltransfer++;
+                                    break;
+                                case "S":
+                                    totalsick++;
+                                    break;
+                                case "V":
+                                    totalleave++;
+                                    break;
+                            }
+                        }
+                    }
+                    else if (date.Day == 4)
+                    {
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Attendance.C4)
+                        </td>
+                        var trycheck = int.TryParse(item.Attendance.C4, out var hrsto);
+                        totalhrs += hrsto;
+                        i++;
+                        if (trycheck == false)
+                        {
+                            switch (item.Attendance.C4)
+                            {
+                                case "A":
+                                    totalabsent++;
+                                    break;
+                                case "O":
+                                    totaloff++;
+                                    break;
+                                case "T":
+                                    totaltransfer++;
+                                    break;
+                                case "S":
+                                    totalsick++;
+                                    break;
+                                case "V":
+                                    totalleave++;
+                                    break;
+                            }
+                        }
+                    }
+                    else if (date.Day == 5)
+                    {
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Attendance.C5)
+                        </td>
+                        var trycheck = int.TryParse(item.Attendance.C5, out var hrsto);
+                        totalhrs += hrsto;
+                        i++;
+                        if (trycheck == false)
+                        {
+                            switch (item.Attendance.C5)
+                            {
+                                case "A":
+                                    totalabsent++;
+                                    break;
+                                case "O":
+                                    totaloff++;
+                                    break;
+                                case "T":
+                                    totaltransfer++;
+                                    break;
+                                case "S":
+                                    totalsick++;
+                                    break;
+                                case "V":
+                                    totalleave++;
+                                    break;
+                            }
+                        }
+                    }
+                    else if (date.Day == 6)
+                    {
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Attendance.C6)
+                        </td>
+                        var trycheck = int.TryParse(item.Attendance.C6, out var hrsto);
+                        totalhrs += hrsto;
+                        i++;
+                        if (trycheck == false)
+                        {
+                            switch (item.Attendance.C6)
+                            {
+                                case "A":
+                                    totalabsent++;
+                                    break;
+                                case "O":
+                                    totaloff++;
+                                    break;
+                                case "T":
+                                    totaltransfer++;
+                                    break;
+                                case "S":
+                                    totalsick++;
+                                    break;
+                                case "V":
+                                    totalleave++;
+                                    break;
+                            }
+                        }
+                    }
+                    else if (date.Day == 7)
+                    {
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Attendance.C7)
+                        </td>
+                        var trycheck = int.TryParse(item.Attendance.C7, out var hrsto);
+                        totalhrs += hrsto;
+                        i++;
+                        if (trycheck == false)
+                        {
+                            switch (item.Attendance.C7)
+                            {
+                                case "A":
+                                    totalabsent++;
+                                    break;
+                                case "O":
+                                    totaloff++;
+                                    break;
+                                case "T":
+                                    totaltransfer++;
+                                    break;
+                                case "S":
+                                    totalsick++;
+                                    break;
+                                case "V":
+                                    totalleave++;
+                                    break;
+                            }
+                        }
+                    }
+                    else if (date.Day == 8)
+                    {
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Attendance.C8)
+                        </td>
+                        var trycheck = int.TryParse(item.Attendance.C8, out var hrsto);
+                        totalhrs += hrsto;
+                        i++;
+                        if (trycheck == false)
+                        {
+                            switch (item.Attendance.C8)
+                            {
+                                case "A":
+                                    totalabsent++;
+                                    break;
+                                case "O":
+                                    totaloff++;
+                                    break;
+                                case "T":
+                                    totaltransfer++;
+                                    break;
+                                case "S":
+                                    totalsick++;
+                                    break;
+                                case "V":
+                                    totalleave++;
+                                    break;
+                            }
+                        }
+                    }
+                    else if (date.Day == 9)
+                    {
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Attendance.C9)
+                        </td>
+                        var trycheck = int.TryParse(item.Attendance.C9, out var hrsto);
+                        totalhrs += hrsto;
+                        i++;
+                        if (trycheck == false)
+                        {
+                            switch (item.Attendance.C9)
+                            {
+                                case "A":
+                                    totalabsent++;
+                                    break;
+                                case "O":
+                                    totaloff++;
+                                    break;
+                                case "T":
+                                    totaltransfer++;
+                                    break;
+                                case "S":
+                                    totalsick++;
+                                    break;
+                                case "V":
+                                    totalleave++;
+                                    break;
+                            }
+                        }
+                    }
+                    else if (date.Day == 10)
+                    {
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Attendance.C10)
+                        </td>
+                        var trycheck = int.TryParse(item.Attendance.C10, out var hrsto);
+                        totalhrs += hrsto;
+                        i++;
+                        if (trycheck == false)
+                        {
+                            switch (item.Attendance.C10)
+                            {
+                                case "A":
+                                    totalabsent++;
+                                    break;
+                                case "O":
+                                    totaloff++;
+                                    break;
+                                case "T":
+                                    totaltransfer++;
+                                    break;
+                                case "S":
+                                    totalsick++;
+                                    break;
+                                case "V":
+                                    totalleave++;
+                                    break;
+                            }
+                        }
+                    }
+                    else if (date.Day == 11)
+                    {
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Attendance.C11)
+                        </td>
+                        var trycheck = int.TryParse(item.Attendance.C11, out var hrsto);
+                        totalhrs += hrsto;
+                        i++;
+                        if (trycheck == false)
+                        {
+                            switch (item.Attendance.C11)
+                            {
+                                case "A":
+                                    totalabsent++;
+                                    break;
+                                case "O":
+                                    totaloff++;
+                                    break;
+                                case "T":
+                                    totaltransfer++;
+                                    break;
+                                case "S":
+                                    totalsick++;
+                                    break;
+                                case "V":
+                                    totalleave++;
+                                    break;
+                            }
+                        }
+                    }
+                    else if (date.Day == 12)
+                    {
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Attendance.C12)
+                        </td>
+                        var trycheck = int.TryParse(item.Attendance.C12, out var hrsto);
+                        totalhrs += hrsto;
+                        i++;
+                        if (trycheck == false)
+                        {
+                            switch (item.Attendance.C12)
+                            {
+                                case "A":
+                                    totalabsent++;
+                                    break;
+                                case "O":
+                                    totaloff++;
+                                    break;
+                                case "T":
+                                    totaltransfer++;
+                                    break;
+                                case "S":
+                                    totalsick++;
+                                    break;
+                                case "V":
+                                    totalleave++;
+                                    break;
+                            }
+                        }
+                    }
+                    else if (date.Day == 13)
+                    {
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Attendance.C13)
+                        </td>
+                        var trycheck = int.TryParse(item.Attendance.C13, out var hrsto);
+                        totalhrs += hrsto;
+                        i++;
+                        if (trycheck == false)
+                        {
+                            switch (item.Attendance.C13)
+                            {
+                                case "A":
+                                    totalabsent++;
+                                    break;
+                                case "O":
+                                    totaloff++;
+                                    break;
+                                case "T":
+                                    totaltransfer++;
+                                    break;
+                                case "S":
+                                    totalsick++;
+                                    break;
+                                case "V":
+                                    totalleave++;
+                                    break;
+                            }
+                        }
+                    }
+                    else if (date.Day == 14)
+                    {
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Attendance.C14)
+                        </td>
+                        var trycheck = int.TryParse(item.Attendance.C14, out var hrsto);
+                        totalhrs += hrsto;
+                        i++;
+                        if (trycheck == false)
+                        {
+                            switch (item.Attendance.C14)
+                            {
+                                case "A":
+                                    totalabsent++;
+                                    break;
+                                case "O":
+                                    totaloff++;
+                                    break;
+                                case "T":
+                                    totaltransfer++;
+                                    break;
+                                case "S":
+                                    totalsick++;
+                                    break;
+                                case "V":
+                                    totalleave++;
+                                    break;
+                            }
+                        }
+                    }
+                    else if (date.Day == 15)
+                    {
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Attendance.C15)
+                        </td>
+                        var trycheck = int.TryParse(item.Attendance.C15, out var hrsto);
+                        totalhrs += hrsto;
+                        i++;
+                        if (trycheck == false)
+                        {
+                            switch (item.Attendance.C15)
+                            {
+                                case "A":
+                                    totalabsent++;
+                                    break;
+                                case "O":
+                                    totaloff++;
+                                    break;
+                                case "T":
+                                    totaltransfer++;
+                                    break;
+                                case "S":
+                                    totalsick++;
+                                    break;
+                                case "V":
+                                    totalleave++;
+                                    break;
+                            }
+                        }
+                    }
+                    else if (date.Day == 16)
+                    {
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Attendance.C16)
+                        </td>
+                        var trycheck = int.TryParse(item.Attendance.C16, out var hrsto);
+                        totalhrs += hrsto;
+                        i++;
+                        if (trycheck == false)
+                        {
+                            switch (item.Attendance.C16)
+                            {
+                                case "A":
+                                    totalabsent++;
+                                    break;
+                                case "O":
+                                    totaloff++;
+                                    break;
+                                case "T":
+                                    totaltransfer++;
+                                    break;
+                                case "S":
+                                    totalsick++;
+                                    break;
+                                case "V":
+                                    totalleave++;
+                                    break;
+                            }
+                        }
+                    }
+                    else if (date.Day == 17)
+                    {
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Attendance.C17)
+                        </td>
+                        var trycheck = int.TryParse(item.Attendance.C17, out var hrsto);
+                        totalhrs += hrsto;
+                        i++;
+                        if (trycheck == false)
+                        {
+                            switch (item.Attendance.C17)
+                            {
+                                case "A":
+                                    totalabsent++;
+                                    break;
+                                case "O":
+                                    totaloff++;
+                                    break;
+                                case "T":
+                                    totaltransfer++;
+                                    break;
+                                case "S":
+                                    totalsick++;
+                                    break;
+                                case "V":
+                                    totalleave++;
+                                    break;
+                            }
+                        }
+                    }
+                    else if (date.Day == 18)
+                    {
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Attendance.C18)
+                        </td>
+                        var trycheck = int.TryParse(item.Attendance.C18, out var hrsto);
+                        totalhrs += hrsto;
+                        i++;
+                        if (trycheck == false)
+                        {
+                            switch (item.Attendance.C18)
+                            {
+                                case "A":
+                                    totalabsent++;
+                                    break;
+                                case "O":
+                                    totaloff++;
+                                    break;
+                                case "T":
+                                    totaltransfer++;
+                                    break;
+                                case "S":
+                                    totalsick++;
+                                    break;
+                                case "V":
+                                    totalleave++;
+                                    break;
+                            }
+                        }
+                    }
+                    else if (date.Day == 19)
+                    {
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Attendance.C19)
+                        </td>
+                        var trycheck = int.TryParse(item.Attendance.C19, out var hrsto);
+                        totalhrs += hrsto;
+                        i++;
+                        if (trycheck == false)
+                        {
+                            switch (item.Attendance.C19)
+                            {
+                                case "A":
+                                    totalabsent++;
+                                    break;
+                                case "O":
+                                    totaloff++;
+                                    break;
+                                case "T":
+                                    totaltransfer++;
+                                    break;
+                                case "S":
+                                    totalsick++;
+                                    break;
+                                case "V":
+                                    totalleave++;
+                                    break;
+                            }
+                        }
+                    }
+                    else if (date.Day == 20)
+                    {
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Attendance.C20)
+                        </td>
+                        var trycheck = int.TryParse(item.Attendance.C20, out var hrsto);
+                        totalhrs += hrsto;
+                        i++;
+                        if (trycheck == false)
+                        {
+                            switch (item.Attendance.C20)
+                            {
+                                case "A":
+                                    totalabsent++;
+                                    break;
+                                case "O":
+                                    totaloff++;
+                                    break;
+                                case "T":
+                                    totaltransfer++;
+                                    break;
+                                case "S":
+                                    totalsick++;
+                                    break;
+                                case "V":
+                                    totalleave++;
+                                    break;
+                            }
+                        }
+                    }
+                    else if (date.Day == 21)
+                    {
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Attendance.C21)
+                        </td>
+                        var trycheck = int.TryParse(item.Attendance.C21, out var hrsto);
+                        totalhrs += hrsto;
+                        i++;
+                        if (trycheck == false)
+                        {
+                            switch (item.Attendance.C21)
+                            {
+                                case "A":
+                                    totalabsent++;
+                                    break;
+                                case "O":
+                                    totaloff++;
+                                    break;
+                                case "T":
+                                    totaltransfer++;
+                                    break;
+                                case "S":
+                                    totalsick++;
+                                    break;
+                                case "V":
+                                    totalleave++;
+                                    break;
+                            }
+                        }
+                    }
+                    else if (date.Day == 22)
+                    {
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Attendance.C22)
+                        </td>
+                        var trycheck = int.TryParse(item.Attendance.C22, out var hrsto);
+                        totalhrs += hrsto;
+                        i++;
+                        if (trycheck == false)
+                        {
+                            switch (item.Attendance.C22)
+                            {
+                                case "A":
+                                    totalabsent++;
+                                    break;
+                                case "O":
+                                    totaloff++;
+                                    break;
+                                case "T":
+                                    totaltransfer++;
+                                    break;
+                                case "S":
+                                    totalsick++;
+                                    break;
+                                case "V":
+                                    totalleave++;
+                                    break;
+                            }
+                        }
+                    }
+                    else if (date.Day == 23)
+                    {
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Attendance.C23)
+                        </td>
+                        var trycheck = int.TryParse(item.Attendance.C23, out var hrsto);
+                        totalhrs += hrsto;
+                        i++;
+                        if (trycheck == false)
+                        {
+                            switch (item.Attendance.C23)
+                            {
+                                case "A":
+                                    totalabsent++;
+                                    break;
+                                case "O":
+                                    totaloff++;
+                                    break;
+                                case "T":
+                                    totaltransfer++;
+                                    break;
+                                case "S":
+                                    totalsick++;
+                                    break;
+                                case "V":
+                                    totalleave++;
+                                    break;
+                            }
+                        }
+                    }
+                    else if (date.Day == 24)
+                    {
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Attendance.C24)
+                        </td>
+                        var trycheck = int.TryParse(item.Attendance.C24, out var hrsto);
+                        totalhrs += hrsto;
+                        i++;
+                        if (trycheck == false)
+                        {
+                            switch (item.Attendance.C24)
+                            {
+                                case "A":
+                                    totalabsent++;
+                                    break;
+                                case "O":
+                                    totaloff++;
+                                    break;
+                                case "T":
+                                    totaltransfer++;
+                                    break;
+                                case "S":
+                                    totalsick++;
+                                    break;
+                                case "V":
+                                    totalleave++;
+                                    break;
+                            }
+                        }
+                    }
+                    else if (date.Day == 25)
+                    {
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Attendance.C25)
+                        </td>
+                        var trycheck = int.TryParse(item.Attendance.C25, out var hrsto);
+                        totalhrs += hrsto;
+                        i++;
+                        if (trycheck == false)
+                        {
+                            switch (item.Attendance.C25)
+                            {
+                                case "A":
+                                    totalabsent++;
+                                    break;
+                                case "O":
+                                    totaloff++;
+                                    break;
+                                case "T":
+                                    totaltransfer++;
+                                    break;
+                                case "S":
+                                    totalsick++;
+                                    break;
+                                case "V":
+                                    totalleave++;
+                                    break;
+                            }
+                        }
+                    }
+                    else if (date.Day == 26)
+                    {
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Attendance.C26)
+                        </td>
+                        var trycheck = int.TryParse(item.Attendance.C26, out var hrsto);
+                        totalhrs += hrsto;
+                        i++;
+                        if (trycheck == false)
+                        {
+                            switch (item.Attendance.C26)
+                            {
+                                case "A":
+                                    totalabsent++;
+                                    break;
+                                case "O":
+                                    totaloff++;
+                                    break;
+                                case "T":
+                                    totaltransfer++;
+                                    break;
+                                case "S":
+                                    totalsick++;
+                                    break;
+                                case "V":
+                                    totalleave++;
+                                    break;
+                            }
+                        }
+                    }
+                    else if (date.Day == 27)
+                    {
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Attendance.C27)
+                        </td>
+                        var trycheck = int.TryParse(item.Attendance.C27, out var hrsto);
+                        totalhrs += hrsto;
+                        i++;
+                        if (trycheck == false)
+                        {
+                            switch (item.Attendance.C27)
+                            {
+                                case "A":
+                                    totalabsent++;
+                                    break;
+                                case "O":
+                                    totaloff++;
+                                    break;
+                                case "T":
+                                    totaltransfer++;
+                                    break;
+                                case "S":
+                                    totalsick++;
+                                    break;
+                                case "V":
+                                    totalleave++;
+                                    break;
+                            }
+                        }
+                    }
+                    else if (date.Day == 28)
+                    {
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Attendance.C28)
+                        </td>
+                        var trycheck = int.TryParse(item.Attendance.C28, out var hrsto);
+                        totalhrs += hrsto;
+                        i++;
+                        if (trycheck == false)
+                        {
+                            switch (item.Attendance.C28)
+                            {
+                                case "A":
+                                    totalabsent++;
+                                    break;
+                                case "O":
+                                    totaloff++;
+                                    break;
+                                case "T":
+                                    totaltransfer++;
+                                    break;
+                                case "S":
+                                    totalsick++;
+                                    break;
+                                case "V":
+                                    totalleave++;
+                                    break;
+                            }
+                        }
+                    }
+                    else if (date.Day == 29)
+                    {
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Attendance.C29)
+                        </td>
+                        var trycheck = int.TryParse(item.Attendance.C29, out var hrsto);
+                        totalhrs += hrsto;
+                        i++;
+                        if (trycheck == false)
+                        {
+                            switch (item.Attendance.C29)
+                            {
+                                case "A":
+                                    totalabsent++;
+                                    break;
+                                case "O":
+                                    totaloff++;
+                                    break;
+                                case "T":
+                                    totaltransfer++;
+                                    break;
+                                case "S":
+                                    totalsick++;
+                                    break;
+                                case "V":
+                                    totalleave++;
+                                    break;
+                            }
+                        }
+                    }
+                    else if (date.Day == 30)
+                    {
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Attendance.C30)
+                        </td>
+                        var trycheck = int.TryParse(item.Attendance.C30, out var hrsto);
+                        totalhrs += hrsto;
+                        i++;
+                        if (trycheck == false)
+                        {
+                            switch (item.Attendance.C30)
+                            {
+                                case "A":
+                                    totalabsent++;
+                                    break;
+                                case "O":
+                                    totaloff++;
+                                    break;
+                                case "T":
+                                    totaltransfer++;
+                                    break;
+                                case "S":
+                                    totalsick++;
+                                    break;
+                                case "V":
+                                    totalleave++;
+                                    break;
+                            }
+                        }
+                    }
+                    else if (date.Day == 31)
+                    {
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Attendance.C31)
+                        </td>
+                        var trycheck = int.TryParse(item.Attendance.C31, out var hrsto);
+                        totalhrs += hrsto;
+                        i++;
+                        if (trycheck == false)
+                        {
+                            switch (item.Attendance.C31)
+                            {
+                                case "A":
+                                    totalabsent++;
+                                    break;
+                                case "O":
+                                    totaloff++;
+                                    break;
+                                case "T":
+                                    totaltransfer++;
+                                    break;
+                                case "S":
+                                    totalsick++;
+                                    break;
+                                case "V":
+                                    totalleave++;
+                                    break;
+                            }
+                        }
+                    }
+
+                    i++;
                 }
 
-                <td>
-                    @Html.DisplayFor(modelItem => item.Empno)
-                </td>
-                if (date.Day == 1)
-                {
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Attendance.C1)
-                    </td>
-                }
-                else if (date.Day == 2)
-                {
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Attendance.C2)
-                    </td>
-                }
-                else if (date.Day == 3)
-                {
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Attendance.C3)
-                    </td>
-                }
-                else if (date.Day == 4)
-                {
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Attendance.C4)
-                    </td>
-                }
-                else if (date.Day == 5)
-                {
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Attendance.C5)
-                    </td>
-                }
-                else if (date.Day == 6)
-                {
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Attendance.C6)
-                    </td>
-                }
-                else if (date.Day == 7)
-                {
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Attendance.C7)
-                    </td>
-                }
-                else if (date.Day == 8)
-                {
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Attendance.C8)
-                    </td>
-                }
-                else if (date.Day == 9)
-                {
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Attendance.C9)
-                    </td>
-                }
-                else if (date.Day == 10)
-                {
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Attendance.C10)
-                    </td>
-                }
-                else if (date.Day == 11)
-                {
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Attendance.C11)
-                    </td>
-                }
-                else if (date.Day == 12)
-                {
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Attendance.C12)
-                    </td>
-                }
-                else if (date.Day == 13)
-                {
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Attendance.C13)
-                    </td>
-                }
-                else if (date.Day == 14)
-                {
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Attendance.C14)
-                    </td>
-                }
-                else if (date.Day == 15)
-                {
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Attendance.C15)
-                    </td>
-                }
-                else if (date.Day == 16)
-                {
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Attendance.C16)
-                    </td>
-                }
-                else if (date.Day == 17)
-                {
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Attendance.C17)
-                    </td>
-                }
-                else if (date.Day == 18)
-                {
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Attendance.C18)
-                    </td>
-                }
-                else if (date.Day == 19)
-                {
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Attendance.C19)
-                    </td>
-                }
-                else if (date.Day == 20)
-                {
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Attendance.C20)
-                    </td>
-                }
-                else if (date.Day == 21)
-                {
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Attendance.C21)
-                    </td>
-                }
-                else if (date.Day == 22)
-                {
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Attendance.C22)
-                    </td>
-                }
-                else if (date.Day == 23)
-                {
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Attendance.C23)
-                    </td>
-                }
-                else if (date.Day == 24)
-                {
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Attendance.C24)
-                    </td>
-                }
-                else if (date.Day == 25)
-                {
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Attendance.C25)
-                    </td>
-                }
-                else if (date.Day == 26)
-                {
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Attendance.C26)
-                    </td>
-                }
-                else if (date.Day == 27)
-                {
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Attendance.C27)
-                    </td>
-                }
-                else if (date.Day == 28)
-                {
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Attendance.C28)
-                    </td>
-                }
-                else if (date.Day == 29)
-                {
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Attendance.C29)
-                    </td>
-                }
-                else if (date.Day == 30)
-                {
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Attendance.C30)
-                    </td>
-                }
-                else if (date.Day == 31)
-                {
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Attendance.C31)
-                    </td>
-                }
-
-                i++;
             }
 
-        }
-    </table>
+        </table>
+        <br />
+        <br />
+        <br />
+        <table class="table" style="border: 1px solid black; border-collapse: collapse;">
+            <tr>
+                <th>total employees</th>
+                <th> hours</th>
+                <th> absent</th>
+                <th> sick</th>
+                <th> transfer</th>
+                <th> off</th>
+                <th> vacation</th>
+            </tr>
+            <tr>
+                <td>@totalemp</td>
+                <td>@totalhrs</td>
+                @if (totalabsent == 0)
+                {
+                    <td>N/A</td>
+                }
+                else
+                {
+                    <td>@totalabsent</td>
+                }
+                @if (totalsick == 0)
+                {
+                    <td>N/A</td>
+                }
+                else
+                {
+                    <td>@totalsick</td>
+                }
+                @if (totaltransfer == 0)
+                {
+                    <td>N/A</td>
+                }
+                else
+                {
+                    <td>@totaltransfer</td>
+                }
+                @if (totaloff == 0)
+                {
+                    <td>N/A</td>
+                }
+                else
+                {
+                    <td>@totaloff</td>
+                }
+                @if (totalleave == 0)
+                {
+                    <td>N/A</td>
+                }
+                else
+                {
+                    <td>@totalleave</td>
+                }
+            </tr>
+        </table>
+    </div>
     <br />
     <br />
     <br />

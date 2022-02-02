@@ -96,6 +96,66 @@ namespace onlygodknows.Controllers
         }
 
         [Authorize(Roles = "Project_manager,HR_manager")]
+        public ActionResult approveall()
+        {
+
+            //if (User.IsInRole("Project_manager"))
+            {
+                var apflist = new List<approval>();
+                var ap2 = this.db.approvals
+                    .Where(x => x.status == "submitted").ToList();
+                var suplist = db.ManPowerSuppliers.ToList();
+                var proplist = db.ProjectLists.ToList();
+
+                var t = new List<ProjectList>();
+                var uid = this.User.Identity.GetUserId();
+                var uid1 = this.db.AspNetUsers.Find(uid);
+                if (uid1.csid != 0)
+                {
+                    var scid = this.db.CsPermissions.Where(x => x.CsUser == uid1.csid).ToList();
+                    t = new List<ProjectList>();
+                    foreach (var i in scid) t.Add(this.db.ProjectLists.Find(i.Project));
+                }
+
+                foreach (var list in t)
+                {
+                    if (!apflist.Exists(x=>x.P_id == list.ID))
+                    {
+                        apflist.AddRange(ap2.FindAll(x=>x.P_id == list.ID && x.status == "submitted"));
+                    }
+                }
+                var j = 0;
+                var apppre = new approval();
+                apppre = null;
+                foreach (var approval in apflist.OrderBy(x=>x.P_id).ThenByDescending(x=>x.adate))
+                {
+                    j++;
+                    var sup = suplist.Find(x => x.ID == approval.MPS_id).Supplier;
+                    var prop = proplist.Find(x => x.ID == approval.P_id).PROJECT_NAME;
+                    var da = approval.adate; 
+                    var asq = 0;
+                    if (apppre == null)
+                    {
+                        apppre = approval;
+                        if (da != null)
+                            SendMail(sup, prop, da.Value, this.User.Identity.Name, approval.Susername, "approved", true, " ", "HR_manager");
+                    }
+                    approval.status = "approved";
+                    approval.Ausername = this.User.Identity.Name;
+                    this.db.Entry(approval).State = EntityState.Modified;
+                    this.db.SaveChanges();
+                    if (apppre.P_id != approval.P_id && apppre.MPS_id != approval.MPS_id)
+                    {
+                        if (da != null) 
+                            SendMail(sup, prop, da.Value, this.User.Identity.Name, approval.Susername, "approved", true, " ", "HR_manager");
+                        apppre = approval;
+                    }
+                }
+            }
+            return this.RedirectToAction("appsum");
+        }
+
+        [Authorize(Roles = "Project_manager,HR_manager")]
         public ActionResult approved1(long? mp, long? p, DateTime? da)
         {
             if (User.IsInRole("Project_manager"))
@@ -168,7 +228,6 @@ namespace onlygodknows.Controllers
             {
                 t = this.db.ProjectLists.ToList();
             }
-
             var ap2 = new List<approval>();
             foreach (var listp in t)
             {
@@ -999,9 +1058,16 @@ namespace onlygodknows.Controllers
 
             if (ap2.Count > 0) this.ViewBag.suser = ap2.First().Susername;
             var ap3 = new List<approval>(ap2);
+            var emplist = db.LabourMasters.ToList();
             foreach (var item in ap3)
             {
                 var date = item.adate.Value;
+                var empid = emplist.Find(x => x.EMPNO == item.Empno);
+                if (empid != null && (item.name.IsNullOrWhiteSpace() || item.position.IsNullOrWhiteSpace()))
+                {
+                    item.name = empid.Person_Name;
+                    item.position = empid.Position;
+                }
 
                 if (date.Day == 1 && (item.Attendance.C1=="0" || item.Attendance.C1==null))
                 { ap2.Remove(item); }
@@ -1066,6 +1132,11 @@ namespace onlygodknows.Controllers
                 else if (date.Day == 31 && (item.Attendance.C31=="0" || item.Attendance.C31==null))
                 { ap2.Remove(item); }
             }
+
+
+            this.ViewBag.mtsmonth1 = mtsmonth2;
+            this.ViewBag.csmps1 = db.ManPowerSuppliers.ToList().Find(x=>manPower != null && x.ID == manPower.Value).Supplier;
+            this.ViewBag.csp1 = this.db.ProjectLists.ToList().Find(x=>pro != null && x.ID == pro.Value).PROJECT_NAME;
             return this.View(ap2);
         }
 
@@ -1212,14 +1283,14 @@ namespace onlygodknows.Controllers
                 // }
                 var cspid = pasa.First().csid;
                 pasa.Remove(pasa.First());
-                foreach (var ccpasa in pasa) message.Cc.Add(new MailboxAddress(ccpasa.Email));
+                foreach (var ccpasa in pasa) message.Cc.Add(new MailboxAddress("",ccpasa.Email));
                 if (!HRrole.IsNullOrWhiteSpace())
                 {
                     var userHR = context.Users
                         .Where(x => x.UserName == aName).ToList();
                     foreach (var user1 in userHR)
                     {
-                        message.Cc.Add(new MailboxAddress(user1.Email));
+                        message.Cc.Add(new MailboxAddress("",user1.Email));
                     }
                 }
 
@@ -1427,6 +1498,9 @@ Please note that the Time-Sheet for the date " + da.ToShortDateString() + ", Man
                                 et.submitted_by = apall.Find(
                                     x => x.status != "submitted" && x.A_id == attendance.ID && x.adate == dm).Susername;
                             }
+
+                        et.name = epno.Person_Name;
+                        et.position = epno.Position;
 
                         if (date1.Day == 1) et.hours = attendance.C1;
 

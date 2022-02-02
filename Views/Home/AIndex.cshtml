@@ -58,9 +58,11 @@
     <br/>
     <div id="create " onclick="total()">
         <div class="row">
-            <input type="text" value="@ViewBag.mdate" disabled="disabled"/>
-            <input type="text" value="@ViewBag.pid" disabled="disabled"/>
-            <input type="submit" value="submit entry" class="btn btn-default" name="action:AIndex" id="aaq1"/>
+            <div class="col-lg-10">
+                <input type="text" value="@ViewBag.mdate" disabled="disabled"/>
+                <input type="text" value="@ViewBag.pid" disabled="disabled"/>
+                <input type="submit" value="submit entry" class="btn btn-default" name="action:AIndex" id="aaq1"/>
+            </div>
         </div>
         <div class="form-horizontal" onclick="total()">
             <div class="form-group">
@@ -292,6 +294,7 @@
             <th>
                 @Html.DisplayNameFor(model => model.attendance.SubMain)
             </th>
+            <th>fill date</th>
         }
         <th>#SN</th>
         <th>
@@ -421,6 +424,7 @@
                     <td>
                         @Html.DisplayFor(modelItem => item.SubMain)
                     </td>
+                    <td> @Html.DisplayFor(modelItem => item.Path)</td>
                 }
             }
             <td>

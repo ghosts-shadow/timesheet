@@ -7,313 +7,365 @@
 @if (Request.IsAuthenticated)
 {
 
-using (Html.BeginForm("Asearch", "Home", FormMethod.Get, new { id = "form1" }))
-{
-    <h2>search</h2>
-    <div class="col-md-2">
-        <b>employee no:</b>
-        @Html.TextBox("search", "", new { @class = "form-control" })
-    </div>
-    <div class="col-md-2" style="margin-top:1.2%">
-        <input type="submit" value="search" class="btn btn-default" />
-    </div>
-    <br/>
-    <br/>
-    <br/>
-    <br/>
-    <table class="table">
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.MainTimeSheet.ProjectList.PROJECT_NAME)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.MainTimeSheet.ManPowerSupplier1.Supplier)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.MainTimeSheet.TMonth)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.LabourMaster.EMPNO)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.SubMain)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.C1)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.C2)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.C3)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.C4)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.C5)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.C6)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.C7)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.C8)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.C9)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.C10)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.C11)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.C12)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.C13)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.C14)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.C15)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.C16)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.C17)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.C18)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.C19)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.C20)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.C21)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.C22)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.C23)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.C24)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.C25)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.C26)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.C27)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.C28)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.C29)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.C30)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.C31)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.TotalHours)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.TotalOverTime)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.TotalAbsent)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.TotalVL)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.TotalTransefer)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.TotalSickLeave)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.FridayHours)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Holidays)
-            </th>
-            @*
-        <th>
-            @Html.DisplayNameFor(model => model.TotalWorkingDays)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.AccommodationDeduction)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.FoodDeduction)
-        </th>*@
-        </tr>
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <script>
+        $(function () {
+            $("#datepicker1").datepicker({
+                altField: "#alternate",
+                altFormat: "MM,yy",
+                changeMonth: true,
+                changeYear: true,
+                showOtherMonths: true,
+                selectOtherMonths: true,
+                showButtonPanel: true,
+                dateFormat: "dd M yy"
+            });
+            $("#datepicker").datepicker({
+                altField: "#alternate",
+                altFormat: "MM,yy",
+                changeMonth: true,
+                changeYear: true,
+                showOtherMonths: true,
+                selectOtherMonths: true,
+                showButtonPanel: true,
+                dateFormat: "dd M yy",
+                onSelect: function (date) {
 
-    @foreach (var item in Model)
+                    var selectedDate = new Date(date);
+                    var msecsInADay = 86400000;
+                    var endDate = new Date(selectedDate.getTime() + msecsInADay);
+
+                    //Set Minimum Date of EndDatePicker After Selected Date of StartDatePicker
+                    $("#datepicker1").datepicker("option", "minDate", endDate);
+                }
+            });
+        });
+    </script>
+    using (Html.BeginForm("Asearch", "Home", FormMethod.Get, new { id = "form1" }))
     {
-    <tr>
-        <td>
-            @Html.DisplayFor(modelItem => item.MainTimeSheet.ProjectList.PROJECT_NAME)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.MainTimeSheet.ManPowerSupplier1.ShortName)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.MainTimeSheet.TMonth)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.LabourMaster.EMPNO)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.SubMain)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.C1)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.C2)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.C3)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.C4)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.C5)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.C6)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.C7)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.C8)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.C9)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.C10)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.C11)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.C12)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.C13)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.C14)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.C15)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.C16)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.C17)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.C18)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.C19)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.C20)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.C21)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.C22)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.C23)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.C24)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.C25)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.C26)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.C27)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.C28)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.C29)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.C30)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.C31)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.TotalHours)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.TotalOverTime)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.TotalAbsent)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.TotalVL)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.TotalTransefer)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.TotalSickLeave)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.FridayHours)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.AccommodationDeduction)
-        </td>
-        @*
-        <td>
-            @Html.DisplayFor(modelItem => item.FoodDeduction)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.TotalWorkingDays)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Holidays)
-        </td>*@
-    </tr>
-    }
+        <h2>search</h2>
+        <div class="row">
+            <div class="col-md-3">
+                @Html.Label("employee no:", new { @class = "control-label" })
+                @Html.TextBox("search", "", new { @class = "form-control" })
+            </div>
+            <div class="col-md-3">
+                @Html.Label("date from:", new { @class = "control-label" })
+                @Html.TextBox("datefrom", "", new { @class = "form-control",@id= "datepicker" })
+            </div>
+            <div class="col-md-3">
+                @Html.Label("to:", new { @class = "control-label " })
+                @Html.TextBox("dateto", "", new { @class = "form-control", @id = "datepicker1" })
 
-    </table>
-}}
+            </div>
+            <div class="col-md-1" style="margin-top:1.2%">
+                <input type="submit" value="search" class="btn btn-default" />
+            </div>
+        </div>
+        if (Model.Count() != 0)
+        {
+            <div>
+                <b><a href="@Url.Action("DownloadExcelAsearch", "home", new {search = ViewBag.search, datefrom = ViewBag.datefrom, dateto = ViewBag.dateto})">Download Excel</a></b>
+            </div>
+        }
+        <br />
+        <br />
+        <table class="table">
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.MainTimeSheet.ProjectList.PROJECT_NAME)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.MainTimeSheet.ManPowerSupplier1.Supplier)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.MainTimeSheet.TMonth)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.LabourMaster.EMPNO)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.SubMain)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.C1)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.C2)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.C3)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.C4)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.C5)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.C6)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.C7)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.C8)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.C9)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.C10)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.C11)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.C12)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.C13)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.C14)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.C15)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.C16)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.C17)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.C18)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.C19)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.C20)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.C21)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.C22)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.C23)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.C24)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.C25)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.C26)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.C27)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.C28)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.C29)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.C30)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.C31)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.TotalHours)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.TotalOverTime)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.TotalAbsent)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.TotalVL)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.TotalTransefer)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.TotalSickLeave)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.FridayHours)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Holidays)
+                </th>
+                @*
+                    <th>
+                        @Html.DisplayNameFor(model => model.TotalWorkingDays)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.AccommodationDeduction)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.FoodDeduction)
+                    </th>*@
+            </tr>
+
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.MainTimeSheet.ProjectList.PROJECT_NAME)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.MainTimeSheet.ManPowerSupplier1.ShortName)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.MainTimeSheet.TMonth)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.LabourMaster.EMPNO)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.SubMain)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.C1)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.C2)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.C3)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.C4)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.C5)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.C6)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.C7)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.C8)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.C9)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.C10)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.C11)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.C12)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.C13)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.C14)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.C15)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.C16)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.C17)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.C18)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.C19)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.C20)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.C21)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.C22)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.C23)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.C24)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.C25)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.C26)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.C27)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.C28)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.C29)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.C30)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.C31)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.TotalHours)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.TotalOverTime)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.TotalAbsent)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.TotalVL)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.TotalTransefer)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.TotalSickLeave)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.FridayHours)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.AccommodationDeduction)
+                    </td>
+                    @*
+                        <td>
+                            @Html.DisplayFor(modelItem => item.FoodDeduction)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.TotalWorkingDays)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Holidays)
+                        </td>*@
+                </tr>
+            }
+
+        </table>
+    }
+}

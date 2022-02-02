@@ -12,11 +12,16 @@
         if (User.IsInRole("Project_manager"))
         {
             <h2>overtime request</h2>
-            <input type="submit" value="Create new" class="btn btn-default" onclick="window.location.href = '@Url.Action("Create", "overtimerefs")'"/>
+            <input type="submit" value="Create new" class="btn btn-default" onclick="window.location.href = '@Url.Action("Create", "overtimerefs")'" />
         }
         else if (User.IsInRole("Head_of_projects"))
         {
             <h2>overtime approval</h2>
+            <div class="row">
+                <div class="col-md-2" style="align-items:end">
+                    <input type="submit" value="Approve ALL" class="btn btn-default" style="color: green;" onclick="window.location.href = '@Url.Action("approveall","overtimeemployeelists")'" />
+                </div>
+            </div>
         }
         else
         {
@@ -65,8 +70,12 @@
             {
                 if (item.overtimeemployeelists.Count != 0)
                 {
+                    if (item.overtimeref1 == "RA_005")
+                    {
+                        var zs = 0;
+                    }
                    
-                    if (item.overtimeemployeelists.First().hopAP == null)
+                    if (item.overtimeemployeelists.Last().hopAP == null)
                     {
                         <td>
                             <div class="row">
