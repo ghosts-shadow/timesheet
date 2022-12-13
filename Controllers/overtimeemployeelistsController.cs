@@ -13,7 +13,7 @@ using onlygodknows.Models;
 
 namespace onlygodknows.Controllers
 {
-    [Authorize(Roles = "Admin,Head_of_projects,HR_manager,Project_manager,logistics_officer,Admin_View")]
+    [Authorize(Roles = "Admin,Head_of_projects(citiscape),Head_of_projects(grove),HR_manager,Project_manager,logistics_officer,Admin_View")]
     public class overtimeemployeelistsController : Controller
     {
         private LogisticsSoftEntities db = new LogisticsSoftEntities();
@@ -47,7 +47,7 @@ namespace onlygodknows.Controllers
         }
 
         // GET: overtimeemployeelists/Create
-        [Authorize(Roles = "Project_manager,Head_of_projects,Admin")]
+        [Authorize(Roles = "Project_manager,Head_of_projects(citiscape),Head_of_projects(grove),Admin")]
         public ActionResult Create(overtimeref otr)
         {
             var data = new[]
@@ -172,7 +172,7 @@ namespace onlygodknows.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = "Project_manager,Head_of_projects,Admin")]
+        [Authorize(Roles = "Project_manager,Head_of_projects(citiscape),Head_of_projects(grove),Admin")]
         public ActionResult Create(overtimeemployeelist[] overtimeemployeelist)
         {
             var otref2 = TempData["mydata"] as overtimeref;
@@ -306,7 +306,7 @@ namespace onlygodknows.Controllers
             return View(overtimeemployeelist[0]);
         }
 
-        [Authorize(Roles = "Head_of_projects")]
+        [Authorize(Roles = "Head_of_projects(citiscape),Head_of_projects(grove)")]
         public ActionResult aprestatus(int tr, string message)
         {
             var trvar = db.overtimerefs.Where(x => x.Id == tr).ToList();
@@ -353,7 +353,25 @@ namespace onlygodknows.Controllers
 
         public ActionResult approveall()
         {
-            var notapprovedlist = db.overtimeemployeelists.Where(x => x.status == null).ToList();
+            var projectlist = new List<ProjectList>();
+            if (Request.IsAuthenticated)
+            {
+                if (User.IsInRole("Head_of_projects(grove)"))
+                {
+                    projectlist = db.ProjectLists.Where(x =>x.excute_by != null && x.excute_by == "grove").ToList();
+                }
+                if (User.IsInRole("Head_of_projects(citiscape)"))
+                {
+                    projectlist = db.ProjectLists.Where(x =>x.excute_by  == null || x.excute_by == "citiscape").ToList();
+                }
+            }
+
+            var notapprovedlist = new List<overtimeemployeelist>();
+            foreach (var list in projectlist)
+            {
+                notapprovedlist.AddRange(db.overtimeemployeelists.Where(x => x.status == null && x.overtimeref.overtimepro == list.ID).ToList());
+            }
+            
             var pertr = new int?();
             pertr = null;
             foreach (var nota in notapprovedlist)
@@ -468,8 +486,17 @@ namespace onlygodknows.Controllers
             }
             else if (action == "submitted")
             {
-                var users = context.Users
-                    .Where(x => x.Roles.Select(y => y.RoleId).Contains("7ab5062b-c31b-4f73-992a-f289396292da")).ToList();
+                var users = new List<ApplicationUser>();
+                if (trid.ProjectList.excute_by == "grove")
+                {
+                    users = context.Users
+                        .Where(x => x.Roles.Select(y => y.RoleId).Contains("8a0eefde-9cec-4f72-9270-a2592404b1ac")).ToList();
+                }
+                else
+                {
+                    users = context.Users
+                        .Where(x => x.Roles.Select(y => y.RoleId).Contains("4a6f8eb7-60ed-4ae2-994b-50d49b2ba3a2")).ToList();
+                }
                 foreach (var csp in users)
                 {
                     var manvar = man.Find(x => x.Id == csp.Id);
@@ -507,7 +534,7 @@ namespace onlygodknows.Controllers
         }
 
         // GET: overtimeemployeelists/Edit/5
-        [Authorize(Roles = "Project_manager,Head_of_projects")]
+        [Authorize(Roles = "Project_manager,Head_of_projects(citiscape),Head_of_projects(grove)")]
         public ActionResult Edit(int? id)
         {
             if (id == null)
@@ -530,7 +557,7 @@ namespace onlygodknows.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = "Project_manager,Head_of_projects")]
+        [Authorize(Roles = "Project_manager,Head_of_projects(citiscape),Head_of_projects(grove)")]
         public ActionResult Edit(overtimeemployeelist overtimeemployeelist)
         {
             if (overtimeemployeelist.status.IsNullOrWhiteSpace())

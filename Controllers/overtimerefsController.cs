@@ -16,7 +16,7 @@ namespace onlygodknows.Controllers
         private LogisticsSoftEntities db = new LogisticsSoftEntities();
 
         // GET: overtimerefs
-        [Authorize(Roles = "Admin,Head_of_projects,HR_manager,Project_manager,logistics_officer,Admin_View")]
+        [Authorize(Roles = "Admin,Head_of_projects(citiscape),Head_of_projects(grove),HR_manager,Project_manager,logistics_officer,Admin_View")]
         public ActionResult Index()
         {
             var uid = this.User.Identity.GetUserId();
@@ -24,14 +24,29 @@ namespace onlygodknows.Controllers
             var t = new List<ProjectList>();
             var towrlist = db.towrefs.ToList();
             if (uid1.csid != 0 && !(this.User.IsInRole("Admin") || this.User.IsInRole("HR_manager") ||
-                                    this.User.IsInRole("Head_of_projects")))
+                                    this.User.IsInRole("Head_of_projects(citiscape)") ||
+                                    this.User.IsInRole("Head_of_projects(grove)")))
             {
                 var scid = this.db.CsPermissions.Where(x => x.CsUser == uid1.csid).ToList();
                 foreach (var i in scid) t.Add(this.db.ProjectLists.Find(i.Project));
             }
             else
             {
-                t = this.db.ProjectLists.ToList();
+                var projectlist = new List<ProjectList>();
+                if (Request.IsAuthenticated)
+                {
+                    if (User.IsInRole("Head_of_projects(grove)"))
+                    {
+                        projectlist = db.ProjectLists.Where(x => x.excute_by != null && x.excute_by == "grove").ToList();
+                    }
+                    else if (User.IsInRole("Head_of_projects(citiscape)"))
+                    {
+                        projectlist = db.ProjectLists.Where(x => x.excute_by == null || x.excute_by == "citiscape").ToList();
+                    }
+
+                }
+
+                t = projectlist;
             }
 
             var overtimerefs = new List<overtimeref>();
@@ -64,7 +79,7 @@ namespace onlygodknows.Controllers
             return View(overtimeref);
         }
 
-        [Authorize(Roles = "Project_manager,Head_of_projects,Admin")]
+        [Authorize(Roles = "Project_manager,Head_of_projects(citiscape),Head_of_projects(grove),Admin")]
         // GET: overtimerefs/Create
         public ActionResult Create()
         {
@@ -72,15 +87,28 @@ namespace onlygodknows.Controllers
             var uid1 = this.db.AspNetUsers.Find(uid);
             var t = new List<ProjectList>();
             var towrlist = db.towrefs.ToList();
-            if (uid1.csid != 0 && !(this.User.IsInRole("Admin") || this.User.IsInRole("HR_manager") ||
-                                    this.User.IsInRole("Head_of_projects")))
+            if (uid1.csid != 0 && !(this.User.IsInRole("Admin") || this.User.IsInRole("HR_manager") || this.User.IsInRole("Head_of_projects(citiscape)") || this.User.IsInRole("Head_of_projects(grove)")))
             {
                 var scid = this.db.CsPermissions.Where(x => x.CsUser == uid1.csid).ToList();
                 foreach (var i in scid) t.Add(this.db.ProjectLists.Find(i.Project));
             }
             else
             {
-                t = this.db.ProjectLists.ToList();
+                var projectlist = new List<ProjectList>();
+                if (Request.IsAuthenticated)
+                {
+                    if (User.IsInRole("Head_of_projects(grove)"))
+                    {
+                        projectlist = db.ProjectLists.Where(x => x.excute_by != null && x.excute_by == "grove").ToList();
+                    }
+                    else if (User.IsInRole("Head_of_projects(citiscape)"))
+                    {
+                        projectlist = db.ProjectLists.Where(x => x.excute_by == null || x.excute_by == "citiscape").ToList();
+                    }
+
+                }
+
+                t = projectlist;
             }
 
             ViewBag.overtimepro = new SelectList(t.OrderBy(x=>x.PROJECT_NAME), "ID", "PROJECT_NAME");
@@ -92,22 +120,35 @@ namespace onlygodknows.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = "Project_manager,Head_of_projects,Admin")]
+        [Authorize(Roles = "Project_manager,Head_of_projects(citiscape),Head_of_projects(grove),Admin")]
         public ActionResult Create(overtimeref overtimeref)
         {
             var uid = this.User.Identity.GetUserId();
             var uid1 = this.db.AspNetUsers.Find(uid);
             var t = new List<ProjectList>();
             var towrlist = db.towrefs.ToList();
-            if (uid1.csid != 0 && !(this.User.IsInRole("Admin") || this.User.IsInRole("HR_manager") ||
-                                    this.User.IsInRole("Head_of_projects")))
+            if (uid1.csid != 0 && !(this.User.IsInRole("Admin") || this.User.IsInRole("HR_manager") || this.User.IsInRole("Head_of_projects(citiscape)") || this.User.IsInRole("Head_of_projects(grove)")))
             {
                 var scid = this.db.CsPermissions.Where(x => x.CsUser == uid1.csid).ToList();
                 foreach (var i in scid) t.Add(this.db.ProjectLists.Find(i.Project));
             }
             else
             {
-                t = this.db.ProjectLists.ToList();
+                var projectlist = new List<ProjectList>();
+                if (Request.IsAuthenticated)
+                {
+                    if (User.IsInRole("Head_of_projects(grove)"))
+                    {
+                        projectlist = db.ProjectLists.Where(x => x.excute_by != null && x.excute_by == "grove").ToList();
+                    }
+                    else if (User.IsInRole("Head_of_projects(citiscape)"))
+                    {
+                        projectlist = db.ProjectLists.Where(x => x.excute_by == null || x.excute_by == "citiscape").ToList();
+                    }
+
+                }
+
+                t = projectlist;
             }
 
             if (ModelState.IsValid)
@@ -132,7 +173,7 @@ namespace onlygodknows.Controllers
         }
 
         // GET: overtimerefs/Edit/5
-        [Authorize(Roles = "Project_manager,Head_of_projects")]
+        [Authorize(Roles = "Project_manager,Head_of_projects(citiscape),Head_of_projects(grove)")]
         public ActionResult Edit(int? id)
         {
             if (id == null)
@@ -155,7 +196,7 @@ namespace onlygodknows.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = "Project_manager,Head_of_projects")]
+        [Authorize(Roles = "Project_manager,Head_of_projects(citiscape),Head_of_projects(grove)")]
         public ActionResult Edit([Bind(Include = "Id,overtimedate,overtimeref1,overtimepro")]
             overtimeref overtimeref)
         {
@@ -171,7 +212,7 @@ namespace onlygodknows.Controllers
         }
 
         // GET: overtimerefs/Delete/5
-        [Authorize(Roles = "Project_manager,Head_of_projects")]
+        [Authorize(Roles = "Project_manager,Head_of_projects(citiscape),Head_of_projects(grove)")]
         public ActionResult Delete(int? id)
         {
             if (id == null)
@@ -194,7 +235,7 @@ namespace onlygodknows.Controllers
         public ActionResult DeleteConfirmed(int id)
         {
             overtimeref overtimeref = db.overtimerefs.Find(id);
-            if (this.User.IsInRole("Project_manager") || this.User.IsInRole("Head_of_projects"))
+            if (this.User.IsInRole("Project_manager") || this.User.IsInRole("Head_of_projects(citiscape)") || this.User.IsInRole("Head_of_projects(grove)"))
             {
                 db.overtimerefs.Remove(overtimeref);
                 db.SaveChanges();

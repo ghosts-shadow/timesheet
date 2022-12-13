@@ -33,7 +33,7 @@ namespace onlygodknows.Controllers
                     finallist1.Add(attendance);
                 }
                 var t = new List<long>();
-                var fday = ne.GetAll(attendance.MainTimeSheet.TMonth);
+                var fday = ne.GetAll(attendance.MainTimeSheet.TMonth, attendance.MainTimeSheet.Project);
                 var hlistday = ne.GetAllholi(attendance.MainTimeSheet.TMonth);
                 double.TryParse(attendance.MainTimeSheet.ManPowerSupplier1.NormalTimeUpto.ToString(), out var tho);
                 long.TryParse(attendance.C1, out var tl0);

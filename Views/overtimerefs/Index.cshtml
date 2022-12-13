@@ -14,7 +14,7 @@
             <h2>overtime request</h2>
             <input type="submit" value="Create new" class="btn btn-default" onclick="window.location.href = '@Url.Action("Create", "overtimerefs")'" />
         }
-        else if (User.IsInRole("Head_of_projects"))
+        else if (User.IsInRole("Head_of_projects(citiscape)")|| User.IsInRole("Head_of_projects(grove)"))
         {
             <h2>overtime approval</h2>
             <div class="row">
@@ -66,7 +66,7 @@
             {
                 <td></td>
             }
-            @if (User.IsInRole("Head_of_projects"))
+            @if (User.IsInRole("Head_of_projects(citiscape)")||User.IsInRole("Head_of_projects(grove)"))
             {
                 if (item.overtimeemployeelists.Count != 0)
                 {

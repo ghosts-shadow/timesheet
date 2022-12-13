@@ -190,16 +190,25 @@
 
                 if (atl.Count != 0)
                 {
-                    var filleddate = atlist.Find(x => x.SubMain == aa.First().ID).Path;
+                    var filleddatevar = atlist.Find(x => x.SubMain == aa.First().ID);
+                    var filleddate = "";
+                    if (filleddatevar == null || filleddatevar.Path.IsNullOrWhiteSpace())
+                    {
+                        filleddate = "";
+                    }
+                    else
+                    {
+                        filleddate = filleddatevar.Path;
+                    }
                     DateTime.TryParse(filleddate, out var filldates);
                     if (filleddate.IsNullOrWhiteSpace())
                     {
                         filldate(aa);
                     }
                     else if (!filleddate.Contains(ids.TMonth.ToString("d")))
-                    { 
-                       // if (ids.TMonth > filldates)
-                            filldate(aa);
+                    {
+                        // if (ids.TMonth > filldates)
+                        filldate(aa);
                     }
                 }
                 else
@@ -554,18 +563,33 @@
             return this.RedirectToAction("AIndex", mtsid);
         }
 
-        public List<int> GetAll(DateTime date)
+        public List<int> GetAll(DateTime date, long project)
         {
             var month = date.Month;
             var lastDayOfMonth = new DateTime(date.Year, date.Month, 1);
             var lastDay = DateTime.DaysInMonth(date.Year, date.Month);
             var array = new List<int>(); // dd/mm/yy
             var count = -1;
+            var weekendlist = db.weekendlists.Where(x => x.project_id == project).ToList();
+            
             for (var i = 1; i <= lastDay; i++)
             {
                 var temp = new DateTime(date.Year, month, i);
                 var day = temp.DayOfWeek;
-                if (day == DayOfWeek.Friday)
+                var weekdayno = "";
+                switch (day.ToString())
+                {
+                    case "Friday":
+                        weekdayno = "5";
+                        break;
+                    case "Saturday":
+                        weekdayno = "6";
+                        break;
+                    case "Sunday":
+                        weekdayno = "0";
+                        break;
+                }
+                if (weekendlist.Exists(x => x.weekend == weekdayno))
                 {
                     count++;
                     var dd = temp.Day;
@@ -634,8 +658,7 @@
                 var at = this.db.Attendances.ToList();
                 var atp = at.FindAll(x => x.SubMain == qw.ID);
                 var b = this.db.ManPowerSuppliers.Find(qw.ManPowerSupplier);
-                var fday = new List<int>();
-                //var fday = this.GetAll(qw.TMonth);
+                var fday = this.GetAll(qw.TMonth, qw.Project);
                 var hday = this.GetAllholi(qw.TMonth);
                 foreach (var i in hday)
                 {
@@ -4383,8 +4406,7 @@
 
             var fday2 = new DateTime(mainTimeSheet.TMonth.Year, mainTimeSheet.TMonth.Month, 1);
             var hday2 = this.GetAllholi(fday2);
-            //var fdaylist2 = this.GetAll(fday2);
-            var fdaylist2 = new List<int>();
+            var fdaylist2 = this.GetAll(fday2, mainTimeSheet.Project);
             foreach (var i in hday2)
             {
                 if (!fdaylist2.Contains(i))
@@ -4846,8 +4868,7 @@
                     if (at != null)
                     {
                         date = new DateTime(aa.TMonth.Year, aa.TMonth.Month, 1);
-                        //var fdate = GetAll(date);
-                        var fdate = new List<int>();
+                        var fdate = GetAll(date, aa.Project);
                         var hdate = GetAllholi(date);
                         var ntup = attendance.MainTimeSheet.ManPowerSupplier1.NormalTimeUpto;
                         if (attendance.C1 != "0" && attendance.C1 != null && tfed.effectivedate.Value <=
@@ -6311,8 +6332,7 @@
                         this.db.Entry(at).State = EntityState.Modified;
                         this.db.SaveChanges();
                         date = new DateTime(aa.TMonth.Year, aa.TMonth.Month, 1);
-                        fdate = new List<int>();
-                        //fdate = GetAll(date);
+                        fdate = GetAll(date, aa.Project);
                         hdate = GetAllholi(date);
                         if (fdate.Contains(1) && !hdate.Contains(1))
                         {
@@ -6734,8 +6754,7 @@
                                             + tl23 + tl24 + tl25 + tl26 + tl27 + tl28 + tl29 + tl30;
                             this.db.Entry(at).State = EntityState.Modified;
                             this.db.SaveChanges();
-                            //var fday = this.GetAll(aa.TMonth);
-                            var fday = new List<int>();
+                            var fday = this.GetAll(aa.TMonth, aa.Project);
                             var hlistday = this.GetAllholi(aa.TMonth);
                             double.TryParse(b.NormalTimeUpto.ToString(), out var tho);
                             {
@@ -7931,8 +7950,7 @@
                     }
 
                     var date = new DateTime(aa.TMonth.Year, aa.TMonth.Month, 1);
-                    var fdate = new List<int>();
-                    //var fdate = GetAll(date);
+                    var fdate = GetAll(date, aa.Project);
                     var hdate = GetAllholi(date);
                     var overtimelist = db.overtimeemployeelists.Where(x => x.lab_no == attendance.EmpID)
                         .OrderByDescending(x => x.effectivedate).ToList();
@@ -9811,8 +9829,7 @@
                                         + tl24 + tl25 + tl26 + tl27 + tl28 + tl29 + tl30;
                         double.TryParse(b.NormalTimeUpto.ToString(), out var tho);
                         var i = 0;
-                        var fday = new List<int>();
-                        //var fday = this.GetAll(aa.TMonth);
+                        var fday = this.GetAll(aa.TMonth, aa.Project);
                         var hlistday = this.GetAllholi(aa.TMonth);
                         {
                             var t = new List<long>();
@@ -12937,7 +12954,7 @@
                 */
 
                 pasa.Remove(pasa.First());
-                foreach (var ccpasa in pasa) message.Cc.Add(new MailboxAddress("",ccpasa.Email));
+                foreach (var ccpasa in pasa) message.Cc.Add(new MailboxAddress("", ccpasa.Email));
                 message.Subject = "A NEW TIMESHEET SUBMITTED";
 
                 message.Body = new TextPart("plain")
@@ -13070,7 +13087,7 @@ Please note that I have sent a new Time-Sheet for the date " + da.ToShortDateStr
 
             return this.RedirectToAction("download");
         }
-        
+
         public void DownloadExcel(DateTime? mtsmonth1, long? csp1, long? csmps1)
         {
             List<Attendance> passexel;
@@ -14205,6 +14222,7 @@ Please note that I have sent a new Time-Sheet for the date " + da.ToShortDateStr
                 {
                     dateto = new DateTime(DateTime.Now.Year, 12, 31);
                 }
+
                 long aid;
                 if (long.TryParse(search, out aid))
                 {
@@ -14265,7 +14283,9 @@ Please note that I have sent a new Time-Sheet for the date " + da.ToShortDateStr
                     Sheet.Cells["AM3"].Value = "TotalSickLeave";
                     Sheet.Cells["AN3"].Value = "FridayHours";
                     Sheet.Cells["AO3"].Value = "HolidayHours";
-                    var passexel = this.db.Attendances.Where(x => x.EmpID.Equals(empid.ID) && x.MainTimeSheet.TMonth.Year >= datefrom.Value.Year && x.MainTimeSheet.TMonth.Month >= datefrom.Value.Month).ToList();
+                    var passexel = this.db.Attendances.Where(x =>
+                        x.EmpID.Equals(empid.ID) && x.MainTimeSheet.TMonth.Year >= datefrom.Value.Year &&
+                        x.MainTimeSheet.TMonth.Month >= datefrom.Value.Month).ToList();
 
                     for (var i = 0; i < passexel.Count(); i++)
                     {
@@ -14273,7 +14293,8 @@ Please note that I have sent a new Time-Sheet for the date " + da.ToShortDateStr
                         for (var j = 1; j < 32; j++)
                         {
                             date = days;
-                            Sheet.Cells[string.Format("A{0}", row)].Value = passexel[i].MainTimeSheet.ProjectList.PROJECT_NAME ; 
+                            Sheet.Cells[string.Format("A{0}", row)].Value =
+                                passexel[i].MainTimeSheet.ProjectList.PROJECT_NAME;
                             if (date.Day == 1) Sheet.Cells[string.Format("B{0}", row)].Value = passexel[i].C1;
 
                             if (date.Day == 2) Sheet.Cells[string.Format("C{0}", row)].Value = passexel[i].C2;
@@ -14406,7 +14427,8 @@ Please note that I have sent a new Time-Sheet for the date " + da.ToShortDateStr
                             Sheet.Cells[string.Format("AM{0}", row)].Value = passexel[i].TotalSickLeave;
                             Sheet.Cells[string.Format("AN{0}", row)].Value = passexel[i].FridayHours;
                             Sheet.Cells[string.Format("AO{0}", row)].Value = passexel[i].Holidays;
-                            Sheet.Cells[string.Format("AP{0}", row)].Value = passexel[i].MainTimeSheet.TMonth.ToString("M");
+                            Sheet.Cells[string.Format("AP{0}", row)].Value =
+                                passexel[i].MainTimeSheet.TMonth.ToString("M");
                             days = days.AddDays(1);
                         }
 

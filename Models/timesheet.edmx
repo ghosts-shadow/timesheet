@@ -603,6 +603,47 @@ warning 6002: The table/view 'LogisticsSoft.dbo.Room_Details' does not have a pr
           <Property Name="Remark" Type="nvarchar(max)" />
           <Property Name="Camp" Type="int" />
         </EntityType>
+        <EntityType Name="sharepointatt">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="TMonth" Type="date" Nullable="false" />
+          <Property Name="ManPowerSupplier" Type="bigint" Nullable="false" />
+          <Property Name="Project" Type="bigint" Nullable="false" />
+          <Property Name="EmpID" Type="bigint" Nullable="false" />
+          <Property Name="1" Type="nvarchar" MaxLength="50" />
+          <Property Name="2" Type="nvarchar" MaxLength="50" />
+          <Property Name="3" Type="nvarchar" MaxLength="50" />
+          <Property Name="4" Type="nvarchar" MaxLength="50" />
+          <Property Name="5" Type="nvarchar" MaxLength="50" />
+          <Property Name="6" Type="nvarchar" MaxLength="50" />
+          <Property Name="7" Type="nvarchar" MaxLength="50" />
+          <Property Name="8" Type="nvarchar" MaxLength="50" />
+          <Property Name="9" Type="nvarchar" MaxLength="50" />
+          <Property Name="10" Type="nvarchar" MaxLength="50" />
+          <Property Name="11" Type="nvarchar" MaxLength="50" />
+          <Property Name="12" Type="nvarchar" MaxLength="50" />
+          <Property Name="13" Type="nvarchar" MaxLength="50" />
+          <Property Name="14" Type="nvarchar" MaxLength="50" />
+          <Property Name="15" Type="nvarchar" MaxLength="50" />
+          <Property Name="16" Type="nvarchar" MaxLength="50" />
+          <Property Name="17" Type="nvarchar" MaxLength="50" />
+          <Property Name="18" Type="nvarchar" MaxLength="50" />
+          <Property Name="19" Type="nvarchar" MaxLength="50" />
+          <Property Name="20" Type="nvarchar" MaxLength="50" />
+          <Property Name="21" Type="nvarchar" MaxLength="50" />
+          <Property Name="22" Type="nvarchar" MaxLength="50" />
+          <Property Name="23" Type="nvarchar" MaxLength="50" />
+          <Property Name="24" Type="nvarchar" MaxLength="50" />
+          <Property Name="25" Type="nvarchar" MaxLength="50" />
+          <Property Name="26" Type="nvarchar" MaxLength="50" />
+          <Property Name="27" Type="nvarchar" MaxLength="50" />
+          <Property Name="28" Type="nvarchar" MaxLength="50" />
+          <Property Name="29" Type="nvarchar" MaxLength="50" />
+          <Property Name="30" Type="nvarchar" MaxLength="50" />
+          <Property Name="31" Type="nvarchar" MaxLength="50" />
+        </EntityType>
         <!--Errors Found During Generation:
 warning 6002: The table/view 'LogisticsSoft.dbo.ShiftingFile' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
         <EntityType Name="ShiftingFile">
@@ -742,6 +783,14 @@ warning 6002: The table/view 'LogisticsSoft.dbo.UserInfo' does not have a primar
           </Key>
           <Property Name="full_name" Type="nvarchar(max)" Nullable="false" />
           <Property Name="aspnet_uid" Type="nvarchar" MaxLength="128" Nullable="false" />
+        </EntityType>
+        <EntityType Name="weekendlist">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="weekend" Type="nvarchar(max)" />
+          <Property Name="project_id" Type="bigint" />
         </EntityType>
         <Association Name="FK_approval_Toattendance">
           <End Role="Attendance" Type="Self.Attendance" Multiplicity="0..1">
@@ -1059,6 +1108,20 @@ warning 6002: The table/view 'LogisticsSoft.dbo.UserInfo' does not have a primar
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_weekendlist_Toprojects_1">
+          <End Role="ProjectList" Type="Self.ProjectList" Multiplicity="0..1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="weekendlist" Type="Self.weekendlist" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ProjectList">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="weekendlist">
+              <PropertyRef Name="project_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FKasignproject__ToProject">
           <End Role="ProjectList" Type="Self.ProjectList" Multiplicity="0..1">
             <OnDelete Action="Cascade" />
@@ -1095,10 +1158,12 @@ warning 6002: The table/view 'LogisticsSoft.dbo.UserInfo' does not have a primar
           <EntitySet Name="overtimeref" EntityType="Self.overtimeref" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ProjectList" EntityType="Self.ProjectList" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="promanlist" EntityType="Self.promanlist" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="sharepointatt" EntityType="Self.sharepointatt" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="towemp" EntityType="Self.towemp" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="towref" EntityType="Self.towref" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="trattfile" EntityType="Self.trattfile" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="usernames" EntityType="Self.usernames" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="weekendlist" EntityType="Self.weekendlist" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ControlRoom" EntityType="Self.ControlRoom" store:Type="Tables" store:Schema="dbo">
             <DefiningQuery>SELECT 
     [ControlRoom].[ID] AS [ID], 
@@ -1442,6 +1507,10 @@ warning 6002: The table/view 'LogisticsSoft.dbo.UserInfo' does not have a primar
           <AssociationSet Name="FK_towref_Topro2" Association="Self.FK_towref_Topro2">
             <End Role="ProjectList" EntitySet="ProjectList" />
             <End Role="towref" EntitySet="towref" />
+          </AssociationSet>
+          <AssociationSet Name="FK_weekendlist_Toprojects_1" Association="Self.FK_weekendlist_Toprojects_1">
+            <End Role="ProjectList" EntitySet="ProjectList" />
+            <End Role="weekendlist" EntitySet="weekendlist" />
           </AssociationSet>
           <AssociationSet Name="FKasignproject__ToProject" Association="Self.FKasignproject__ToProject">
             <End Role="ProjectList" EntitySet="ProjectList" />
@@ -1861,6 +1930,7 @@ warning 6002: The table/view 'LogisticsSoft.dbo.UserInfo' does not have a primar
           <NavigationProperty Name="promanlists" Relationship="Self.FK_MainTimeSheet_Topro" FromRole="ProjectList" ToRole="promanlist" />
           <NavigationProperty Name="towrefs" Relationship="Self.FK_towref_Topro1" FromRole="ProjectList" ToRole="towref" />
           <NavigationProperty Name="towrefs1" Relationship="Self.FK_towref_Topro2" FromRole="ProjectList" ToRole="towref" />
+          <NavigationProperty Name="weekendlists" Relationship="LogisticsSoftModel.FK_weekendlist_Toprojects_1" FromRole="ProjectList" ToRole="weekendlist" />
         </EntityType>
         <EntityType Name="promanlist">
           <Key>
@@ -2635,7 +2705,77 @@ warning 6002: The table/view 'LogisticsSoft.dbo.UserInfo' does not have a primar
             <End Role="AspNetRoles" EntitySet="AspNetRoles" />
             <End Role="AspNetUsers" EntitySet="AspNetUsers" />
           </AssociationSet>
+          <EntitySet Name="weekendlists" EntityType="LogisticsSoftModel.weekendlist" />
+          <AssociationSet Name="FK_weekendlist_Toprojects_1" Association="LogisticsSoftModel.FK_weekendlist_Toprojects_1">
+            <End Role="ProjectList" EntitySet="ProjectLists" />
+            <End Role="weekendlist" EntitySet="weekendlists" />
+          </AssociationSet>
+          <EntitySet Name="sharepointatts" EntityType="LogisticsSoftModel.sharepointatt" />
         </EntityContainer>
+        <EntityType Name="weekendlist">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="weekend" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="project_id" Type="Int64" />
+          <NavigationProperty Name="ProjectList" Relationship="LogisticsSoftModel.FK_weekendlist_Toprojects_1" FromRole="weekendlist" ToRole="ProjectList" />
+        </EntityType>
+        <Association Name="FK_weekendlist_Toprojects_1">
+          <End Type="LogisticsSoftModel.ProjectList" Role="ProjectList" Multiplicity="0..1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Type="LogisticsSoftModel.weekendlist" Role="weekendlist" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ProjectList">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="weekendlist">
+              <PropertyRef Name="project_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="sharepointatt">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="TMonth" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="ManPowerSupplier" Type="Int64" Nullable="false" />
+          <Property Name="Project" Type="Int64" Nullable="false" />
+          <Property Name="EmpID" Type="Int64" Nullable="false" />
+          <Property Name="C1" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="C2" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="C3" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="C4" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="C5" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="C6" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="C7" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="C8" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="C9" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="C10" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="C11" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="C12" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="C13" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="C14" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="C15" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="C16" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="C17" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="C18" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="C19" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="C20" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="C21" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="C22" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="C23" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="C24" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="C25" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="C26" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="C27" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="C28" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="C29" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="C30" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="C31" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+        </EntityType>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -3375,6 +3515,57 @@ warning 6002: The table/view 'LogisticsSoft.dbo.UserInfo' does not have a primar
               <ScalarProperty Name="Id" ColumnName="UserId" />
             </EndProperty>
           </AssociationSetMapping>
+          <EntitySetMapping Name="weekendlists">
+            <EntityTypeMapping TypeName="LogisticsSoftModel.weekendlist">
+              <MappingFragment StoreEntitySet="weekendlist">
+                <ScalarProperty Name="project_id" ColumnName="project_id" />
+                <ScalarProperty Name="weekend" ColumnName="weekend" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="sharepointatts">
+            <EntityTypeMapping TypeName="LogisticsSoftModel.sharepointatt">
+              <MappingFragment StoreEntitySet="sharepointatt">
+                <ScalarProperty Name="C31" ColumnName="31" />
+                <ScalarProperty Name="C30" ColumnName="30" />
+                <ScalarProperty Name="C29" ColumnName="29" />
+                <ScalarProperty Name="C28" ColumnName="28" />
+                <ScalarProperty Name="C27" ColumnName="27" />
+                <ScalarProperty Name="C26" ColumnName="26" />
+                <ScalarProperty Name="C25" ColumnName="25" />
+                <ScalarProperty Name="C24" ColumnName="24" />
+                <ScalarProperty Name="C23" ColumnName="23" />
+                <ScalarProperty Name="C22" ColumnName="22" />
+                <ScalarProperty Name="C21" ColumnName="21" />
+                <ScalarProperty Name="C20" ColumnName="20" />
+                <ScalarProperty Name="C19" ColumnName="19" />
+                <ScalarProperty Name="C18" ColumnName="18" />
+                <ScalarProperty Name="C17" ColumnName="17" />
+                <ScalarProperty Name="C16" ColumnName="16" />
+                <ScalarProperty Name="C15" ColumnName="15" />
+                <ScalarProperty Name="C14" ColumnName="14" />
+                <ScalarProperty Name="C13" ColumnName="13" />
+                <ScalarProperty Name="C12" ColumnName="12" />
+                <ScalarProperty Name="C11" ColumnName="11" />
+                <ScalarProperty Name="C10" ColumnName="10" />
+                <ScalarProperty Name="C9" ColumnName="9" />
+                <ScalarProperty Name="C8" ColumnName="8" />
+                <ScalarProperty Name="C7" ColumnName="7" />
+                <ScalarProperty Name="C6" ColumnName="6" />
+                <ScalarProperty Name="C5" ColumnName="5" />
+                <ScalarProperty Name="C4" ColumnName="4" />
+                <ScalarProperty Name="C3" ColumnName="3" />
+                <ScalarProperty Name="C2" ColumnName="2" />
+                <ScalarProperty Name="C1" ColumnName="1" />
+                <ScalarProperty Name="EmpID" ColumnName="EmpID" />
+                <ScalarProperty Name="Project" ColumnName="Project" />
+                <ScalarProperty Name="ManPowerSupplier" ColumnName="ManPowerSupplier" />
+                <ScalarProperty Name="TMonth" ColumnName="TMonth" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
         </EntityContainerMapping>
       </Mapping>
     </edmx:Mappings>

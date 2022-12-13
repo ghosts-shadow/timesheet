@@ -573,6 +573,8 @@ namespace onlygodknows.Controllers
                 {
                     message.To.Add((new MailboxAddress(netUser.UserName, netUser.Email)));
                 }
+                message.Cc.Add(new MailboxAddress("Mohamed Khairy", "mkhairy@citiscapegroup.com"));
+                message.Cc.Add(new MailboxAddress("Zyad Nader", "zNader@citiscapegroup.com"));
 
                 message.Subject = "remobilization of staff";
                 message.Body = new TextPart("plain")
@@ -621,6 +623,10 @@ namespace onlygodknows.Controllers
                            "has been approvaled" + "\n\n\n" + "http://cstimesheet.ddns.net:6333/timesheet/towrefs" +
                            "\n\n\n" + "Thanks Best Regards, "
                 };
+
+               // message.Cc.Add(new MailboxAddress("HR", "yrashid@citiscapegroup.com"));
+                message.Cc.Add(new MailboxAddress("Mohamed Khairy", "mkhairy@citiscapegroup.com"));
+                message.Cc.Add(new MailboxAddress("Zyad Nader", "zNader@citiscapegroup.com"));
                 if (message.To != null)
                 {
                     using (var client = new SmtpClient())
@@ -652,6 +658,8 @@ namespace onlygodknows.Controllers
                 }
 
                 message.Subject = "remobilization of staff";
+                message.Cc.Add(new MailboxAddress("Mohamed Khairy", "mkhairy@citiscapegroup.com"));
+                message.Cc.Add(new MailboxAddress("Zyad Nader", "zNader@citiscapegroup.com"));
                 message.Body = new TextPart("plain")
                 {
                     Text = @"Dear Sir/ma'am," + "\n\n" + "Please note that the transfer of workers from project " +

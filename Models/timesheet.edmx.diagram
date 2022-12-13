@@ -4,7 +4,7 @@
   <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
-      <Diagram DiagramId="d9f362e48d9b45ceb3c5535f893848e3" Name="Diagram1" ZoomLevel="62">
+      <Diagram DiagramId="d9f362e48d9b45ceb3c5535f893848e3" Name="Diagram1" ZoomLevel="26">
         <EntityTypeShape EntityType="LogisticsSoftModel.C__MigrationHistory" Width="1.5" PointX="3.75" PointY="6.75" IsExpanded="true" />
         <EntityTypeShape EntityType="LogisticsSoftModel.approval" Width="1.5" PointX="10.5" PointY="19.75" IsExpanded="true" />
         <EntityTypeShape EntityType="LogisticsSoftModel.asignproject" Width="1.5" PointX="3" PointY="20.25" IsExpanded="true" />
@@ -68,6 +68,9 @@
         <AssociationConnector Association="LogisticsSoftModel.FK_towemp_Toref" ManuallyRouted="false" />
         <AssociationConnector Association="LogisticsSoftModel.FK_towemp_To" ManuallyRouted="false" />
         <AssociationConnector Association="LogisticsSoftModel.AspNetUserRoles" ManuallyRouted="false" />
+        <EntityTypeShape EntityType="LogisticsSoftModel.weekendlist" Width="1.5" PointX="3" PointY="26.5" />
+        <AssociationConnector Association="LogisticsSoftModel.FK_weekendlist_Toprojects_1" />
+        <EntityTypeShape EntityType="LogisticsSoftModel.sharepointatt" Width="1.5" PointX="18.375" PointY="8.75" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

@@ -86,7 +86,7 @@
 </table>
 @if (stat.IsNullOrWhiteSpace())
 {
-    if (User.IsInRole("Head_of_projects"))
+    if (this.User.IsInRole("Head_of_projects(citiscape)") || this.User.IsInRole("Head_of_projects(grove)"))
     {
         <div class="row">
             <div class="col-md-2">

@@ -25,6 +25,7 @@ namespace onlygodknows.Models
             this.promanlists = new HashSet<promanlist>();
             this.overtimerefs = new HashSet<overtimeref>();
             this.asignprojects = new HashSet<asignproject>();
+            this.weekendlists = new HashSet<weekendlist>();
         }
     
         public long ID { get; set; }
@@ -114,5 +115,7 @@ namespace onlygodknows.Models
         public virtual ICollection<towref> towrefs1 { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<asignproject> asignprojects { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<weekendlist> weekendlists { get; set; }
     }
 }
