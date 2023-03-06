@@ -591,7 +591,7 @@ namespace onlygodknows.Controllers
                         client.Connect("outlook.office365.com", 587, false);
 
                         // Note: only needed if the SMTP server requires authentication
-                        client.Authenticate("timekeeper@citiscapegroup.com", "Vam15380");
+                        client.Authenticate("timekeeper@citiscapegroup.com", "Qah78953");
 
                         client.Send(message);
                         client.Disconnect(true);
@@ -634,7 +634,7 @@ namespace onlygodknows.Controllers
                         client.Connect("outlook.office365.com", 587, false);
 
                         // Note: only needed if the SMTP server requires authentication
-                        client.Authenticate("timekeeper@citiscapegroup.com", "Vam15380");
+                        client.Authenticate("timekeeper@citiscapegroup.com", "Qah78953");
 
                         client.Send(message);
                         client.Disconnect(true);
@@ -674,7 +674,7 @@ namespace onlygodknows.Controllers
                         client.Connect("outlook.office365.com", 587, false);
 
                         // Note: only needed if the SMTP server requires authentication
-                        client.Authenticate("timekeeper@citiscapegroup.com", "Vam15380");
+                        client.Authenticate("timekeeper@citiscapegroup.com", "Qah78953");
 
                         client.Send(message);
                         client.Disconnect(true);

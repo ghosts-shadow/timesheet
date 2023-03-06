@@ -78,7 +78,7 @@ using (Html.BeginForm("download", "Home", FormMethod.Get, new { id = "form1" }))
         <div class="row">
             <div class="col-lg-3"><input id="datepicker" name="mtsmonth2" type="text" value="@ViewBag.dateee" placeholder="select date" class="form-control"></div>
             <div class="col-lg-3"> @Html.DropDownList("csp2", new List<SelectListItem>(ViewBag.csp), new { @class = "form-control" })</div>
-            <div class="col-lg-3"> @Html.DropDownList("csmps2", new List<SelectListItem>(ViewBag.csmps), new { @class = "form-control" })</div>
+            @*<div class="col-lg-3"> @Html.DropDownList("csmps2", new List<SelectListItem>(ViewBag.csmps), new { @class = "form-control" })</div>*@
 
 
 

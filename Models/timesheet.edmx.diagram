@@ -71,6 +71,7 @@
         <EntityTypeShape EntityType="LogisticsSoftModel.weekendlist" Width="1.5" PointX="3" PointY="26.5" />
         <AssociationConnector Association="LogisticsSoftModel.FK_weekendlist_Toprojects_1" />
         <EntityTypeShape EntityType="LogisticsSoftModel.sharepointatt" Width="1.5" PointX="18.375" PointY="8.75" />
+        <EntityTypeShape EntityType="LogisticsSoftModel.access_date" Width="1.5" PointX="5.375" PointY="13.75" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

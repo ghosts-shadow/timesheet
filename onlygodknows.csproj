@@ -282,6 +282,7 @@
     <Compile Include="App_Start\IdentityConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\Startup.Auth.cs" />
+    <Compile Include="Controllers\access_dateController.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\asignprojectsController.cs" />
     <Compile Include="Controllers\AttendancesController.cs" />
@@ -306,6 +307,9 @@
     <Compile Include="Controllers\weekendlistsController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
+    </Compile>
+    <Compile Include="Models\access_date.cs">
+      <DependentUpon>timesheet.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\approval.cs">
@@ -689,6 +693,11 @@
     <Content Include="Views\asignprojects\Details.cshtml" />
     <Content Include="Views\asignprojects\Edit.cshtml" />
     <Content Include="Views\asignprojects\Index.cshtml" />
+    <Content Include="Views\access_date\Create.cshtml" />
+    <Content Include="Views\access_date\Delete.cshtml" />
+    <Content Include="Views\access_date\Details.cshtml" />
+    <Content Include="Views\access_date\Edit.cshtml" />
+    <Content Include="Views\access_date\Index.cshtml" />
     <None Include="Views\Home\Class1.cshtml" />
     <Content Include="Views\Home\tests.cshtml" />
     <Content Include="Views\Home\csearch.cshtml" />

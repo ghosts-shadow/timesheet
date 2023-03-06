@@ -15,6 +15,17 @@
           <Property Name="Model" Type="varbinary(max)" Nullable="false" />
           <Property Name="ProductVersion" Type="nvarchar" MaxLength="32" Nullable="false" />
         </EntityType>
+        <EntityType Name="access_date">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" Nullable="false" />
+          <Property Name="emp_no" Type="int" />
+          <Property Name="entrydate" Type="datetime" />
+          <Property Name="hours" Type="nvarchar(max)" />
+          <Property Name="project_id" Type="int" />
+          <Property Name="modified_date" Type="datetime" Nullable="false" />
+        </EntityType>
         <EntityType Name="approval">
           <Key>
             <PropertyRef Name="Id" />
@@ -1138,6 +1149,7 @@ warning 6002: The table/view 'LogisticsSoft.dbo.UserInfo' does not have a primar
         </Association>
         <EntityContainer Name="LogisticsSoftModelStoreContainer">
           <EntitySet Name="__MigrationHistory" EntityType="Self.__MigrationHistory" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="access_date" EntityType="Self.access_date" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="approval" EntityType="Self.approval" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="asignproject" EntityType="Self.asignproject" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="AspNetRoles" EntityType="Self.AspNetRoles" Schema="dbo" store:Type="Tables" />
@@ -2711,6 +2723,7 @@ warning 6002: The table/view 'LogisticsSoft.dbo.UserInfo' does not have a primar
             <End Role="weekendlist" EntitySet="weekendlists" />
           </AssociationSet>
           <EntitySet Name="sharepointatts" EntityType="LogisticsSoftModel.sharepointatt" />
+          <EntitySet Name="access_date" EntityType="LogisticsSoftModel.access_date" />
         </EntityContainer>
         <EntityType Name="weekendlist">
           <Key>
@@ -2775,6 +2788,17 @@ warning 6002: The table/view 'LogisticsSoft.dbo.UserInfo' does not have a primar
           <Property Name="C29" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="C30" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="C31" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="access_date">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" />
+          <Property Name="emp_no" Type="Int32" />
+          <Property Name="entrydate" Type="DateTime" Precision="3" />
+          <Property Name="hours" Type="String" MaxLength="Max" FixedLength="false" Unicode="true"  />
+          <Property Name="project_id" Type="Int32" />
+          <Property Name="modified_date" Type="DateTime" Nullable="false" Precision="3" />
         </EntityType>
       </Schema>
     </edmx:ConceptualModels>
@@ -3562,6 +3586,18 @@ warning 6002: The table/view 'LogisticsSoft.dbo.UserInfo' does not have a primar
                 <ScalarProperty Name="Project" ColumnName="Project" />
                 <ScalarProperty Name="ManPowerSupplier" ColumnName="ManPowerSupplier" />
                 <ScalarProperty Name="TMonth" ColumnName="TMonth" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="access_date">
+            <EntityTypeMapping TypeName="LogisticsSoftModel.access_date">
+              <MappingFragment StoreEntitySet="access_date">
+                <ScalarProperty Name="modified_date" ColumnName="modified_date" />
+                <ScalarProperty Name="project_id" ColumnName="project_id" />
+                <ScalarProperty Name="hours" ColumnName="hours" />
+                <ScalarProperty Name="entrydate" ColumnName="entrydate" />
+                <ScalarProperty Name="emp_no" ColumnName="emp_no" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
             </EntityTypeMapping>

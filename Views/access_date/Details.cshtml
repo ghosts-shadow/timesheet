@@ -1,0 +1,59 @@
+﻿@model onlygodknows.Models.access_date
+
+@{
+    ViewBag.Title = "Details";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>access_date</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.emp_no)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.emp_no)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.entrydate)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.entrydate)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.hours)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.hours)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.project_id)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.project_id)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.modified_date)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.modified_date)
+        </dd>
+
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.Id }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>

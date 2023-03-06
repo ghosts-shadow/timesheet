@@ -67,5 +67,6 @@ namespace onlygodknows.Models
         public virtual DbSet<UserInfo> UserInfoes { get; set; }
         public virtual DbSet<weekendlist> weekendlists { get; set; }
         public virtual DbSet<sharepointatt> sharepointatts { get; set; }
+        public virtual DbSet<access_date> access_date { get; set; }
     }
 }

@@ -12755,8 +12755,9 @@
         }
 
         [Authorize(Roles = "Admin,Manager,Employee")]
-        public ActionResult download(DateTime? mtsmonth2, long? csp2, long? csmps2)
+        public ActionResult download(DateTime? mtsmonth2, long? csp2/*, long? csmps2*/)
         {
+            var getdatafromaccess = new access_dateController();
             this.errorm = this.TempData["mydata"] as string;
             this.ModelState.AddModelError(string.Empty, this.errorm);
             DateTime date1 = new DateTime();
@@ -12775,7 +12776,7 @@
 
             var apall = this.db.approvals.ToList();
             this.ViewBag.csp1 = csp2;
-            this.ViewBag.csmps1 = csmps2;
+            /*this.ViewBag.csmps1 = csmps2;*/
             this.ViewBag.mtsmonth1 = date1;
             this.db.Database.CommandTimeout = 300;
             var uid = this.User.Identity.GetUserId();
@@ -12795,15 +12796,16 @@
 
             this.ViewBag.csmps = new SelectList(this.db.ManPowerSuppliers, "ID", "Supplier");
             var list = this.db.Attendances.Include(x => x.LabourMaster).ToList();
-            if (csmps2.HasValue && csp2.HasValue && mtsmonth2.HasValue)
+            if (/*csmps2.HasValue && */csp2.HasValue && mtsmonth2.HasValue)
             {
+                getdatafromaccess.getdata(date1, (int)csp2);
                 DateTime.TryParse(mtsmonth2.Value.ToString(), out var dm);
                 long.TryParse(csp2.ToString(), out var lcsp);
-                long.TryParse(csmps2.ToString(), out var lcsmps);
+                // long.TryParse(csmps2.ToString(), out var lcsmps);
                 var ab = this.db.MainTimeSheets
                     .Where(
                         x => x.TMonth.Month.Equals(dm.Month) && x.TMonth.Year.Equals(dm.Year)
-                                                             && x.ManPowerSupplier.Equals(lcsmps)
+                                                             // && x.ManPowerSupplier.Equals(lcsmps)
                                                              && x.Project.Equals(lcsp)).OrderBy(x => x.ID).ToList();
 
                 foreach (var abis in ab)
@@ -12900,7 +12902,7 @@
             return this.View(final1.OrderBy(x => x.empno).ToPagedList(1, 100));
         }
 
-        public void SendMail(string sup, string prop, DateTime da, string na, int? totalhrs, int? totalemp)
+        public void SendMail(/*string sup,*/ string prop, DateTime da, string na, int? totalhrs, int? totalemp)
         {
             var man = this.db.AspNetUsers.ToList();
             var context = new ApplicationDbContext();
@@ -12961,7 +12963,7 @@
                 {
                     Text = @"Dear Sir,
 
-Please note that I have sent a new Time-Sheet for the date " + da.ToShortDateString() + ", ManPowerSupplier: " + sup +
+Please note that I have sent a new Time-Sheet for the date " + da.ToShortDateString() +/* ", ManPowerSupplier: " + sup +*/
                            " and Project name: " + prop + " with total employees" + totalemp + " and total hrs " +
                            totalhrs + " for you to  approve / reject\n\nBest regards\n" + na +
                            "\n\n http://cstimesheet.ddns.net:6333/" + Url.Action("appsum", "Projman") + "\n\n "
@@ -12972,7 +12974,7 @@ Please note that I have sent a new Time-Sheet for the date " + da.ToShortDateStr
                     client.Connect("outlook.office365.com", 587, false);
 
                     // Note: only needed if the SMTP server requires authentication
-                    client.Authenticate("timekeeper@citiscapegroup.com", "Vam15380");
+                    client.Authenticate("timekeeper@citiscapegroup.com", "Qah78953");
 
                     client.Send(message);
                     client.Disconnect(true);
@@ -12981,18 +12983,18 @@ Please note that I have sent a new Time-Sheet for the date " + da.ToShortDateStr
         }
 
         [Authorize(Roles = "Employee")]
-        public ActionResult approval(DateTime? mtsmonth2, long? csp2, long? csmps2, int? totalhrs, int? totalemp)
+        public ActionResult approval(DateTime? mtsmonth2, long? csp2/*, long? csmps2*/, int? totalhrs, int? totalemp)
         {
             var final1 = new List<test>();
-            if (csmps2.HasValue && csp2.HasValue && mtsmonth2.HasValue)
+            if (/*csmps2.HasValue && */csp2.HasValue && mtsmonth2.HasValue)
             {
                 DateTime.TryParse(mtsmonth2.Value.ToString(), out var dm);
                 long.TryParse(csp2.ToString(), out var lcsp);
-                long.TryParse(csmps2.ToString(), out var lcsmps);
+                //long.TryParse(csmps2.ToString(), out var lcsmps);
                 var ab = this.db.MainTimeSheets
                     .Where(
                         x => x.TMonth.Month.Equals(dm.Month) && x.TMonth.Year.Equals(dm.Year)
-                                                             && x.ManPowerSupplier.Equals(lcsmps)
+                                                             // && x.ManPowerSupplier.Equals(lcsmps)
                                                              && x.Project.Equals(lcsp)).OrderBy(x => x.ID).ToList();
                 var apall = this.db.approvals.ToList();
                 var i = 0;
@@ -13014,7 +13016,7 @@ Please note that I have sent a new Time-Sheet for the date " + da.ToShortDateStr
                                 this.db.Entry(attendance).State = EntityState.Modified;
                                 this.db.SaveChanges();
                                 var ap = new approval();
-                                ap.MPS_id = csmps2;
+                                //ap.MPS_id = csmps2;
                                 ap.P_id = csp2;
                                 ap.adate = dm;
                                 ap.status = "submitted";
@@ -13078,7 +13080,7 @@ Please note that I have sent a new Time-Sheet for the date " + da.ToShortDateStr
                 if (sentmail)
                 {
                     this.SendMail(
-                        supstr,
+                        // supstr,
                         prostr,
                         dm,
                         this.User.Identity.Name, totalhrs, totalemp);
