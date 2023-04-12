@@ -20,5 +20,7 @@ namespace onlygodknows.Models
         public string hours { get; set; }
         public Nullable<int> project_id { get; set; }
         public System.DateTime modified_date { get; set; }
+        public bool uplodaded { get; set; }
+        public string note { get; set; }
     }
 }

@@ -12797,8 +12797,8 @@
             this.ViewBag.csmps = new SelectList(this.db.ManPowerSuppliers, "ID", "Supplier");
             var list = this.db.Attendances.Include(x => x.LabourMaster).ToList();
             if (/*csmps2.HasValue && */csp2.HasValue && mtsmonth2.HasValue)
-            {
-                getdatafromaccess.getdata(date1, (int)csp2);
+            {/*
+                getdatafromaccess.getdata(date1, (int)csp2);*/
                 DateTime.TryParse(mtsmonth2.Value.ToString(), out var dm);
                 long.TryParse(csp2.ToString(), out var lcsp);
                 // long.TryParse(csmps2.ToString(), out var lcsmps);

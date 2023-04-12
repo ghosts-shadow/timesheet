@@ -18,22 +18,42 @@ namespace onlygodknows.Controllers
         public ActionResult Index()
         {
             var empnolist = db.LabourMasters.ToList();
+            var end_reason = "";
+            var end_con = false;
             var projectlist = db.ProjectLists.ToList();
-            var accdatalist = db.access_date.Where(x => x.modified_date.Day == DateTime.Today.Day && x.modified_date.Month == DateTime.Today.Month && x.modified_date.Year == DateTime.Today.Year).ToList();
-            //var accdatalist = db.access_date.Where(x => x.modified_date.Day == 15 && x.modified_date.Month == 12 && x.modified_date.Year == 2022).ToList();
+            //var accdatalist = db.access_date.Where(x =>  x.note != null).OrderBy(x=>x.Id).ToList();
+            var accdatalist = db.access_date.Where(x => x.uplodaded == false && x.note == null).OrderBy(x=>x.Id).ToList();
             var maintimelist = db.MainTimeSheets.ToList();
             var mpslist = db.ManPowerSuppliers.ToList();
             var temp = new access_date();
             foreach (var entrydata in accdatalist)
             {
-                var emp = empnolist.Find(x => x.EMPNO == entrydata.emp_no);
+                var empno = (long) entrydata.emp_no;
+                var emp = empnolist.Find(x => x.EMPNO == empno);
                 if (emp == null)
                 {
+                    end_con = true;
+                    end_reason = "no emp no in labor master";
                     goto end;
                 }
+                else
+                {
+                    end_con = false;
+                }
                 var entrydate = entrydata.entrydate;
+                entrydata.note = null;
                 var mps = mpslist.Find(x => x.ID == emp.ManPowerSupply);
                 var project = projectlist.Find(x => x.ID == entrydata.project_id);
+                if (project == null)
+                {
+                    end_con = true;
+                    end_reason = "no project in project list";
+                    goto end;
+                }
+                else
+                {
+                    end_con = false;
+                }
                 var tempmts = new MainTimeSheet();
                 if (maintimelist.Exists(x =>
                     x.TMonth.Month == entrydate.Value.Month &&
@@ -287,10 +307,16 @@ namespace onlygodknows.Controllers
                     {
                         db.Attendances.Add(tempatt);
                         db.SaveChanges();
+                        entrydata.uplodaded = true;
+                        db.Entry(entrydata).State = EntityState.Modified;
+                        db.SaveChanges();
                     }
                     else
                     {
                         db.Entry(tempatt).State = EntityState.Modified;
+                        db.SaveChanges();
+                        entrydata.uplodaded = true;
+                        db.Entry(entrydata).State = EntityState.Modified;
                         db.SaveChanges();
                     }
                 }
@@ -511,8 +537,17 @@ namespace onlygodknows.Controllers
                     }
                     db.Attendances.Add(tempatt);
                     db.SaveChanges();
+                    entrydata.uplodaded = true;
+                    db.Entry(entrydata).State = EntityState.Modified;
+                    db.SaveChanges();
                 }
-                end: ;
+                end:;
+                if (end_con == true)
+                {
+                    entrydata.note = end_reason;
+                    db.Entry(entrydata).State = EntityState.Modified;
+                    db.SaveChanges();
+                }
             }
 
             return View();

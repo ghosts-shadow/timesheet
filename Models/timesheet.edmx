@@ -25,6 +25,8 @@
           <Property Name="hours" Type="nvarchar(max)" />
           <Property Name="project_id" Type="int" />
           <Property Name="modified_date" Type="datetime" Nullable="false" />
+          <Property Name="uplodaded" Type="bit" Nullable="false" />
+          <Property Name="note" Type="nvarchar" MaxLength="50" />
         </EntityType>
         <EntityType Name="approval">
           <Key>
@@ -2799,6 +2801,8 @@ warning 6002: The table/view 'LogisticsSoft.dbo.UserInfo' does not have a primar
           <Property Name="hours" Type="String" MaxLength="Max" FixedLength="false" Unicode="true"  />
           <Property Name="project_id" Type="Int32" />
           <Property Name="modified_date" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="uplodaded" Type="Boolean" Nullable="false" />
+          <Property Name="note" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
         </EntityType>
       </Schema>
     </edmx:ConceptualModels>
@@ -3593,6 +3597,8 @@ warning 6002: The table/view 'LogisticsSoft.dbo.UserInfo' does not have a primar
           <EntitySetMapping Name="access_date">
             <EntityTypeMapping TypeName="LogisticsSoftModel.access_date">
               <MappingFragment StoreEntitySet="access_date">
+                <ScalarProperty Name="note" ColumnName="note" />
+                <ScalarProperty Name="uplodaded" ColumnName="uplodaded" />
                 <ScalarProperty Name="modified_date" ColumnName="modified_date" />
                 <ScalarProperty Name="project_id" ColumnName="project_id" />
                 <ScalarProperty Name="hours" ColumnName="hours" />
